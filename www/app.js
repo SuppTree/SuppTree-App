@@ -12363,6 +12363,15 @@ function updateGreeting() {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     timeEl.textContent = `${hours}:${minutes}`;
   }
+
+  // App-Mode Badge aktualisieren
+  const modeBadge = document.getElementById('appModeBadge');
+  if (modeBadge) {
+    const isLive = supabase && currentUser;
+    modeBadge.textContent = isLive ? 'LIVE' : 'LOCAL';
+    modeBadge.style.background = isLive ? 'rgba(0,200,120,0.25)' : 'rgba(255,255,255,0.15)';
+    modeBadge.style.color = isLive ? '#00ff88' : 'rgba(255,255,255,0.6)';
+  }
 }
 
 // Update time every minute
