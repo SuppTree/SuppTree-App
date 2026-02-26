@@ -1,0 +1,8 @@
+{
+  "appId": "com.supptree.app",
+  "appName": "SuppTree",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
