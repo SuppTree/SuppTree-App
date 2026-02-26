@@ -3665,13 +3665,18 @@ async function handleLogout() {
 // Security: HTML-Escaping für alle User-Daten in innerHTML
 function esc(str){if(str==null)return '';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
-let products=[
+const DEFAULT_PRODUCTS=[
   {id:1,name:'Vitamin D3 5000 IE',wirkstoff:'Vitamin D3',desc:'Hochdosiertes Vitamin D3 aus Lanolin. 5000 IE pro Kapsel.',sku:'VD3-5000-90',cat:'Vitamine',icon:'💊',price:19.90,content:90,unit:'Kapseln',weight:84,stock:234,status:'active',labels:['🌱 Vegan','🇩🇪 Made in DE','🔬 Laborgeprüft'],zielgruppen:['Allgemein','Senioren','Büroangestellte'],wirkungsbereiche:['Immunsystem','Gelenke & Knochen','Stressabbau'],sales:89,revenue:1772,views:3241,ingredients:'Olivenöl, Gelatine, Glycerin, Vitamin D3',dosage:'Täglich 1 Kapsel zu einer Mahlzeit.',warnings:'Empfohlene Dosis nicht überschreiten.',discount:null},
   {id:2,name:'Omega 3 Premium',wirkstoff:'Omega 3',desc:'Hochkonzentriertes Omega 3 aus Wildfang. Mit EPA & DHA.',sku:'OM3-PRM-120',cat:'Omega & Fettsäuren',icon:'🐟',price:24.90,content:120,unit:'Kapseln',weight:180,stock:156,status:'active',labels:['🔬 Laborgeprüft'],zielgruppen:['Allgemein','Senioren'],wirkungsbereiche:['Herz & Kreislauf','Gehirn & Kognition','Entzündungshemmend'],sales:67,revenue:1668,views:2847,ingredients:'Fischöl, Fischgelatine, Glycerin, Vitamin E',dosage:'Täglich 2 Kapseln.',warnings:'Bei Fischallergie nicht verwenden.',discount:null},
   {id:3,name:'Magnesium Komplex',wirkstoff:'Magnesium',desc:'4 verschiedene Magnesiumformen für optimale Bioverfügbarkeit.',sku:'MAG-KPX-180',cat:'Mineralstoffe',icon:'⚡',price:16.90,content:180,unit:'Kapseln',weight:126,stock:78,status:'active',labels:['🌱 Vegan','🌾 Glutenfrei'],zielgruppen:['Allgemein','Sportler','Stressgeplagte'],wirkungsbereiche:['Schlaf & Entspannung','Muskelaufbau','Energie & Fokus','Stressabbau'],sales:54,revenue:912,views:1923,ingredients:'Magnesiumcitrat, Magnesiumbisglycinat, Magnesiummalat',dosage:'Täglich 2 Kapseln.',warnings:'Empfohlene Dosis nicht überschreiten.',discount:{type:'percent',value:10,name:'Frühling-Aktion',end:'2025-03-31'}},
   {id:4,name:'Ashwagandha KSM-66',wirkstoff:'Ashwagandha',desc:'Premium Ashwagandha-Extrakt mit 5% Withanoliden.',sku:'ASH-KSM-60',cat:'Adaptogene',icon:'🌿',price:22.90,content:60,unit:'Kapseln',weight:42,stock:0,status:'draft',labels:['🌱 Vegan','🌿 Bio'],zielgruppen:['Stressgeplagte','Sportler','Büroangestellte'],wirkungsbereiche:['Stressabbau','Schlaf & Entspannung','Hormone & Balance','Energie & Fokus'],sales:0,revenue:0,views:0,ingredients:'Ashwagandha-Wurzelextrakt (KSM-66)',dosage:'Täglich 1 Kapsel.',warnings:'Nicht in Schwangerschaft verwenden.',discount:null},
   {id:5,name:'Vitamin B12',wirkstoff:'Vitamin B12',desc:'Aktives Vitamin B12 als Methylcobalamin.',sku:'VB12-MCB-90',cat:'Vitamine',icon:'🔴',price:14.90,content:90,unit:'Tabletten',weight:27,stock:0,status:'out',labels:['🌱 Vegan'],zielgruppen:['Veganer & Vegetarier','Senioren','Allgemein'],wirkungsbereiche:['Energie & Fokus','Blutbildung','Gehirn & Kognition'],sales:142,revenue:2115,views:4102,ingredients:'Mikrokristalline Cellulose, Methylcobalamin',dosage:'Täglich 1 Tablette unter der Zunge.',warnings:'Empfohlene Dosis nicht überschreiten.',discount:null}
 ];
+let products=(function(){try{const s=JSON.parse(localStorage.getItem('suppTreeProducts'));if(s&&s.length)return s;}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));})();
+function saveProducts(){
+  localStorage.setItem('suppTreeProducts',JSON.stringify(products));
+  partnerSync('partner_products','suppTreeProducts',products,{replaceAll:true,transform:p=>({product_id:p.id,name:p.name,wirkstoff:p.wirkstoff||'',description:p.desc||'',sku:p.sku||'',ean:p.ean||'',category:p.cat||'',icon:p.icon||'',images:p.images||[],price:p.price||0,content:p.content||0,unit:p.unit||'',weight:p.weight||0,stock:p.stock||0,flavor:p.flavor||'',vat:p.vat||'7',storage:p.storage||'',origin:p.origin||'',status:p.status||'active',labels:p.labels||[],zielgruppen:p.zielgruppen||[],wirkungsbereiche:p.wirkungsbereiche||[],allergens:p.allergens||[],naehrwerte:p.naehrwerte||{},manufacturer:p.manufacturer||'',manu_data:p.manuData||{},pflichthinweise:p.pflichthinweise||[],ingredients:p.ingredients||'',zutaten:p.zutaten||[],dosage:p.dosage||'',warnings:p.warnings||'',discount:p.discount,sales:p.sales||0,revenue:p.revenue||0,views:p.views||0})});
+}
 let currentId=null,filter='all',discType='percent',wizStep=1,editId=null,selCatVal='',selLabels=[],selZielgruppen=[],selWirkungsbereiche=[],productImages=[];
 let currentImgSlot=0;
 let statsPeriod='30d',compareMode=false,comparePrev=false,selectedCompare=[],statsProduct='all',customDays=30;
@@ -3777,7 +3782,7 @@ let brandProfile={
 // SERVICES DATA
 const svcCatIcons={beratung:'💬',bluttest:'🩸',plan:'📋',behandlung:'🏥',coaching:'🎯',paket:'📦'};
 const svcCatLabels={beratung:'Beratung',bluttest:'Bluttest / Labor',plan:'Ernährungsplan',behandlung:'Behandlung',coaching:'Coaching',paket:'Paket'};
-let services=[
+const DEFAULT_SERVICES=[
   {id:1,cat:'beratung',name:'Erstberatung Mikronährstoffe',desc:'Umfassende Anamnese und individuelle Supplementempfehlung.',duration:60,priceType:'fixed',price:80,modes:['praxis','video'],bookingType:'direct',includes:['Ausführliche Anamnese (45 Min)','Individuelle Supplement-Empfehlung','Schriftlicher Therapieplan','2 Wochen E-Mail-Support'],prep:'Bitte bringen Sie aktuelle Laborergebnisse mit, falls vorhanden.',status:'active',bookings:8,revenue:640},
   {id:3,cat:'plan',name:'Individueller Ernährungsplan',desc:'Persönlich erstellter Plan basierend auf Laborwerten, Zielen und Vorlieben.',duration:90,priceType:'fixed',price:120,modes:['praxis','video'],bookingType:'direct',includes:['Detaillierte Ernährungsanalyse','4-Wochen-Mahlzeitenplan','Supplement-Protokoll','Einkaufslisten'],prep:'',status:'active',bookings:3,revenue:360},
   {id:4,cat:'behandlung',name:'Infusionstherapie Vitamin C',desc:'Hochdosis Vitamin-C-Infusion zur Immunstärkung und Regeneration.',duration:45,priceType:'fixed',price:95,modes:['praxis'],bookingType:'direct',includes:['Vorgespräch','Vitamin-C-Infusion (15g)','Überwachung','Nachsorge-Empfehlung'],prep:'Bitte ausreichend Wasser trinken.',status:'active',bookings:6,revenue:570},
@@ -3785,6 +3790,11 @@ let services=[
   {id:6,cat:'paket',name:'Komplett-Paket: Test + Beratung + Plan',desc:'Rundum-sorglos: Bluttest, Beratung und individueller Ernährungs- und Supplementplan.',duration:120,priceType:'fixed',price:349,modes:['praxis'],bookingType:'direct',includes:['Großes Blutbild (32 Parameter)','Erstberatung (60 Min)','Individueller Ernährungsplan','Supplement-Protokoll','Folgeberatung nach 4 Wochen','3 Monate E-Mail-Support'],paketItems:['Großes Blutbild (32 Parameter)','Erstberatung Mikronährstoffe (60 Min)','Individueller Ernährungs- & Supplementplan'],prep:'Bitte nüchtern erscheinen.',status:'active',bookings:1,revenue:349},
   {id:7,cat:'beratung',name:'Folgeberatung',desc:'Follow-up zur Besprechung von Fortschritten und Plananpassung.',duration:30,priceType:'fixed',price:45,modes:['praxis','video','phone'],bookingType:'direct',includes:['Besprechung aktueller Werte','Plananpassung','Neue Empfehlungen'],prep:'',status:'active',bookings:4,revenue:180}
 ];
+let services=(function(){try{const s=JSON.parse(localStorage.getItem('suppTreeServices'));if(s&&s.length)return s;}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_SERVICES));})();
+function saveServices(){
+  localStorage.setItem('suppTreeServices',JSON.stringify(services));
+  partnerSync('partner_services','suppTreeServices',services,{replaceAll:true,transform:s=>({service_id:s.id,category:s.cat||'',name:s.name,description:s.desc||'',duration:s.duration||60,price_type:s.priceType||'fixed',price:s.price||0,modes:s.modes||[],booking_type:s.bookingType||'direct',includes:s.includes||[],paket_items:s.paketItems||[],prep:s.prep||'',status:s.status||'active',bookings:s.bookings||0,revenue:s.revenue||0})});
+}
 let editServiceId=null;
 let selectedSvcCat='beratung';
 let activeSvcTab='alle';
@@ -4521,15 +4531,15 @@ document.addEventListener('scroll',()=>{
   document.querySelectorAll('.filter-menu').forEach(m=>m.classList.remove('visible'));
 },true);
 function toggleAcc(btn){const item=btn.parentElement;const wasOpen=item.classList.contains('open');document.querySelectorAll('.acc-item').forEach(i=>{i.classList.remove('open');i.querySelector('.acc-icon').textContent='▶';});if(!wasOpen){item.classList.add('open');item.querySelector('.acc-icon').textContent='▼';}}
-function dupeProd(){toggleMenu();const p=products.find(x=>x.id===currentId);if(!p)return;const np={...p,id:Date.now(),name:p.name+' (Kopie)',sku:p.sku+'-COPY',status:'draft',sales:0,revenue:0,views:0,discount:null};products.push(np);toast('📋 Produkt dupliziert!','success');setTimeout(()=>openDetail(np.id),500);}
-function toggleStatus(){toggleMenu();const p=products.find(x=>x.id===currentId);if(!p)return;if(p.status==='active'){p.status='paused';toast('⏸️ Produkt pausiert','success');}else if(p.status==='paused'||p.status==='draft'){p.status='active';toast('▶️ Produkt aktiviert','success');}else if(p.status==='out'){toast('⚠️ Erst Bestand auffüllen','error');return;}openDetail(currentId);}
+function dupeProd(){toggleMenu();const p=products.find(x=>x.id===currentId);if(!p)return;const np={...p,id:Date.now(),name:p.name+' (Kopie)',sku:p.sku+'-COPY',status:'draft',sales:0,revenue:0,views:0,discount:null};products.push(np);saveProducts();toast('📋 Produkt dupliziert!','success');setTimeout(()=>openDetail(np.id),500);}
+function toggleStatus(){toggleMenu();const p=products.find(x=>x.id===currentId);if(!p)return;if(p.status==='active'){p.status='paused';toast('⏸️ Produkt pausiert','success');}else if(p.status==='paused'||p.status==='draft'){p.status='active';toast('▶️ Produkt aktiviert','success');}else if(p.status==='out'){toast('⚠️ Erst Bestand auffüllen','error');return;}saveProducts();openDetail(currentId);}
 function delProd(){toggleMenu();const p=products.find(x=>x.id===currentId);if(!p)return;document.getElementById('delText').textContent=`Möchtest du "${p.name}" wirklich löschen?`;document.getElementById('delModal').classList.add('visible');}
-function confirmDel(){products=products.filter(p=>p.id!==currentId);closeModal();showScreen('products');toast('🗑️ Produkt gelöscht','success');}
+function confirmDel(){products=products.filter(p=>p.id!==currentId);saveProducts();closeModal();showScreen('products');toast('🗑️ Produkt gelöscht','success');}
 function closeModal(){document.getElementById('delModal').classList.remove('visible');}
 function openDisc(){const p=products.find(x=>x.id===currentId);if(!p)return;document.getElementById('discFor').textContent='Für: '+p.name;const today=new Date(),end=new Date();end.setMonth(end.getMonth()+1);document.getElementById('discStart').value=today.toISOString().split('T')[0];document.getElementById('discEnd').value=end.toISOString().split('T')[0];document.getElementById('discVal').value='';document.getElementById('discName').value='';document.getElementById('sheetOverlay').classList.add('visible');document.getElementById('sheet').classList.add('visible');}
 function closeSheet(){document.getElementById('sheetOverlay').classList.remove('visible');document.getElementById('sheet').classList.remove('visible');}
 function selType(t){discType=t;document.querySelectorAll('.dtype').forEach(d=>d.classList.toggle('selected',d.dataset.t===t));}
-function saveDisc(){const val=parseFloat(document.getElementById('discVal').value);if(!val||val<=0){toast('Bitte Rabattwert eingeben','error');return;}if(discType==='percent'&&val>100){toast('Max. 100% möglich','error');return;}const p=products.find(x=>x.id===currentId);if(p){p.discount={type:discType,value:val,name:document.getElementById('discName').value||'Rabattaktion',end:document.getElementById('discEnd').value};openDetail(currentId);}closeSheet();toast('🏷️ Rabatt erstellt!','success');}
+function saveDisc(){const val=parseFloat(document.getElementById('discVal').value);if(!val||val<=0){toast('Bitte Rabattwert eingeben','error');return;}if(discType==='percent'&&val>100){toast('Max. 100% möglich','error');return;}const p=products.find(x=>x.id===currentId);if(p){p.discount={type:discType,value:val,name:document.getElementById('discName').value||'Rabattaktion',end:document.getElementById('discEnd').value};saveProducts();openDetail(currentId);}closeSheet();toast('🏷️ Rabatt erstellt!','success');}
 function toast(msg,type){const t=document.getElementById('toastEl');t.textContent=msg;t.className='toast visible'+(type?' '+type:'');setTimeout(()=>t.classList.remove('visible'),3000);}
 
 // WIZARD FUNCTIONS
@@ -5075,6 +5085,7 @@ function saveProduct(status='active'){
     products.push(data);
     toast(status==='draft'?'📝 Als Entwurf gespeichert!':'🚀 Produkt veröffentlicht!','success');
   }
+  saveProducts();
   closeWizard();
   showScreen('products');
 }
@@ -6230,6 +6241,7 @@ function toggleServiceStatus(id){
   const s=services.find(x=>x.id===id);
   if(!s)return;
   s.status=s.status==='active'?'paused':'active';
+  saveServices();
   toast(s.status==='active'?'✅ '+s.name+' aktiviert':'⏸️ '+s.name+' pausiert','success');
   renderServices();
 }
@@ -6513,7 +6525,7 @@ function deleteService(id){
     'Service löschen?',
     `Möchtest du "${svc ? svc.name : 'diesen Service'}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`,
     'Löschen',
-    () => { services=services.filter(s=>s.id!==id); renderServices(); toast('🗑️ Service gelöscht','success'); },
+    () => { services=services.filter(s=>s.id!==id); saveServices(); renderServices(); toast('🗑️ Service gelöscht','success'); },
     true
   );
 }
@@ -6690,6 +6702,7 @@ function saveService(asDraft){
     services.push(data);
     toast(asDraft?'📝 Als Entwurf gespeichert':'✓ Service erstellt','success');
   }
+  saveServices();
   closeServiceForm();
   renderServices();
 }
