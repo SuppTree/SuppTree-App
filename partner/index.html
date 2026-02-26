@@ -3732,6 +3732,16 @@ let partnerType = (function(){
   return localStorage.getItem('suppTreePartnerType') || 'supplement';
 })();
 
+// ── Feature-Gates pro Partner-Typ ──
+const FEATURE_GATES = {
+  supplement:    { produkte:true, services:false, bluttests:false, termine:false, trainingsPlan:false, ernaehrungsPlan:false, rezepte:false, markenprofil:true },
+  heilpraktiker: { produkte:false, services:true, bluttests:true, termine:true, trainingsPlan:false, ernaehrungsPlan:true, rezepte:false, markenprofil:false },
+  coach:         { produkte:false, services:true, bluttests:false, termine:true, trainingsPlan:true, ernaehrungsPlan:true, rezepte:true, markenprofil:false }
+};
+function hasFeature(key) {
+  return (FEATURE_GATES[partnerType] || FEATURE_GATES.supplement)[key] !== false;
+}
+
 const PARTNER_DOC_CONFIG = {
   all: [
     {id:'gewerbeschein', label:'Gewerbeschein', required:true, desc:'Nachweis der Gewerbeanmeldung', hint:'PDF oder Foto der Gewerbeanmeldung'},
@@ -10350,16 +10360,6 @@ const DASH_WIDGETS=[
     {key:'showRating',type:'toggle',label:'Bewertung',default:true}
   ]}
 ];
-
-// ── Feature-Gates pro Partner-Typ ──
-const FEATURE_GATES = {
-  supplement:    { produkte:true, services:false, bluttests:false, termine:false, trainingsPlan:false, ernaehrungsPlan:false, rezepte:false, markenprofil:true },
-  heilpraktiker: { produkte:false, services:true, bluttests:true, termine:true, trainingsPlan:false, ernaehrungsPlan:true, rezepte:false, markenprofil:false },
-  coach:         { produkte:false, services:true, bluttests:false, termine:true, trainingsPlan:true, ernaehrungsPlan:true, rezepte:true, markenprofil:false }
-};
-function hasFeature(key) {
-  return (FEATURE_GATES[partnerType] || FEATURE_GATES.supplement)[key] !== false;
-}
 
 // ── Dashboard-Presets pro Partner-Typ ──
 const DASHBOARD_PRESETS = {
