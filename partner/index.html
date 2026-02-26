@@ -3642,6 +3642,26 @@ function updatePartnerModeBadge(){
 }
 setTimeout(updatePartnerModeBadge, 1500);
 
+// ── PARTNER-TYP ──
+let partnerType = (function(){
+  const url = new URLSearchParams(window.location.search).get('partnerType');
+  if (url && ['supplement','heilpraktiker','coach'].includes(url)) {
+    localStorage.setItem('suppTreePartnerType', url);
+    return url;
+  }
+  return localStorage.getItem('suppTreePartnerType') || 'supplement';
+})();
+
+// ── Feature-Gates pro Partner-Typ ──
+const FEATURE_GATES = {
+  supplement:    { produkte:true, services:false, bluttests:false, termine:false, trainingsPlan:false, ernaehrungsPlan:false, rezepte:false, markenprofil:true },
+  heilpraktiker: { produkte:false, services:true, bluttests:true, termine:true, trainingsPlan:false, ernaehrungsPlan:true, rezepte:false, markenprofil:false },
+  coach:         { produkte:false, services:true, bluttests:false, termine:true, trainingsPlan:true, ernaehrungsPlan:true, rezepte:true, markenprofil:false }
+};
+function hasFeature(key) {
+  return (FEATURE_GATES[partnerType] || FEATURE_GATES.supplement)[key] !== false;
+}
+
 // ── Dynamische Bottom-Navigation ──
 function renderBottomNav(){
   const nav=document.getElementById('bottomNav');
@@ -3721,26 +3741,6 @@ let stPeriod='30d';
 let searchQuery='',filterStatus='',filterCat='',filterZg='',filterWb='',sortBy='newest';
 let selectedPromos=[],promoDuration=1;
 const promoPrices={spotlight:49,homepage:99,category:29,search:39,newsletter:79};
-
-// ── PARTNER-TYP & UNTERLAGEN ──
-let partnerType = (function(){
-  const url = new URLSearchParams(window.location.search).get('partnerType');
-  if (url && ['supplement','heilpraktiker','coach'].includes(url)) {
-    localStorage.setItem('suppTreePartnerType', url);
-    return url;
-  }
-  return localStorage.getItem('suppTreePartnerType') || 'supplement';
-})();
-
-// ── Feature-Gates pro Partner-Typ ──
-const FEATURE_GATES = {
-  supplement:    { produkte:true, services:false, bluttests:false, termine:false, trainingsPlan:false, ernaehrungsPlan:false, rezepte:false, markenprofil:true },
-  heilpraktiker: { produkte:false, services:true, bluttests:true, termine:true, trainingsPlan:false, ernaehrungsPlan:true, rezepte:false, markenprofil:false },
-  coach:         { produkte:false, services:true, bluttests:false, termine:true, trainingsPlan:true, ernaehrungsPlan:true, rezepte:true, markenprofil:false }
-};
-function hasFeature(key) {
-  return (FEATURE_GATES[partnerType] || FEATURE_GATES.supplement)[key] !== false;
-}
 
 const PARTNER_DOC_CONFIG = {
   all: [
