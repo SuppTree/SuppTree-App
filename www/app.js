@@ -130,6 +130,93 @@ const DataStore = {
 };
 
 // =============================================
+// DUAL-MODE SAVE HELPERS
+// =============================================
+function saveTrainingPlans(plans) {
+  localStorage.setItem('suppTreeTrainingPlans', JSON.stringify(plans));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('training_plans', 'suppTreeTrainingPlans', plans, {
+      replaceAll: true,
+      transform: (p) => ({
+        user_id: currentUser.id,
+        name: p.name,
+        type: p.type || 'custom',
+        status: p.status || 'active',
+        data: JSON.stringify(p)
+      })
+    }).catch(e => console.error('TrainingPlans sync error:', e));
+  }
+}
+
+function saveErnaehrungPlans(plans) {
+  localStorage.setItem('suppTreeErnaehrungPlans', JSON.stringify(plans));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('nutrition_plans', 'suppTreeErnaehrungPlans', plans, {
+      replaceAll: true,
+      transform: (p) => ({
+        user_id: currentUser.id,
+        name: p.name,
+        type: p.type || 'custom',
+        status: p.status || 'active',
+        data: JSON.stringify(p)
+      })
+    }).catch(e => console.error('ErnaehrungPlans sync error:', e));
+  }
+}
+
+function saveKuren(kuren) {
+  localStorage.setItem('suppTreeKuren', JSON.stringify(kuren));
+}
+
+function savePurchasedKuren(purchased) {
+  localStorage.setItem('suppTreePurchasedKuren', JSON.stringify(purchased));
+}
+
+function saveShifts(shiftsData) {
+  localStorage.setItem('suppTreeShifts', JSON.stringify(shiftsData));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('shifts', 'suppTreeShifts', shiftsData, {
+      upsert: true,
+      transform: (s) => ({
+        user_id: currentUser.id,
+        data: JSON.stringify(s)
+      })
+    }).catch(e => console.error('Shifts sync error:', e));
+  }
+}
+
+function saveShiftConfig(config) {
+  localStorage.setItem('suppTreeShiftConfig', JSON.stringify(config));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('shift_types', 'suppTreeShiftConfig', config, {
+      upsert: true,
+      transform: (c) => ({
+        user_id: currentUser.id,
+        data: JSON.stringify(c)
+      })
+    }).catch(e => console.error('ShiftConfig sync error:', e));
+  }
+}
+
+function saveTermine(termine) {
+  localStorage.setItem('suppTreeTermine', JSON.stringify(termine));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('appointments', 'suppTreeTermine', termine, {
+      replaceAll: true,
+      transform: (t) => ({
+        user_id: currentUser.id,
+        provider_name: t.anbieter,
+        specialty: t.fach,
+        appointment_date: t.datum,
+        appointment_time: t.zeit,
+        status: t.status || 'gebucht',
+        notes: t.id
+      })
+    }).catch(e => console.error('Termine sync error:', e));
+  }
+}
+
+// =============================================
 // CAPACITOR STATUS BAR - System UI sichtbar machen
 // =============================================
 document.addEventListener('DOMContentLoaded', function() {
@@ -2116,6 +2203,26 @@ function loadPendingOrders() {
 
 function savePendingOrders() {
   localStorage.setItem('suppTreePendingOrders', JSON.stringify([...pendingOrders]));
+  if (isProductionMode() && currentUser) {
+    const ordersArray = [];
+    pendingOrders.forEach((order, orderId) => {
+      ordersArray.push({
+        user_id: currentUser.id,
+        order_number: orderId,
+        status: order.status || 'pending',
+        subtotal: order.total || 0,
+        shipping_cost: order.shipping || 0,
+        discount_amount: order.discount || 0,
+        total: order.total || 0,
+        shipping_address: order.address ? JSON.stringify(order.address) : null,
+        payment_method: order.paymentMethod || null
+      });
+    });
+    DataStore.set('orders', 'suppTreePendingOrders', ordersArray, {
+      replaceAll: true,
+      transform: (o) => o
+    }).catch(e => console.error('Orders sync error:', e));
+  }
 }
 
 // Lade gespeicherte Favoriten aus localStorage
@@ -10215,8 +10322,8 @@ function saveShiftConfig() {
     if (textInput) shiftConfig[key].textColor = textInput.value;
   });
   
-  localStorage.setItem('suppTreeShiftConfig', JSON.stringify(shiftConfig));
-  
+  saveShiftConfig(shiftConfig);
+
   // Recalculate all scheduled intakes with new times
   updateAllScheduledIntakes();
   updateShiftTimeDisplays();
@@ -10963,8 +11070,8 @@ function applyMultiShift(shiftType) {
   });
   
   // Save shifts
-  localStorage.setItem('suppTreeShifts', JSON.stringify(shifts));
-  
+  saveShifts(shifts);
+
   // Update supplement schedules based on new shifts
   updateAllScheduledIntakes();
   
@@ -11160,8 +11267,8 @@ function selectShiftType(shiftType) {
   }
   
   // Save shifts
-  localStorage.setItem('suppTreeShifts', JSON.stringify(shifts));
-  
+  saveShifts(shifts);
+
   // Check for repeat
   const repeatCheckbox = document.getElementById('repeatShift');
   if (repeatCheckbox && repeatCheckbox.checked && shiftType !== 'none') {
@@ -11305,8 +11412,8 @@ function applyPattern() {
   }
   
   // Save shifts
-  localStorage.setItem('suppTreeShifts', JSON.stringify(shifts));
-  
+  saveShifts(shifts);
+
   // Update supplement schedules based on new pattern
   updateAllScheduledIntakes();
   
@@ -11782,7 +11889,7 @@ function updateRhythmColor(key) {
     });
     
     // Save to localStorage
-    localStorage.setItem('suppTreeShiftConfig', JSON.stringify(shiftConfig));
+    saveShiftConfig(shiftConfig);
   }
 }
 
@@ -11913,7 +12020,7 @@ function applyShiftTypeEdit() {
 
 function saveShiftTypes() {
   // Save to localStorage
-  localStorage.setItem('suppTreeShiftConfig', JSON.stringify(shiftConfig));
+  saveShiftConfig(shiftConfig);
   
   // Update calendar display
   updateCalendarDisplay();
@@ -13576,8 +13683,8 @@ function bucheTermin(anbieterId, kategorie) {
       icon: anbieter.avatar,
       status: 'gebucht'
     });
-    localStorage.setItem('suppTreeTermine', JSON.stringify(termine));
-    
+    saveTermine(termine);
+
     setTimeout(() => {
       closeTerminBuchen();
       closeAlleTermine();
@@ -14000,8 +14107,8 @@ function saveErnaehrungPlan() {
   
   let plans = JSON.parse(localStorage.getItem('suppTreeErnaehrungPlans') || '[]');
   plans.push(plan);
-  localStorage.setItem('suppTreeErnaehrungPlans', JSON.stringify(plans));
-  
+  saveErnaehrungPlans(plans);
+
   showToast('Ernährungsplan gespeichert! 🥗', 'success');
   document.getElementById('ernaehrungBuilderOverlay').classList.remove('visible');
   document.getElementById('ernaehrungBuilderSheet').classList.remove('visible');
@@ -14989,8 +15096,8 @@ function useTemplate(templateId) {
   let plans = JSON.parse(localStorage.getItem('suppTreeTrainingPlans') || '[]');
   plans.forEach(p => p.status = 'inactive');
   plans.push(plan);
-  localStorage.setItem('suppTreeTrainingPlans', JSON.stringify(plans));
-  
+  saveTrainingPlans(plans);
+
   showToast(`✅ ${template.name} aktiviert!`);
   closeTrainingBuilder();
   closeAlleTraining();
@@ -15302,8 +15409,8 @@ function saveTrainingPlan() {
   
   let plans = JSON.parse(localStorage.getItem('suppTreeTrainingPlans') || '[]');
   plans.push(plan);
-  localStorage.setItem('suppTreeTrainingPlans', JSON.stringify(plans));
-  
+  saveTrainingPlans(plans);
+
   showToast('Trainingsplan gespeichert! 💪', 'success');
   const overlay = document.getElementById('trainingBuilderOverlay');
   overlay.classList.remove('visible');
@@ -15652,8 +15759,8 @@ function deleteTrainingPlan(planId) {
   setTimeout(() => {
     let plans = JSON.parse(localStorage.getItem('suppTreeTrainingPlans') || '[]');
     plans = plans.filter(p => p.id !== planId);
-    localStorage.setItem('suppTreeTrainingPlans', JSON.stringify(plans));
-    
+    saveTrainingPlans(plans);
+
     renderMeinActiveTraining();
     showToast('✅ Trainingsplan gelöscht');
   }, 100);
@@ -23063,6 +23170,21 @@ function savePointsData() {
     shop: pointsState.shop,
     spent: pointsState.spent
   }));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('points_transactions', 'suppTreeShopPoints', {
+      shop: pointsState.shop,
+      spent: pointsState.spent
+    }, {
+      upsert: true,
+      transform: (p) => ({
+        user_id: currentUser.id,
+        type: 'earn',
+        amount: p.shop - p.spent,
+        source: 'sync',
+        description: `Points sync: ${p.shop} earned, ${p.spent} spent`
+      })
+    }).catch(e => console.error('Points sync error:', e));
+  }
 }
 
 // Get total available points
@@ -28103,6 +28225,22 @@ function closePaymentMethods() {
   unlockBody();
 }
 
+function savePaymentMethods(methods) {
+  localStorage.setItem('suppTreePaymentMethods', JSON.stringify(methods));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('payment_methods', 'suppTreePaymentMethods', methods, {
+      replaceAll: true,
+      transform: (m) => ({
+        user_id: currentUser.id,
+        type: m.type,
+        display_name: m.detail || m.name,
+        brand: m.name,
+        is_default: m.isDefault || false
+      })
+    }).catch(e => console.error('PaymentMethods sync error:', e));
+  }
+}
+
 function loadPaymentMethods() {
   const saved = localStorage.getItem('suppTreePaymentMethods');
   const methods = saved ? JSON.parse(saved) : [
@@ -28167,7 +28305,7 @@ function addPaymentMethod(type) {
     detail: type === 'paypal' ? 'neu@example.com' : 'Neu hinzugefügt',
     isDefault: methods.length === 0
   });
-  localStorage.setItem('suppTreePaymentMethods', JSON.stringify(methods));
+  savePaymentMethods(methods);
   renderPaymentMethods(methods);
   showToast(`✅ ${typeNames[type]} hinzugefügt`);
 }
@@ -28176,7 +28314,7 @@ function setDefaultPayment(index) {
   const saved = localStorage.getItem('suppTreePaymentMethods');
   let methods = saved ? JSON.parse(saved) : [];
   methods = methods.map((m, i) => ({ ...m, isDefault: i === index }));
-  localStorage.setItem('suppTreePaymentMethods', JSON.stringify(methods));
+  savePaymentMethods(methods);
   renderPaymentMethods(methods);
   showToast('✅ Standard-Zahlungsmethode geändert');
 }
@@ -33671,7 +33809,7 @@ function coAddPayment(type) {
     isDefault: methods.length === 0
   };
   methods.push(newMethod);
-  localStorage.setItem('suppTreePaymentMethods', JSON.stringify(methods));
+  savePaymentMethods(methods);
 
   checkoutState.selectedPaymentIndex = methods.length - 1;
   checkoutState.selectedPayment = newMethod;
