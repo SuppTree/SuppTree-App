@@ -1522,7 +1522,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
     <div class="header">
       <div class="header-top">
         <div><div class="header-greeting" id="dashGreeting">Guten Tag,</div><div class="header-name" id="dashName">Dr. Anna Schmidt</div></div>
-        <div style="display:flex;gap:10px"><button class="header-btn" onclick="showScreen('dashCustomize')" title="Dashboard anpassen">✏️</button><button class="header-btn" onclick="openNotifications()">🔔<span class="badge" id="notifBadge">3</span></button><button class="header-btn" onclick="showScreen('mehr')">👤</button></div>
+        <div style="display:flex;align-items:center;gap:10px"><span id="partnerModeBadge" style="font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;letter-spacing:0.5px"></span><button class="header-btn" onclick="showScreen('dashCustomize')" title="Dashboard anpassen">✏️</button><button class="header-btn" onclick="openNotifications()">🔔<span class="badge" id="notifBadge">3</span></button><button class="header-btn" onclick="showScreen('mehr')">👤</button></div>
       </div>
     </div>
     <div class="content" id="dashWidgetContainer" style="padding-bottom:80px">
@@ -3569,6 +3569,79 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
   }
 })();
 
+// =============================================
+// APP MODE & DATA SYNC (Partner)
+// =============================================
+const APP_MODE = (() => {
+  const urlMode = new URLSearchParams(window.location.search).get('mode');
+  if (urlMode === 'demo' || urlMode === 'production') {
+    localStorage.setItem('suppTreeAppMode', urlMode);
+    return urlMode;
+  }
+  return localStorage.getItem('suppTreeAppMode') || 'demo';
+})();
+
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Supabase-Referenz für Sync
+let _sb = null;
+let _currentUser = null;
+(async function initPartnerSync() {
+  try {
+    _sb = typeof initSupabase === 'function' ? initSupabase() : null;
+    if (!_sb && window.supabase && SUPPTREE_CONFIG) {
+      _sb = window.supabase.createClient(SUPPTREE_CONFIG.SUPABASE_URL, SUPPTREE_CONFIG.SUPABASE_ANON_KEY);
+    }
+    if (_sb) {
+      const { data: { session } } = await _sb.auth.getSession();
+      _currentUser = session?.user || null;
+      if(_currentUser) setTimeout(updatePartnerModeBadge, 100);
+    }
+  } catch(e) { console.log('Partner sync init:', e); }
+})();
+
+function partnerSync(table, key, data, options) {
+  if (!_sb || !_currentUser) return;
+  try {
+    if (options && options.replaceAll) {
+      _sb.from(table).delete().eq('user_id', _currentUser.id).then(() => {
+        if (Array.isArray(data) && data.length > 0) {
+          const rows = data.map(item => ({
+            ...(options.transform ? options.transform(item) : item),
+            user_id: _currentUser.id
+          }));
+          _sb.from(table).insert(rows).then(r => {
+            if (r.error) console.error(`Sync ${table}:`, r.error);
+          });
+        }
+      });
+    } else if (options && options.upsert) {
+      const row = options.transform ? options.transform(data) : { ...data, user_id: _currentUser.id };
+      _sb.from(table).upsert(row).then(r => {
+        if (r.error) console.error(`Sync ${table}:`, r.error);
+      });
+    }
+  } catch(e) { console.error(`partnerSync(${table}):`, e); }
+}
+
+// LIVE/LOCAL Badge
+function updatePartnerModeBadge(){
+  const badge=document.getElementById('partnerModeBadge');
+  if(!badge)return;
+  if(_sb && _currentUser){
+    badge.textContent='LIVE';
+    badge.style.cssText='font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;letter-spacing:0.5px;background:#E8F5E9;color:#1a5a3a;border:1px solid #1a5a3a';
+  } else {
+    badge.textContent='LOCAL';
+    badge.style.cssText='font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;letter-spacing:0.5px;background:#f0f0f0;color:#666;border:1px solid #ccc';
+  }
+}
+setTimeout(updatePartnerModeBadge, 1500);
+
 // User-Anzeige aktualisieren
 function updateUserDisplay(user) {
   const nameEl = document.querySelector('.header-name');
@@ -3646,7 +3719,10 @@ function getPartnerDocs() {
     {id:'laboranalysen', status:'none'}
   ];
 }
-function savePartnerDocs(docs) { localStorage.setItem('suppTreePartnerDocs', JSON.stringify(docs)); }
+function savePartnerDocs(docs) {
+  localStorage.setItem('suppTreePartnerDocs', JSON.stringify(docs));
+  partnerSync('partner_docs', 'suppTreePartnerDocs', docs, { replaceAll: true, transform: d => ({ doc_type: d.type||d.docType, file_name: d.fileName, file_data: d.fileData, status: d.status||'uploaded' }) });
+}
 
 // PROVIDER PROFILE
 let provider={
@@ -3732,7 +3808,10 @@ const adminBluttests=[
 function getPartnerBluttests(){
   try{return JSON.parse(localStorage.getItem('suppTreePartnerBluttests'))||{};}catch(e){return {};}
 }
-function savePartnerBluttests(data){localStorage.setItem('suppTreePartnerBluttests',JSON.stringify(data));}
+function savePartnerBluttests(data){
+  localStorage.setItem('suppTreePartnerBluttests',JSON.stringify(data));
+  partnerSync('partner_bluttests', 'suppTreePartnerBluttests', data, { upsert: true, transform: () => ({ data: data }) });
+}
 let partnerBluttests=getPartnerBluttests();
 // Demo: initial ein paar Tests aktiviert wenn leer
 if(Object.keys(partnerBluttests).length===0){
@@ -6042,6 +6121,7 @@ function sendTerminVorschlag(){
       ka[kaIdx].terminVorschlag=vorschlag;
       ka[kaIdx].status='termin_vorgeschlagen';
       localStorage.setItem('suppTreeKundenAnfragen',JSON.stringify(ka));
+      partnerSync('appointments', 'suppTreeKundenAnfragen', ka, { replaceAll: true, transform: a => ({ data: a, status: a.status||'pending' }) });
     }
   }catch(e){}
 
@@ -6879,9 +6959,13 @@ function saveBrandProfile(){
     facebook:document.getElementById('bp_facebook').value,
     linkedin:document.getElementById('bp_linkedin').value
   };
-  localStorage.setItem('suppTreeBrandProfile',JSON.stringify(brandProfile));
+  _persistBrandProfile();
   toast('✓ Markenprofil gespeichert','success');
   renderMeinShop();
+}
+function _persistBrandProfile(){
+  localStorage.setItem('suppTreeBrandProfile',JSON.stringify(brandProfile));
+  partnerSync('brand_profiles', 'suppTreeBrandProfile', brandProfile, { upsert: true, transform: () => ({ data: brandProfile }) });
 }
 
 function uploadShopImage(key){
@@ -6896,7 +6980,7 @@ function uploadShopImage(key){
     reader.onload=function(e){
       if(!brandProfile.images)brandProfile.images={};
       brandProfile.images[key]=e.target.result;
-      localStorage.setItem('suppTreeBrandProfile',JSON.stringify(brandProfile));
+      _persistBrandProfile();
       renderMeinShop();
       toast('Bild hochgeladen','success');
     };
@@ -6908,7 +6992,7 @@ function uploadShopImage(key){
 function removeShopImage(key){
   if(!brandProfile.images)return;
   delete brandProfile.images[key];
-  localStorage.setItem('suppTreeBrandProfile',JSON.stringify(brandProfile));
+  _persistBrandProfile();
   renderMeinShop();
 }
 
@@ -6916,14 +7000,14 @@ function brandAddChip(field){
   const val=prompt({highlights:'Neues Highlight:',certifications:'Neue Zertifizierung:',values:'Neuer Wert:',specialties:'Neue Spezialisierung:'}[field]||'Neuer Eintrag:');
   if(val&&val.trim()){
     brandProfile[field].push(val.trim());
-    localStorage.setItem('suppTreeBrandProfile',JSON.stringify(brandProfile));
+    _persistBrandProfile();
     renderMeinShop();
   }
 }
 
 function brandRemoveChip(field,index){
   brandProfile[field].splice(index,1);
-  localStorage.setItem('suppTreeBrandProfile',JSON.stringify(brandProfile));
+  _persistBrandProfile();
   renderMeinShop();
 }
 
@@ -7220,6 +7304,7 @@ function getTeamMembers(){
 function saveTeamMembers(members){
   teamMembers=members;
   localStorage.setItem('suppTreeTeamMembers',JSON.stringify(members));
+  partnerSync('team_members', 'suppTreeTeamMembers', members, { replaceAll: true, transform: m => ({ name: m.name, email: m.email, role: m.role, status: m.status||'active', permissions: m.permissions||{} }) });
 }
 
 function renderTeam(){
@@ -7447,7 +7532,10 @@ const RECHT_DOCS={
   datenschutz:{label:'🔐 Datenschutzerklärung',text:'1. Verantwortlicher\nNaturVital Supplements GmbH, Dr. Max Eichkorn\n\n2. Erhebung personenbezogener Daten\nWir erheben personenbezogene Daten nur im Rahmen der Bestellabwicklung (Name, Adresse, E-Mail, Zahlungsdaten).\n\n3. Zweck der Datenverarbeitung\nDie Daten werden ausschließlich zur Vertragserfüllung und gesetzlichen Aufbewahrungspflichten genutzt.\n\n4. Ihre Rechte (DSGVO Art. 15-21)\nAuskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit, Widerspruch.\n\n5. Cookies\nWir verwenden technisch notwendige Cookies. Analyse-Cookies nur mit Einwilligung.'}
 };
 function getRechtDocs(){try{const s=JSON.parse(localStorage.getItem('suppTreeRechtDocs'));if(s)return s;}catch(e){}return Object.fromEntries(Object.entries(RECHT_DOCS).map(([k,v])=>([k,{text:v.text,updatedAt:'01.01.2025'}])));}
-function saveRechtDocs(docs){localStorage.setItem('suppTreeRechtDocs',JSON.stringify(docs));}
+function saveRechtDocs(docs){
+  localStorage.setItem('suppTreeRechtDocs',JSON.stringify(docs));
+  partnerSync('recht_docs', 'suppTreeRechtDocs', docs, { upsert: true, transform: () => ({ data: docs }) });
+}
 
 function renderRechtliches(){
   const docs=getRechtDocs();
@@ -10364,7 +10452,10 @@ function getDashWidgetConfig(){
     return{id:a.id,visible:a.required?true:(pc?pc.visible:(a.defaultOn||false)),order:pc!=null?pc.order:(a.order!=null?a.order:i)};
   });
 }
-function savePartnerDashConfig(cfg){localStorage.setItem('suppTreeDashConfig',JSON.stringify(cfg));}
+function savePartnerDashConfig(cfg){
+  localStorage.setItem('suppTreeDashConfig',JSON.stringify(cfg));
+  partnerSync('partner_dash_config', 'suppTreeDashConfig', cfg, { upsert: true, transform: () => ({ config: cfg }) });
+}
 
 // ── Dashboard Render ──
 function renderDashboard(){
@@ -11578,6 +11669,7 @@ function tpGetDrafts() {
 
 function tpSaveDrafts(drafts) {
   localStorage.setItem('suppTreeTpDrafts', JSON.stringify(drafts));
+  partnerSync('training_plans', 'suppTreeTpDrafts', drafts, { replaceAll: true, transform: d => ({ name: d.name, description: d.description||'', data: d, type: 'draft' }) });
 }
 
 function tpLoadDraft(id) {
@@ -12423,6 +12515,7 @@ function getCommunityRecipes() {
 
 function saveCommunityRecipes(recipes) {
   localStorage.setItem('suppTreeCommunityRecipes', JSON.stringify(recipes));
+  partnerSync('community_recipes', 'suppTreeCommunityRecipes', recipes, { replaceAll: true, transform: r => ({ name: r.name||r.title, data: r }) });
 }
 
 let _epBrowserTab = 'vorlagen'; // 'vorlagen' | 'community'
@@ -12607,7 +12700,10 @@ function renderEpStep0(c) {
 }
 
 function epGetDrafts() { try { return JSON.parse(localStorage.getItem('suppTreeEpDrafts')||'[]'); } catch(e) { return []; } }
-function epSaveDraftsLS(d) { localStorage.setItem('suppTreeEpDrafts', JSON.stringify(d)); }
+function epSaveDraftsLS(d) {
+  localStorage.setItem('suppTreeEpDrafts', JSON.stringify(d));
+  partnerSync('nutrition_plans', 'suppTreeEpDrafts', d, { replaceAll: true, transform: p => ({ name: p.name, description: p.description||'', data: p, type: 'draft' }) });
+}
 
 function epLoadDraft(id) {
   const drafts = epGetDrafts();
