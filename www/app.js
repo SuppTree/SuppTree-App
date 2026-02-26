@@ -32,12 +32,8 @@ function escapeHtml(str) {
 // DATA STORE ABSTRACTION (Demo ↔ Production)
 // =============================================
 const DataStore = {
-  // Read: localStorage (demo) or Supabase (production)
+  // Read: localStorage oder Supabase (wenn eingeloggt)
   async get(table, localStorageKey, defaultValue) {
-    if (isDemoMode()) {
-      const saved = localStorage.getItem(localStorageKey);
-      return saved ? JSON.parse(saved) : (defaultValue ?? null);
-    }
     if (!supabase || !currentUser) {
       const saved = localStorage.getItem(localStorageKey);
       return saved ? JSON.parse(saved) : (defaultValue ?? null);
@@ -56,11 +52,10 @@ const DataStore = {
     }
   },
 
-  // Write: always localStorage, plus Supabase in production
+  // Write: immer localStorage + Supabase wenn eingeloggt
   async set(table, localStorageKey, data, options) {
     localStorage.setItem(localStorageKey, JSON.stringify(data));
-    if (isDemoMode()) return { success: true };
-    if (!supabase || !currentUser) return { success: false };
+    if (!supabase || !currentUser) return { success: true };
     try {
       if (options && options.replaceAll) {
         await supabase.from(table).delete().eq('user_id', currentUser.id);
@@ -86,13 +81,12 @@ const DataStore = {
 
   // Insert single item
   async insert(table, localStorageKey, item, transform) {
-    if (isDemoMode()) {
+    if (!supabase || !currentUser) {
       const current = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
       current.push(item);
       localStorage.setItem(localStorageKey, JSON.stringify(current));
       return { success: true, data: item };
     }
-    if (!supabase || !currentUser) return { success: false };
     try {
       const row = transform ? transform(item) : { ...item, user_id: currentUser.id };
       const { data, error } = await supabase.from(table).insert(row).select().single();
@@ -109,12 +103,11 @@ const DataStore = {
 
   // Delete single item
   async remove(table, localStorageKey, id) {
-    if (isDemoMode()) {
+    if (!supabase || !currentUser) {
       const current = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
       localStorage.setItem(localStorageKey, JSON.stringify(current.filter(i => i.id !== id)));
       return { success: true };
     }
-    if (!supabase || !currentUser) return { success: false };
     try {
       const { error } = await supabase.from(table).delete().eq('id', id);
       if (!error) {
@@ -134,7 +127,7 @@ const DataStore = {
 // =============================================
 function saveTrainingPlans(plans) {
   localStorage.setItem('suppTreeTrainingPlans', JSON.stringify(plans));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('training_plans', 'suppTreeTrainingPlans', plans, {
       replaceAll: true,
       transform: (p) => ({
@@ -150,7 +143,7 @@ function saveTrainingPlans(plans) {
 
 function saveErnaehrungPlans(plans) {
   localStorage.setItem('suppTreeErnaehrungPlans', JSON.stringify(plans));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('nutrition_plans', 'suppTreeErnaehrungPlans', plans, {
       replaceAll: true,
       transform: (p) => ({
@@ -174,7 +167,7 @@ function savePurchasedKuren(purchased) {
 
 function saveShifts(shiftsData) {
   localStorage.setItem('suppTreeShifts', JSON.stringify(shiftsData));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('shifts', 'suppTreeShifts', shiftsData, {
       upsert: true,
       transform: (s) => ({
@@ -187,7 +180,7 @@ function saveShifts(shiftsData) {
 
 function saveShiftConfig(config) {
   localStorage.setItem('suppTreeShiftConfig', JSON.stringify(config));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('shift_types', 'suppTreeShiftConfig', config, {
       upsert: true,
       transform: (c) => ({
@@ -200,7 +193,7 @@ function saveShiftConfig(config) {
 
 function saveTermine(termine) {
   localStorage.setItem('suppTreeTermine', JSON.stringify(termine));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('appointments', 'suppTreeTermine', termine, {
       replaceAll: true,
       transform: (t) => ({
@@ -2203,7 +2196,7 @@ function loadPendingOrders() {
 
 function savePendingOrders() {
   localStorage.setItem('suppTreePendingOrders', JSON.stringify([...pendingOrders]));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     const ordersArray = [];
     pendingOrders.forEach((order, orderId) => {
       ordersArray.push({
@@ -2243,7 +2236,7 @@ function loadFavorites() {
 // Speichere Favoriten in localStorage
 function saveFavorites() {
   localStorage.setItem('suppTreeFavorites', JSON.stringify([...favorites]));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('favorites', 'suppTreeFavorites', [...favorites], {
       replaceAll: true,
       transform: (productId) => ({
@@ -2298,7 +2291,7 @@ function saveSubscriptions() {
     obj[key] = value;
   });
   localStorage.setItem('suppTreeSubscriptions', JSON.stringify(obj));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     const subsArray = [];
     subscriptions.forEach((sub, productId) => {
       subsArray.push({
@@ -5826,7 +5819,7 @@ function saveBloodValues() {
   }
   
   localStorage.setItem('suppTreeBloodValues', JSON.stringify(values));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('blood_values', 'suppTreeBloodValues', values, {
       upsert: true,
       transform: (v) => ({
@@ -6208,8 +6201,8 @@ function migrateSupplementStructure(supp) {
 
 // Ensure supplements are loaded from localStorage
 async function ensureSupplementsLoaded() {
-  // Production: versuche zuerst von Supabase zu laden
-  if (isProductionMode() && currentUser && supabase) {
+  // Supabase: versuche zuerst von Supabase zu laden (wenn eingeloggt)
+  if (supabase && currentUser) {
     try {
       const { data } = await supabase
         .from('my_supplements')
@@ -7404,7 +7397,7 @@ function initMySupplements() {
 
 function saveMySupplements() {
   localStorage.setItem('suppTreeMySupplements', JSON.stringify(mySupplements));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('my_supplements', 'suppTreeMySupplements', mySupplements, {
       replaceAll: true,
       transform: (s) => ({
@@ -9797,7 +9790,7 @@ function initMedications() {
 
 function saveMedications() {
   localStorage.setItem('suppTreeMedications', JSON.stringify(myMedications));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('my_medications', 'suppTreeMedications', myMedications, {
       replaceAll: true,
       transform: (m) => ({
@@ -23170,7 +23163,7 @@ function savePointsData() {
     shop: pointsState.shop,
     spent: pointsState.spent
   }));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('points_transactions', 'suppTreeShopPoints', {
       shop: pointsState.shop,
       spent: pointsState.spent
@@ -25198,7 +25191,7 @@ function closeAddresses() {
 
 function saveAddresses(addresses) {
   localStorage.setItem('suppTreeAddresses', JSON.stringify(addresses));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('addresses', 'suppTreeAddresses', addresses, {
       replaceAll: true,
       transform: (a) => ({
@@ -28227,7 +28220,7 @@ function closePaymentMethods() {
 
 function savePaymentMethods(methods) {
   localStorage.setItem('suppTreePaymentMethods', JSON.stringify(methods));
-  if (isProductionMode() && currentUser) {
+  if (supabase && currentUser) {
     DataStore.set('payment_methods', 'suppTreePaymentMethods', methods, {
       replaceAll: true,
       transform: (m) => ({
@@ -34987,8 +34980,8 @@ async function initApp() {
   // Hero Banner initialisieren
   initHeroBanner();
   
-  // Core data loading
-  if (isProductionMode()) {
+  // Core data loading (await wenn eingeloggt, sonst sync)
+  if (supabase && currentUser) {
     await ensureSupplementsLoaded();
   } else {
     ensureSupplementsLoaded();
