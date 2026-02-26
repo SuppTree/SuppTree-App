@@ -45807,9 +45807,16 @@ body.sheet-open {
 </div>
 
 <!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../shared/config.js"></script>
 <script src="app.js"></script>
+<script>
+  // Supabase SDK nachladen (blockiert App nicht wenn CDN down)
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  s.onload = function() {
+    try { initSupabase(); console.log('✅ Supabase SDK geladen'); } catch(e) {}
+  };
+  document.head.appendChild(s);
+</script>
 
 </body>
 </html>

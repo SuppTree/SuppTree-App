@@ -34960,8 +34960,8 @@ async function initApp() {
     console.log('Supabase nicht verfügbar:', e);
   }
 
-  // Production-Modus: Auth prüfen
-  if (isProductionMode()) {
+  // Production-Modus: Auth prüfen (nur wenn Supabase geladen)
+  if (isProductionMode() && supabase) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
