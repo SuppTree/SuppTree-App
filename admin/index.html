@@ -1627,7 +1627,11 @@ function showPartnerDetail(id) {
       ${s.sellerNr ? `<div class="detail-row"><span class="detail-label">Partner-Nr.</span><span class="detail-value" style="font-family:monospace;font-weight:700">${esc(s.sellerNr)}</span></div>` : ''}
       <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value">${esc(s.name)}</span></div>
       <div class="detail-row"><span class="detail-label">E-Mail</span><span class="detail-value">${esc(s.email)}</span></div>
-      <div class="detail-row"><span class="detail-label">Typ</span><span class="detail-value">${getSellerTypeLabel(s.type)}</span></div>
+      <div class="detail-row"><span class="detail-label">Typ</span><span class="detail-value"><select onchange="changePartnerType(${s.id},this.value)" style="font-size:13px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--white);font-weight:600">
+        <option value="supplement" ${s.type==='supplement'?'selected':''}>💊 Supplement-Händler</option>
+        <option value="heilpraktiker" ${s.type==='heilpraktiker'?'selected':''}>🩺 Heilpraktiker</option>
+        <option value="coach" ${s.type==='coach'?'selected':''}>🎯 Coach / Trainer</option>
+      </select></span></div>
       <div class="detail-row"><span class="detail-label">Shop</span><span class="detail-value">${esc(s.shopName)}</span></div>
       <div class="detail-row"><span class="detail-label">Registriert</span><span class="detail-value">${s.joined}</span></div>
       <div class="detail-row"><span class="detail-label">Verifiziert</span><span class="detail-value">${s.verified ? '✅ Ja' : '❌ Nein'}</span></div>
@@ -1774,6 +1778,17 @@ function saveSellerProvision(id){
   s.provision=vals;
   showToast('✅ Konditionen für '+s.name+' gespeichert');
   rerenderKeepScroll(()=>showPartnerDetail(id));
+}
+
+function changePartnerType(id, newType) {
+  const s = demoSellers.find(x => x.id === id);
+  if (!s) return;
+  const oldType = s.type;
+  s.type = newType;
+  renderPartners();
+  updatePartnerCounts();
+  toast('✅ Typ geändert: ' + getSellerTypeLabel(oldType) + ' → ' + getSellerTypeLabel(newType));
+  // TODO Live: UPDATE profiles SET seller_type = newType WHERE id = s.supabaseId
 }
 
 function changeSellerStatus(id, newStatus) {

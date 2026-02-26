@@ -3136,17 +3136,11 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
       </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="mehr-quick">
-      <div class="mehr-quick-item" onclick="showScreen('kunden')"><span>👥</span><span>Kunden</span></div>
-      <div class="mehr-quick-item" onclick="showScreen('services')"><span>🩺</span><span>Services</span></div>
-      <div class="mehr-quick-item" onclick="showScreen('affiliate')"><span>🤝</span><span>Affiliate</span></div>
-      <div class="mehr-quick-item" onclick="showScreen('finanzen')"><span>💳</span><span>Finanzen</span></div>
-      <div class="mehr-quick-item" onclick="showScreen('statistiken')"><span>📊</span><span>Statistiken</span></div>
-    </div>
+    <!-- Quick Actions (dynamisch) -->
+    <div class="mehr-quick" id="mehrQuickActions"></div>
 
     <!-- Menu Sections -->
-    <div class="mehr-section">
+    <div class="mehr-section" id="mehrShopSection">
       <div class="mehr-section-title">Shop</div>
       <div class="mehr-item" onclick="showScreen('meinShop')"><span class="mehr-item-icon">🏪</span><span class="mehr-item-label">Mein Shop</span><span class="mehr-item-arrow">›</span></div>
       <div class="mehr-item" onclick="showScreen('promo')"><span class="mehr-item-icon">📣</span><span class="mehr-item-label">Werbung & Sichtbarkeit</span><span class="mehr-item-arrow">›</span></div>
@@ -3392,13 +3386,7 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
     </div>
   </div>
 
-  <nav class="nav">
-    <button class="nav-item active" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
-    <button class="nav-item" onclick="showScreen('termine')"><span class="nav-icon">📅<span class="badge" id="termineBadge">2</span></span><span class="nav-label">Termine</span></button>
-    <button class="nav-item" onclick="showScreen('products')"><span class="nav-icon">📦</span><span class="nav-label">Produkte</span></button>
-    <button class="nav-item" onclick="showScreen('orders')"><span class="nav-icon">🛒<span class="badge">5</span></span><span class="nav-label">Bestellungen</span></button>
-    <button class="nav-item" onclick="showScreen('mehr')"><span class="nav-icon">⚙️</span><span class="nav-label">Mehr</span></button>
-  </nav>
+  <nav class="nav" id="bottomNav"></nav>
 </div>
 <!-- TRAININGSPLAN BUILDER SHEET -->
 <div class="tp-builder-overlay" id="tpBuilderOverlay" onclick="closeTpBuilder()"></div>
@@ -3599,7 +3587,19 @@ let _currentUser = null;
     if (_sb) {
       const { data: { session } } = await _sb.auth.getSession();
       _currentUser = session?.user || null;
-      if(_currentUser) setTimeout(updatePartnerModeBadge, 100);
+      if(_currentUser) {
+        setTimeout(updatePartnerModeBadge, 100);
+        // Load partnerType from Supabase profile
+        try {
+          const { data: profile } = await _sb.from('profiles').select('seller_type').eq('id', _currentUser.id).single();
+          if (profile && profile.seller_type) {
+            partnerType = profile.seller_type;
+            localStorage.setItem('suppTreePartnerType', partnerType);
+            renderBottomNav();
+            renderMehrMenu();
+          }
+        } catch(e) { console.log('Profile load:', e); }
+      }
     }
   } catch(e) { console.log('Partner sync init:', e); }
 })();
@@ -3641,6 +3641,43 @@ function updatePartnerModeBadge(){
   }
 }
 setTimeout(updatePartnerModeBadge, 1500);
+
+// ── Dynamische Bottom-Navigation ──
+function renderBottomNav(){
+  const nav=document.getElementById('bottomNav');
+  if(!nav)return;
+  const tabs=[];
+  tabs.push({id:'dashboard',icon:'🏠',label:'Home'});
+  if(hasFeature('termine')) tabs.push({id:'termine',icon:'📅',label:'Termine',badge:'termineBadge'});
+  if(hasFeature('produkte')) tabs.push({id:'products',icon:'📦',label:'Produkte'});
+  if(hasFeature('services')) tabs.push({id:'services',icon:'🩺',label:'Services'});
+  if(!hasFeature('produkte')&&!hasFeature('services')) tabs.push({id:'kunden',icon:'👥',label:'Kunden'});
+  if(hasFeature('produkte')) tabs.push({id:'orders',icon:'🛒',label:'Bestellungen'});
+  if(hasFeature('services')&&!hasFeature('produkte')) tabs.push({id:'kunden',icon:'👥',label:'Kunden'});
+  tabs.push({id:'mehr',icon:'⚙️',label:'Mehr'});
+  nav.innerHTML=tabs.map(t=>`<button class="nav-item${t.id==='dashboard'?' active':''}" onclick="showScreen('${t.id}')"><span class="nav-icon">${t.icon}${t.badge?'<span class="badge" id="'+t.badge+'"></span>':''}</span><span class="nav-label">${t.label}</span></button>`).join('');
+}
+renderBottomNav();
+
+// ── Mehr-Screen Feature-Gates ──
+function renderMehrMenu(){
+  // Quick Actions
+  const qa=document.getElementById('mehrQuickActions');
+  if(qa){
+    const items=[];
+    items.push({screen:'kunden',icon:'👥',label:'Kunden'});
+    if(hasFeature('services')) items.push({screen:'services',icon:'🩺',label:'Services'});
+    if(hasFeature('bluttests')) items.push({screen:'bluttests',icon:'🩸',label:'Bluttests'});
+    items.push({screen:'affiliate',icon:'🤝',label:'Affiliate'});
+    items.push({screen:'finanzen',icon:'💳',label:'Finanzen'});
+    items.push({screen:'statistiken',icon:'📊',label:'Statistiken'});
+    qa.innerHTML=items.map(i=>`<div class="mehr-quick-item" onclick="showScreen('${i.screen}')"><span>${i.icon}</span><span>${i.label}</span></div>`).join('');
+  }
+  // Shop section: nur für Produkt-Partner
+  const shopSec=document.getElementById('mehrShopSection');
+  if(shopSec) shopSec.style.display=hasFeature('markenprofil')||hasFeature('produkte')?'':'none';
+}
+renderMehrMenu();
 
 // User-Anzeige aktualisieren
 function updateUserDisplay(user) {
@@ -3686,7 +3723,14 @@ let selectedPromos=[],promoDuration=1;
 const promoPrices={spotlight:49,homepage:99,category:29,search:39,newsletter:79};
 
 // ── PARTNER-TYP & UNTERLAGEN ──
-const partnerType = 'supplement'; // 'supplement' | 'heilpraktiker' | 'coach'
+let partnerType = (function(){
+  const url = new URLSearchParams(window.location.search).get('partnerType');
+  if (url && ['supplement','heilpraktiker','coach'].includes(url)) {
+    localStorage.setItem('suppTreePartnerType', url);
+    return url;
+  }
+  return localStorage.getItem('suppTreePartnerType') || 'supplement';
+})();
 
 const PARTNER_DOC_CONFIG = {
   all: [
@@ -10307,6 +10351,23 @@ const DASH_WIDGETS=[
   ]}
 ];
 
+// ── Feature-Gates pro Partner-Typ ──
+const FEATURE_GATES = {
+  supplement:    { produkte:true, services:false, bluttests:false, termine:false, trainingsPlan:false, ernaehrungsPlan:false, rezepte:false, markenprofil:true },
+  heilpraktiker: { produkte:false, services:true, bluttests:true, termine:true, trainingsPlan:false, ernaehrungsPlan:true, rezepte:false, markenprofil:false },
+  coach:         { produkte:false, services:true, bluttests:false, termine:true, trainingsPlan:true, ernaehrungsPlan:true, rezepte:true, markenprofil:false }
+};
+function hasFeature(key) {
+  return (FEATURE_GATES[partnerType] || FEATURE_GATES.supplement)[key] !== false;
+}
+
+// ── Dashboard-Presets pro Partner-Typ ──
+const DASHBOARD_PRESETS = {
+  supplement: ['umsatzHero','handlung','heuteKarten','produkteTop','bestellungenUebersicht','umsatzverlauf','markenprofil','kennzahlen','finanzenUebersicht','schnellzugriffe','kundenUebersicht','affiliateUebersicht','analyticsKpi'],
+  heilpraktiker: ['anbieterProfil','handlung','termine','heuteKarten','serviceUebersicht','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','aktivitaeten','analyticsKpi'],
+  coach: ['anbieterProfil','handlung','termine','serviceUebersicht','heuteKarten','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','schnellzugriffe','aktivitaeten']
+};
+
 const WIDGET_META={
   umsatzHero:{dataSources:['Umsatzdaten','Bestellungen','Termine','Kunden'],navigatesTo:'Finanzen-Screen',category:'Umsatz & Finanzen'},
   handlung:{dataSources:['Bestellungen','Produkte','Termine'],navigatesTo:'Kontextabhängig',category:'System'},
@@ -10459,11 +10520,20 @@ function getPartnerDashConfig(){
 function getDashWidgetConfig(){
   const admin=getAdminWidgetConfig().filter(a=>a.status==='active');
   const partner=getPartnerDashConfig();
-  if(!partner)return admin.map((a,i)=>({id:a.id,visible:a.defaultOn||a.required,order:a.order!=null?a.order:i}));
-  return admin.map((a,i)=>{
-    const pc=partner.find(p=>p.id===a.id);
-    return{id:a.id,visible:a.required?true:(pc?pc.visible:(a.defaultOn||false)),order:pc!=null?pc.order:(a.order!=null?a.order:i)};
-  });
+  if(partner){
+    // Custom config exists → use it
+    return admin.map((a,i)=>{
+      const pc=partner.find(p=>p.id===a.id);
+      return{id:a.id,visible:a.required?true:(pc?pc.visible:false),order:pc!=null?pc.order:(a.order!=null?a.order:i)};
+    });
+  }
+  // No custom config → use preset for partnerType
+  const preset=DASHBOARD_PRESETS[partnerType]||DASHBOARD_PRESETS.supplement;
+  return admin.map((a,i)=>({
+    id:a.id,
+    visible:preset.includes(a.id),
+    order:preset.indexOf(a.id)>-1?preset.indexOf(a.id):100+i
+  }));
 }
 function savePartnerDashConfig(cfg){
   localStorage.setItem('suppTreeDashConfig',JSON.stringify(cfg));
