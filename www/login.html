@@ -418,8 +418,8 @@ body {
       <a href="#" class="link" onclick="openReset(); return false;">Passwort vergessen?</a>
     </div>
 
-    <!-- DEV: Schnellzugriff ohne Login -->
-    <div style="margin-top:24px;padding-top:20px;border-top:2px dashed #e5e7eb">
+    <!-- DEV: Schnellzugriff ohne Login (nur im Demo-Modus sichtbar) -->
+    <div id="devBypassSection" style="display:none;margin-top:24px;padding-top:20px;border-top:2px dashed #e5e7eb">
       <div style="text-align:center;font-size:11px;color:#9ca3af;margin-bottom:12px;font-weight:600;letter-spacing:0.5px">DEV-ZUGANG (ohne Login)</div>
       <div style="display:flex;gap:8px">
         <button type="button" onclick="window.location.href='index.html'" style="flex:1;padding:12px 8px;border:2px solid #43A047;background:#E8F5E9;color:#2E7D32;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">🛒 Kunde</button>
@@ -427,6 +427,12 @@ body {
         <button type="button" onclick="window.location.href='../admin/index.html'" style="flex:1;padding:12px 8px;border:2px solid #3F51B5;background:#E8EAF6;color:#1A237E;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">👑 Admin</button>
       </div>
     </div>
+    <script>
+      // Dev-Bypass nur im Demo-Modus anzeigen
+      if (localStorage.getItem('suppTreeAppMode') !== 'production') {
+        document.getElementById('devBypassSection').style.display = 'block';
+      }
+    </script>
   </form>
 
   <!-- ═══ REGISTRIERUNG ═══ -->
@@ -611,6 +617,8 @@ function setLoading(btn, on) {
 
 // ── Weiterleitung je nach Rolle ──
 function redirectByRole(role) {
+  // Erfolgreicher Supabase-Login → Production-Modus setzen
+  localStorage.setItem('suppTreeAppMode', 'production');
   if (role === 'admin') {
     window.location.href = '../admin/index.html';
   } else if (role === 'seller') {

@@ -2,6 +2,134 @@
 // VERSION: 24.01.2026 FRESH - Build 002
 
 // =============================================
+// APP MODE: 'demo' (localStorage) | 'production' (Supabase)
+// =============================================
+const APP_MODE = (() => {
+  const urlMode = new URLSearchParams(window.location.search).get('mode');
+  if (urlMode === 'demo' || urlMode === 'production') {
+    localStorage.setItem('suppTreeAppMode', urlMode);
+    return urlMode;
+  }
+  return localStorage.getItem('suppTreeAppMode') || 'demo';
+})();
+function isProductionMode() { return APP_MODE === 'production'; }
+function isDemoMode() { return APP_MODE === 'demo'; }
+
+// =============================================
+// XSS PROTECTION
+// =============================================
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// =============================================
+// DATA STORE ABSTRACTION (Demo ↔ Production)
+// =============================================
+const DataStore = {
+  // Read: localStorage (demo) or Supabase (production)
+  async get(table, localStorageKey, defaultValue) {
+    if (isDemoMode()) {
+      const saved = localStorage.getItem(localStorageKey);
+      return saved ? JSON.parse(saved) : (defaultValue ?? null);
+    }
+    if (!supabase || !currentUser) {
+      const saved = localStorage.getItem(localStorageKey);
+      return saved ? JSON.parse(saved) : (defaultValue ?? null);
+    }
+    try {
+      const { data, error } = await supabase
+        .from(table)
+        .select('*')
+        .eq('user_id', currentUser.id);
+      if (error) throw error;
+      return data || (defaultValue ?? null);
+    } catch (e) {
+      console.error(`DataStore.get(${table}):`, e);
+      const saved = localStorage.getItem(localStorageKey);
+      return saved ? JSON.parse(saved) : (defaultValue ?? null);
+    }
+  },
+
+  // Write: always localStorage, plus Supabase in production
+  async set(table, localStorageKey, data, options) {
+    localStorage.setItem(localStorageKey, JSON.stringify(data));
+    if (isDemoMode()) return { success: true };
+    if (!supabase || !currentUser) return { success: false };
+    try {
+      if (options && options.replaceAll) {
+        await supabase.from(table).delete().eq('user_id', currentUser.id);
+        if (Array.isArray(data) && data.length > 0) {
+          const rows = data.map(item => ({
+            ...(options.transform ? options.transform(item) : item),
+            user_id: currentUser.id
+          }));
+          const { error } = await supabase.from(table).insert(rows);
+          if (error) throw error;
+        }
+      } else if (options && options.upsert) {
+        const row = options.transform ? options.transform(data) : data;
+        const { error } = await supabase.from(table).upsert({ ...row, user_id: currentUser.id });
+        if (error) throw error;
+      }
+      return { success: true };
+    } catch (e) {
+      console.error(`DataStore.set(${table}):`, e);
+      return { success: false, error: e };
+    }
+  },
+
+  // Insert single item
+  async insert(table, localStorageKey, item, transform) {
+    if (isDemoMode()) {
+      const current = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
+      current.push(item);
+      localStorage.setItem(localStorageKey, JSON.stringify(current));
+      return { success: true, data: item };
+    }
+    if (!supabase || !currentUser) return { success: false };
+    try {
+      const row = transform ? transform(item) : { ...item, user_id: currentUser.id };
+      const { data, error } = await supabase.from(table).insert(row).select().single();
+      if (error) throw error;
+      const current = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
+      current.push(data);
+      localStorage.setItem(localStorageKey, JSON.stringify(current));
+      return { success: true, data };
+    } catch (e) {
+      console.error(`DataStore.insert(${table}):`, e);
+      return { success: false, error: e };
+    }
+  },
+
+  // Delete single item
+  async remove(table, localStorageKey, id) {
+    if (isDemoMode()) {
+      const current = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
+      localStorage.setItem(localStorageKey, JSON.stringify(current.filter(i => i.id !== id)));
+      return { success: true };
+    }
+    if (!supabase || !currentUser) return { success: false };
+    try {
+      const { error } = await supabase.from(table).delete().eq('id', id);
+      if (!error) {
+        const current = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
+        localStorage.setItem(localStorageKey, JSON.stringify(current.filter(i => i.id !== id)));
+      }
+      return { success: !error, error };
+    } catch (e) {
+      console.error(`DataStore.remove(${table}):`, e);
+      return { success: false, error: e };
+    }
+  }
+};
+
+// =============================================
 // CAPACITOR STATUS BAR - System UI sichtbar machen
 // =============================================
 document.addEventListener('DOMContentLoaded', function() {
@@ -2008,6 +2136,15 @@ function loadFavorites() {
 // Speichere Favoriten in localStorage
 function saveFavorites() {
   localStorage.setItem('suppTreeFavorites', JSON.stringify([...favorites]));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('favorites', 'suppTreeFavorites', [...favorites], {
+      replaceAll: true,
+      transform: (productId) => ({
+        user_id: currentUser.id,
+        product_id: productId
+      })
+    }).catch(e => console.error('Favorites sync error:', e));
+  }
 }
 
 // Lade gespeicherten Warenkorb aus localStorage
@@ -2054,6 +2191,27 @@ function saveSubscriptions() {
     obj[key] = value;
   });
   localStorage.setItem('suppTreeSubscriptions', JSON.stringify(obj));
+  if (isProductionMode() && currentUser) {
+    const subsArray = [];
+    subscriptions.forEach((sub, productId) => {
+      subsArray.push({
+        user_id: currentUser.id,
+        product_id: productId,
+        interval_months: sub.intervalMonths || 1,
+        dose_per_day: sub.dosePerDay || 1,
+        pack_size: sub.packSize || 60,
+        quantity: sub.quantity || 1,
+        next_delivery: sub.nextDelivery,
+        status: sub.status || 'active',
+        price: sub.price,
+        remaining: sub.remaining
+      });
+    });
+    DataStore.set('subscriptions', 'suppTreeSubscriptions', subsArray, {
+      replaceAll: true,
+      transform: (s) => s
+    }).catch(e => console.error('Subscriptions sync error:', e));
+  }
 }
 
 let currentProduct = null;
@@ -5561,7 +5719,24 @@ function saveBloodValues() {
   }
   
   localStorage.setItem('suppTreeBloodValues', JSON.stringify(values));
-  
+  if (isProductionMode() && currentUser) {
+    DataStore.set('blood_values', 'suppTreeBloodValues', values, {
+      upsert: true,
+      transform: (v) => ({
+        user_id: currentUser.id,
+        test_date: v.testDate,
+        vitamin_d: v.vitaminD,
+        b12: v.b12,
+        iron: v.iron,
+        ferritin: v.ferritin,
+        folate: v.folate,
+        magnesium: v.magnesium,
+        zinc: v.zinc,
+        omega3: v.omega3
+      })
+    }).catch(e => console.error('Blood values sync error:', e));
+  }
+
   closeBloodEntry();
   loadBloodValues();
   showToast('✅ Blutwerte gespeichert!');
@@ -5925,13 +6100,36 @@ function migrateSupplementStructure(supp) {
 }
 
 // Ensure supplements are loaded from localStorage
-function ensureSupplementsLoaded() {
+async function ensureSupplementsLoaded() {
+  // Production: versuche zuerst von Supabase zu laden
+  if (isProductionMode() && currentUser && supabase) {
+    try {
+      const { data } = await supabase
+        .from('my_supplements')
+        .select('*')
+        .eq('user_id', currentUser.id);
+      if (data && data.length > 0) {
+        mySupplements = data.map(s => ({
+          id: s.id, name: s.name, brand: s.brand, icon: s.icon,
+          form: s.dosage_form, dosagePerDay: s.doses_per_day,
+          times: [s.take_morning && 'morning', s.take_noon && 'noon',
+                  s.take_evening && 'evening', s.take_night && 'night'].filter(Boolean),
+          status: s.status, stock: s.current_stock, notes: s.notes
+        }));
+        localStorage.setItem('suppTreeMySupplements', JSON.stringify(mySupplements));
+        syncAbosToSupplements();
+        return;
+      }
+    } catch(e) {
+      console.warn('Supabase supplements load failed, using localStorage:', e);
+    }
+  }
+
+  // Demo-Modus / Fallback: localStorage
   const saved = localStorage.getItem('suppTreeMySupplements');
   if (saved) {
     const parsed = JSON.parse(saved);
-    // Migrate all supplements to consistent structure
     mySupplements = Array.isArray(parsed) ? parsed.map(migrateSupplementStructure) : [];
-    // Save migrated data back
     saveMySupplements();
   } else if (!localStorage.getItem('suppTreeWasReset')) {
     // Only load demo data if never reset
@@ -7099,6 +7297,27 @@ function initMySupplements() {
 
 function saveMySupplements() {
   localStorage.setItem('suppTreeMySupplements', JSON.stringify(mySupplements));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('my_supplements', 'suppTreeMySupplements', mySupplements, {
+      replaceAll: true,
+      transform: (s) => ({
+        user_id: currentUser.id,
+        name: s.name,
+        brand: s.brand,
+        icon: s.icon || '💊',
+        dosage_form: s.form || s.dosageForm,
+        dosage_amount: s.dosage || (s.dosagePerDay ? String(s.dosagePerDay) : null),
+        doses_per_day: s.dosagePerDay || s.dosePerDay || 1,
+        take_morning: s.time === 'morning' || (s.times && s.times.includes('morning')),
+        take_noon: s.time === 'noon' || (s.times && s.times.includes('noon')),
+        take_evening: s.time === 'evening' || (s.times && s.times.includes('evening')),
+        take_night: s.time === 'night' || (s.times && s.times.includes('night')),
+        status: s.status || 'active',
+        current_stock: s.stock,
+        notes: s.notes
+      })
+    }).catch(e => console.error('Supplements sync error:', e));
+  }
 }
 
 // =========================================
@@ -7378,8 +7597,8 @@ function renderMySupplements(filter = 'all') {
             <div class="supp-source-badge ${supp.source || 'external'}">${supp.source === 'shop' ? 'Shop' : 'Extern'}</div>
           </div>
           <div class="supp-card-main">
-            <h4>${supp.name || 'Unbekannt'}</h4>
-            <p class="supp-brand">${supp.brand || 'Unbekannt'}</p>
+            <h4>${escapeHtml(supp.name) || 'Unbekannt'}</h4>
+            <p class="supp-brand">${escapeHtml(supp.brand) || 'Unbekannt'}</p>
             <div class="supp-waiting-badge">📦 Warte auf Lieferung</div>
           </div>
           <div class="supp-card-right">
@@ -7424,8 +7643,8 @@ function renderMySupplements(filter = 'all') {
           <div class="supp-source-badge ${supp.source || 'external'}">${supp.source === 'shop' ? 'Shop' : 'Extern'}</div>
         </div>
         <div class="supp-card-main">
-          <h4>${supp.name || 'Unbekannt'}</h4>
-          <p class="supp-brand">${supp.brand || 'Unbekannt'}</p>
+          <h4>${escapeHtml(supp.name) || 'Unbekannt'}</h4>
+          <p class="supp-brand">${escapeHtml(supp.brand) || 'Unbekannt'}</p>
           <div class="supp-dosage">
             <span>💊 ${dosagePerDay}x täglich</span>
             <span>•</span>
@@ -8728,8 +8947,8 @@ function renderSupplementSelector() {
            onclick="${isAdded ? '' : `toggleSupplementSelect('${supp.id}')`}">
         <div class="selector-item-icon">${supp.icon}</div>
         <div class="selector-item-info">
-          <h4>${supp.name}</h4>
-          <p>${supp.dosage || ''}${isAdded ? ' • Bereits hinzugefügt' : ''}</p>
+          <h4>${escapeHtml(supp.name)}</h4>
+          <p>${escapeHtml(supp.dosage) || ''}${isAdded ? ' • Bereits hinzugefügt' : ''}</p>
         </div>
         <div class="selector-item-check">${isSelected ? '✓' : ''}</div>
       </div>
@@ -8821,8 +9040,8 @@ function renderMedicationSelector() {
            onclick="${isAdded ? '' : `toggleMedicationSelect('${med.id}')`}">
         <div class="selector-item-icon">${formIcon}</div>
         <div class="selector-item-info">
-          <h4>${med.name}</h4>
-          <p>${med.activeIngredient || ''}${isAdded ? ' • Bereits hinzugefügt' : ''}</p>
+          <h4>${escapeHtml(med.name)}</h4>
+          <p>${escapeHtml(med.activeIngredient) || ''}${isAdded ? ' • Bereits hinzugefügt' : ''}</p>
         </div>
         <div class="selector-item-check">${isSelected ? '✓' : ''}</div>
       </div>
@@ -9471,6 +9690,19 @@ function initMedications() {
 
 function saveMedications() {
   localStorage.setItem('suppTreeMedications', JSON.stringify(myMedications));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('my_medications', 'suppTreeMedications', myMedications, {
+      replaceAll: true,
+      transform: (m) => ({
+        user_id: currentUser.id,
+        name: m.name,
+        icon: m.icon || '💊',
+        dosage: m.dosage,
+        doses_per_day: m.dosePerDay || m.dosagePerDay || 1,
+        is_active: m.isActive !== false
+      })
+    }).catch(e => console.error('Medications sync error:', e));
+  }
 }
 
 function renderMedications() {
@@ -9547,7 +9779,7 @@ function renderMedications() {
       <div class="medication-card ${med.durationType === 'ongoing' ? '' : (durationInfo.includes('ended') ? 'completed' : '')}">
         <div class="med-icon">${formIcon}</div>
         <div class="med-info">
-          <div class="med-name">${med.name}</div>
+          <div class="med-name">${escapeHtml(med.name)}</div>
           <div class="med-meta">
             <span class="med-form-badge">${formLabel}</span>
             <span>•</span>
@@ -9558,7 +9790,7 @@ function renderMedications() {
           <div class="med-times">
             ${med.times && med.times.length > 0 ? med.times.map(t => `<span class="med-time-badge">${timeLabels[t]}</span>`).join('') : ''}
           </div>
-          ${instructionText ? `<div class="med-instruction-note">📝 ${instructionText}</div>` : ''}
+          ${instructionText ? `<div class="med-instruction-note">📝 ${escapeHtml(instructionText)}</div>` : ''}
           ${durationInfo ? `<div class="med-duration">${durationInfo}</div>` : ''}
         </div>
         <div class="med-actions">
@@ -18503,8 +18735,8 @@ function renderPlannerNotes(dateStr) {
     <div class="planner-note">
       <span class="note-icon">📝</span>
       <div class="note-content">
-        <div class="note-text">${note.text}</div>
-        ${note.time ? `<div class="note-time">${note.time}</div>` : ''}
+        <div class="note-text">${escapeHtml(note.text)}</div>
+        ${note.time ? `<div class="note-time">${escapeHtml(note.time)}</div>` : ''}
       </div>
       <div class="note-actions">
         <button class="note-action-btn" onclick="editNote(${idx})">✏️</button>
@@ -24842,6 +25074,27 @@ function closeAddresses() {
   unlockBody();
 }
 
+function saveAddresses(addresses) {
+  localStorage.setItem('suppTreeAddresses', JSON.stringify(addresses));
+  if (isProductionMode() && currentUser) {
+    DataStore.set('addresses', 'suppTreeAddresses', addresses, {
+      replaceAll: true,
+      transform: (a) => ({
+        user_id: currentUser.id,
+        label: a.label,
+        first_name: a.firstName,
+        last_name: a.lastName,
+        street: a.street,
+        extra: a.extra,
+        zip: a.zip,
+        city: a.city,
+        country: a.country || 'DE',
+        is_default: a.isDefault || false
+      })
+    }).catch(e => console.error('Addresses sync error:', e));
+  }
+}
+
 function loadAddresses() {
   const saved = localStorage.getItem('suppTreeAddresses');
   const addresses = saved ? JSON.parse(saved) : [
@@ -24861,10 +25114,10 @@ function renderAddressesList(addresses) {
     <div class="address-item ${addr.isDefault ? 'default' : ''}">
       <div class="address-icon">${icons[addr.label] || '📍'}</div>
       <div class="address-info">
-        <span class="address-name">${addr.label || 'Adresse ' + (idx + 1)}</span>
-        <span class="address-detail">${addr.firstName} ${addr.lastName}</span>
-        <span class="address-detail">${addr.street}${addr.extra ? ', ' + addr.extra : ''}</span>
-        <span class="address-detail">${addr.zip} ${addr.city}</span>
+        <span class="address-name">${escapeHtml(addr.label) || 'Adresse ' + (idx + 1)}</span>
+        <span class="address-detail">${escapeHtml(addr.firstName)} ${escapeHtml(addr.lastName)}</span>
+        <span class="address-detail">${escapeHtml(addr.street)}${addr.extra ? ', ' + escapeHtml(addr.extra) : ''}</span>
+        <span class="address-detail">${escapeHtml(addr.zip)} ${escapeHtml(addr.city)}</span>
       </div>
       <div class="address-actions">
         ${addr.isDefault ? '<span class="address-badge">Standard</span>' : `<button class="address-default-btn" onclick="setDefaultAddress(${idx})">Als Standard</button>`}
@@ -24996,7 +25249,7 @@ function saveAddress() {
     addresses[0].isDefault = true;
   }
   
-  localStorage.setItem('suppTreeAddresses', JSON.stringify(addresses));
+  saveAddresses(addresses);
   renderAddressesList(addresses);
   cancelAddressForm();
   showToast('✅ Adresse gespeichert');
@@ -25006,7 +25259,7 @@ function setDefaultAddress(index) {
   const saved = localStorage.getItem('suppTreeAddresses');
   let addresses = saved ? JSON.parse(saved) : [];
   addresses = addresses.map((a, i) => ({ ...a, isDefault: i === index }));
-  localStorage.setItem('suppTreeAddresses', JSON.stringify(addresses));
+  saveAddresses(addresses);
   renderAddressesList(addresses);
   showToast('✅ Standardadresse geändert');
 }
@@ -25548,7 +25801,7 @@ function openKurDetail(templateId) {
   
   // Tips
   const tipsEl = document.getElementById('kurDetailTipsList');
-  tipsEl.innerHTML = template.dailyTips.map(tip => `<li>${tip}</li>`).join('');
+  tipsEl.innerHTML = template.dailyTips.map(tip => `<li>${escapeHtml(tip)}</li>`).join('');
   
   // Partner Info
   const partnerInfo = document.getElementById('kurPartnerInfo');
@@ -28362,10 +28615,10 @@ function renderDetectedValues() {
     const statusIcon = val.status === 'low' ? '⚠️' : val.status === 'high' ? '🔺' : '✅';
     return `
       <div class="detected-value-row">
-        <span class="detected-value-name">${val.name}</span>
-        <input type="number" class="detected-value-input" value="${val.value}" 
+        <span class="detected-value-name">${escapeHtml(val.name)}</span>
+        <input type="number" class="detected-value-input" value="${val.value}"
                step="0.1" onchange="updateDetectedValue(${idx}, this.value)">
-        <span class="detected-value-unit">${val.unit}</span>
+        <span class="detected-value-unit">${escapeHtml(val.unit)}</span>
         <span class="detected-value-status">${statusIcon}</span>
       </div>
     `;
@@ -33020,7 +33273,7 @@ function startCheckout() {
       <div class="checkout-item">
         <div class="checkout-item-icon">${product.icon}</div>
         <div class="checkout-item-info">
-          <div class="checkout-item-name">${product.name}</div>
+          <div class="checkout-item-name">${escapeHtml(product.name)}</div>
           <div class="checkout-item-meta">${qty}x €${parseFloat(product.price).toFixed(2)}</div>
         </div>
         <div class="checkout-item-price">€${itemTotal.toFixed(2)}</div>
@@ -33041,7 +33294,7 @@ function startCheckout() {
       <div class="checkout-item">
         <div class="checkout-item-icon">${kur.icon}</div>
         <div class="checkout-item-info">
-          <div class="checkout-item-name">${kur.name}</div>
+          <div class="checkout-item-name">${escapeHtml(kur.name)}</div>
           <div class="checkout-item-meta">🌿 ${kur.duration} Tage Kur • ${qty}x €${kurPrice.toFixed(2)}</div>
         </div>
         <div class="checkout-item-price">€${itemTotal.toFixed(2)}</div>
@@ -33076,7 +33329,7 @@ function startCheckout() {
       <div class="checkout-item checkout-item-abo">
         <div class="checkout-item-icon">${product.icon}</div>
         <div class="checkout-item-info">
-          <div class="checkout-item-name">${qtyText}${product.name}</div>
+          <div class="checkout-item-name">${qtyText}${escapeHtml(product.name)}</div>
           <div class="checkout-item-meta">🔄 Abo • ${qtyMeta}8% Rabatt</div>
         </div>
         <div class="checkout-item-price">
@@ -33238,10 +33491,10 @@ function coRenderAddresses() {
     <div class="co-selectable-card ${checkoutState.selectedAddressIndex === idx ? 'selected' : ''}" onclick="coSelectAddress(${idx})">
       <div class="co-card-icon">${icons[addr.label] || '📍'}</div>
       <div class="co-card-info">
-        <span class="co-card-name">${addr.label || 'Adresse'}</span>
-        <span class="co-card-detail">${addr.firstName} ${addr.lastName}</span>
-        <span class="co-card-detail">${addr.street}${addr.extra ? ', ' + addr.extra : ''}</span>
-        <span class="co-card-detail">${addr.zip} ${addr.city}</span>
+        <span class="co-card-name">${escapeHtml(addr.label) || 'Adresse'}</span>
+        <span class="co-card-detail">${escapeHtml(addr.firstName)} ${escapeHtml(addr.lastName)}</span>
+        <span class="co-card-detail">${escapeHtml(addr.street)}${addr.extra ? ', ' + escapeHtml(addr.extra) : ''}</span>
+        <span class="co-card-detail">${escapeHtml(addr.zip)} ${escapeHtml(addr.city)}</span>
       </div>
       <div class="co-card-check">✓</div>
     </div>
@@ -33311,7 +33564,7 @@ function coSaveNewAddress() {
     isDefault: addresses.length === 0
   };
   addresses.push(newAddr);
-  localStorage.setItem('suppTreeAddresses', JSON.stringify(addresses));
+  saveAddresses(addresses);
 
   checkoutState.selectedAddressIndex = addresses.length - 1;
   checkoutState.selectedAddress = newAddr;
@@ -33439,7 +33692,7 @@ function coRenderSummary() {
   const addr = checkoutState.selectedAddress;
   const addrEl = document.getElementById('coSummaryAddress');
   if (addrEl && addr) {
-    addrEl.innerHTML = `${addr.firstName} ${addr.lastName}<br>${addr.street}${addr.extra ? ', ' + addr.extra : ''}<br>${addr.zip} ${addr.city}`;
+    addrEl.innerHTML = `${escapeHtml(addr.firstName)} ${escapeHtml(addr.lastName)}<br>${escapeHtml(addr.street)}${addr.extra ? ', ' + escapeHtml(addr.extra) : ''}<br>${escapeHtml(addr.zip)} ${escapeHtml(addr.city)}`;
   }
 
   // Shipping
@@ -34566,19 +34819,42 @@ function initHeroBanner() {
   startHeroBannerRotation();
 }
 
-function initApp() {
+async function initApp() {
+  console.log(`🔧 APP_MODE: ${APP_MODE}`);
+
   // Supabase initialisieren (wenn verfügbar)
   try {
     initSupabase();
   } catch(e) {
     console.log('Supabase nicht verfügbar:', e);
   }
+
+  // Production-Modus: Auth prüfen
+  if (isProductionMode()) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+      currentUser = session.user;
+      await loadUserProfile();
+      await loadUserDataFromSupabase();
+      updateUIForLoggedInUser();
+    } catch(e) {
+      console.warn('Auth-Check fehlgeschlagen, nutze Demo-Modus:', e);
+    }
+  }
   
   // Hero Banner initialisieren
   initHeroBanner();
   
   // Core data loading
-  ensureSupplementsLoaded();
+  if (isProductionMode()) {
+    await ensureSupplementsLoaded();
+  } else {
+    ensureSupplementsLoaded();
+  }
   loadPointsData();
   loadQuizData();
   loadSubscriptions(); // Lade gespeicherte Abos
