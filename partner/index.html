@@ -1844,7 +1844,28 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
     <!-- Anfragen List -->
     <div class="anfragen-list" id="anfragenList" style="padding:0 16px 20px"></div>
   </div>
-  
+
+  <!-- BLUTTESTS BUCHUNGEN SCREEN -->
+  <div class="screen" id="bluttestsScreen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+      <h1 class="screen-title">Bluttest-Buchungen</h1>
+    </div>
+    <div class="screen-hero" id="bluttestHero">
+      <div class="hero-row">
+        <div class="hero-stat" style="background:rgba(250,204,21,0.2)"><div class="hero-stat-val" id="btAusstehend">0</div><div class="hero-stat-lbl">Ausstehend</div></div>
+        <div class="hero-stat" style="background:rgba(34,197,94,0.2)"><div class="hero-stat-val" id="btAbgeschlossen">0</div><div class="hero-stat-lbl">Abgeschlossen</div></div>
+        <div class="hero-stat"><div class="hero-stat-val" id="btGesamt">0</div><div class="hero-stat-lbl">Gesamt</div></div>
+      </div>
+    </div>
+    <div class="status-tabs" id="btStatusTabs">
+      <button class="status-tab active" onclick="filterPartnerBT('all')">Alle</button>
+      <button class="status-tab" onclick="filterPartnerBT('pending')">Ausstehend</button>
+      <button class="status-tab" onclick="filterPartnerBT('completed')">Abgeschlossen</button>
+    </div>
+    <div id="partnerBTList" style="padding:0 16px 20px"></div>
+  </div>
+
   <!-- CHAT SCREEN -->
   <div class="screen" id="chatScreen">
     <div class="chat-header">
@@ -4209,6 +4230,28 @@ async function partnerLoadFromSupabase() {
       }
     } catch(e16) { console.log('Booking-Anfragen-Load:', e16); }
 
+    // 17. Bluttest-Buchungen laden
+    try {
+      var { data: dbBT } = await _sb.from('blood_tests')
+        .select('*').eq('partner_id', uid)
+        .order('created_at', { ascending: false });
+      if (dbBT && dbBT.length) {
+        _livePartnerBT = dbBT.map(function(bt) {
+          return {
+            id: bt.id,
+            kunde: bt.customer_name,
+            test: bt.test_name,
+            labor: bt.lab_name,
+            price: Number(bt.price) || 0,
+            date: bt.test_date,
+            time: bt.notes || '',
+            status: bt.status,
+            created_at: bt.created_at
+          };
+        });
+      }
+    } catch(e17) { console.log('Bluttest-Buchungen-Load:', e17); }
+
     console.log('✅ Partner-Daten aus Supabase geladen');
   } catch(e) {
     console.log('⚠️ Supabase-Load fehlgeschlagen, nutze localStorage:', e);
@@ -4219,6 +4262,81 @@ function fmtTimeline(dateStr) {
   if (!dateStr) return '';
   var d = new Date(dateStr);
   return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+}
+
+// ═══ BLUTTEST-BUCHUNGEN (Partner) ═══
+var _livePartnerBT = null;
+var partnerBTFilter = 'all';
+
+function filterPartnerBT(filter) {
+  partnerBTFilter = filter;
+  document.querySelectorAll('#btStatusTabs .status-tab').forEach(function(t) { t.classList.remove('active'); });
+  event.target.classList.add('active');
+  renderPartnerBTList();
+}
+
+function renderPartnerBTList() {
+  var list = _livePartnerBT || [];
+  var el = function(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; };
+  el('btAusstehend', list.filter(function(b) { return b.status === 'pending'; }).length);
+  el('btAbgeschlossen', list.filter(function(b) { return b.status === 'completed'; }).length);
+  el('btGesamt', list.length);
+
+  if (partnerBTFilter !== 'all') {
+    list = list.filter(function(b) { return b.status === partnerBTFilter; });
+  }
+
+  var container = document.getElementById('partnerBTList');
+  if (!container) return;
+
+  if (list.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-muted)"><div style="font-size:32px;margin-bottom:8px">\uD83E\uDE78</div><div style="font-size:13px">' + ((_livePartnerBT && _livePartnerBT.length) ? 'Keine Ergebnisse f\u00FCr diesen Filter' : 'Noch keine Bluttest-Buchungen') + '</div></div>';
+    return;
+  }
+
+  var statusLabels = { pending: 'Ausstehend', completed: 'Abgeschlossen', cancelled: 'Storniert' };
+  var statusColors = { pending: '#d97706', completed: '#16a34a', cancelled: '#dc2626' };
+
+  container.innerHTML = list.map(function(bt) {
+    var color = statusColors[bt.status] || '#6b7280';
+    var label = statusLabels[bt.status] || bt.status;
+    var dateStr = bt.date ? bt.date.split('-').reverse().join('.') : '';
+    var initials = (bt.kunde || '??').split(' ').map(function(w) { return w.charAt(0).toUpperCase(); }).join('').slice(0, 2);
+
+    return '<div style="background:white;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--border);border-left:3px solid ' + color + '">' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
+        '<div style="width:36px;height:36px;border-radius:50%;background:#faf5ff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#6b21a8">' + esc(initials) + '</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:13px;font-weight:700">' + esc(bt.kunde) + '</div>' +
+          '<div style="font-size:11px;color:var(--text-muted)">' + esc(bt.test) + '</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div style="font-size:14px;font-weight:700">\u20AC' + bt.price.toFixed(2) + '</div>' +
+          '<div style="font-size:10px;font-weight:600;color:' + color + '">' + label + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
+        (dateStr ? '<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:#f3e8ff;color:#6b21a8">\uD83D\uDCC5 ' + dateStr + '</span>' : '') +
+        (bt.time ? '<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:#eff6ff;color:#1e40af">\u23F0 ' + esc(bt.time) + '</span>' : '') +
+        (bt.labor ? '<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:#f0fdf4;color:#166534">\uD83E\uDDEA ' + esc(bt.labor) + '</span>' : '') +
+      '</div>' +
+      (bt.status === 'pending' ? '<div style="margin-top:8px;display:flex;gap:6px"><button class="btn-sm" style="flex:1;padding:6px;border:none;border-radius:6px;background:#16a34a;color:white;font-size:11px;font-weight:600;cursor:pointer" onclick="updatePartnerBTStatus(\'' + bt.id + '\',\'completed\')">\u2705 Abgeschlossen</button><button class="btn-sm" style="flex:1;padding:6px;border:none;border-radius:6px;background:#fee2e2;color:#dc2626;font-size:11px;font-weight:600;cursor:pointer" onclick="updatePartnerBTStatus(\'' + bt.id + '\',\'cancelled\')">\u274C Stornieren</button></div>' : '') +
+    '</div>';
+  }).join('');
+}
+
+function updatePartnerBTStatus(id, newStatus) {
+  if (!_livePartnerBT) return;
+  var bt = _livePartnerBT.find(function(b) { return b.id === id; });
+  if (!bt) return;
+
+  bt.status = newStatus;
+  if (_sb) {
+    _sb.from('blood_tests').update({ status: newStatus }).eq('id', id)
+      .then(function(res) { if (res.error) console.error('BT status update:', res.error); });
+  }
+  toast(newStatus === 'completed' ? 'Bluttest als abgeschlossen markiert' : 'Bluttest storniert', newStatus === 'completed' ? 'success' : '');
+  renderPartnerBTList();
 }
 
 // ═══ REALTIME SUBSCRIPTIONS ═══
@@ -4239,7 +4357,39 @@ function startPartnerRealtime() {
       handleBookingChange(payload);
     })
     .subscribe();
+
+  // Blood Tests: Neue Buchungen + Status-Updates
+  _sb.channel('partner-bloodtests')
+    .on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'blood_tests',
+      filter: 'partner_id=eq.' + _currentUser.id
+    }, function(payload) {
+      handleBloodTestChange(payload);
+    })
+    .subscribe();
 }
+
+function handleBloodTestChange(payload) {
+  var bt = payload.new;
+  if (!bt || !_livePartnerBT) return;
+
+  if (payload.eventType === 'INSERT') {
+    var exists = _livePartnerBT.find(function(b) { return b.id === bt.id; });
+    if (exists) return;
+    _livePartnerBT.unshift({
+      id: bt.id, kunde: bt.customer_name, test: bt.test_name,
+      labor: bt.lab_name, price: Number(bt.price) || 0,
+      date: bt.test_date, time: bt.notes || '',
+      status: bt.status, created_at: bt.created_at
+    });
+    renderPartnerBTList();
+    toast('Neue Bluttest-Buchung von ' + (bt.customer_name || 'Kunde') + '!', 'success');
+  } else if (payload.eventType === 'UPDATE') {
+    var existing = _livePartnerBT.find(function(b) { return b.id === bt.id; });
+    if (existing) { existing.status = bt.status; renderPartnerBTList(); }
+  }
 
 function handleBookingChange(payload) {
   var b = payload.new;
@@ -5035,6 +5185,7 @@ function showScreen(id){
   if(id==='kunden'){renderKunden();}
   if(id==='kundenDetail'){renderKundenDetail();}
   if(id==='statistiken'){renderStatistiken();}
+  if(id==='bluttests'){renderPartnerBTList();}
   // Hide compare bar when not on products
   if(id!=='products')document.getElementById('compareBar').classList.remove('active');
   // Close any open filter menus
