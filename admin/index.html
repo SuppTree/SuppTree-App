@@ -2595,13 +2595,47 @@ function showUserDetailByName(name) {
 function viewInvoice(orderId) {
   const o = (_liveOrders || demoOrders).find(x => x.id === orderId);
   if (!o || !o.invoice) return;
-  showToast('👁️ Rechnung ' + o.invoice.nr + ' wird angezeigt (Demo)');
+  if (o.invoice.lexofficeId) {
+    downloadInvoice(orderId);
+  } else {
+    showToast('Rechnung ' + o.invoice.nr + ' hat kein PDF (kein Lexoffice)');
+  }
 }
 
-function downloadInvoice(orderId) {
+async function downloadInvoice(orderId) {
   const o = (_liveOrders || demoOrders).find(x => x.id === orderId);
   if (!o || !o.invoice) return;
-  showToast('📥 PDF-Download: ' + o.invoice.nr + ' (Demo)');
+  if (!o.dbId) { showToast('Keine Supabase-ID vorhanden'); return; }
+  showToast('PDF wird geladen...');
+  try {
+    var sb = initSupabase();
+    if (!sb) return;
+    var session = await sb.auth.getSession();
+    var token = session.data.session?.access_token || '';
+    var res = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/get-invoice-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ orderId: o.dbId })
+    });
+    if (res.headers.get('content-type')?.includes('application/pdf')) {
+      var blob = await res.blob();
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Rechnung-' + (o.invoice.nr || o.id) + '.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('PDF heruntergeladen');
+    } else {
+      var data = await res.json();
+      showToast(data.error || 'PDF nicht verfügbar');
+    }
+  } catch (e) {
+    console.error('Admin invoice download:', e);
+    showToast('PDF konnte nicht geladen werden');
+  }
 }
 
 function markInvoicePaid(orderId) {
@@ -2631,30 +2665,49 @@ function markInvoicePaid(orderId) {
 function generateInvoice(orderId) {
   const o = (_liveOrders || demoOrders).find(x => x.id === orderId);
   if (!o) return;
-  adminConfirm('Rechnung für Bestellung "' + o.id + '" wirklich erstellen?', () => {
-    const today = new Date().toISOString().slice(0, 10);
-    const nr = getNextNumber('rechnung');
-    const netto = +(o.total / 1.19).toFixed(2);
-    const mwst = +(o.total - netto).toFixed(2);
-    o.invoice = { nr: nr, date: today, netto: netto, mwst: mwst, mwstSatz: 19, status: 'offen' };
-    // Supabase-Persist
-    if (o.dbId) {
-      var sb = initSupabase();
-      if (sb) {
-        sb.from('orders').update({
-          invoice_number: nr,
-          invoice_date: today,
-          invoice_netto: netto,
-          invoice_mwst: mwst,
-          invoice_mwst_rate: 19,
-          invoice_status: 'offen'
-        }).eq('id', o.dbId)
-          .then(function(res) { if (res.error) console.error('Invoice create error:', res.error); });
-      }
+  adminConfirm('Rechnung für Bestellung "' + o.id + '" via Lexoffice erstellen?', async () => {
+    if (!o.dbId) {
+      // Fallback: Lokale Rechnung ohne Lexoffice
+      const today = new Date().toISOString().slice(0, 10);
+      const nr = getNextNumber('rechnung');
+      const netto = +(o.total / 1.19).toFixed(2);
+      const mwst = +(o.total - netto).toFixed(2);
+      o.invoice = { nr: nr, date: today, netto: netto, mwst: mwst, mwstSatz: 19, status: 'offen' };
+      showToast('Rechnung ' + nr + ' erstellt (lokal)');
+      rerenderKeepScroll(() => showOrderDetail(orderId));
+      return;
     }
-    showToast('🧾 Rechnung ' + nr + ' erstellt');
+
+    showToast('Rechnung wird erstellt...');
+    try {
+      var sb = initSupabase();
+      if (!sb) return;
+      var session = await sb.auth.getSession();
+      var token = session.data.session?.access_token || '';
+      var res = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/create-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ orderId: o.dbId })
+      });
+      var data = await res.json();
+      if (data.success) {
+        var netto = +(o.total / 1.19).toFixed(2);
+        o.invoice = {
+          nr: data.invoiceNumber || '(Lexoffice)',
+          date: new Date().toISOString().slice(0, 10),
+          netto: netto, mwst: +(o.total - netto).toFixed(2), mwstSatz: 19,
+          status: 'created', lexofficeId: data.invoiceId
+        };
+        showToast('Rechnung ' + (data.invoiceNumber || '') + ' via Lexoffice erstellt');
+      } else {
+        showToast(data.error || 'Rechnungserstellung fehlgeschlagen');
+      }
+    } catch (e) {
+      console.error('Generate invoice error:', e);
+      showToast('Fehler beim Erstellen der Rechnung');
+    }
     rerenderKeepScroll(() => showOrderDetail(orderId));
-  }, {btnLabel:'🧾 Rechnung erstellen'});
+  }, {btnLabel:'Rechnung erstellen'});
 }
 
 // ── PRODUKTE (Sub-Screen) ──
@@ -6368,15 +6421,16 @@ async function loadOrders() {
 
     _liveOrders = data.map(function(o) {
       var inv = null;
-      if (o.invoice_number) {
+      if (o.invoice_number || o.invoice_lexoffice_id) {
         inv = {
-          nr: o.invoice_number,
+          nr: o.invoice_number || '(wird generiert)',
           date: o.invoice_date,
           netto: parseFloat(o.invoice_netto) || 0,
           mwst: parseFloat(o.invoice_mwst) || 0,
           mwstSatz: o.invoice_mwst_rate || 19,
           status: o.invoice_status || 'offen',
-          paidDate: o.invoice_paid_at ? o.invoice_paid_at.slice(0, 10) : null
+          paidDate: o.invoice_paid_at ? o.invoice_paid_at.slice(0, 10) : null,
+          lexofficeId: o.invoice_lexoffice_id || null
         };
       }
       var sh = null;

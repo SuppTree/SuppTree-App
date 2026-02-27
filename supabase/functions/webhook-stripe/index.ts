@@ -11,6 +11,25 @@ const STRIPE_SECRET = Deno.env.get('STRIPE_SECRET_KEY') || ''
 const STRIPE_WEBHOOK_SECRET = Deno.env.get('STRIPE_WEBHOOK_SECRET') || ''
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+const LEXOFFICE_API_KEY = Deno.env.get('LEXOFFICE_API_KEY') || ''
+
+// Rechnung via create-invoice Edge Function erstellen (fire & forget)
+async function triggerInvoiceCreation(orderId: string) {
+  if (!LEXOFFICE_API_KEY || !orderId) return
+  try {
+    await fetch(`${SUPABASE_URL}/functions/v1/create-invoice`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+      },
+      body: JSON.stringify({ orderId }),
+    })
+    console.log(`Rechnung für Order ${orderId} angefordert`)
+  } catch (e) {
+    console.error('Invoice trigger failed:', e.message)
+  }
+}
 
 // Stripe Signatur verifizieren (einfache HMAC-Prüfung)
 async function verifyStripeSignature(payload: string, sigHeader: string): Promise<boolean> {
@@ -73,7 +92,10 @@ serve(async (req) => {
             status: 'paid',
             paid_at: new Date().toISOString(),
           }).eq('id', orderId)
-          console.log(`✅ Order ${orderId} als bezahlt markiert`)
+          console.log(`Order ${orderId} als bezahlt markiert`)
+
+          // Rechnung automatisch erstellen
+          triggerInvoiceCreation(orderId)
         }
 
         // Termin-Buchung updaten wenn type === 'termin'

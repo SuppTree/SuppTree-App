@@ -33688,6 +33688,11 @@ function renderPendingOrders() {
     const firstItem = order.items[0];
     const moreCount = order.items.length - 1;
     
+    var invoiceBtn = '';
+    if (order.dbId && order.invoiceLexofficeId) {
+      invoiceBtn = '<button onclick="downloadInvoice(\'' + order.dbId + '\')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;margin-right:6px">Rechnung</button>';
+    }
+
     html += `
       <div class="einkauf-order-item">
         <div class="order-icon">📦</div>
@@ -33698,14 +33703,50 @@ function renderPendingOrders() {
             <span>€${order.total.toFixed(2)}</span>
           </div>
         </div>
-        <button class="order-delivered-btn" onclick="markOrderDelivered('${orderId}')">
-          ✓ Angekommen
-        </button>
+        <div style="display:flex;align-items:center;gap:4px">
+          ${invoiceBtn}
+          <button class="order-delivered-btn" onclick="markOrderDelivered('${orderId}')">
+            ✓ Angekommen
+          </button>
+        </div>
       </div>
     `;
   });
   
   content.innerHTML = html;
+}
+
+// Rechnung als PDF aus lexoffice laden
+async function downloadInvoice(dbOrderId) {
+  if (!supabase || !currentUser) { showToast('Bitte einloggen'); return; }
+  showToast('Rechnung wird geladen...');
+  try {
+    var token = (await supabase.auth.getSession()).data.session?.access_token || '';
+    var res = await fetch(SUPPTREE_CONFIG.SUPABASE_URL + '/functions/v1/get-invoice-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ orderId: dbOrderId })
+    });
+    if (res.headers.get('content-type')?.includes('application/pdf')) {
+      // PDF direkt als Blob empfangen und herunterladen
+      var blob = await res.blob();
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Rechnung-' + dbOrderId.substring(0, 8) + '.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Rechnung heruntergeladen');
+    } else {
+      var data = await res.json();
+      showToast(data.error || 'Rechnung nicht verfügbar', 'error');
+    }
+  } catch (e) {
+    console.error('Invoice download error:', e);
+    showToast('Rechnung konnte nicht geladen werden', 'error');
+  }
 }
 
 function markOrderDelivered(orderId) {

@@ -13,6 +13,7 @@ const PAYPAL_BASE = Deno.env.get('PAYPAL_MODE') === 'live'
   : 'https://api-m.sandbox.paypal.com'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+const LEXOFFICE_API_KEY = Deno.env.get('LEXOFFICE_API_KEY') || ''
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -70,7 +71,7 @@ serve(async (req) => {
       })
     }
 
-    // Order in Supabase updaten
+    // Order in Supabase updaten + Rechnung erstellen
     if (orderId && SUPABASE_URL && SUPABASE_SERVICE_KEY) {
       const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
       await sb.from('orders').update({
@@ -78,6 +79,19 @@ serve(async (req) => {
         paid_at: new Date().toISOString(),
         stripe_payment_intent_id: 'paypal_' + paypalOrderId, // Paypal ID speichern
       }).eq('id', orderId)
+
+      // Rechnung automatisch via lexoffice erstellen (fire & forget)
+      if (LEXOFFICE_API_KEY) {
+        fetch(`${SUPABASE_URL}/functions/v1/create-invoice`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          },
+          body: JSON.stringify({ orderId }),
+        }).then(() => console.log(`Rechnung für Order ${orderId} angefordert`))
+          .catch(e => console.error('Invoice trigger failed:', e.message))
+      }
     }
 
     return new Response(JSON.stringify({
