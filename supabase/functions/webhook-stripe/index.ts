@@ -72,9 +72,14 @@ serve(async (req) => {
     const body = await req.text()
     const sigHeader = req.headers.get('stripe-signature') || ''
 
-    // Signatur prüfen
+    // Signatur prüfen — IMMER erzwingen wenn Secret konfiguriert
+    if (!STRIPE_WEBHOOK_SECRET) {
+      console.error('STRIPE_WEBHOOK_SECRET nicht konfiguriert — Webhook blockiert')
+      return new Response('Webhook secret not configured', { status: 500 })
+    }
+
     const isValid = await verifyStripeSignature(body, sigHeader)
-    if (!isValid && STRIPE_WEBHOOK_SECRET) {
+    if (!isValid) {
       console.error('Stripe webhook signature verification failed')
       return new Response('Invalid signature', { status: 400 })
     }

@@ -1,7 +1,7 @@
 // =============================================
 // SUPPTREE - Lexoffice Rechnungs-PDF abrufen
 // Edge Function: POST /functions/v1/get-invoice-pdf
-// Gibt die PDF-URL für eine Rechnung zurück
+// Gibt das PDF für eine Rechnung zurück
 // =============================================
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
@@ -11,10 +11,23 @@ const LEXOFFICE_API_KEY = Deno.env.get('LEXOFFICE_API_KEY') || ''
 const LEXOFFICE_BASE = 'https://api.lexoffice.io/v1'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+const ALLOWED_ORIGIN = Deno.env.get('ALLOWED_ORIGIN') || '*'
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
+// Auth: JWT verifizieren
+async function verifyAuth(req: Request): Promise<{ userId: string } | null> {
+  const authHeader = req.headers.get('authorization')
+  if (!authHeader?.startsWith('Bearer ')) return null
+  const token = authHeader.slice(7)
+  const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+  const { data: { user }, error } = await sb.auth.getUser(token)
+  if (error || !user) return null
+  return { userId: user.id }
 }
 
 serve(async (req) => {
@@ -23,6 +36,14 @@ serve(async (req) => {
   }
 
   try {
+    // Auth prüfen
+    const auth = await verifyAuth(req)
+    if (!auth) {
+      return new Response(JSON.stringify({ error: 'Nicht autorisiert' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
     const { orderId } = await req.json()
     if (!orderId) {
       return new Response(JSON.stringify({ error: 'orderId fehlt' }), {
@@ -32,7 +53,7 @@ serve(async (req) => {
 
     const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
-    // Order laden um lexoffice ID zu bekommen
+    // Order laden
     const { data: order, error } = await sb
       .from('orders')
       .select('invoice_lexoffice_id, user_id')
@@ -45,6 +66,16 @@ serve(async (req) => {
       })
     }
 
+    // Ownership prüfen: User muss Order-Besitzer oder Admin sein
+    if (order.user_id !== auth.userId) {
+      const { data: profile } = await sb.from('profiles').select('role').eq('id', auth.userId).single()
+      if (!profile || profile.role !== 'admin') {
+        return new Response(JSON.stringify({ error: 'Zugriff verweigert' }), {
+          status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+    }
+
     if (!order.invoice_lexoffice_id) {
       return new Response(JSON.stringify({ error: 'Keine Rechnung vorhanden' }), {
         status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -53,7 +84,7 @@ serve(async (req) => {
 
     // PDF-Dokument-Info von lexoffice abrufen
     const docRes = await fetch(
-      `${LEXOFFICE_BASE}/invoices/${order.invoice_lexoffice_id}/document`,
+      `${LEXOFFICE_BASE}/invoices/${encodeURIComponent(order.invoice_lexoffice_id)}/document`,
       { headers: { 'Authorization': `Bearer ${LEXOFFICE_API_KEY}`, 'Accept': 'application/json' } }
     )
 
@@ -71,11 +102,8 @@ serve(async (req) => {
       })
     }
 
-    // PDF-Download-URL erstellen
-    const pdfUrl = `${LEXOFFICE_BASE}/files/${docInfo.documentFileId}`
-
-    // PDF herunterladen und als Base64 an Frontend weiterleiten
-    const pdfRes = await fetch(pdfUrl, {
+    // PDF herunterladen
+    const pdfRes = await fetch(`${LEXOFFICE_BASE}/files/${encodeURIComponent(docInfo.documentFileId)}`, {
       headers: { 'Authorization': `Bearer ${LEXOFFICE_API_KEY}` }
     })
 
@@ -91,7 +119,7 @@ serve(async (req) => {
       headers: {
         ...corsHeaders,
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="Rechnung-${orderId}.pdf"`,
+        'Content-Disposition': `attachment; filename="Rechnung-${orderId.substring(0, 8)}.pdf"`,
       }
     })
 

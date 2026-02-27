@@ -14,10 +14,23 @@ const PAYPAL_BASE = Deno.env.get('PAYPAL_MODE') === 'live'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
 const LEXOFFICE_API_KEY = Deno.env.get('LEXOFFICE_API_KEY') || ''
+const ALLOWED_ORIGIN = Deno.env.get('ALLOWED_ORIGIN') || '*'
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
+// Auth: JWT verifizieren
+async function verifyAuth(req: Request): Promise<{ userId: string } | null> {
+  const authHeader = req.headers.get('authorization')
+  if (!authHeader?.startsWith('Bearer ')) return null
+  const token = authHeader.slice(7)
+  const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+  const { data: { user }, error } = await sb.auth.getUser(token)
+  if (error || !user) return null
+  return { userId: user.id }
 }
 
 async function getPayPalAccessToken(): Promise<string> {
@@ -40,6 +53,14 @@ serve(async (req) => {
   }
 
   try {
+    // Auth prüfen
+    const auth = await verifyAuth(req)
+    if (!auth) {
+      return new Response(JSON.stringify({ error: 'Nicht autorisiert' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
     const { paypalOrderId, orderId } = await req.json()
 
     if (!paypalOrderId) {
@@ -48,11 +69,22 @@ serve(async (req) => {
       })
     }
 
+    // Prüfen ob User diese Order besitzt
+    if (orderId && SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+      const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+      const { data: order } = await sb.from('orders').select('user_id').eq('id', orderId).single()
+      if (order && order.user_id !== auth.userId) {
+        return new Response(JSON.stringify({ error: 'Zugriff verweigert' }), {
+          status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+    }
+
     // PayPal Access Token holen
     const accessToken = await getPayPalAccessToken()
 
     // PayPal Order capturen
-    const captureRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders/${paypalOrderId}/capture`, {
+    const captureRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders/${encodeURIComponent(paypalOrderId)}/capture`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -77,7 +109,7 @@ serve(async (req) => {
       await sb.from('orders').update({
         status: 'paid',
         paid_at: new Date().toISOString(),
-        stripe_payment_intent_id: 'paypal_' + paypalOrderId, // Paypal ID speichern
+        stripe_payment_intent_id: 'paypal_' + paypalOrderId,
       }).eq('id', orderId)
 
       // Rechnung automatisch via lexoffice erstellen (fire & forget)
