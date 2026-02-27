@@ -45949,6 +45949,20 @@ body.sheet-open {
     try { initSupabase(); console.log('✅ Supabase SDK geladen'); } catch(e) {}
   };
   document.head.appendChild(s);
+
+  // Stripe.js laden
+  var stripeScript = document.createElement('script');
+  stripeScript.src = 'https://js.stripe.com/v3/';
+  stripeScript.onload = function() { console.log('✅ Stripe SDK geladen'); };
+  document.head.appendChild(stripeScript);
+
+  // PayPal SDK laden
+  if (SUPPTREE_CONFIG && SUPPTREE_CONFIG.PAYPAL_CLIENT_ID && !SUPPTREE_CONFIG.PAYPAL_CLIENT_ID.includes('HIER')) {
+    var ppScript = document.createElement('script');
+    ppScript.src = 'https://www.paypal.com/sdk/js?client-id=' + SUPPTREE_CONFIG.PAYPAL_CLIENT_ID + '&currency=EUR&intent=capture';
+    ppScript.onload = function() { console.log('✅ PayPal SDK geladen'); };
+    document.head.appendChild(ppScript);
+  }
 </script>
 
 </body>

@@ -29978,26 +29978,27 @@ function showMoreDates() {
   showToast('Kalender-Ansicht kommt bald!', 'info');
 }
 
-function confirmBooking() {
+async function confirmBooking() {
   if (!selectedBookingDate || !selectedBookingTime || !selectedHeilpraktiker) {
     showToast('Bitte wähle Datum und Uhrzeit', 'error');
     return;
   }
-  
-  // Buchung simulieren
+
   const btn = document.getElementById('hpBookBtn');
-  btn.textContent = 'Wird gebucht...';
+  btn.textContent = 'Zahlung wird verarbeitet...';
   btn.disabled = true;
-  
-  setTimeout(() => {
+
+  try {
+    // Buchung speichern + Payment
+    await saveBooking();
+
     // Buchungs-Bestätigung anzeigen
     showBookingConfirmation();
-    
-    // Buchung speichern
-    saveBooking();
-    
+  } catch (e) {
+    // Payment fehlgeschlagen - Button zurücksetzen
     btn.textContent = 'Termin verbindlich buchen';
-  }, 1500);
+    btn.disabled = false;
+  }
 }
 
 function showBookingConfirmation() {
@@ -30034,7 +30035,7 @@ function showBookingConfirmation() {
   }
 }
 
-function saveBooking() {
+async function saveBooking() {
   const testInfo = bloodTestNames[selectedTestForBooking] || bloodTestNames['grosses-blutbild'];
   const testPrice = bloodTestPrices[selectedTestForBooking] || 25;
   const totalPrice = (selectedHeilpraktiker.basePrice || 0) + testPrice;
@@ -30048,42 +30049,63 @@ function saveBooking() {
     testType: selectedTestForBooking,
     date: selectedBookingDate,
     time: selectedBookingTime,
-    status: 'confirmed',
+    status: 'pending',
     createdAt: new Date().toISOString()
   };
 
-  // Buchungen laden
-  let bookings = JSON.parse(localStorage.getItem('supptree_hp_bookings') || '[]');
-  bookings.push(booking);
-  localStorage.setItem('supptree_hp_bookings', JSON.stringify(bookings));
+  try {
+    // 1. Bluttest in Supabase anlegen (Status: pending)
+    var dbBloodTestId = null;
+    if (supabase && currentUser) {
+      var res = await supabase.from('blood_tests').insert({
+        customer_id: currentUser.id,
+        customer_name: currentUser.user_metadata?.name || currentUser.email || '',
+        partner_id: selectedHeilpraktiker.id,
+        partner_name: selectedHeilpraktiker.name,
+        test_name: testInfo.name,
+        lab_name: 'Labor (via ' + selectedHeilpraktiker.name + ')',
+        price: totalPrice,
+        test_date: bookingDate,
+        status: 'pending',
+        notes: selectedBookingTime + ' Uhr'
+      }).select().single();
 
-  // Supabase: Bluttest in blood_tests speichern
-  if (supabase && currentUser) {
-    supabase.from('blood_tests').insert({
-      customer_id: currentUser.id,
-      customer_name: currentUser.user_metadata?.name || currentUser.email || '',
-      partner_id: selectedHeilpraktiker.id,
-      partner_name: selectedHeilpraktiker.name,
-      test_name: testInfo.name,
-      lab_name: 'Labor (via ' + selectedHeilpraktiker.name + ')',
-      price: totalPrice,
-      test_date: bookingDate,
-      status: 'pending',
-      notes: selectedBookingTime + ' Uhr'
-    }).select().single().then(function(res) {
       if (res.data) {
-        booking.dbId = res.data.id;
-        var bk = JSON.parse(localStorage.getItem('supptree_hp_bookings') || '[]');
-        var idx = bk.findIndex(function(b) { return b.id === booking.id; });
-        if (idx > -1) { bk[idx].dbId = res.data.id; localStorage.setItem('supptree_hp_bookings', JSON.stringify(bk)); }
+        dbBloodTestId = res.data.id;
+        booking.dbId = dbBloodTestId;
       }
       if (res.error) console.error('Blood test insert:', res.error);
-    }).catch(function(e) { console.error('Blood test insert:', e); });
-  }
+    }
 
-  // Optional: Push-Notification vorbereiten
-  if ('Notification' in window && Notification.permission === 'granted') {
-    console.log('Erinnerung geplant für:', bookingDate);
+    // 2. Payment verarbeiten wenn Preis > 0
+    if (totalPrice > 0) {
+      showToast('Zahlung wird verarbeitet...');
+      await processPayment(totalPrice, dbBloodTestId || booking.id, testInfo.name + ' - Bluttest', 'bluttest');
+    }
+
+    // 3. Buchung bestätigen
+    booking.status = 'confirmed';
+
+    // Supabase: Status updaten
+    if (supabase && dbBloodTestId) {
+      supabase.from('blood_tests').update({ status: 'confirmed' }).eq('id', dbBloodTestId)
+        .then(function(r) { if (r.error) console.error('BT confirm:', r.error); });
+    }
+
+    // localStorage speichern
+    let bookings = JSON.parse(localStorage.getItem('supptree_hp_bookings') || '[]');
+    bookings.push(booking);
+    localStorage.setItem('supptree_hp_bookings', JSON.stringify(bookings));
+
+    // Push-Notification
+    if ('Notification' in window && Notification.permission === 'granted') {
+      console.log('Erinnerung geplant für:', bookingDate);
+    }
+
+  } catch (paymentError) {
+    console.error('Bluttest payment error:', paymentError);
+    showToast('Zahlung fehlgeschlagen: ' + (paymentError.message || 'Unbekannter Fehler'), 'error');
+    throw paymentError; // Weiterwerfen damit closeAllBookingSheets nicht aufgerufen wird
   }
 }
 
@@ -34437,58 +34459,200 @@ function coGetPayments() {
   ];
 }
 
+// ═══ PAYMENT INTEGRATION: Stripe + PayPal ═══
+var _stripe = null;
+var _stripeElements = null;
+var _stripeCardElement = null;
+var _selectedPaymentType = 'card'; // 'card', 'paypal', 'sepa'
+
+function initStripe() {
+  if (_stripe) return _stripe;
+  if (typeof Stripe !== 'undefined' && SUPPTREE_CONFIG.STRIPE_PK && !SUPPTREE_CONFIG.STRIPE_PK.includes('HIER')) {
+    _stripe = Stripe(SUPPTREE_CONFIG.STRIPE_PK);
+  }
+  return _stripe;
+}
+
 function coRenderPayments() {
-  const methods = coGetPayments();
-  const icons = { paypal: '💳', sepa: '🏦', card: '💳', credit: '💳', klarna: '🛒', rechnung: '📄' };
   const container = document.getElementById('coPaymentList');
   if (!container) return;
 
-  container.innerHTML = methods.map((m, idx) => `
-    <div class="co-selectable-card ${checkoutState.selectedPaymentIndex === idx ? 'selected' : ''}" onclick="coSelectPayment(${idx})">
-      <div class="co-card-icon">${icons[m.type] || '💳'}</div>
-      <div class="co-card-info">
-        <span class="co-card-name">${m.name}</span>
-        <span class="co-card-detail">${m.detail}</span>
-      </div>
-      <div class="co-card-check">✓</div>
-    </div>
-  `).join('');
+  var html = '';
+
+  // Payment-Type Auswahl
+  html += '<div style="display:flex;gap:8px;margin-bottom:16px">';
+  html += '<button onclick="selectPaymentType(\'card\')" class="co-selectable-card" style="flex:1;padding:12px;text-align:center;cursor:pointer;border-radius:10px;border:2px solid ' + (_selectedPaymentType === 'card' ? 'var(--green-accent)' : 'var(--border)') + ';background:' + (_selectedPaymentType === 'card' ? '#f0fdf4' : 'white') + '"><div style="font-size:20px">💳</div><div style="font-size:11px;font-weight:600;margin-top:4px">Kreditkarte</div></button>';
+  html += '<button onclick="selectPaymentType(\'paypal\')" class="co-selectable-card" style="flex:1;padding:12px;text-align:center;cursor:pointer;border-radius:10px;border:2px solid ' + (_selectedPaymentType === 'paypal' ? '#0070ba' : 'var(--border)') + ';background:' + (_selectedPaymentType === 'paypal' ? '#f0f8ff' : 'white') + '"><div style="font-size:20px">🅿️</div><div style="font-size:11px;font-weight:600;margin-top:4px">PayPal</div></button>';
+  html += '<button onclick="selectPaymentType(\'sepa\')" class="co-selectable-card" style="flex:1;padding:12px;text-align:center;cursor:pointer;border-radius:10px;border:2px solid ' + (_selectedPaymentType === 'sepa' ? 'var(--green-accent)' : 'var(--border)') + ';background:' + (_selectedPaymentType === 'sepa' ? '#f0fdf4' : 'white') + '"><div style="font-size:20px">🏦</div><div style="font-size:11px;font-weight:600;margin-top:4px">SEPA</div></button>';
+  html += '</div>';
+
+  // Stripe Card Element
+  if (_selectedPaymentType === 'card') {
+    html += '<div id="stripeCardContainer" style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px">';
+    html += '<div id="stripe-card-element" style="min-height:40px"></div>';
+    html += '<div id="stripe-card-errors" style="color:#dc2626;font-size:12px;margin-top:8px"></div>';
+    html += '</div>';
+    html += '<div style="font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center">🔒 Sichere Zahlung via Stripe</div>';
+  }
+
+  // PayPal Info
+  if (_selectedPaymentType === 'paypal') {
+    html += '<div style="background:#fff8e1;border:1px solid #ffd54f;border-radius:10px;padding:16px;text-align:center">';
+    html += '<div style="font-size:13px;color:#5d4037">Du wirst im letzten Schritt zu PayPal weitergeleitet.</div>';
+    html += '</div>';
+  }
+
+  // SEPA
+  if (_selectedPaymentType === 'sepa') {
+    html += '<div id="stripeSepaContainer" style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px">';
+    html += '<div id="stripe-iban-element" style="min-height:40px"></div>';
+    html += '<div id="stripe-iban-errors" style="color:#dc2626;font-size:12px;margin-top:8px"></div>';
+    html += '</div>';
+    html += '<div style="font-size:10px;color:var(--text-muted);margin-top:8px">Durch Angabe deiner IBAN erteilst du SuppTree GmbH ein SEPA-Lastschriftmandat.</div>';
+  }
+
+  container.innerHTML = html;
+  checkoutState.selectedPayment = { type: _selectedPaymentType, name: _selectedPaymentType === 'card' ? 'Kreditkarte' : _selectedPaymentType === 'paypal' ? 'PayPal' : 'SEPA', detail: _selectedPaymentType === 'card' ? 'Stripe' : _selectedPaymentType === 'paypal' ? 'PayPal Express' : 'Lastschrift' };
+
+  // Stripe Elements mounten (nach DOM-Update)
+  setTimeout(function() {
+    if (_selectedPaymentType === 'card') mountStripeCard();
+    if (_selectedPaymentType === 'sepa') mountStripeIban();
+  }, 50);
+}
+
+function selectPaymentType(type) {
+  _selectedPaymentType = type;
+  coRenderPayments();
+}
+
+function mountStripeCard() {
+  var stripe = initStripe();
+  if (!stripe) {
+    var el = document.getElementById('stripe-card-element');
+    if (el) el.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:8px">Stripe wird geladen... (API Key in config.js setzen)</div>';
+    return;
+  }
+  _stripeElements = stripe.elements({ locale: 'de' });
+  _stripeCardElement = _stripeElements.create('card', {
+    style: {
+      base: { fontSize: '16px', color: '#1e293b', fontFamily: 'system-ui, -apple-system, sans-serif', '::placeholder': { color: '#94a3b8' } },
+      invalid: { color: '#dc2626' }
+    }
+  });
+  _stripeCardElement.mount('#stripe-card-element');
+  _stripeCardElement.on('change', function(e) {
+    var errEl = document.getElementById('stripe-card-errors');
+    if (errEl) errEl.textContent = e.error ? e.error.message : '';
+  });
+}
+
+function mountStripeIban() {
+  var stripe = initStripe();
+  if (!stripe) return;
+  _stripeElements = stripe.elements({ locale: 'de' });
+  var ibanElement = _stripeElements.create('iban', {
+    supportedCountries: ['SEPA'],
+    style: { base: { fontSize: '16px', color: '#1e293b', '::placeholder': { color: '#94a3b8' } } }
+  });
+  ibanElement.mount('#stripe-iban-element');
 }
 
 function coSelectPayment(index) {
-  const methods = coGetPayments();
+  // Legacy-Kompatibilität
   checkoutState.selectedPaymentIndex = index;
-  checkoutState.selectedPayment = methods[index];
-  coRenderPayments();
 }
 
 function coToggleNewPayment() {
-  const form = document.getElementById('coNewPaymentForm');
-  if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  // Nicht mehr benötigt mit neuer Payment-UI
 }
 
 function coAddPayment(type) {
-  const names = { paypal: 'PayPal', sepa: 'SEPA-Lastschrift', card: 'Kreditkarte', klarna: 'Klarna', rechnung: 'Kauf auf Rechnung' };
-  const details = { paypal: 'neu@example.com', sepa: 'DE•• •••• •••• ••••', card: '•••• •••• •••• ••••', klarna: 'Klarna Rechnung', rechnung: 'Rechnung per E-Mail' };
+  selectPaymentType(type === 'card' || type === 'credit' ? 'card' : type);
+}
 
-  const saved = localStorage.getItem('suppTreePaymentMethods');
-  let methods = saved ? JSON.parse(saved) : [];
-  const newMethod = {
-    id: Date.now(),
-    type: type,
-    name: names[type] || type,
-    detail: details[type] || 'Neu hinzugefügt',
-    isDefault: methods.length === 0
-  };
-  methods.push(newMethod);
-  savePaymentMethods(methods);
+// ═══ PAYMENT PROCESSING ═══
+async function processPayment(amount, orderId, description, type) {
+  if (_selectedPaymentType === 'paypal') {
+    return processPayPalPayment(amount, orderId, description, type);
+  }
+  return processStripePayment(amount, orderId, description, type);
+}
 
-  checkoutState.selectedPaymentIndex = methods.length - 1;
-  checkoutState.selectedPayment = newMethod;
+async function processStripePayment(amount, orderId, description, type) {
+  var stripe = initStripe();
+  if (!stripe) throw new Error('Stripe nicht verfügbar. Bitte API Key in config.js setzen.');
 
-  document.getElementById('coNewPaymentForm').style.display = 'none';
-  coRenderPayments();
-  showToast('Zahlungsmethode hinzugefügt');
+  // 1. PaymentIntent via Edge Function erstellen
+  var email = currentUser ? (currentUser.email || '') : '';
+  var res = await fetch(SUPPTREE_CONFIG.SUPABASE_URL + '/functions/v1/create-payment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + (supabase ? (await supabase.auth.getSession()).data.session?.access_token : ''),
+    },
+    body: JSON.stringify({ amount: amount, orderId: orderId, customerEmail: email, description: description, type: type || 'product' })
+  });
+  var data = await res.json();
+  if (data.error) throw new Error(data.error);
+
+  // 2. Payment bestätigen mit Stripe.js
+  var result;
+  if (_selectedPaymentType === 'card' && _stripeCardElement) {
+    result = await stripe.confirmCardPayment(data.clientSecret, {
+      payment_method: { card: _stripeCardElement }
+    });
+  } else {
+    result = await stripe.confirmPayment({
+      clientSecret: data.clientSecret,
+      confirmParams: { return_url: window.location.origin + '/checkout-success' },
+      redirect: 'if_required'
+    });
+  }
+
+  if (result.error) throw new Error(result.error.message);
+  return { success: true, paymentIntentId: data.paymentIntentId };
+}
+
+async function processPayPalPayment(amount, orderId, description, type) {
+  if (typeof paypal === 'undefined') throw new Error('PayPal nicht verfügbar. Bitte Client ID in config.js setzen.');
+
+  return new Promise(function(resolve, reject) {
+    // PayPal Button in Modal rendern
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999999;display:flex;align-items:center;justify-content:center';
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:white;border-radius:16px;padding:24px;max-width:400px;width:90%';
+    modal.innerHTML = '<div style="text-align:center;margin-bottom:16px"><div style="font-size:16px;font-weight:700">PayPal Zahlung</div><div style="font-size:13px;color:var(--text-muted)">€' + amount.toFixed(2) + '</div></div><div id="paypal-button-container"></div><button onclick="this.closest(\'div[style]\').remove()" style="width:100%;padding:10px;margin-top:12px;border:1px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:13px">Abbrechen</button>';
+    overlay.appendChild(modal);
+    overlay.onclick = function(e) { if (e.target === overlay) { overlay.remove(); reject(new Error('Abgebrochen')); } };
+    document.body.appendChild(overlay);
+
+    paypal.Buttons({
+      style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' },
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{ amount: { value: amount.toFixed(2), currency_code: 'EUR' }, description: description || 'SuppTree Bestellung' }]
+        });
+      },
+      onApprove: function(data) {
+        overlay.remove();
+        // PayPal Order server-side capturen
+        fetch(SUPPTREE_CONFIG.SUPABASE_URL + '/functions/v1/capture-paypal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paypalOrderId: data.orderID, orderId: orderId })
+        }).then(function(r) { return r.json(); })
+          .then(function(result) {
+            if (result.success) resolve({ success: true, paypalOrderId: data.orderID });
+            else reject(new Error(result.error || 'PayPal Capture fehlgeschlagen'));
+          })
+          .catch(reject);
+      },
+      onCancel: function() { overlay.remove(); reject(new Error('PayPal Zahlung abgebrochen')); },
+      onError: function(err) { overlay.remove(); reject(err); }
+    }).render('#paypal-button-container');
+  });
 }
 
 // ===== STEP 4: ZUSAMMENFASSUNG & LEGAL =====
@@ -34668,7 +34832,7 @@ function coShowWiderruf() {
   document.body.appendChild(overlay);
 }
 
-function placeOrder() {
+async function placeOrder() {
   // Legal compliance check
   if (!checkoutState.agbAccepted || !checkoutState.widerrufAccepted) {
     showToast('Bitte akzeptiere die AGB und Widerrufsbelehrung');
@@ -34680,24 +34844,17 @@ function placeOrder() {
 
   // Check if has kuren before clearing
   const hasKuren = cartKuren.size > 0;
-  
-  // Process Kuren - add to purchased kuren
-  cartKuren.forEach((item, kurId) => {
-    for (let i = 0; i < item.qty; i++) {
-      addPurchasedKur(kurId, 'ST-' + Date.now() + '-' + i);
-    }
-  });
-  
+
   // Create order with all items
   const orderId = 'ORD-' + Date.now();
   const orderDate = new Date();
   const formatDate = (date) => {
     return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
   };
-  
+
   const orderItems = [];
-  
-  // Add regular cart items to order AND to mySupplements with 'waiting' status
+
+  // Add regular cart items to order
   cart.forEach((qty, productId) => {
     const product = products.find(p => p.id === productId);
     if (product) {
@@ -34709,48 +34866,15 @@ function placeOrder() {
         qty: qty,
         price: parseFloat(product.price),
         isAbo: false,
-        dosePerDay: 1 // Default for non-abo items
+        dosePerDay: 1
       });
-      
-      // Add to mySupplements with 'waiting' status (if not already there)
-      const existingIndex = mySupplements.findIndex(s => s.id === productId);
-      if (existingIndex === -1) {
-        mySupplements.push({
-          id: productId,
-          name: product.name,
-          icon: product.icon,
-          brand: product.brand,
-          dosagePerDay: 1,
-          stock: 60,
-          packSize: 60,
-          source: 'shop',
-          time: 'auto',
-          autoAbo: false,
-          roburScheduled: true,
-          hasAbo: false,
-          status: 'waiting' // Waiting for delivery
-        });
-      } else if (mySupplements[existingIndex].status !== 'waiting') {
-        // If exists but not waiting, keep current status (might be active)
-        // Just update stock when it arrives
-      }
     }
   });
-  
-  // Activate pending Abos and add to order
+
+  // Collect pending Abos for order
   subscriptions.forEach((sub, productId) => {
     if (sub.status === 'pending') {
       const product = products.find(p => p.id === productId);
-      
-      // Calculate next delivery based on interval
-      const nextDelivery = new Date();
-      const intervalMonths = sub.intervalMonths || 1;
-      nextDelivery.setMonth(nextDelivery.getMonth() + intervalMonths);
-      
-      sub.status = 'active';
-      sub.nextDelivery = formatDate(nextDelivery);
-      
-      // Add abo item to order
       if (product) {
         orderItems.push({
           productId: productId,
@@ -34762,68 +34886,53 @@ function placeOrder() {
           isAbo: true,
           dosePerDay: sub.dosePerDay || 1
         });
-        
-        // Add to mySupplements with 'waiting' status
-        const existingIndex = mySupplements.findIndex(s => s.id === productId);
-        if (existingIndex === -1) {
-          mySupplements.push({
-            id: productId,
-            name: product.name,
-            icon: product.icon,
-            brand: product.brand,
-            dosagePerDay: sub.dosePerDay || 1,
-            stock: 60,
-            packSize: 60,
-            source: 'shop',
-            time: 'auto',
-            autoAbo: true,
-            roburScheduled: true,
-            hasAbo: true,
-            status: 'waiting' // Waiting for delivery
-          });
-        } else {
-          // Update existing to waiting
-          mySupplements[existingIndex].status = 'waiting';
-          mySupplements[existingIndex].hasAbo = true;
-        }
       }
     }
   });
-  saveSubscriptions();
-  saveMySupplements();
-  
-  // Save the order if has items
-  if (orderItems.length > 0) {
-    // Referral-Daten extrahieren (bevor cartReferrals geleert wird)
-    var referralPartner = null;
-    var referralChannel = null;
-    var referralRate = 0;
-    cartReferrals.forEach(function(ref) {
-      if (!referralPartner && ref.beraterId) {
-        referralPartner = { id: ref.beraterId, name: ref.beraterName || '' };
-        referralChannel = 'qr';
-        referralRate = 0.10;
-      }
-    });
 
-    // Fallback: Link-Referral aus Berater-Verbindung (7% Provision)
-    if (!referralPartner) {
-      try {
-        var beraterList = JSON.parse(localStorage.getItem('suppTreeMeineBerater') || '[]');
-        if (beraterList.length > 0) {
-          referralPartner = { id: beraterList[0].id, name: beraterList[0].name || '' };
-          referralChannel = 'link';
-          referralRate = 0.07;
-        }
-      } catch(e) {}
+  if (orderItems.length === 0) {
+    showToast('Warenkorb ist leer');
+    return;
+  }
+
+  // Referral-Daten extrahieren
+  var referralPartner = null;
+  var referralChannel = null;
+  var referralRate = 0;
+  cartReferrals.forEach(function(ref) {
+    if (!referralPartner && ref.beraterId) {
+      referralPartner = { id: ref.beraterId, name: ref.beraterName || '' };
+      referralChannel = 'qr';
+      referralRate = 0.10;
     }
+  });
+  if (!referralPartner) {
+    try {
+      var beraterList = JSON.parse(localStorage.getItem('suppTreeMeineBerater') || '[]');
+      if (beraterList.length > 0) {
+        referralPartner = { id: beraterList[0].id, name: beraterList[0].name || '' };
+        referralChannel = 'link';
+        referralRate = 0.07;
+      }
+    } catch(e) {}
+  }
 
-    // Items-Summary für Admin-Anzeige
-    var itemsSummary = orderItems.map(function(i) { return i.qty + 'x ' + i.name; }).join(', ');
+  var itemsSummary = orderItems.map(function(i) { return i.qty + 'x ' + i.name; }).join(', ');
+  var selectedAddr = checkoutState.selectedAddress;
 
-    // Supabase-Write (async, non-blocking)
-    var selectedAddr = checkoutState.selectedAddress;
-    placeOrderToSupabase({
+  // ═══ PAYMENT FLOW ═══
+  // 1. Loading-State anzeigen
+  var orderBtn = document.getElementById('coOrderBtn');
+  var btnOrigText = orderBtn ? orderBtn.innerHTML : '';
+  if (orderBtn) {
+    orderBtn.disabled = true;
+    orderBtn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px"><span class="spinner" style="width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block"></span> Zahlung wird verarbeitet...</span>';
+  }
+
+  try {
+    // 2. Order in Supabase erstellen (Status: pending)
+    var dbOrderId = null;
+    var supabaseOrder = await placeOrderToSupabase({
       orderId: orderId,
       subtotal: subtotal,
       shippingCost: shipping,
@@ -34847,67 +34956,124 @@ function placeOrder() {
         city: selectedAddr.city || '',
         country: selectedAddr.country || 'DE'
       } : null
-    }, orderItems).then(function(order) {
-      // dbId aus Supabase-Response in pendingOrders speichern
-      if (order && order.id) {
-        var po = pendingOrders.get(orderId);
-        if (po) { po.dbId = order.id; savePendingOrders(); }
+    }, orderItems);
+
+    if (supabaseOrder && supabaseOrder.id) {
+      dbOrderId = supabaseOrder.id;
+    }
+
+    // 3. Payment verarbeiten (Stripe/PayPal)
+    if (total > 0) {
+      await processPayment(total, dbOrderId || orderId, 'SuppTree Bestellung #' + orderId, 'product');
+    }
+
+    // ═══ ZAHLUNG ERFOLGREICH ═══
+
+    // Process Kuren
+    cartKuren.forEach((item, kurId) => {
+      for (let i = 0; i < item.qty; i++) {
+        addPurchasedKur(kurId, 'ST-' + Date.now() + '-' + i);
       }
-    }).catch(function(e) { console.error('Order Supabase write failed:', e); });
+    });
+
+    // Add to mySupplements with 'waiting' status
+    cart.forEach((qty, productId) => {
+      const product = products.find(p => p.id === productId);
+      if (product) {
+        const existingIndex = mySupplements.findIndex(s => s.id === productId);
+        if (existingIndex === -1) {
+          mySupplements.push({
+            id: productId, name: product.name, icon: product.icon, brand: product.brand,
+            dosagePerDay: 1, stock: 60, packSize: 60, source: 'shop', time: 'auto',
+            autoAbo: false, roburScheduled: true, hasAbo: false, status: 'waiting'
+          });
+        }
+      }
+    });
+
+    // Activate pending Abos
+    subscriptions.forEach((sub, productId) => {
+      if (sub.status === 'pending') {
+        const product = products.find(p => p.id === productId);
+        const nextDelivery = new Date();
+        nextDelivery.setMonth(nextDelivery.getMonth() + (sub.intervalMonths || 1));
+        sub.status = 'active';
+        sub.nextDelivery = formatDate(nextDelivery);
+        if (product) {
+          const existingIndex = mySupplements.findIndex(s => s.id === productId);
+          if (existingIndex === -1) {
+            mySupplements.push({
+              id: productId, name: product.name, icon: product.icon, brand: product.brand,
+              dosagePerDay: sub.dosePerDay || 1, stock: 60, packSize: 60, source: 'shop', time: 'auto',
+              autoAbo: true, roburScheduled: true, hasAbo: true, status: 'waiting'
+            });
+          } else {
+            mySupplements[existingIndex].status = 'waiting';
+            mySupplements[existingIndex].hasAbo = true;
+          }
+        }
+      }
+    });
+    saveSubscriptions();
+    saveMySupplements();
 
     // localStorage-Fallback
     pendingOrders.set(orderId, {
-      items: orderItems,
-      orderDate: formatDate(orderDate),
-      status: 'shipped',
-      total: total,
-      shippingAddress: selectedAddr,
-      shippingType: checkoutState.shippingType,
-      shippingCost: checkoutState.shipping,
-      paymentMethod: checkoutState.selectedPayment
+      items: orderItems, orderDate: formatDate(orderDate), status: 'paid', total: total,
+      shippingAddress: selectedAddr, shippingType: checkoutState.shippingType,
+      shippingCost: checkoutState.shipping, paymentMethod: checkoutState.selectedPayment,
+      dbId: dbOrderId
     });
     savePendingOrders();
-  }
 
-  // Berater-Empfehlungen als "gekauft" markieren (über Referrals)
-  try {
-    const purchasedPlanIds = new Set();
-    cartReferrals.forEach((ref) => {
-      if (ref.planId) purchasedPlanIds.add(ref.planId);
-    });
-    if (purchasedPlanIds.size > 0) {
-      const _plaene = mbGetPlaene();
-      let changed = false;
-      purchasedPlanIds.forEach(pid => {
-        const p = _plaene.find(x => x.id === pid);
-        if (p && !p.hasPurchased) { p.hasPurchased = true; changed = true; }
-      });
-      if (changed) mbSavePlaene(_plaene);
+    // Berater-Empfehlungen als "gekauft" markieren
+    try {
+      const purchasedPlanIds = new Set();
+      cartReferrals.forEach((ref) => { if (ref.planId) purchasedPlanIds.add(ref.planId); });
+      if (purchasedPlanIds.size > 0) {
+        const _plaene = mbGetPlaene();
+        let changed = false;
+        purchasedPlanIds.forEach(pid => {
+          const p = _plaene.find(x => x.id === pid);
+          if (p && !p.hasPurchased) { p.hasPurchased = true; changed = true; }
+        });
+        if (changed) mbSavePlaene(_plaene);
+      }
+      cartReferrals.clear();
+      saveCartReferrals();
+    } catch(e) {}
+
+    // Clear cart and kuren
+    cart.clear();
+    cartKuren.clear();
+    cartCount = 0;
+    saveCart();
+
+    // Close checkout
+    closeCheckout();
+
+    // Show success
+    showOrderConfirmation(total, hasAboItems, hasKuren);
+
+    // Refresh displays
+    renderEinkaufCart();
+    renderEinkaufAbos();
+    renderPendingOrders();
+    updateNavEinkaufBadge();
+    updateAllBadges();
+    updateEinkaufCheckoutBar();
+
+  } catch (paymentError) {
+    // ═══ ZAHLUNG FEHLGESCHLAGEN ═══
+    console.error('Payment error:', paymentError);
+    if (orderBtn) {
+      orderBtn.disabled = false;
+      orderBtn.innerHTML = btnOrigText;
     }
-    // Referrals leeren nach Kauf
-    cartReferrals.clear();
-    saveCartReferrals();
-  } catch(e) {}
-
-  // Clear cart and kuren
-  cart.clear();
-  cartKuren.clear();
-  cartCount = 0;
-  saveCart();
-
-  // Close checkout
-  closeCheckout();
-  
-  // Show success
-  showOrderConfirmation(total, hasAboItems, hasKuren);
-  
-  // Refresh displays
-  renderEinkaufCart();
-  renderEinkaufAbos();
-  renderPendingOrders();
-  updateNavEinkaufBadge();
-  updateAllBadges();
-  updateEinkaufCheckoutBar();
+    // Button wieder aktivierbar machen
+    coUpdateOrderButton();
+    showToast('Zahlung fehlgeschlagen: ' + (paymentError.message || 'Unbekannter Fehler'), 'error');
+  }
 }
 
 function showOrderConfirmation(total, hasAbo, hasKuren = false) {
@@ -38405,7 +38571,7 @@ function renderEkMeineAnfragen(){
 }
 
 // Terminvorschlag akzeptieren → Bestätigung + Zahlung (gleichzeitig)
-function taAcceptTermin(id){
+async function taAcceptTermin(id){
   const anfragen = taGetAnfragen();
   const a = anfragen.find(x=>x.id===id);
   if(!a || !a.terminVorschlag) return;
@@ -38416,28 +38582,40 @@ function taAcceptTermin(id){
   const dateStr = tv.date ? new Date(tv.date+'T00:00:00').toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'}) : '';
 
   // Zahlungs-Bestätigung mit Stornierungsbedingungen
-  if(!confirm(`Termin bestätigen & bezahlen?\n\n📋 ${svcName}\n📅 ${dateStr} um ${tv.time} Uhr\n⏱ ${tv.dauer} Min\n\n💳 Betrag: €${price}\n\n⚖️ Stornierungsbedingungen:\n• Kostenlose Stornierung bis 24h vorher\n• Unter 24h: 50% Stornogebühr\n• Nicht erschienen: 100% werden berechnet\n\nMit OK wird die Zahlung ausgeführt.`)) return;
+  if(!confirm(`Termin bestätigen & bezahlen?\n\n${svcName}\n${dateStr} um ${tv.time} Uhr\n${tv.dauer} Min\n\nBetrag: ${price > 0 ? '€' + price : 'Kostenlos'}\n\nStornierungsbedingungen:\n- Kostenlose Stornierung bis 24h vorher\n- Unter 24h: 50% Stornogebühr\n- Nicht erschienen: 100% werden berechnet\n\nMit OK wird die Zahlung ausgeführt.`)) return;
 
-  // Bestätigung + Zahlung gleichzeitig
-  a.status = 'confirmed';
-  a.paidAt = new Date().toISOString();
-  a.zahlung = {amount:price, method:'stripe', paidAt:a.paidAt, status:'held'};
-  a.updatedAt = new Date().toISOString();
-  taSaveAnfragen(anfragen);
+  try {
+    // Payment verarbeiten wenn Preis > 0
+    if (price > 0) {
+      showToast('Zahlung wird verarbeitet...');
+      await processPayment(price, a.dbId || id, svcName + ' - Termin ' + dateStr, 'termin');
+    }
 
-  // Supabase: Bestätigung + Zahlung
-  if (supabase && currentUser && a.dbId) {
-    supabase.from('bookings').update({
-      status: 'confirmed',
-      zahlung: a.zahlung,
-      booking_date: tv.date || (tv.optionen && tv.optionen[0] ? tv.optionen[0].date : null)
-    }).eq('id', a.dbId).then(function(res) {
-      if (res.error) console.error('Booking confirm:', res.error);
-    });
+    // Bestätigung + Zahlung
+    a.status = 'confirmed';
+    a.paidAt = new Date().toISOString();
+    a.zahlung = {amount: price, method: _selectedPaymentType || 'stripe', paidAt: a.paidAt, status: price > 0 ? 'paid' : 'free'};
+    a.updatedAt = new Date().toISOString();
+    taSaveAnfragen(anfragen);
+
+    // Supabase: Bestätigung + Zahlung
+    if (supabase && currentUser && a.dbId) {
+      supabase.from('bookings').update({
+        status: 'confirmed',
+        zahlung: a.zahlung,
+        booking_date: tv.date || (tv.optionen && tv.optionen[0] ? tv.optionen[0].date : null)
+      }).eq('id', a.dbId).then(function(res) {
+        if (res.error) console.error('Booking confirm:', res.error);
+      });
+    }
+
+    renderEkMeineAnfragen();
+    showToast('Bezahlt & bestätigt! Termin ist verbindlich.');
+
+  } catch (paymentError) {
+    console.error('Termin payment error:', paymentError);
+    showToast('Zahlung fehlgeschlagen: ' + (paymentError.message || 'Unbekannter Fehler'), 'error');
   }
-
-  renderEkMeineAnfragen();
-  showToast('💳 Bezahlt & bestätigt! Termin ist verbindlich.');
 }
 
 // Terminvorschlag ablehnen

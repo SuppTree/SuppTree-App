@@ -36,7 +36,12 @@ const SUPPTREE_CONFIG = {
     ELITE: 20
   },
 
-  // API Endpoints (für später)
+  // Payment (Test-Keys — vor Go-Live durch Live-Keys ersetzen!)
+  STRIPE_PK: 'pk_test_DEIN_STRIPE_KEY_HIER',
+  PAYPAL_CLIENT_ID: 'DEIN_PAYPAL_CLIENT_ID_HIER',
+  PAYMENT_MODE: 'test', // 'test' oder 'live'
+
+  // API Endpoints
   API: {
     BASE_URL: '/api',
     PRODUCTS: '/api/products',
