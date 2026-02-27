@@ -9582,6 +9582,18 @@ function sendEmpfehlung(){
   k.empfehlungen.unshift(empf);
   persistKundeData(k.id, { empfehlungen: k.empfehlungen });
 
+  // Supabase: Empfehlung als sent_plan speichern
+  if (_sb && _currentUser) {
+    _sb.from('sent_plans').insert({
+      partner_id: _currentUser.id,
+      partner_name: (typeof provider !== 'undefined' ? provider.name : '') || '',
+      customer_id: currentKundeId,
+      plan_type: 'supplement',
+      plan_name: 'Supplement-Empfehlung',
+      plan_data: empf
+    }).then(function(res) { if (res.error) console.error('Empfehlung persist:', res.error); });
+  }
+
   // localStorage Bridge → Kunden-App (Supplement-Plan)
   try {
     const beraterId = tpGetBeraterId();
@@ -12990,6 +13002,18 @@ function tpSendPlan() {
     }
   } catch(e) { console.warn('localStorage bridge error:', e); }
 
+  // Supabase: Plan speichern
+  if (_sb && _currentUser) {
+    _sb.from('sent_plans').insert({
+      partner_id: _currentUser.id,
+      partner_name: (typeof provider !== 'undefined' ? provider.name : '') || '',
+      customer_id: tpState.kundeId,
+      plan_type: 'training',
+      plan_name: plan.name,
+      plan_data: plan
+    }).then(function(res) { if (res.error) console.error('Plan send persist:', res.error); });
+  }
+
   // Automatisch als Vorlage speichern
   tpAutoSaveAsTemplate();
 
@@ -14426,6 +14450,18 @@ function epSendPlan() {
     let berater = JSON.parse(localStorage.getItem('suppTreeMeineBerater')||'[]');
     if(!berater.some(b => b.id === beraterId)) { berater.push(beraterEntry); localStorage.setItem('suppTreeMeineBerater', JSON.stringify(berater)); }
   } catch(e) { console.warn('localStorage bridge error:', e); }
+
+  // Supabase: Plan speichern
+  if (_sb && _currentUser) {
+    _sb.from('sent_plans').insert({
+      partner_id: _currentUser.id,
+      partner_name: (typeof provider !== 'undefined' ? provider.name : '') || '',
+      customer_id: epState.kundeId,
+      plan_type: 'nutrition',
+      plan_name: plan.name,
+      plan_data: plan
+    }).then(function(res) { if (res.error) console.error('Plan send persist:', res.error); });
+  }
 
   epAutoSave();
   toast('✅ Ernährungsplan an '+kunde.name+' gesendet!','success');

@@ -926,6 +926,23 @@ async function loadUserDataFromSupabase() {
       localStorage.setItem('suppTreeMeineBerater', JSON.stringify(beraterList));
     }
 
+    // Gesendete Pläne aus Supabase laden
+    const { data: sentPlans } = await supabase
+      .from('sent_plans')
+      .select('*')
+      .eq('customer_id', currentUser.id)
+      .order('sent_at', { ascending: false });
+
+    if (sentPlans && sentPlans.length > 0) {
+      var plans = sentPlans.map(function(sp) {
+        var p = sp.plan_data;
+        p.isNew = !sp.is_read;
+        p.dbPlanId = sp.id;
+        return p;
+      });
+      localStorage.setItem('suppTreeBeraterPlaene', JSON.stringify(plans));
+    }
+
     console.log('✅ User Daten geladen');
   } catch (error) {
     console.error('Load Data Error:', error);
@@ -21242,6 +21259,11 @@ function openBeraterPlan(planId) {
     mbSavePlaene(plaene);
     renderMeineBerater();
     try { renderHomeNewEmpfehlungen(); } catch(e) {}
+    // Supabase: als gelesen markieren
+    if (plan.dbPlanId && supabase && currentUser) {
+      supabase.from('sent_plans').update({ is_read: true }).eq('id', plan.dbPlanId)
+        .then(function(res) { if (res.error) console.error('Plan read update:', res.error); });
+    }
   }
 
   const berater = mbGetBerater().find(b => b.id === plan.beraterId);
