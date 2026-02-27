@@ -5946,8 +5946,54 @@ async function handleAdminReset() {
   }
 }
 
+// ── REALTIME SUBSCRIPTIONS ──
+function startAdminRealtime() {
+  var sb = initSupabase();
+  if (!sb) return;
+
+  // 1. Profiles: neue Seller/Kunden → Dashboard-Stats + Listen
+  sb.channel('admin-profiles')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, function() {
+      loadDashboardStats();
+      loadRecentActivity();
+      var active = document.querySelector('.screen.active');
+      if (active && active.id === 'partnerScreen') { loadPartners().then(function() { renderPartners(); }); }
+      if (active && active.id === 'usersScreen') { loadCustomers().then(function() { renderUsers(); updateUserCounts(); }); }
+    })
+    .subscribe();
+
+  // 2. Orders: neue/geänderte Bestellungen → Stats + Orders-Liste
+  sb.channel('admin-orders')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, function() {
+      loadDashboardStats();
+      var active = document.querySelector('.screen.active');
+      if (active && active.id === 'ordersScreen') { loadOrders().then(function() { renderOrders(); updateOrderCounts(); }); }
+    })
+    .subscribe();
+
+  // 3. Bookings: neue Termine → Termine-Liste
+  sb.channel('admin-bookings')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, function() {
+      var active = document.querySelector('.screen.active');
+      if (active && active.id === 'termineSubScreen') { loadTermine().then(function() { renderTermineList(); updateTermineCounts(); }); }
+    })
+    .subscribe();
+
+  // 4. Blood Tests: neue Bluttests → Bluttests-Liste
+  sb.channel('admin-bloodtests')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'blood_tests' }, function() {
+      var active = document.querySelector('.screen.active');
+      if (active && active.id === 'bluttestsSubScreen') { loadBluttests().then(function() { renderBluttestList(); updateBluttestCounts(); }); }
+    })
+    .subscribe();
+
+  console.log('✅ Admin Realtime aktiv');
+}
+
 // ── LOGOUT ──
 async function handleLogout() {
+  var sb = initSupabase();
+  if (sb) sb.removeAllChannels();
   await logoutUser();
   showAdminAuth();
 }
@@ -5985,6 +6031,9 @@ async function handleLogout() {
 
     // Dashboard Stats laden
     if (typeof loadDashboardStats === 'function') loadDashboardStats();
+
+    // Realtime starten
+    if (typeof startAdminRealtime === 'function') startAdminRealtime();
 
   } catch (error) {
     console.error('Auth-Fehler:', error);
