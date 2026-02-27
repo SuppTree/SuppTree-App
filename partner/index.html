@@ -3753,6 +3753,7 @@ async function handlePartnerLogin() {
           renderBottomNav();
           renderMehrMenu();
           await partnerLoadFromSupabase();
+          startPartnerRealtime();
           renderDashboard();
         } else {
           showPartnerOnboarding();
@@ -3926,6 +3927,7 @@ let _currentUser = null;
             renderMehrMenu();
             // Alle Partner-Daten aus Supabase laden → localStorage aktualisieren
             await partnerLoadFromSupabase();
+            startPartnerRealtime();
           } else {
             // Kein seller_type → Onboarding zeigen
             showPartnerOnboarding();
@@ -4219,6 +4221,85 @@ function fmtTimeline(dateStr) {
   return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 }
 
+// ═══ REALTIME SUBSCRIPTIONS ═══
+function startPartnerRealtime() {
+  if (!_sb || !_currentUser) return;
+
+  // Alte Channels entfernen
+  _sb.removeAllChannels();
+
+  // Bookings: Neue Anfragen + Status-Updates
+  _sb.channel('partner-bookings')
+    .on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'bookings',
+      filter: 'partner_id=eq.' + _currentUser.id
+    }, function(payload) {
+      handleBookingChange(payload);
+    })
+    .subscribe();
+}
+
+function handleBookingChange(payload) {
+  var b = payload.new;
+  if (!b) return;
+
+  var statusMap = { requested: 'new', proposed: 'chat', confirmed: 'confirmed', declined: 'declined', cancelled: 'storniert' };
+
+  if (payload.eventType === 'INSERT') {
+    // Neue Anfrage
+    var exists = anfragen.find(function(a) { return a.dbId === b.id; });
+    if (exists) return;
+
+    anfragen.unshift({
+      id: b.id,
+      dbId: b.id,
+      status: statusMap[b.status] || b.status,
+      kunde: { name: b.customer_name || '', email: '', avatar: (b.customer_name || '??').split(' ').map(function(w){ return w.charAt(0).toUpperCase(); }).join('').slice(0,2) },
+      service: { name: b.service || '', price: parseFloat(b.price) || 0, duration: b.duration || 60 },
+      mode: b.mode || 'praxis',
+      verfuegbarkeit: b.customer_message || '',
+      message: b.notes || '',
+      createdAt: b.created_at,
+      messages: [],
+      terminVorschlag: b.termin_vorschlag || null,
+      zahlung: b.zahlung || null,
+      storno: b.storno || null
+    });
+    renderAnfragenList();
+    updateTermineBadge();
+    toast('Neue Anfrage von ' + (b.customer_name || 'Kunde') + '!', 'success');
+
+  } else if (payload.eventType === 'UPDATE') {
+    // Status-Update (Kunde hat bestätigt/abgelehnt/storniert)
+    var anf = anfragen.find(function(a) { return a.dbId === b.id; });
+    if (!anf) return;
+
+    var oldStatus = anf.status;
+    anf.status = statusMap[b.status] || b.status;
+    anf.zahlung = b.zahlung || anf.zahlung;
+    anf.storno = b.storno || anf.storno;
+    anf.terminVorschlag = b.termin_vorschlag || anf.terminVorschlag;
+
+    // Wenn der Chat für diese Anfrage offen ist → live updaten
+    if (typeof currentAnfrage !== 'undefined' && currentAnfrage && currentAnfrage.dbId === b.id) {
+      applyKundenAntwort(b.status, b.zahlung, b.storno);
+    }
+
+    renderAnfragenList();
+    updateTermineBadge();
+
+    if (b.status === 'confirmed' && oldStatus !== 'confirmed') {
+      toast('Kunde hat Termin bestätigt und bezahlt!', 'success');
+    } else if (b.status === 'declined') {
+      toast('Kunde hat Terminvorschlag abgelehnt', '');
+    } else if (b.status === 'cancelled') {
+      toast('Kunde hat Termin storniert', '');
+    }
+  }
+}
+
 // LIVE/LOCAL Badge
 function updatePartnerModeBadge(){
   const badge=document.getElementById('partnerModeBadge');
@@ -4360,6 +4441,7 @@ function updateUserDisplay(user) {
 
 // Logout Handler
 async function handleLogout() {
+  if (_sb) _sb.removeAllChannels();
   await logoutUser();
   _currentUser = null;
   _sb = null;

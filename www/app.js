@@ -595,10 +595,12 @@ function initSupabase() {
           currentUser = session.user;
           await loadUserProfile();
           await loadUserDataFromSupabase();
+          startCustomerRealtime();
           updateUIForLoggedInUser();
         } else {
           currentUser = null;
           userProfile = null;
+          if (supabase) supabase.removeAllChannels();
           updateUIForLoggedOutUser();
         }
       });
@@ -1009,6 +1011,82 @@ async function loadUserDataFromSupabase() {
   } catch (error) {
     console.error('Load Data Error:', error);
   }
+}
+
+// =============================================
+// REALTIME SUBSCRIPTIONS
+// =============================================
+
+function startCustomerRealtime() {
+  if (!supabase || !currentUser) return;
+
+  supabase.removeAllChannels();
+
+  // Bookings: Terminvorschläge + Status-Updates
+  supabase.channel('customer-bookings')
+    .on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'bookings',
+      filter: 'customer_id=eq.' + currentUser.id
+    }, function(payload) {
+      handleCustomerBookingUpdate(payload);
+    })
+    .subscribe();
+
+  // Pläne: Neue Pläne vom Berater
+  supabase.channel('customer-plans')
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'sent_plans',
+      filter: 'customer_id=eq.' + currentUser.id
+    }, function(payload) {
+      handleNewPlan(payload);
+    })
+    .subscribe();
+}
+
+function handleCustomerBookingUpdate(payload) {
+  var b = payload.new;
+  if (!b) return;
+
+  var statusMap = { requested: 'pending', proposed: 'termin_vorgeschlagen', confirmed: 'confirmed', declined: 'declined', cancelled: 'storniert', completed: 'completed' };
+  var anfragen = taGetAnfragen();
+  var anf = anfragen.find(function(a) { return a.dbId === b.id; });
+
+  if (!anf) return;
+
+  anf.status = statusMap[b.status] || b.status;
+  if (b.termin_vorschlag) anf.terminVorschlag = b.termin_vorschlag;
+  if (b.zahlung) anf.zahlung = b.zahlung;
+  if (b.storno) anf.storno = b.storno;
+  taSaveAnfragen(anfragen);
+
+  // UI updaten falls sichtbar
+  if (typeof renderEkMeineAnfragen === 'function') {
+    try { renderEkMeineAnfragen(); } catch(e) {}
+  }
+
+  if (b.status === 'proposed') {
+    showToast('Neuer Terminvorschlag erhalten!');
+  } else if (b.status === 'completed') {
+    showToast('Termin als abgeschlossen markiert');
+  }
+}
+
+function handleNewPlan(payload) {
+  var sp = payload.new;
+  if (!sp) return;
+
+  var plans = JSON.parse(localStorage.getItem('suppTreeBeraterPlaene') || '[]');
+  var p = sp.plan_data || {};
+  p.isNew = true;
+  p.dbPlanId = sp.id;
+  plans.unshift(p);
+  localStorage.setItem('suppTreeBeraterPlaene', JSON.stringify(plans));
+
+  showToast('Neuer Plan von deinem Berater!');
 }
 
 // =============================================
@@ -35462,6 +35540,7 @@ async function initApp() {
         currentUser = session.user;
         await loadUserProfile();
         await loadUserDataFromSupabase();
+        startCustomerRealtime();
         updateUIForLoggedInUser();
       }
     } catch(e) {
