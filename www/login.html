@@ -423,7 +423,7 @@ body {
       <div style="text-align:center;font-size:11px;color:#9ca3af;margin-bottom:12px;font-weight:600;letter-spacing:0.5px">DEV-ZUGANG (ohne Login)</div>
       <div style="display:flex;gap:8px">
         <button type="button" onclick="window.location.href='index.html'" style="flex:1;padding:12px 8px;border:2px solid #43A047;background:#E8F5E9;color:#2E7D32;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">🛒 Kunde</button>
-        <button type="button" onclick="window.location.href='../partner/index.html'" style="flex:1;padding:12px 8px;border:2px solid #00A67E;background:#E0F2F1;color:#00695C;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">🏪 Seller</button>
+        <button type="button" onclick="localStorage.setItem('suppTreePartnerType','supplement');window.location.href='../partner/index.html'" style="flex:1;padding:12px 8px;border:2px solid #00A67E;background:#E0F2F1;color:#00695C;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">🏪 Seller</button>
         <button type="button" onclick="window.location.href='../admin/index.html'" style="flex:1;padding:12px 8px;border:2px solid #3F51B5;background:#E8EAF6;color:#1A237E;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">👑 Admin</button>
       </div>
     </div>
@@ -447,14 +447,14 @@ body {
         <label class="role-card selected" onclick="selectRole('customer')">
           <input type="radio" name="role" value="customer" checked>
           <div class="role-card-icon">🛒</div>
-          <div class="role-card-title">Einkaufen</div>
-          <div class="role-card-desc">Supplements kaufen & tracken</div>
+          <div class="role-card-title">Kunde</div>
+          <div class="role-card-desc">Kaufen, tracken & gesünder leben</div>
         </label>
         <label class="role-card" onclick="selectRole('seller')">
           <input type="radio" name="role" value="seller">
-          <div class="role-card-icon">🏪</div>
-          <div class="role-card-title">Verkaufen</div>
-          <div class="role-card-desc">Auf SuppTree verkaufen</div>
+          <div class="role-card-icon">🤝</div>
+          <div class="role-card-title">Partner werden</div>
+          <div class="role-card-desc">Verkaufen & Kunden betreuen</div>
         </label>
       </div>
     </div>
@@ -471,29 +471,11 @@ body {
       </div>
     </div>
 
-    <!-- Seller-spezifische Felder -->
+    <!-- Seller: Firmenname -->
     <div class="seller-fields" id="sellerFields">
       <div class="form-group">
         <label class="form-label">Firmenname</label>
         <input type="text" class="form-input" id="regCompany" placeholder="Meine Firma GmbH" autocomplete="organization">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Was verkaufst du?</label>
-        <div class="type-chips">
-          <label class="type-chip selected" onclick="selectType('supplement')">
-            <input type="radio" name="seller_type" value="supplement" checked>
-            <span>💊</span> Supplements
-          </label>
-          <label class="type-chip" onclick="selectType('heilpraktiker')">
-            <input type="radio" name="seller_type" value="heilpraktiker">
-            <span>🩺</span> Heilpraktiker
-          </label>
-          <label class="type-chip" onclick="selectType('coach')">
-            <input type="radio" name="seller_type" value="coach">
-            <span>🏋️</span> Coach
-          </label>
-        </div>
       </div>
     </div>
 
@@ -580,12 +562,6 @@ function selectRole(role) {
   document.getElementById('sellerFields').classList.toggle('visible', role === 'seller');
 }
 
-// ── Seller-Typ ──
-function selectType(type) {
-  document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('selected'));
-  document.querySelector('.type-chip input[value="' + type + '"]').parentElement.classList.add('selected');
-}
-
 // ── Passwort anzeigen/verbergen ──
 function togglePw(id, btn) {
   const el = document.getElementById(id);
@@ -670,10 +646,9 @@ async function handleRegister(e) {
 
   const userData = { name: (firstName + ' ' + lastName).trim() };
 
-  // Seller-spezifische Daten
   if (role === 'seller') {
-    userData.company = document.getElementById('regCompany').value.trim();
-    userData.seller_type = document.querySelector('input[name="seller_type"]:checked')?.value || 'supplement';
+    const company = document.getElementById('regCompany').value.trim();
+    if (company) userData.company = company;
   }
 
   setLoading(btn, true);

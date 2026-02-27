@@ -13,6 +13,20 @@
 .auth-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--admin-accent);border-radius:50%;animation:authSpin 0.8s linear infinite}
 .auth-text{margin-top:16px;color:var(--text-muted);font-size:14px}
 @keyframes authSpin{to{transform:rotate(360deg)}}
+#adminAuthOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#1A237E 0%,#283593 100%);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px}
+.aa-card{background:#fff;border-radius:16px;padding:32px 28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.aa-logo{text-align:center;font-size:28px;font-weight:700;color:#1A237E;margin-bottom:4px}
+.aa-title{text-align:center;font-size:14px;color:#6b7280;margin-bottom:24px}
+.aa-input{width:100%;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:15px;margin-bottom:12px;outline:none;transition:border-color .2s}
+.aa-input:focus{border-color:#3F51B5;box-shadow:0 0 0 3px rgba(63,81,181,0.1)}
+.aa-btn{width:100%;padding:13px;background:#3F51B5;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;transition:background .2s}
+.aa-btn:hover{background:#303F9F}
+.aa-btn:disabled{opacity:0.6;cursor:not-allowed}
+.aa-error{background:#fef2f2;color:#dc2626;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;border:1px solid #fecaca}
+.aa-footer{text-align:center;margin-top:16px;font-size:13px}
+.aa-footer a{color:#3F51B5;text-decoration:none}
+.aa-footer a:hover{text-decoration:underline}
+.aa-success{background:#f0fdf4;color:#16a34a;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;border:1px solid #bbf7d0}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh}
 .app{min-height:100vh;padding-bottom:90px}
@@ -326,6 +340,22 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
   <div class="auth-text">Wird geladen...</div>
 </div>
 
+<!-- Admin Login Overlay -->
+<div id="adminAuthOverlay" style="display:none">
+  <div class="aa-card">
+    <div class="aa-logo">🌿 SuppTree</div>
+    <div class="aa-title">Admin-Dashboard</div>
+    <div id="adminAuthError" class="aa-error" style="display:none"></div>
+    <div id="adminAuthSuccess" class="aa-success" style="display:none"></div>
+    <input id="adminEmail" class="aa-input" type="email" placeholder="Email">
+    <input id="adminPassword" class="aa-input" type="password" placeholder="Passwort">
+    <button id="adminLoginBtn" class="aa-btn" onclick="handleAdminLogin()">Anmelden</button>
+    <div class="aa-footer">
+      <a href="#" onclick="handleAdminReset();return false">Passwort vergessen?</a>
+    </div>
+  </div>
+</div>
+
 <div class="app">
 
 <!-- ========== DASHBOARD SCREEN ========== -->
@@ -340,23 +370,23 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
     </div>
     <div class="stats">
       <div class="stat">
-        <div class="stat-top"><div class="stat-icon">💰</div><div class="stat-trend">+12%</div></div>
-        <div class="stat-value" id="statRevenue">€4.280</div>
+        <div class="stat-top"><div class="stat-icon">💰</div><div class="stat-trend" id="statRevenueTrend">–</div></div>
+        <div class="stat-value" id="statRevenue">–</div>
         <div class="stat-label">Umsatz (Monat)</div>
       </div>
       <div class="stat">
-        <div class="stat-top"><div class="stat-icon">👤</div><div class="stat-trend">+8</div></div>
-        <div class="stat-value" id="statUsers">127</div>
-        <div class="stat-label">Neue Kunden (Monat)</div>
+        <div class="stat-top"><div class="stat-icon">👤</div><div class="stat-trend" id="statUsersTrend">–</div></div>
+        <div class="stat-value" id="statUsers">–</div>
+        <div class="stat-label">Kunden (gesamt)</div>
       </div>
       <div class="stat">
-        <div class="stat-top"><div class="stat-icon">🏪</div><div class="stat-trend">+2</div></div>
-        <div class="stat-value" id="statSellers">14</div>
+        <div class="stat-top"><div class="stat-icon">🏪</div><div class="stat-trend" id="statSellersTrend">–</div></div>
+        <div class="stat-value" id="statSellers">–</div>
         <div class="stat-label">Aktive Seller</div>
       </div>
       <div class="stat">
-        <div class="stat-top"><div class="stat-icon">📦</div><div class="stat-trend down">3 offen</div></div>
-        <div class="stat-value" id="statOrders">23</div>
+        <div class="stat-top"><div class="stat-icon">📦</div><div class="stat-trend down" id="statOrdersTrend">–</div></div>
+        <div class="stat-value" id="statOrders">–</div>
         <div class="stat-label">Offene Bestellungen</div>
       </div>
     </div>
@@ -458,6 +488,13 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
             <div class="activity-badge warning">Storno</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Onboarding-Insights</div>
+      <div class="card" id="onboardingStatsCard" style="padding:16px">
+        <div id="onboardingStatsContent" style="color:#6b7280;font-size:13px;text-align:center;padding:12px 0">Noch keine Anmeldungen</div>
       </div>
     </div>
 
@@ -825,12 +862,33 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
   <div class="screen-header">
     <button class="back-btn" onclick="goBackFromSub()">←</button>
     <div class="screen-title">Partner-Widgets</div>
-    <button onclick="showWidgetDetail(null)" style="font-size:18px;background:none;border:none;cursor:pointer;margin-left:auto;color:var(--admin-accent);font-weight:700;padding:0 4px">＋</button>
+    <button id="widgetAddBtn" onclick="showWidgetDetail(null)" style="font-size:18px;background:none;border:none;cursor:pointer;margin-left:auto;color:var(--admin-accent);font-weight:700;padding:0 4px">＋</button>
   </div>
-  <div style="padding:12px 16px 8px;font-size:12px;color:var(--text-muted)">
-    Verwalte welche Dashboard-Widgets für Partner verfügbar sind.
+  <!-- Tab-Switcher -->
+  <div style="display:flex;gap:0;margin:8px 16px 0;border-bottom:2px solid var(--border)">
+    <button id="wTab_widgets" onclick="switchWidgetTab('widgets')" style="flex:1;padding:10px 0;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid var(--admin-accent);margin-bottom:-2px;color:var(--admin-accent);cursor:pointer">Alle Widgets</button>
+    <button id="wTab_presets" onclick="switchWidgetTab('presets')" style="flex:1;padding:10px 0;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text-muted);cursor:pointer">Typ-Presets</button>
   </div>
-  <div id="adminWidgetList" class="detail-section"></div>
+  <!-- Alle Widgets Tab -->
+  <div id="widgetTabWidgets">
+    <div style="padding:12px 16px 8px;font-size:12px;color:var(--text-muted)">
+      Verwalte welche Dashboard-Widgets für Partner verfügbar sind.
+    </div>
+    <div id="adminWidgetList" class="detail-section"></div>
+  </div>
+  <!-- Typ-Presets Tab -->
+  <div id="widgetTabPresets" style="display:none">
+    <div style="padding:12px 16px 8px;font-size:12px;color:var(--text-muted)">
+      Konfiguriere welche Widgets jeder Partner-Typ standardmäßig sieht.
+    </div>
+    <!-- Typ-Tabs -->
+    <div style="display:flex;gap:6px;padding:4px 16px 12px">
+      <button id="pTab_supplement" onclick="switchPresetType('supplement')" class="preset-type-tab active" style="flex:1;padding:8px 4px;font-size:12px;font-weight:600;border-radius:8px;border:2px solid var(--admin-accent);background:var(--admin-accent);color:#fff;cursor:pointer">💊 Supplement</button>
+      <button id="pTab_heilpraktiker" onclick="switchPresetType('heilpraktiker')" class="preset-type-tab" style="flex:1;padding:8px 4px;font-size:12px;font-weight:600;border-radius:8px;border:2px solid var(--border);background:#fff;color:var(--text-muted);cursor:pointer">🩺 Heilpraktiker</button>
+      <button id="pTab_coach" onclick="switchPresetType('coach')" class="preset-type-tab" style="flex:1;padding:8px 4px;font-size:12px;font-weight:600;border-radius:8px;border:2px solid var(--border);background:#fff;color:var(--text-muted);cursor:pointer">🎯 Coach</button>
+    </div>
+    <div id="presetEditorContent"></div>
+  </div>
 </div>
 
 <!-- WIDGET DETAIL -->
@@ -1450,9 +1508,10 @@ function showScreen(id) {
   }
 
   // Listen rendern wenn nötig
-  if (id === 'partner') renderPartners();
-  if (id === 'users') { renderUsers(); updateUserCounts(); }
-  if (id === 'orders') renderOrders();
+  if (id === 'dashboard') { renderOnboardingStats(); loadDashboardStats(); loadRecentActivity(); }
+  if (id === 'partner') { renderPartners(); loadPartners().then(function() { renderPartners(); }); }
+  if (id === 'users') { renderUsers(); updateUserCounts(); loadOrders().then(function() { return loadCustomers(); }).then(function() { renderUsers(); updateUserCounts(); }); }
+  if (id === 'orders') { renderOrders(); updateOrderCounts(); loadOrders().then(function() { renderOrders(); updateOrderCounts(); }); }
 
   window.scrollTo(0, 0);
 }
@@ -1471,11 +1530,11 @@ function showSubScreen(id) {
   document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', i === navIdx));
 
   // Inhalte rendern
-  if (id === 'products') { populateProductDropdowns(); renderProducts(); updateProductCounts(); }
+  if (id === 'products') { populateProductDropdowns(); renderProducts(); updateProductCounts(); loadProducts().then(function() { populateProductDropdowns(); renderProducts(); updateProductCounts(); }); }
   if (id === 'categories') renderCategories();
-  if (id === 'finanzen') renderFinanzen();
+  if (id === 'finanzen') { renderFinanzen(); Promise.all([loadOrders(), loadTermine(), loadBluttests()]).then(function() { renderFinanzen(); }); }
   if (id === 'payouts') renderPayouts();
-  if (id === 'widgets') renderAdminWidgets();
+  if (id === 'widgets') { renderAdminWidgets(); switchWidgetTab(_activeWidgetTab); }
   if (id === 'team') renderAdminTeam();
   if (id === 'settings') renderSettings();
   if (id === 'affiliatePartners') renderAffiliatePartners();
@@ -1532,7 +1591,7 @@ function getPartnerDocProgress(s) {
 }
 
 function renderPartners() {
-  let list = demoSellers;
+  let list = _livePartners || demoSellers;
   if (partnerStatusFilter !== 'all') list = list.filter(s => s.status === partnerStatusFilter);
   if (partnerChipFilters.type) list = list.filter(s => s.type === partnerChipFilters.type);
   if (partnerChipFilters.verified === 'true') list = list.filter(s => s.verified);
@@ -1549,7 +1608,7 @@ function renderPartners() {
     const dp = getPartnerDocProgress(s);
     const dpPct = dp.total > 0 ? Math.round((dp.approved / dp.total) * 100) : 0;
     const barClass = dpPct === 100 ? 'full' : dpPct >= 50 ? 'partial' : 'low';
-    const partnerProds = demoProducts.filter(p => p.seller === s.name);
+    const partnerProds = (_liveProducts || demoProducts).filter(p => p.seller === s.name);
     const typeIcon = {supplement:'💊', heilpraktiker:'🩺', coach:'🎯'}[s.type] || '🤝';
 
     return `
@@ -1592,7 +1651,7 @@ function renderPartners() {
 }
 
 function showPartnerDetail(id) {
-  const s = demoSellers.find(x => x.id === id);
+  const s = (_livePartners || demoSellers).find(x => x.id === id);
   if (!s) return;
 
   // Dokumente aufbereiten
@@ -1607,7 +1666,7 @@ function showPartnerDetail(id) {
   const barClass = pct === 100 ? 'full' : pct >= 50 ? 'partial' : 'low';
 
   // Produkte des Partners
-  const partnerProducts = demoProducts.filter(p => p.seller === s.name);
+  const partnerProducts = (_liveProducts || demoProducts).filter(p => p.seller === s.name);
 
   // Banner für Unterlagen
   let docBanner = '';
@@ -1748,21 +1807,22 @@ function showPartnerDetail(id) {
 
 function updatePartnerCounts(){
   const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-  el('partnerCntAll',demoSellers.length);
-  el('partnerCntActive',demoSellers.filter(s=>s.status==='active').length);
-  el('partnerCntPending',demoSellers.filter(s=>s.status==='pending').length);
-  el('partnerCntBlocked',demoSellers.filter(s=>s.status==='blocked').length);
+  el('partnerCntAll',(_livePartners || demoSellers).length);
+  el('partnerCntActive',(_livePartners || demoSellers).filter(s=>s.status==='active').length);
+  el('partnerCntPending',(_livePartners || demoSellers).filter(s=>s.status==='pending').length);
+  el('partnerCntBlocked',(_livePartners || demoSellers).filter(s=>s.status==='blocked').length);
 }
 function toggleSellerBereich(id,key){
-  const s=demoSellers.find(x=>x.id===id);
+  const s=(_livePartners || demoSellers).find(x=>x.id===id);
   if(!s) return;
   if(!s.bereiche) s.bereiche={produkte:true,qr:true,link:true,termine:false,bluttests:false};
   s.bereiche[key]=!s.bereiche[key];
+  persistPartner(s, { bereiche: s.bereiche });
   rerenderKeepScroll(()=>showPartnerDetail(id));
 }
 
 function saveSellerProvision(id){
-  const s=demoSellers.find(x=>x.id===id);
+  const s=(_livePartners || demoSellers).find(x=>x.id===id);
   if(!s) return;
   const br=s.bereiche||{produkte:true,qr:true,link:true,termine:false,bluttests:false};
   const vals={
@@ -1776,26 +1836,28 @@ function saveSellerProvision(id){
     if(isNaN(v)||v<0||v>100){showToast('⚠️ Alle Werte müssen 0-100% sein');return;}
   }
   s.provision=vals;
+  persistPartner(s, { provision: vals, bereiche: s.bereiche });
   showToast('✅ Konditionen für '+s.name+' gespeichert');
   rerenderKeepScroll(()=>showPartnerDetail(id));
 }
 
 function changePartnerType(id, newType) {
-  const s = demoSellers.find(x => x.id === id);
+  const s = (_livePartners || demoSellers).find(x => x.id === id);
   if (!s) return;
   const oldType = s.type;
   s.type = newType;
+  persistPartner(s, { seller_type: newType });
   renderPartners();
   updatePartnerCounts();
   toast('✅ Typ geändert: ' + getSellerTypeLabel(oldType) + ' → ' + getSellerTypeLabel(newType));
-  // TODO Live: UPDATE profiles SET seller_type = newType WHERE id = s.supabaseId
 }
 
 function changeSellerStatus(id, newStatus) {
-  const s = demoSellers.find(x => x.id === id);
+  const s = (_livePartners || demoSellers).find(x => x.id === id);
   if (!s) return;
   adminConfirm('"' + s.name + '" wirklich auf "' + getStatusLabel(newStatus) + '" setzen?', () => {
     s.status = newStatus;
+    persistPartner(s, { seller_status: newStatus });
     showToast(`Status geändert: ${getStatusLabel(newStatus)}`);
     updatePartnerCounts();
     rerenderKeepScroll(() => showPartnerDetail(id));
@@ -1803,17 +1865,18 @@ function changeSellerStatus(id, newStatus) {
 }
 
 function verifySeller(id) {
-  const s = demoSellers.find(x => x.id === id);
+  const s = (_livePartners || demoSellers).find(x => x.id === id);
   if (!s) return;
   adminConfirm('"' + s.name + '" wirklich als verifiziert markieren?', () => {
     s.verified = true;
+    persistPartner(s, { verified: true });
     showToast('Seller verifiziert');
     rerenderKeepScroll(() => showPartnerDetail(id));
   }, {type:'success', btnLabel:'✅ Verifizieren'});
 }
 
 function approveDocument(sellerId, docId) {
-  const s = demoSellers.find(x => x.id === sellerId);
+  const s = (_livePartners || demoSellers).find(x => x.id === sellerId);
   if (!s || !s.dokumente) return;
   const doc = s.dokumente.find(d => d.id === docId);
   if (!doc) return;
@@ -1821,13 +1884,14 @@ function approveDocument(sellerId, docId) {
     doc.status = 'approved';
     doc.date = new Date().toISOString().split('T')[0];
     delete doc.reason;
+    persistPartner(s, { seller_dokumente: s.dokumente });
     showToast('✅ Dokument genehmigt');
     rerenderKeepScroll(() => showPartnerDetail(sellerId));
   }, {type:'success', btnLabel:'✅ Genehmigen'});
 }
 
 function rejectDocument(sellerId, docId) {
-  const s = demoSellers.find(x => x.id === sellerId);
+  const s = (_livePartners || demoSellers).find(x => x.id === sellerId);
   if (!s || !s.dokumente) return;
   showRejectModal('Dokument ablehnen', function(reason) {
     const doc = s.dokumente.find(d => d.id === docId);
@@ -1835,6 +1899,7 @@ function rejectDocument(sellerId, docId) {
     doc.status = 'rejected';
     doc.date = new Date().toISOString().split('T')[0];
     doc.reason = reason;
+    persistPartner(s, { seller_dokumente: s.dokumente });
     showToast('❌ Dokument abgelehnt');
     rerenderKeepScroll(() => showPartnerDetail(sellerId));
   });
@@ -1875,7 +1940,7 @@ function toggleProductDocs(productId, sellerId) {
     return;
   }
 
-  const p = demoProducts.find(x => x.id === productId);
+  const p = (_liveProducts || demoProducts).find(x => x.id === productId);
   if (!p || !p.dokumente) {
     container.innerHTML = '<div style="padding:8px;color:var(--text-muted);font-size:12px;text-align:center">Keine Produkt-Dokumente erforderlich</div>';
     container.style.display = 'block';
@@ -1920,7 +1985,7 @@ function toggleProductDocs(productId, sellerId) {
 }
 
 function approveProductDoc(productId, docId, sellerId) {
-  const p = demoProducts.find(x => x.id === productId);
+  const p = (_liveProducts || demoProducts).find(x => x.id === productId);
   if (!p || !p.dokumente) return;
   const doc = p.dokumente.find(d => d.id === docId);
   if (doc) {
@@ -1928,6 +1993,7 @@ function approveProductDoc(productId, docId, sellerId) {
       doc.status = 'approved';
       doc.date = new Date().toISOString().split('T')[0];
       delete doc.reason;
+      persistProduct(p, { dokumente: p.dokumente });
       showToast('✅ Produkt-Dokument genehmigt');
       rerenderKeepScroll(() => showPartnerDetail(sellerId));
     }, {type:'success', btnLabel:'✅ Genehmigen'});
@@ -1935,7 +2001,7 @@ function approveProductDoc(productId, docId, sellerId) {
 }
 
 function rejectProductDoc(productId, docId, sellerId) {
-  const p = demoProducts.find(x => x.id === productId);
+  const p = (_liveProducts || demoProducts).find(x => x.id === productId);
   if (!p || !p.dokumente) return;
   showRejectModal('Produkt-Dokument ablehnen', function(reason) {
     const doc = p.dokumente.find(d => d.id === docId);
@@ -1943,6 +2009,7 @@ function rejectProductDoc(productId, docId, sellerId) {
       doc.status = 'rejected';
       doc.date = new Date().toISOString().split('T')[0];
       doc.reason = reason;
+      persistProduct(p, { dokumente: p.dokumente });
       showToast('❌ Produkt-Dokument abgelehnt');
       rerenderKeepScroll(() => showPartnerDetail(sellerId));
     }
@@ -1966,7 +2033,7 @@ function searchUsers(query) {
 }
 
 function renderUsers() {
-  let list = demoUsers.filter(u => u.role === 'customer');
+  let list = _liveCustomers || demoUsers.filter(u => u.role === 'customer');
   if (userFilter === 'active') list = list.filter(u => u.status === 'active');
   else if (userFilter === 'blocked') list = list.filter(u => u.status === 'blocked');
   else if (userFilter === 'qr') list = list.filter(u => u.partnerType === 'qr');
@@ -1983,7 +2050,7 @@ function renderUsers() {
     const dsgvoFlag = u.dsgvo && (u.dsgvo.loeschung || u.dsgvo.auskunft || u.dsgvo.widerspruch);
     const typLabel = u.partnerType === 'qr' ? '<span style="font-size:9px;background:#E8F5E9;color:#1a5a3a;padding:1px 5px;border-radius:4px">QR 10%</span>' : u.partnerType === 'link' ? '<span style="font-size:9px;background:#E3F2FD;color:#1565C0;padding:1px 5px;border-radius:4px">Link 7%</span>' : '';
     return `
-    <div class="list-item" onclick="showUserDetail(${u.id})">
+    <div class="list-item" onclick="showUserDetail('${u.id}')">
       <div class="list-avatar customer">${esc(u.name.charAt(0))}</div>
       <div class="list-info">
         <div class="list-name">${esc(u.name)} ${typLabel} ${!u.emailVerified ? '<span style="font-size:9px;color:var(--red)">✉️</span>' : ''} ${dsgvoFlag ? '<span style="font-size:9px;color:var(--orange)">⚖️</span>' : ''}</div>
@@ -1998,13 +2065,13 @@ function renderUsers() {
 }
 
 function showUserDetail(id) {
-  const u = demoUsers.find(x => x.id === id);
+  const u = (_liveCustomers || demoUsers).find(x => x.id == id);
   if (!u) return;
   const c = u.consent || {};
   const d = u.dsgvo || {};
 
   // Bestellungen des Kunden
-  const userOrders = demoOrders.filter(o => o.customer === u.name);
+  const userOrders = (_liveOrders || demoOrders).filter(o => (u.dbId && o.userId) ? o.userId === u.dbId : o.customer === u.name);
 
   document.getElementById('userDetailTitle').textContent = u.name;
   document.getElementById('userDetailContent').innerHTML = `
@@ -2136,9 +2203,9 @@ function showUserDetail(id) {
         <span class="detail-value">${d.widerspruch ? '⛔ Eingelegt · ' + d.widerspruch : '<span style="color:var(--text-muted)">Kein Widerspruch</span>'}</span>
       </div>
       <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap">
-        <button class="btn btn-outline" style="font-size:11px" onclick="handleDsgvo(${u.id},'auskunft')">📋 Auskunft erteilen</button>
-        <button class="btn btn-outline" style="font-size:11px" onclick="handleDsgvo(${u.id},'export')">📤 Daten exportieren</button>
-        <button class="btn btn-outline" style="font-size:11px;border-color:#ef4444;color:#ef4444" onclick="handleDsgvo(${u.id},'loeschung')">🗑️ Löschung durchführen</button>
+        <button class="btn btn-outline" style="font-size:11px" onclick="handleDsgvo('${u.id}','auskunft')">📋 Auskunft erteilen</button>
+        <button class="btn btn-outline" style="font-size:11px" onclick="handleDsgvo('${u.id}','export')">📤 Daten exportieren</button>
+        <button class="btn btn-outline" style="font-size:11px;border-color:#ef4444;color:#ef4444" onclick="handleDsgvo('${u.id}','loeschung')">🗑️ Löschung durchführen</button>
       </div>
     </div>
 
@@ -2147,14 +2214,14 @@ function showUserDetail(id) {
       <div class="detail-card-title">📝 Interne Notizen</div>
       <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;font-style:italic">Nur für Admin sichtbar — nicht an Kunden herausgegeben</div>
       <textarea id="userNotes" style="width:100%;min-height:60px;padding:10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;resize:vertical;font-family:inherit">${esc(u.notes || '')}</textarea>
-      <button class="btn btn-primary" style="margin-top:8px;font-size:12px" onclick="saveUserNotes(${u.id})">Notiz speichern</button>
+      <button class="btn btn-primary" style="margin-top:8px;font-size:12px" onclick="saveUserNotes('${u.id}')">Notiz speichern</button>
     </div>
 
     <!-- VERWALTUNG -->
     <div class="detail-card">
       <div class="detail-card-title">⚙️ Verwaltung</div>
       <div class="detail-actions" style="flex-wrap:wrap">
-        ${u.status === 'active' ? `<button class="btn btn-danger" onclick="toggleUserStatus(${u.id})">🚫 Kunde sperren</button>` : `<button class="btn btn-success" onclick="toggleUserStatus(${u.id})">🔓 Kunde entsperren</button>`}
+        ${u.status === 'active' ? `<button class="btn btn-danger" onclick="toggleUserStatus('${u.id}')">🚫 Kunde sperren</button>` : `<button class="btn btn-success" onclick="toggleUserStatus('${u.id}')">🔓 Kunde entsperren</button>`}
       </div>
     </div>
   `;
@@ -2163,7 +2230,7 @@ function showUserDetail(id) {
 }
 
 function updateUserCounts(){
-  const customers=demoUsers.filter(u=>u.role==='customer');
+  const customers=(_liveCustomers || demoUsers).filter(u=>u.role==='customer');
   const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   el('userCntAll',customers.length);
   el('userCntActive',customers.filter(u=>u.status==='active').length);
@@ -2172,11 +2239,12 @@ function updateUserCounts(){
   el('userCntLink',customers.filter(u=>u.partnerType==='link').length);
 }
 function changeUserRole(id) {
-  const u = demoUsers.find(x => x.id === id);
+  const u = (_liveCustomers || demoUsers).find(x => x.id == id);
   if (!u) return;
   const newRole = document.getElementById('userRoleSelect').value;
   adminConfirm('Rolle von "' + u.name + '" wirklich zu "' + getRoleLabel(newRole) + '" ändern?', () => {
     u.role = newRole;
+    persistCustomer(u, { role: u.role });
     showToast('Rolle geändert: ' + getRoleLabel(newRole));
     updateUserCounts();
     rerenderKeepScroll(() => showUserDetail(id));
@@ -2184,13 +2252,14 @@ function changeUserRole(id) {
 }
 
 function toggleUserStatus(id) {
-  const u = demoUsers.find(x => x.id === id);
+  const u = (_liveCustomers || demoUsers).find(x => x.id == id);
   if (!u) return;
   const action = u.status === 'active' ? 'sperren' : 'entsperren';
   const type = u.status === 'active' ? 'danger' : 'success';
   const btnLabel = u.status === 'active' ? '🚫 Sperren' : '🔓 Entsperren';
   adminConfirm('"' + u.name + '" wirklich ' + action + '?', () => {
     u.status = u.status === 'active' ? 'blocked' : 'active';
+    persistCustomer(u, { customer_status: u.status });
     showToast('Status geändert: ' + (u.status === 'active' ? 'Aktiv' : 'Gesperrt'));
     updateUserCounts();
     rerenderKeepScroll(() => showUserDetail(id));
@@ -2198,7 +2267,7 @@ function toggleUserStatus(id) {
 }
 
 function handleDsgvo(id, type) {
-  const u = demoUsers.find(x => x.id === id);
+  const u = (_liveCustomers || demoUsers).find(x => x.id == id);
   if (!u) return;
   if (!u.dsgvo) u.dsgvo = {};
   const today = new Date().toISOString().split('T')[0];
@@ -2208,6 +2277,7 @@ function handleDsgvo(id, type) {
       u.dsgvo.loeschung = today;
       u.status = 'blocked';
       u.notes = (u.notes ? u.notes + '\n' : '') + '[' + today + '] DSGVO-Löschung durchgeführt. Aufbewahrungspflichtige Daten bleiben erhalten.';
+      persistCustomer(u, { dsgvo: u.dsgvo, customer_status: u.status, admin_notes: u.notes });
       showToast('🗑️ Löschung durchgeführt (Art. 17 DSGVO)');
       updateUserCounts();
       rerenderKeepScroll(() => showUserDetail(id));
@@ -2216,6 +2286,7 @@ function handleDsgvo(id, type) {
     adminConfirm('Datenauskunft gemäß Art. 15 DSGVO für "' + u.name + '" wirklich erteilen?', () => {
       u.dsgvo.auskunft = today;
       u.notes = (u.notes ? u.notes + '\n' : '') + '[' + today + '] Datenauskunft erteilt (Art. 15 DSGVO).';
+      persistCustomer(u, { dsgvo: u.dsgvo, admin_notes: u.notes });
       showToast('📋 Datenauskunft erteilt (Art. 15 DSGVO)');
       updateUserCounts();
       rerenderKeepScroll(() => showUserDetail(id));
@@ -2224,6 +2295,7 @@ function handleDsgvo(id, type) {
     adminConfirm('Datenexport gemäß Art. 20 DSGVO für "' + u.name + '" wirklich bereitstellen?', () => {
       u.dsgvo.export = today;
       u.notes = (u.notes ? u.notes + '\n' : '') + '[' + today + '] Datenexport bereitgestellt (Art. 20 DSGVO).';
+      persistCustomer(u, { dsgvo: u.dsgvo, admin_notes: u.notes });
       showToast('📤 Datenexport bereitgestellt (Art. 20 DSGVO)');
       updateUserCounts();
       rerenderKeepScroll(() => showUserDetail(id));
@@ -2232,11 +2304,12 @@ function handleDsgvo(id, type) {
 }
 
 function saveUserNotes(id) {
-  const u = demoUsers.find(x => x.id === id);
+  const u = (_liveCustomers || demoUsers).find(x => x.id == id);
   if (!u) return;
   const notes = document.getElementById('userNotes');
   if (notes) {
     u.notes = notes.value;
+    persistCustomer(u, { admin_notes: u.notes });
     showToast('📝 Notiz gespeichert');
   }
 }
@@ -2258,7 +2331,7 @@ function searchOrders(query) {
 }
 
 function renderOrders() {
-  let list = demoOrders;
+  let list = _liveOrders || demoOrders;
   if (orderFilter !== 'all') list = list.filter(o => o.status === orderFilter);
   if (orderSearch) list = list.filter(o => o.id.toLowerCase().includes(orderSearch) || o.customer.toLowerCase().includes(orderSearch) || o.seller.toLowerCase().includes(orderSearch));
 
@@ -2304,7 +2377,7 @@ function renderOrders() {
 }
 
 function showOrderDetail(id) {
-  const o = demoOrders.find(x => x.id === id);
+  const o = (_liveOrders || demoOrders).find(x => x.id === id);
   if (!o) return;
   const inv = o.invoice;
   const sh = o.shipping;
@@ -2392,19 +2465,31 @@ function showOrderDetail(id) {
 }
 
 function updateOrderCounts(){
+  var list = _liveOrders || demoOrders;
   const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-  el('orderCntAll',demoOrders.length);
-  el('orderCntPending',demoOrders.filter(o=>o.status==='pending').length);
-  el('orderCntShipped',demoOrders.filter(o=>o.status==='shipped').length);
-  el('orderCntDelivered',demoOrders.filter(o=>o.status==='delivered').length);
-  el('orderCntCancelled',demoOrders.filter(o=>o.status==='cancelled').length);
+  el('orderCntAll',list.length);
+  el('orderCntPending',list.filter(o=>o.status==='pending').length);
+  el('orderCntShipped',list.filter(o=>o.status==='shipped').length);
+  el('orderCntDelivered',list.filter(o=>o.status==='delivered').length);
+  el('orderCntCancelled',list.filter(o=>o.status==='cancelled').length);
 }
 function changeOrderStatus(id, newStatus) {
-  const o = demoOrders.find(x => x.id === id);
+  const o = (_liveOrders || demoOrders).find(x => x.id === id);
   if (!o) return;
   const type = newStatus === 'cancelled' ? 'danger' : newStatus === 'delivered' ? 'success' : 'primary';
   adminConfirm('Bestellung ' + o.id + ' wirklich auf "' + getOrderStatusLabel(newStatus) + '" setzen?', () => {
     o.status = newStatus;
+    // Supabase-Persist
+    if (o.dbId) {
+      var sb = initSupabase();
+      if (sb) {
+        var updates = { status: newStatus };
+        if (newStatus === 'shipped') updates.shipped_at = new Date().toISOString();
+        if (newStatus === 'delivered') updates.delivered_at = new Date().toISOString();
+        sb.from('orders').update(updates).eq('id', o.dbId)
+          .then(function(res) { if (res.error) console.error('Order status update error:', res.error); });
+      }
+    }
     showToast('Status geändert: ' + getOrderStatusLabel(newStatus));
     updateOrderCounts();
     rerenderKeepScroll(() => showOrderDetail(id));
@@ -2420,37 +2505,49 @@ function getRetentionEnd(dateStr) {
 }
 
 function showUserDetailByName(name) {
-  const u = demoUsers.find(x => x.name === name);
+  const u = (_liveCustomers || demoUsers).find(x => x.name === name);
   if (u) showUserDetail(u.id);
   else showToast('⚠️ Kunde nicht gefunden');
 }
 
 function viewInvoice(orderId) {
-  const o = demoOrders.find(x => x.id === orderId);
+  const o = (_liveOrders || demoOrders).find(x => x.id === orderId);
   if (!o || !o.invoice) return;
   showToast('👁️ Rechnung ' + o.invoice.nr + ' wird angezeigt (Demo)');
 }
 
 function downloadInvoice(orderId) {
-  const o = demoOrders.find(x => x.id === orderId);
+  const o = (_liveOrders || demoOrders).find(x => x.id === orderId);
   if (!o || !o.invoice) return;
   showToast('📥 PDF-Download: ' + o.invoice.nr + ' (Demo)');
 }
 
 function markInvoicePaid(orderId) {
-  const o = demoOrders.find(x => x.id === orderId);
+  const o = (_liveOrders || demoOrders).find(x => x.id === orderId);
   if (!o || !o.invoice) return;
   adminConfirm('Rechnung "' + o.invoice.nr + '" wirklich als bezahlt markieren?', () => {
     const today = new Date().toISOString().slice(0, 10);
     o.invoice.status = 'bezahlt';
     o.invoice.paidDate = today;
+    // Supabase-Persist
+    if (o.dbId) {
+      var sb = initSupabase();
+      if (sb) {
+        sb.from('orders').update({
+          invoice_status: 'bezahlt',
+          invoice_paid_at: new Date().toISOString(),
+          paid_at: new Date().toISOString()
+        }).eq('id', o.dbId)
+          .then(function(res) { if (res.error) console.error('Invoice paid update error:', res.error); });
+      }
+    }
     showToast('💰 Rechnung ' + o.invoice.nr + ' als bezahlt markiert');
     rerenderKeepScroll(() => showOrderDetail(orderId));
   }, {type:'success', btnLabel:'💰 Als bezahlt markieren'});
 }
 
 function generateInvoice(orderId) {
-  const o = demoOrders.find(x => x.id === orderId);
+  const o = (_liveOrders || demoOrders).find(x => x.id === orderId);
   if (!o) return;
   adminConfirm('Rechnung für Bestellung "' + o.id + '" wirklich erstellen?', () => {
     const today = new Date().toISOString().slice(0, 10);
@@ -2458,6 +2555,21 @@ function generateInvoice(orderId) {
     const netto = +(o.total / 1.19).toFixed(2);
     const mwst = +(o.total - netto).toFixed(2);
     o.invoice = { nr: nr, date: today, netto: netto, mwst: mwst, mwstSatz: 19, status: 'offen' };
+    // Supabase-Persist
+    if (o.dbId) {
+      var sb = initSupabase();
+      if (sb) {
+        sb.from('orders').update({
+          invoice_number: nr,
+          invoice_date: today,
+          invoice_netto: netto,
+          invoice_mwst: mwst,
+          invoice_mwst_rate: 19,
+          invoice_status: 'offen'
+        }).eq('id', o.dbId)
+          .then(function(res) { if (res.error) console.error('Invoice create error:', res.error); });
+      }
+    }
     showToast('🧾 Rechnung ' + nr + ' erstellt');
     rerenderKeepScroll(() => showOrderDetail(orderId));
   }, {btnLabel:'🧾 Rechnung erstellen'});
@@ -2504,10 +2616,10 @@ function applyProductDropdowns() {
 }
 
 function populateProductDropdowns() {
-  const categories = [...new Set(demoProducts.map(p => p.category).filter(Boolean))].sort();
-  const sellers = [...new Set(demoProducts.map(p => p.seller).filter(Boolean))].sort();
-  const zielgruppen = [...new Set(demoProducts.flatMap(p => p.zielgruppen||[]))].sort();
-  const wirkungen = [...new Set(demoProducts.flatMap(p => p.wirkungsbereiche||[]))].sort();
+  const categories = [...new Set((_liveProducts || demoProducts).map(p => p.category).filter(Boolean))].sort();
+  const sellers = [...new Set((_liveProducts || demoProducts).map(p => p.seller).filter(Boolean))].sort();
+  const zielgruppen = [...new Set((_liveProducts || demoProducts).flatMap(p => p.zielgruppen||[]))].sort();
+  const wirkungen = [...new Set((_liveProducts || demoProducts).flatMap(p => p.wirkungsbereiche||[]))].sort();
   const catSel = document.getElementById('productCategoryFilter');
   const zgSel = document.getElementById('productZielgruppeFilter');
   const wkSel = document.getElementById('productWirkungFilter');
@@ -2525,16 +2637,16 @@ function populateProductDropdowns() {
 
 function updateProductCounts() {
   const el = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
-  el('prodCntAll', demoProducts.length);
-  el('prodCntActive', demoProducts.filter(p => p.status === 'active').length);
-  el('prodCntReview', demoProducts.filter(p => p.status === 'in_review').length);
-  el('prodCntDraft', demoProducts.filter(p => p.status === 'draft').length);
-  el('prodCntInactive', demoProducts.filter(p => p.status === 'inactive').length);
-  el('prodCntBlocked', demoProducts.filter(p => p.status === 'blocked' || p.status === 'recalled').length);
+  el('prodCntAll', (_liveProducts || demoProducts).length);
+  el('prodCntActive', (_liveProducts || demoProducts).filter(p => p.status === 'active').length);
+  el('prodCntReview', (_liveProducts || demoProducts).filter(p => p.status === 'in_review').length);
+  el('prodCntDraft', (_liveProducts || demoProducts).filter(p => p.status === 'draft').length);
+  el('prodCntInactive', (_liveProducts || demoProducts).filter(p => p.status === 'inactive').length);
+  el('prodCntBlocked', (_liveProducts || demoProducts).filter(p => p.status === 'blocked' || p.status === 'recalled').length);
 }
 
 function renderProducts() {
-  let list = demoProducts;
+  let list = _liveProducts || demoProducts;
   // Status tab
   if (productFilter === 'blocked') list = list.filter(p => p.status === 'blocked' || p.status === 'recalled');
   else if (productFilter !== 'all') list = list.filter(p => p.status === productFilter);
@@ -2613,11 +2725,12 @@ function renderProducts() {
 }
 
 function toggleFeatured(id) {
-  const p = demoProducts.find(x => x.id === id);
+  const p = (_liveProducts || demoProducts).find(x => x.id === id);
   if (!p) return;
   const msg = p.featured ? 'Featured-Status für "' + p.name + '" entfernen?' : '"' + p.name + '" als Featured markieren?';
   adminConfirm(msg, () => {
     p.featured = !p.featured;
+    persistProduct(p, { featured: p.featured });
     showToast(p.featured ? 'Als Featured markiert' : 'Featured entfernt');
     renderProducts();
     rerenderKeepScroll(() => showProductDetail(id));
@@ -2625,10 +2738,10 @@ function toggleFeatured(id) {
 }
 
 function showProductDetail(id) {
-  const p = demoProducts.find(x => x.id === id);
+  const p = (_liveProducts || demoProducts).find(x => x.id === id);
   if (!p) return;
 
-  const seller = demoSellers.find(s => s.name === p.seller);
+  const seller = (_livePartners || demoSellers).find(s => s.name === p.seller);
   const sellerType = seller ? seller.type : '';
   const isSupp = sellerType === 'supplement';
 
@@ -2739,7 +2852,7 @@ function showProductDetail(id) {
   }
 
   // Card 5: Verkaufsstatistiken
-  const prodOrders = demoOrders.filter(o => o.items.toLowerCase().includes(p.name.split(' ')[0].toLowerCase()));
+  const prodOrders = (_liveOrders || demoOrders).filter(o => o.items.toLowerCase().includes(p.name.split(' ')[0].toLowerCase()));
   const prodRevenue = prodOrders.reduce((sum, o) => sum + o.total, 0);
   const statsHtml = `
     <div class="detail-card">
@@ -2797,11 +2910,12 @@ function showProductDetail(id) {
 
 // ── Produkt-Aktionen ──
 function changeProductStatus(id, newStatus) {
-  const p = demoProducts.find(x => x.id === id);
+  const p = (_liveProducts || demoProducts).find(x => x.id === id);
   if (!p) return;
   adminConfirm('"' + p.name + '" auf "' + getProductStatusLabel(newStatus) + '" setzen?', () => {
     p.status = newStatus;
     p.statusChangedAt = new Date().toISOString().split('T')[0];
+    persistProduct(p, { status: newStatus, statusChangedAt: true });
     showToast('Status geändert: ' + getProductStatusLabel(newStatus));
     updateProductCounts();
     rerenderKeepScroll(() => showProductDetail(id));
@@ -2812,7 +2926,7 @@ function showBlockProduct(id) { showBlockProductModal(id); }
 function unblockProduct(id) { showUnblockProductModal(id); }
 
 function blockProductFromReklamation(productId, reklId) {
-  const p = demoProducts.find(x => x.id === productId);
+  const p = (_liveProducts || demoProducts).find(x => x.id === productId);
   if (!p) return;
   const r = (p.reklamationen || []).find(x => x.id === reklId);
   adminConfirm('⚠️ "' + p.name + '" wirklich wegen Reklamation sperren?\n\nDas Produkt wird sofort aus dem Shop entfernt.', () => {
@@ -2822,6 +2936,7 @@ function blockProductFromReklamation(productId, reklId) {
     if (!p.blockHistory) p.blockHistory = [];
     p.blockHistory.push({ date: new Date().toISOString().split('T')[0], reason: reason, blockedBy: 'Admin', type: 'blocked' });
     if (r) r.status = 'in_progress';
+    persistProduct(p, { status: 'blocked', statusChangedAt: true, blockHistory: p.blockHistory, reklamationen: p.reklamationen });
     showToast('🚫 Produkt gesperrt wegen Reklamation');
     updateProductCounts();
     rerenderKeepScroll(() => showProductDetail(productId));
@@ -2829,12 +2944,13 @@ function blockProductFromReklamation(productId, reklId) {
 }
 
 function changeReklamationStatus(productId, reklId, newStatus) {
-  const p = demoProducts.find(x => x.id === productId);
+  const p = (_liveProducts || demoProducts).find(x => x.id === productId);
   if (!p) return;
   const r = (p.reklamationen || []).find(x => x.id === reklId);
   if (!r) return;
   adminConfirm('Reklamation "' + r.title + '" auf "' + getReklamationStatusLabel(newStatus) + '" setzen?', () => {
     r.status = newStatus;
+    persistProduct(p, { reklamationen: p.reklamationen });
     showToast('Reklamation: ' + getReklamationStatusLabel(newStatus));
     rerenderKeepScroll(() => showProductDetail(productId));
   });
@@ -2843,7 +2959,7 @@ function changeReklamationStatus(productId, reklId, newStatus) {
 function showAddReklamation(productId) { showAddReklamationModal(productId); }
 
 function approveProductDocDetail(productId, docId) {
-  const p = demoProducts.find(x => x.id === productId);
+  const p = (_liveProducts || demoProducts).find(x => x.id === productId);
   if (!p || !p.dokumente) return;
   const doc = p.dokumente.find(d => d.id === docId);
   if (doc) {
@@ -2851,6 +2967,7 @@ function approveProductDocDetail(productId, docId) {
       doc.status = 'approved';
       doc.date = new Date().toISOString().split('T')[0];
       delete doc.reason;
+      persistProduct(p, { dokumente: p.dokumente });
       showToast('✅ Produkt-Dokument genehmigt');
       rerenderKeepScroll(() => showProductDetail(productId));
     }, {type:'success', btnLabel:'✅ Genehmigen'});
@@ -2858,7 +2975,7 @@ function approveProductDocDetail(productId, docId) {
 }
 
 function rejectProductDocDetail(productId, docId) {
-  const p = demoProducts.find(x => x.id === productId);
+  const p = (_liveProducts || demoProducts).find(x => x.id === productId);
   if (!p || !p.dokumente) return;
   showRejectModal('Produkt-Dokument ablehnen', function(reason) {
     const doc = p.dokumente.find(d => d.id === docId);
@@ -2866,6 +2983,7 @@ function rejectProductDocDetail(productId, docId) {
       doc.status = 'rejected';
       doc.date = new Date().toISOString().split('T')[0];
       doc.reason = reason;
+      persistProduct(p, { dokumente: p.dokumente });
       showToast('❌ Produkt-Dokument abgelehnt');
       rerenderKeepScroll(() => showProductDetail(productId));
     }
@@ -2891,9 +3009,9 @@ function switchCatTab(tab){
   renderClassList();
 }
 function _getClassCount(tab,name){
-  if(tab==='categories') return demoProducts.filter(p=>p.category===name).length;
+  if(tab==='categories') return (_liveProducts || demoProducts).filter(p=>p.category===name).length;
   const field=CAT_TAB_CONFIG[tab].field;
-  return demoProducts.filter(p=>p[field]&&p[field].includes(name)).length;
+  return (_liveProducts || demoProducts).filter(p=>p[field]&&p[field].includes(name)).length;
 }
 function renderClassList(){
   const cfg=CAT_TAB_CONFIG[_catTab];
@@ -3226,7 +3344,7 @@ function renderAffiliatePartners(){
       </div>
     </div>
 
-    ${demoSellers.map(s=>{
+    ${(_livePartners || demoSellers).map(s=>{
       const pv=s.provision||{marge:25,provisionQR:10,provisionLink:7,terminAnteil:0,bluttestProvision:0};
       const typeLabel=getSellerTypeLabel(s.type);
 
@@ -3277,8 +3395,9 @@ function renderFinanzen() {
   // ═══════════════════════════════════════════════
   // 1) PRODUKTE — 25% Marge vom Hersteller
   // ═══════════════════════════════════════════════
-  const validOrders=demoOrders.filter(o=>o.status!=='cancelled');
-  const totalProdRev=demoOrders.reduce((s,o)=>s+o.total,0);
+  var _ordList = _liveOrders || demoOrders;
+  const validOrders=_ordList.filter(o=>o.status!=='cancelled');
+  const totalProdRev=_ordList.reduce((s,o)=>s+o.total,0);
   const validProdRev=validOrders.reduce((s,o)=>s+o.total,0);
   const cancelledRev=totalProdRev-validProdRev;
   const prodMarge=validProdRev*MARGE_PRODUKTE; // 25% SuppTree bekommt vom Hersteller
@@ -3296,7 +3415,7 @@ function renderFinanzen() {
   // ═══════════════════════════════════════════════
   // 2) TERMINE — SuppTree bekommt 10% Platform-Fee
   // ═══════════════════════════════════════════════
-  const validTermine=demoTerminBuchungen.filter(t=>t.status!=='cancelled');
+  const validTermine=(_liveTermine || demoTerminBuchungen).filter(t=>t.status!=='cancelled');
   const totalTerminRev=validTermine.reduce((s,t)=>s+t.price,0);
   const terminSuppTree=totalTerminRev*MARGE_TERMINE; // 10%
   const terminPartner=totalTerminRev-terminSuppTree; // 90% an Partner
@@ -3314,7 +3433,7 @@ function renderFinanzen() {
   // ═══════════════════════════════════════════════
   // 3) BLUTTESTS — Partner bekommt 25% Provision
   // ═══════════════════════════════════════════════
-  const validBluttests=demoBluttestBuchungen.filter(b=>b.status!=='cancelled');
+  const validBluttests=(_liveBluttests || demoBluttestBuchungen).filter(b=>b.status!=='cancelled');
   const totalBluttestRev=validBluttests.reduce((s,b)=>s+b.price,0);
   const bluttestPartnerProv=totalBluttestRev*PROV_BLUTTEST; // 25% an Partner
   const bluttestSuppTree=totalBluttestRev-bluttestPartnerProv; // Rest SuppTree + Labor
@@ -3372,21 +3491,20 @@ function renderFinanzen() {
   });
 
   // Zeitraum-Daten (nur Produkte für Chart — einfach halten)
-  const weekRev=demoOrders.filter(o=>new Date(o.date)>=weekAgo).reduce((s,o)=>s+o.total,0);
-  const monthRev=demoOrders.filter(o=>new Date(o.date)>=monthStart).reduce((s,o)=>s+o.total,0);
-  const prevMonthRev=demoOrders.filter(o=>{const d=new Date(o.date);return d>=prevMonthStart&&d<=prevMonthEnd;}).reduce((s,o)=>s+o.total,0);
+  const weekRev=_ordList.filter(o=>new Date(o.date)>=weekAgo).reduce((s,o)=>s+o.total,0);
+  const monthRev=_ordList.filter(o=>new Date(o.date)>=monthStart).reduce((s,o)=>s+o.total,0);
+  const prevMonthRev=_ordList.filter(o=>{const d=new Date(o.date);return d>=prevMonthStart&&d<=prevMonthEnd;}).reduce((s,o)=>s+o.total,0);
 
   // Seller
   const sellerData={};
-  demoOrders.forEach(o=>{
+  _ordList.forEach(o=>{
     const s=o.seller||'Unbekannt';
     if(!sellerData[s]) sellerData[s]={rev:0,orders:0,products:new Set(),items:[]};
     sellerData[s].rev+=o.total;
     sellerData[s].orders++;
-    o.items.split(',').forEach(item=>{
+    (o.items||'').split(',').forEach(item=>{
       const name=item.trim().replace(/^\d+x\s*/,'');
-      sellerData[s].products.add(name);
-      sellerData[s].items.push(name);
+      if(name) { sellerData[s].products.add(name); sellerData[s].items.push(name); }
     });
   });
   Object.keys(sellerData).forEach(s=>{
@@ -3399,8 +3517,8 @@ function renderFinanzen() {
 
   // Produkte
   const prodData={};
-  demoOrders.forEach(o=>{
-    o.items.split(',').forEach(item=>{
+  _ordList.forEach(o=>{
+    (o.items||'').split(',').forEach(item=>{
       const m=item.trim().match(/^(\d+)x\s*(.+)/);
       const qty=m?parseInt(m[1]):1;
       const name=m?m[2].trim():item.trim();
@@ -3409,7 +3527,7 @@ function renderFinanzen() {
     });
   });
   Object.keys(prodData).forEach(name=>{
-    const match=demoProducts.find(p=>name.toLowerCase().includes(p.name.toLowerCase().split(' ')[0]));
+    const match=(_liveProducts || demoProducts).find(p=>name.toLowerCase().includes(p.name.toLowerCase().split(' ')[0]));
     if(match){ prodData[name].category=match.category; prodData[name].seller=match.seller; }
   });
   const topProducts=Object.entries(prodData).sort((a,b)=>b[1].rev-a[1].rev);
@@ -3420,7 +3538,7 @@ function renderFinanzen() {
   for(let i=6;i>=0;i--){
     const d=new Date(now);d.setDate(d.getDate()-i);
     const ds=d.toISOString().split('T')[0];
-    const rev=demoOrders.filter(o=>o.date===ds).reduce((s,o)=>s+o.total,0);
+    const rev=_ordList.filter(o=>o.date===ds).reduce((s,o)=>s+o.total,0);
     last7.push({day:dayNames[d.getDay()],rev,isToday:i===0});
   }
   const maxDay=Math.max(...last7.map(d=>d.rev),1);
@@ -4605,6 +4723,22 @@ function saveAdminWidgets(widgets) {
   localStorage.setItem('suppTreeAdminWidgets', JSON.stringify(widgets));
 }
 
+// ── WIDGET PRESETS PRO TYP ──
+const DEFAULT_WIDGET_PRESETS = {
+  supplement: ['umsatzHero','handlung','heuteKarten','produkteTop','bestellungenUebersicht','umsatzverlauf','markenprofil','kennzahlen','finanzenUebersicht','schnellzugriffe','kundenUebersicht','affiliateUebersicht','analyticsKpi'],
+  heilpraktiker: ['anbieterProfil','handlung','termine','heuteKarten','serviceUebersicht','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','aktivitaeten','analyticsKpi'],
+  coach: ['anbieterProfil','handlung','termine','serviceUebersicht','heuteKarten','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','schnellzugriffe','aktivitaeten']
+};
+
+function getWidgetPresets() {
+  try { const s=JSON.parse(localStorage.getItem('suppTreeAdminWidgetPresets')); if(s&&s.supplement) return s; } catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT_WIDGET_PRESETS));
+}
+
+function saveWidgetPresets(presets) {
+  localStorage.setItem('suppTreeAdminWidgetPresets', JSON.stringify(presets));
+}
+
 function getWidgetDef(id) {
   return ADMIN_WIDGET_DEFS.find(d=>d.id===id) || {id:id, label:id, icon:'🧩', desc:'Benutzerdefiniertes Widget'};
 }
@@ -4938,6 +5072,172 @@ function renderAdminWidgets() {
       ${badges.length ? '<div style="display:flex;gap:4px;margin-top:8px">'+badges.join('')+'</div>' : ''}
     </div>`;
   }).join('');
+}
+
+// ── TAB-SWITCHING ──
+let _activeWidgetTab = 'widgets';
+let _activePresetType = 'supplement';
+
+function switchWidgetTab(tab) {
+  _activeWidgetTab = tab;
+  const wTab = document.getElementById('wTab_widgets');
+  const pTab = document.getElementById('wTab_presets');
+  const wContent = document.getElementById('widgetTabWidgets');
+  const pContent = document.getElementById('widgetTabPresets');
+  const addBtn = document.getElementById('widgetAddBtn');
+  if (tab === 'widgets') {
+    wTab.style.borderBottomColor = 'var(--admin-accent)';
+    wTab.style.color = 'var(--admin-accent)';
+    pTab.style.borderBottomColor = 'transparent';
+    pTab.style.color = 'var(--text-muted)';
+    wContent.style.display = '';
+    pContent.style.display = 'none';
+    if (addBtn) addBtn.style.display = '';
+  } else {
+    pTab.style.borderBottomColor = 'var(--admin-accent)';
+    pTab.style.color = 'var(--admin-accent)';
+    wTab.style.borderBottomColor = 'transparent';
+    wTab.style.color = 'var(--text-muted)';
+    wContent.style.display = 'none';
+    pContent.style.display = '';
+    if (addBtn) addBtn.style.display = 'none';
+    renderPresetEditor(_activePresetType);
+  }
+}
+
+function switchPresetType(type) {
+  _activePresetType = type;
+  ['supplement','heilpraktiker','coach'].forEach(t => {
+    const btn = document.getElementById('pTab_' + t);
+    if (!btn) return;
+    if (t === type) {
+      btn.style.border = '2px solid var(--admin-accent)';
+      btn.style.background = 'var(--admin-accent)';
+      btn.style.color = '#fff';
+    } else {
+      btn.style.border = '2px solid var(--border)';
+      btn.style.background = '#fff';
+      btn.style.color = 'var(--text-muted)';
+    }
+  });
+  renderPresetEditor(type);
+}
+
+function renderPresetEditor(type) {
+  const container = document.getElementById('presetEditorContent');
+  if (!container) return;
+  const activeWidgets = getAdminWidgets().filter(w => w.status === 'active').sort((a,b) => a.order - b.order);
+  const presets = getWidgetPresets();
+  const currentPreset = presets[type] || [];
+
+  const typeLabels = {supplement:'Supplement-Händler', heilpraktiker:'Heilpraktiker', coach:'Coach'};
+  const typeIcons = {supplement:'💊', heilpraktiker:'🩺', coach:'🎯'};
+
+  // Sort: enabled first (in preset order), then disabled
+  const enabled = [];
+  const disabled = [];
+  currentPreset.forEach(wid => {
+    const aw = activeWidgets.find(x => x.id === wid);
+    if (aw) enabled.push(aw);
+  });
+  activeWidgets.forEach(aw => {
+    if (!currentPreset.includes(aw.id)) disabled.push(aw);
+  });
+  const sorted = [...enabled, ...disabled];
+
+  container.innerHTML = `
+    <div style="padding:0 16px 8px">
+      <div style="background:linear-gradient(135deg,var(--admin-accent),#1a5a3a);color:#fff;padding:14px 16px;border-radius:10px;display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:24px">${typeIcons[type]}</span>
+        <div>
+          <div style="font-weight:700;font-size:15px">${typeLabels[type]}</div>
+          <div style="font-size:11px;opacity:.85">${currentPreset.length} von ${activeWidgets.length} Widgets aktiv</div>
+        </div>
+      </div>
+    </div>
+    ${enabled.length ? '<div style="padding:0 16px 4px;font-size:11px;font-weight:600;color:var(--admin-accent)">AKTIVE WIDGETS</div>' : ''}
+    <div style="padding:0 16px">
+      ${enabled.map((w, idx) => {
+        const def = getWidgetDef(w.id);
+        const pos = idx + 1;
+        const isFirst = idx === 0;
+        const isLast = idx === enabled.length - 1;
+        return `<div style="background:#fff;border-radius:10px;margin-bottom:8px;padding:12px 14px;border:1px solid var(--admin-accent);display:flex;align-items:center;gap:10px">
+          <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
+            <button onclick="movePresetWidget('${type}','${esc(w.id)}',-1)" style="background:none;border:none;cursor:pointer;font-size:14px;padding:0;opacity:${isFirst?'0.2':'1'}" ${isFirst?'disabled':''}>▲</button>
+            <div style="font-size:11px;font-weight:700;color:var(--admin-accent);text-align:center">${pos}</div>
+            <button onclick="movePresetWidget('${type}','${esc(w.id)}',1)" style="background:none;border:none;cursor:pointer;font-size:14px;padding:0;opacity:${isLast?'0.2':'1'}" ${isLast?'disabled':''}>▼</button>
+          </div>
+          <div style="width:36px;height:36px;border-radius:var(--r);background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${def.icon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:13px">${esc(def.label)}</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:1px">${esc(def.desc)}</div>
+          </div>
+          <label style="position:relative;width:44px;height:24px;flex-shrink:0;cursor:pointer">
+            <input type="checkbox" checked onchange="togglePresetWidget('${type}','${esc(w.id)}',false)" style="opacity:0;width:0;height:0;position:absolute">
+            <span style="position:absolute;inset:0;border-radius:12px;background:var(--admin-accent);transition:background .2s"></span>
+            <span style="position:absolute;top:2px;left:22px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)"></span>
+          </label>
+        </div>`;
+      }).join('')}
+    </div>
+    ${disabled.length ? '<div style="padding:8px 16px 4px;font-size:11px;font-weight:600;color:var(--text-muted)">VERFÜGBARE WIDGETS</div>' : ''}
+    <div style="padding:0 16px">
+      ${disabled.map(w => {
+        const def = getWidgetDef(w.id);
+        return `<div style="background:#fff;border-radius:10px;margin-bottom:8px;padding:12px 14px;border:1px solid var(--border);display:flex;align-items:center;gap:10px;opacity:.7">
+          <div style="width:36px;height:36px;border-radius:var(--r);background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${def.icon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:13px;color:var(--text-muted)">${esc(def.label)}</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:1px">${esc(def.desc)}</div>
+          </div>
+          <label style="position:relative;width:44px;height:24px;flex-shrink:0;cursor:pointer">
+            <input type="checkbox" onchange="togglePresetWidget('${type}','${esc(w.id)}',true)" style="opacity:0;width:0;height:0;position:absolute">
+            <span style="position:absolute;inset:0;border-radius:12px;background:#d1d5db;transition:background .2s"></span>
+            <span style="position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)"></span>
+          </label>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="padding:12px 16px 80px">
+      <button onclick="resetPresetType('${type}')" style="width:100%;padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;color:var(--text-muted);font-weight:600;font-size:13px;cursor:pointer">Auf Standard zurücksetzen</button>
+    </div>
+  `;
+}
+
+function togglePresetWidget(type, widgetId, enabled) {
+  const presets = getWidgetPresets();
+  if (!presets[type]) presets[type] = [];
+  if (enabled) {
+    if (!presets[type].includes(widgetId)) presets[type].push(widgetId);
+  } else {
+    presets[type] = presets[type].filter(id => id !== widgetId);
+  }
+  saveWidgetPresets(presets);
+  renderPresetEditor(type);
+  showToast(enabled ? '✅ Widget aktiviert' : '❌ Widget deaktiviert');
+}
+
+function resetPresetType(type) {
+  const presets = getWidgetPresets();
+  presets[type] = JSON.parse(JSON.stringify(DEFAULT_WIDGET_PRESETS[type] || []));
+  saveWidgetPresets(presets);
+  renderPresetEditor(type);
+  showToast('✅ Preset zurückgesetzt');
+}
+
+function movePresetWidget(type, widgetId, dir) {
+  const presets = getWidgetPresets();
+  const list = presets[type] || [];
+  const idx = list.indexOf(widgetId);
+  if (idx < 0) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= list.length) return;
+  list.splice(idx, 1);
+  list.splice(newIdx, 0, widgetId);
+  presets[type] = list;
+  saveWidgetPresets(presets);
+  renderPresetEditor(type);
 }
 
 function showWidgetDetail(id) {
@@ -5284,7 +5584,7 @@ function _runConfirm() {
 
 // Sperren-Modal
 function showBlockProductModal(id) {
-  const p = demoProducts.find(x => x.id === id);
+  const p = (_liveProducts || demoProducts).find(x => x.id === id);
   if (!p) return;
   openAdminModal('🚫 Produkt sperren', `
     <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:var(--r);padding:12px;margin-bottom:14px">
@@ -5303,12 +5603,13 @@ function showBlockProductModal(id) {
 function submitBlockProduct(id) {
   const reason = document.getElementById('modalBlockReason').value.trim();
   if (!reason) { showToast('Bitte Sperrgrund eingeben'); return; }
-  const p = demoProducts.find(x => x.id === id);
+  const p = (_liveProducts || demoProducts).find(x => x.id === id);
   if (!p) return;
   p.status = 'blocked';
   p.statusChangedAt = new Date().toISOString().split('T')[0];
   if (!p.blockHistory) p.blockHistory = [];
   p.blockHistory.push({ date: new Date().toISOString().split('T')[0], reason: reason, blockedBy: 'Admin', type: 'blocked' });
+  persistProduct(p, { status: 'blocked', statusChangedAt: true, blockHistory: p.blockHistory });
   closeAdminModal();
   showToast('🚫 Produkt gesperrt');
   updateProductCounts();
@@ -5317,7 +5618,7 @@ function submitBlockProduct(id) {
 
 // Entsperren-Modal
 function showUnblockProductModal(id) {
-  const p = demoProducts.find(x => x.id === id);
+  const p = (_liveProducts || demoProducts).find(x => x.id === id);
   if (!p) return;
   openAdminModal('🔓 Produkt entsperren', `
     <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--r);padding:12px;margin-bottom:14px">
@@ -5335,12 +5636,13 @@ function showUnblockProductModal(id) {
 
 function submitUnblockProduct(id) {
   const reason = document.getElementById('modalUnblockReason').value.trim() || 'Sperre aufgehoben';
-  const p = demoProducts.find(x => x.id === id);
+  const p = (_liveProducts || demoProducts).find(x => x.id === id);
   if (!p) return;
   p.status = 'active';
   p.statusChangedAt = new Date().toISOString().split('T')[0];
   if (!p.blockHistory) p.blockHistory = [];
   p.blockHistory.push({ date: new Date().toISOString().split('T')[0], reason: reason, blockedBy: 'Admin', type: 'unblocked' });
+  persistProduct(p, { status: 'active', statusChangedAt: true, blockHistory: p.blockHistory });
   closeAdminModal();
   showToast('🔓 Produkt entsperrt');
   updateProductCounts();
@@ -5349,7 +5651,7 @@ function submitUnblockProduct(id) {
 
 // Reklamation-Modal (Bericht-Formular)
 function showAddReklamationModal(productId) {
-  const p = demoProducts.find(x => x.id === productId);
+  const p = (_liveProducts || demoProducts).find(x => x.id === productId);
   if (!p) return;
   openAdminModal('⚠️ Neue Reklamation', `
     <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px">Reklamation für: <strong>${esc(p.name)}</strong> (${esc(p.artikelNr || '')})</div>
@@ -5398,11 +5700,12 @@ function submitAddReklamation(productId) {
   const priority = document.getElementById('modalReklPriority').value;
   const reporter = document.getElementById('modalReklReporter').value.trim() || 'Admin';
   const notes = document.getElementById('modalReklNotes').value.trim();
-  const p = demoProducts.find(x => x.id === productId);
+  const p = (_liveProducts || demoProducts).find(x => x.id === productId);
   if (!p) return;
   if (!p.reklamationen) p.reklamationen = [];
   const nextId = p.reklamationen.length > 0 ? Math.max(...p.reklamationen.map(r => r.id)) + 1 : 1;
   p.reklamationen.push({ id: nextId, type: type, title: title, reporter: reporter, date: new Date().toISOString().split('T')[0], status: 'open', priority: priority, notes: notes });
+  persistProduct(p, { reklamationen: p.reklamationen });
   closeAdminModal();
   showToast('⚠️ Reklamation hinzugefügt');
   rerenderKeepScroll(() => showProductDetail(productId));
@@ -5441,10 +5744,130 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// ── ADMIN AUTH OVERLAY ──
+function showAdminAuth() {
+  var overlay = document.getElementById('adminAuthOverlay');
+  if (overlay) overlay.style.display = 'flex';
+  var authLoading = document.getElementById('authLoading');
+  if (authLoading) authLoading.classList.add('hidden');
+}
+
+function hideAdminAuth() {
+  var overlay = document.getElementById('adminAuthOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+async function handleAdminLogin() {
+  var emailEl = document.getElementById('adminEmail');
+  var passEl = document.getElementById('adminPassword');
+  var errEl = document.getElementById('adminAuthError');
+  var succEl = document.getElementById('adminAuthSuccess');
+  var btn = document.getElementById('adminLoginBtn');
+
+  var email = (emailEl.value || '').trim();
+  var password = (passEl.value || '').trim();
+
+  // Reset
+  errEl.style.display = 'none';
+  succEl.style.display = 'none';
+
+  // Validierung
+  if (!email || !password) {
+    errEl.textContent = 'Bitte Email und Passwort eingeben.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!email.includes('@')) {
+    errEl.textContent = 'Bitte eine gültige Email-Adresse eingeben.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Wird angemeldet...';
+
+  try {
+    var result = await loginUser(email, password);
+
+    if (result.error) {
+      errEl.textContent = result.error.message === 'Invalid login credentials'
+        ? 'Email oder Passwort falsch.'
+        : result.error.message || 'Login fehlgeschlagen.';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Anmelden';
+      return;
+    }
+
+    var user = result.data?.user;
+    if (!user) {
+      errEl.textContent = 'Login fehlgeschlagen.';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Anmelden';
+      return;
+    }
+
+    // Role prüfen
+    var role = await getUserRole(user.id);
+    if (role !== SUPPTREE_CONFIG.ROLES.ADMIN) {
+      errEl.textContent = 'Kein Admin-Zugriff. Nur Administratoren können sich hier anmelden.';
+      errEl.style.display = 'block';
+      await logoutUser();
+      btn.disabled = false;
+      btn.textContent = 'Anmelden';
+      return;
+    }
+
+    // Erfolg → Dashboard laden
+    hideAdminAuth();
+
+    // Admin-Name anzeigen
+    var displayName = user.user_metadata?.name || user.email?.split('@')[0] || 'Administrator';
+    var nameEl = document.getElementById('adminName');
+    if (nameEl) nameEl.innerHTML = displayName + '<span class="header-badge">ADMIN</span>';
+
+    // Dashboard Stats laden
+    if (typeof loadDashboardStats === 'function') loadDashboardStats();
+
+  } catch (e) {
+    console.error('Admin login error:', e);
+    errEl.textContent = 'Verbindungsfehler. Bitte erneut versuchen.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Anmelden';
+  }
+}
+
+async function handleAdminReset() {
+  var emailEl = document.getElementById('adminEmail');
+  var errEl = document.getElementById('adminAuthError');
+  var succEl = document.getElementById('adminAuthSuccess');
+  var email = (emailEl.value || '').trim();
+
+  errEl.style.display = 'none';
+  succEl.style.display = 'none';
+
+  if (!email || !email.includes('@')) {
+    errEl.textContent = 'Bitte zuerst eine gültige Email-Adresse eingeben.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  try {
+    await resetPassword(email);
+    succEl.textContent = 'Passwort-Reset-Link wurde gesendet. Prüfe dein Postfach.';
+    succEl.style.display = 'block';
+  } catch (e) {
+    errEl.textContent = 'Fehler beim Senden des Reset-Links.';
+    errEl.style.display = 'block';
+  }
+}
+
 // ── LOGOUT ──
 async function handleLogout() {
   await logoutUser();
-  window.location.href = '../www/login.html?logout=true';
+  showAdminAuth();
 }
 
 // ── AUTH CHECK ──
@@ -5455,13 +5878,8 @@ async function handleLogout() {
     const session = await checkSession();
 
     if (!session) {
-      // DEV-MODUS: Ohne Login laden
-      console.warn('⚠️ DEV-Modus: Kein Login, lade trotzdem...');
-      authLoading.classList.add('hidden');
+      showAdminAuth();
       return;
-      // ORIGINAL:
-      // window.location.href = '../www/login.html';
-      // return;
     }
 
     // Nur Admins erlaubt
@@ -5473,6 +5891,7 @@ async function handleLogout() {
 
     // Auth OK
     authLoading.classList.add('hidden');
+    hideAdminAuth();
 
     // Admin-Name anzeigen
     const user = await getCurrentUser();
@@ -5482,11 +5901,630 @@ async function handleLogout() {
       nameEl.innerHTML = displayName + '<span class="header-badge">ADMIN</span>';
     }
 
+    // Dashboard Stats laden
+    if (typeof loadDashboardStats === 'function') loadDashboardStats();
+
   } catch (error) {
     console.error('Auth-Fehler:', error);
-    authLoading.classList.add('hidden');
+    showAdminAuth();
   }
 })();
+
+// ── ONBOARDING-STATISTIKEN ──
+var OB_CAT_LABELS = { supplement:'Supplement-Marken', partner:'Partner / Experte', unternehmen:'Unternehmen / Einrichtung' };
+var OB_CAT_COLORS = { supplement:'#16a34a', partner:'#7c3aed', unternehmen:'#2563eb' };
+var OB_CAT_ICONS = { supplement:'💊', partner:'🤝', unternehmen:'🏢' };
+var OB_SPEC_LABELS = {
+  supplement:'Supplement-Marken', heilpraktiker:'Heilpraktiker/in', ernaehrung:'Ernährungsexpert/in',
+  trainer:'Trainer/in & Coach', beauty:'Beauty & Wellness', hebamme:'Hebamme & Stillberater/in',
+  creator:'Creator', bgm:'BGM', klinik:'Klinik / Praxis', sonstiges_u:'Sonstige Unternehmen'
+};
+var OB_SPEC_ICONS = {
+  supplement:'💊', heilpraktiker:'🩺', ernaehrung:'🥗', trainer:'💪', beauty:'✨',
+  hebamme:'👶', creator:'🎬', bgm:'🏋️', klinik:'🏥', sonstiges_u:'🏢'
+};
+
+// Supabase-Daten laden, Fallback auf localStorage
+async function loadOnboardingStats() {
+  var sb = typeof initSupabase === 'function' ? initSupabase() : null;
+  if (sb) {
+    try {
+      var { data, error } = await sb
+        .from('profiles')
+        .select('display_name, partner_category, specialty, job_title, company_name, onboarding_completed_at, created_at')
+        .eq('role', 'seller')
+        .not('onboarding_completed_at', 'is', null)
+        .order('onboarding_completed_at', { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        // Aus DB-Daten Stats-Objekt bauen
+        var stats = { total: data.length, categories: {}, specialties: {}, timeline: [] };
+        for (var i = 0; i < data.length; i++) {
+          var p = data[i];
+          var cat = p.partner_category || 'supplement';
+          var spec = p.specialty || 'supplement';
+          stats.categories[cat] = (stats.categories[cat] || 0) + 1;
+          stats.specialties[spec] = (stats.specialties[spec] || 0) + 1;
+          stats.timeline.push({
+            date: (p.onboarding_completed_at || p.created_at || '').slice(0, 10),
+            category: cat,
+            specialty: spec,
+            name: p.display_name || '',
+            jobTitle: p.job_title || '',
+            company: p.company_name || ''
+          });
+        }
+        return stats;
+      }
+    } catch (e) {
+      console.log('Supabase onboarding stats error, Fallback auf localStorage:', e);
+    }
+  }
+
+  // Fallback: localStorage (Demo-Modus)
+  try {
+    return JSON.parse(localStorage.getItem('suppTreeOnboardingStats')) || null;
+  } catch (e) { return null; }
+}
+
+// ═══ LIVE DASHBOARD STATS aus Supabase ═══
+async function loadDashboardStats() {
+  var sb = initSupabase();
+  if (!sb) return;
+  try {
+    var now = new Date();
+    var startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    var startOfPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+    // Parallele Queries
+    var results = await Promise.all([
+      // 0: Seller gesamt
+      sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'seller'),
+      // 1: Kunden gesamt
+      sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'customer'),
+      // 2: Offene Bestellungen
+      sb.from('orders').select('*', { count: 'exact', head: true }).in('status', ['pending', 'processing']).then(function(r) { return r; }).catch(function() { return { count: 0 }; }),
+      // 3: Umsatz aktueller Monat
+      sb.from('orders').select('total').gte('created_at', startOfMonth.toISOString()).then(function(r) { return r; }).catch(function() { return { data: [] }; }),
+      // 4: Umsatz Vormonat
+      sb.from('orders').select('total').gte('created_at', startOfPrevMonth.toISOString()).lt('created_at', startOfMonth.toISOString()).then(function(r) { return r; }).catch(function() { return { data: [] }; }),
+      // 5: Neue Kunden diesen Monat
+      sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'customer').gte('created_at', startOfMonth.toISOString()),
+      // 6: Neue Seller diesen Monat
+      sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'seller').gte('created_at', startOfMonth.toISOString())
+    ]);
+
+    var sellerCount = results[0].count || 0;
+    var userCount = results[1].count || 0;
+    var orderCount = results[2].count || 0;
+    var revenue = (results[3].data || []).reduce(function(s, o) { return s + (o.total || 0); }, 0);
+    var prevRevenue = (results[4].data || []).reduce(function(s, o) { return s + (o.total || 0); }, 0);
+    var newCustomers = results[5].count || 0;
+    var newSellers = results[6].count || 0;
+
+    // Umsatz-Trend berechnen
+    var revTrend = '';
+    if (prevRevenue > 0) {
+      var pct = Math.round((revenue - prevRevenue) / prevRevenue * 100);
+      revTrend = (pct >= 0 ? '+' : '') + pct + '%';
+    } else if (revenue > 0) {
+      revTrend = 'neu';
+    }
+
+    // UI aktualisieren — Werte
+    var el = function(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; };
+    el('statRevenue', '€' + revenue.toLocaleString('de-DE', {minimumFractionDigits:0, maximumFractionDigits:0}));
+    el('statUsers', userCount);
+    el('statSellers', sellerCount);
+    el('statOrders', orderCount);
+
+    // UI aktualisieren — Trends
+    var setTrend = function(id, val, isDown) {
+      var e = document.getElementById(id);
+      if (!e) return;
+      e.textContent = val;
+      if (isDown) e.classList.add('down'); else e.classList.remove('down');
+    };
+    setTrend('statRevenueTrend', revTrend || '–', revenue < prevRevenue);
+    setTrend('statUsersTrend', newCustomers > 0 ? '+' + newCustomers : '–', false);
+    setTrend('statSellersTrend', newSellers > 0 ? '+' + newSellers : '–', false);
+    setTrend('statOrdersTrend', orderCount > 0 ? orderCount + ' offen' : '0', orderCount > 5);
+  } catch(e) {
+    console.log('Dashboard stats load error:', e);
+  }
+}
+
+// ═══ PARTNER aus Supabase ═══
+
+// Helper: Partner-Änderung nach Supabase schreiben
+function persistPartner(s, fields) {
+  if (!s || !s.dbId) return;
+  var sb = initSupabase();
+  if (!sb) return;
+  var updates = {};
+  if ('seller_type' in fields) updates.seller_type = fields.seller_type;
+  if ('seller_status' in fields) updates.seller_status = fields.seller_status;
+  if ('verified' in fields) updates.verified = fields.verified;
+  if ('provision' in fields) updates.provision = fields.provision;
+  if ('bereiche' in fields) updates.bereiche = fields.bereiche;
+  if ('seller_dokumente' in fields) updates.seller_dokumente = fields.seller_dokumente;
+  if ('shop_name' in fields) updates.shop_name = fields.shop_name;
+  if ('seller_nr' in fields) updates.seller_nr = fields.seller_nr;
+  sb.from('profiles').update(updates).eq('id', s.dbId)
+    .then(function(res) { if (res.error) console.error('Partner persist error:', res.error); });
+}
+
+var _livePartners = null;
+async function loadPartners() {
+  var sb = initSupabase();
+  if (!sb) return null;
+  try {
+    var { data } = await sb.from('profiles').select('*').eq('role', 'seller')
+      .order('created_at', { ascending: false });
+    if (!data || !data.length) return null;
+    _livePartners = data.map(function(p) {
+      return {
+        id: p.id,
+        dbId: p.id,
+        sellerNr: p.seller_nr || '',
+        name: p.display_name || p.name || p.email,
+        email: p.email,
+        company: p.company_name || '',
+        shopName: p.shop_name || p.company_name || '',
+        type: p.seller_type || 'supplement',
+        specialty: p.specialty || '',
+        jobTitle: p.job_title || '',
+        category: p.partner_category || '',
+        status: p.seller_status || (p.onboarding_completed_at ? 'active' : 'pending'),
+        verified: p.verified || false,
+        revenue: 0,
+        products: 0,
+        provision: p.provision || { marge: 25, provisionQR: 10, provisionLink: 7, terminAnteil: 0, bluttestProvision: 0 },
+        bereiche: p.bereiche || { produkte: true, qr: true, link: true, termine: false, bluttests: false },
+        dokumente: p.seller_dokumente || [],
+        registeredAt: p.created_at,
+        onboardedAt: p.onboarding_completed_at,
+        joined: p.created_at ? new Date(p.created_at).toLocaleDateString('de-DE') : '',
+        docs: []
+      };
+    });
+    return _livePartners;
+  } catch(e) {
+    console.log('Partner load error:', e);
+    return null;
+  }
+}
+
+// Helper: Kunden-Änderung nach Supabase schreiben
+function persistCustomer(u, fields) {
+  if (!u || !u.dbId) return;
+  var sb = initSupabase();
+  if (!sb) return;
+  var updates = {};
+  if ('customer_status' in fields) updates.customer_status = fields.customer_status;
+  if ('admin_notes' in fields) updates.admin_notes = fields.admin_notes;
+  if ('consent' in fields) updates.consent = fields.consent;
+  if ('dsgvo' in fields) updates.dsgvo = fields.dsgvo;
+  if ('customer_nr' in fields) updates.customer_nr = fields.customer_nr;
+  if ('role' in fields) updates.role = fields.role;
+  sb.from('profiles').update(updates).eq('id', u.dbId)
+    .then(function(res) { if (res.error) console.error('Customer persist error:', res.error); });
+}
+
+// ═══ KUNDEN-LISTE aus Supabase ═══
+var _liveCustomers = null;
+async function loadCustomers() {
+  var sb = initSupabase();
+  if (!sb) return null;
+  try {
+    // Profile laden
+    var { data, error } = await sb.from('profiles').select('*').eq('role', 'customer')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!data || !data.length) return null;
+
+    // Adressen, Zahlungsmethoden, Berater-Zuordnungen parallel laden
+    var customerIds = data.map(function(u) { return u.id; });
+    var results = await Promise.all([
+      sb.from('addresses').select('*').in('user_id', customerIds),
+      sb.from('payment_methods').select('*').in('user_id', customerIds),
+      sb.from('customer_berater').select('*').in('customer_id', customerIds)
+    ]);
+    var allAddresses = (results[0].data || []);
+    var allPayments = (results[1].data || []);
+    var allBerater = (results[2].data || []);
+
+    // Lookup-Maps bauen
+    var addrMap = {};
+    allAddresses.forEach(function(a) {
+      if (!addrMap[a.user_id]) addrMap[a.user_id] = [];
+      addrMap[a.user_id].push(a);
+    });
+    var payMap = {};
+    allPayments.forEach(function(p) {
+      if (!payMap[p.user_id]) payMap[p.user_id] = [];
+      payMap[p.user_id].push(p);
+    });
+    var beraterMap = {};
+    allBerater.forEach(function(b) {
+      beraterMap[b.customer_id] = b;
+    });
+
+    // Order-Statistiken aus _liveOrders berechnen
+    var orderStats = {};
+    if (_liveOrders) {
+      _liveOrders.forEach(function(o) {
+        var uid = o.userId;
+        if (uid) {
+          if (!orderStats[uid]) orderStats[uid] = { count: 0, total: 0 };
+          orderStats[uid].count++;
+          orderStats[uid].total += o.total || 0;
+        }
+      });
+    }
+
+    _liveCustomers = data.map(function(u) {
+      var pd = u.personal_data || {};
+      var stats = orderStats[u.id] || { count: 0, total: 0 };
+      var addrs = addrMap[u.id] || [];
+      var billingAddr = addrs.find(function(a) { return a.label === 'Rechnung'; }) || addrs[0] || null;
+      var shippingAddr = addrs.find(function(a) { return a.label === 'Lieferung'; }) || addrs.find(function(a) { return a.is_default; }) || addrs[0] || null;
+      var pms = payMap[u.id] || [];
+      var pm = pms.find(function(p) { return p.is_default; }) || pms[0] || null;
+      var cb = beraterMap[u.id] || null;
+
+      return {
+        id: u.id,
+        dbId: u.id,
+        name: u.name || u.email,
+        vorname: pd.vorname || '',
+        nachname: pd.nachname || '',
+        email: u.email,
+        role: 'customer',
+        status: u.customer_status || 'active',
+        phone: u.phone || pd.phone || '',
+        birthdate: u.birth_date || pd.birthdate || '',
+        kundenNr: u.customer_nr || '',
+        joined: u.created_at ? new Date(u.created_at).toLocaleDateString('de-DE') : '',
+        lastLogin: '',
+        emailVerified: true,
+        orders: stats.count,
+        totalSpent: stats.total,
+        partnerType: cb ? (cb.channel || '') : '',
+        partner: cb ? (cb.partner_name || '') : '',
+        billing: billingAddr ? {
+          street: ((billingAddr.street || '') + (billingAddr.house_number ? ' ' + billingAddr.house_number : '')).trim(),
+          zip: billingAddr.postal_code || '',
+          city: billingAddr.city || '',
+          country: billingAddr.country || 'DE'
+        } : null,
+        shipping: shippingAddr ? {
+          street: ((shippingAddr.street || '') + (shippingAddr.house_number ? ' ' + shippingAddr.house_number : '')).trim(),
+          zip: shippingAddr.postal_code || '',
+          city: shippingAddr.city || '',
+          country: shippingAddr.country || 'DE'
+        } : null,
+        payment: pm ? {
+          method: pm.type === 'card' ? 'Kreditkarte' : pm.type === 'paypal' ? 'PayPal' : pm.type === 'sepa' ? 'SEPA-Lastschrift' : pm.type || '',
+          last4: pm.display_name || '',
+          brand: pm.brand || ''
+        } : null,
+        consent: u.consent || {},
+        dsgvo: u.dsgvo || {},
+        notes: u.admin_notes || '',
+        healthProfile: u.health_profile ? 'filled' : 'empty',
+        personalData: u.personal_data ? 'filled' : 'empty'
+      };
+    });
+    return _liveCustomers;
+  } catch(e) {
+    console.log('Customers load error:', e);
+    return null;
+  }
+}
+
+// ═══ BESTELLUNGEN aus Supabase ═══
+var _liveOrders = null;
+async function loadOrders() {
+  var sb = initSupabase();
+  if (!sb) return null;
+  try {
+    var { data, error } = await sb.from('orders').select('*')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (error) throw error;
+    if (!data || !data.length) return null;
+
+    _liveOrders = data.map(function(o) {
+      var inv = null;
+      if (o.invoice_number) {
+        inv = {
+          nr: o.invoice_number,
+          date: o.invoice_date,
+          netto: parseFloat(o.invoice_netto) || 0,
+          mwst: parseFloat(o.invoice_mwst) || 0,
+          mwstSatz: o.invoice_mwst_rate || 19,
+          status: o.invoice_status || 'offen',
+          paidDate: o.invoice_paid_at ? o.invoice_paid_at.slice(0, 10) : null
+        };
+      }
+      var sh = null;
+      if (o.tracking_number || o.shipping_carrier) {
+        sh = {
+          carrier: o.shipping_carrier || '',
+          tracking: o.tracking_number || '',
+          method: o.shipping_method_name || o.shipping_method || 'Standardversand',
+          cost: parseFloat(o.shipping_cost) || 0
+        };
+      }
+      return {
+        id: o.order_number || o.id,
+        dbId: o.id,
+        userId: o.user_id || null,
+        customer: o.customer_name || '',
+        seller: o.seller_name || '',
+        items: o.items_summary || '',
+        total: parseFloat(o.total) || 0,
+        status: o.status || 'pending',
+        date: o.created_at ? o.created_at.slice(0, 10) : '',
+        partner: o.partner_name || null,
+        channel: o.channel || null,
+        provisionRate: parseFloat(o.provision_rate) || 0,
+        invoice: inv,
+        shipping: sh,
+        billing: o.billing_address || null
+      };
+    });
+    return _liveOrders;
+  } catch(e) {
+    console.log('Orders load error:', e);
+    return null;
+  }
+}
+
+// ═══ TERMINE & BLUTTESTS aus Supabase ═══
+var _liveTermine = null;
+async function loadTermine() {
+  var sb = initSupabase();
+  if (!sb) return null;
+  var res = await sb.from('bookings').select('*').order('booking_date', { ascending: false });
+  if (res.error || !res.data || res.data.length === 0) return null;
+  _liveTermine = res.data.map(function(b) {
+    return {
+      id: b.id,
+      kunde: b.customer_name,
+      partner: b.partner_name,
+      service: b.service,
+      price: Number(b.price),
+      date: b.booking_date,
+      status: b.status
+    };
+  });
+  return _liveTermine;
+}
+
+var _liveBluttests = null;
+async function loadBluttests() {
+  var sb = initSupabase();
+  if (!sb) return null;
+  var res = await sb.from('blood_tests').select('*').order('test_date', { ascending: false });
+  if (res.error || !res.data || res.data.length === 0) return null;
+  _liveBluttests = res.data.map(function(b) {
+    return {
+      id: b.id,
+      kunde: b.customer_name,
+      partner: b.partner_name,
+      test: b.test_name,
+      labor: b.lab_name,
+      price: Number(b.price),
+      date: b.test_date,
+      status: b.status
+    };
+  });
+  return _liveBluttests;
+}
+
+// ═══ PRODUKTE aus Supabase ═══
+var _liveProducts = null;
+var _sellerNameMap = {};
+
+// Helper: Produkt-Änderung nach Supabase schreiben
+function persistProduct(p, fields) {
+  if (!p || !p.dbId) return;
+  var sb = initSupabase();
+  if (!sb) return;
+  var updates = {};
+  if ('status' in fields) updates.status = fields.status;
+  if ('featured' in fields) updates.featured = fields.featured;
+  if ('statusChangedAt' in fields) updates.status_changed_at = new Date().toISOString();
+  if ('reklamationen' in fields) updates.reklamationen = fields.reklamationen;
+  if ('blockHistory' in fields) updates.block_history = fields.blockHistory;
+  if ('dokumente' in fields) updates.dokumente = fields.dokumente;
+  sb.from('partner_products').update(updates).eq('id', p.dbId)
+    .then(function(res) { if (res.error) console.error('Product persist error:', res.error); });
+}
+async function loadProducts() {
+  var sb = initSupabase();
+  if (!sb) return null;
+  try {
+    // Seller-Namen laden (für Zuordnung user_id → Name)
+    if (!Object.keys(_sellerNameMap).length) {
+      var { data: sellers } = await sb.from('profiles')
+        .select('id, name, display_name, company_name')
+        .eq('role', 'seller');
+      if (sellers) {
+        sellers.forEach(function(s) {
+          _sellerNameMap[s.id] = s.company_name || s.display_name || s.name || 'Unbekannt';
+        });
+      }
+    }
+    // Alle Produkte laden
+    var { data, error } = await sb.from('partner_products').select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!data || !data.length) return null;
+
+    _liveProducts = data.map(function(p) {
+      return {
+        id: p.id,
+        dbId: p.id,
+        artikelNr: p.sku || '',
+        name: p.name || '',
+        seller: _sellerNameMap[p.user_id] || 'Unbekannt',
+        sellerId: p.user_id,
+        price: parseFloat(p.price) || 0,
+        status: p.status || 'draft',
+        featured: p.featured || false,
+        category: p.category || '',
+        zielgruppen: p.zielgruppen || [],
+        wirkungsbereiche: p.wirkungsbereiche || [],
+        statusChangedAt: p.status_changed_at ? p.status_changed_at.slice(0, 10) : '',
+        reklamationen: p.reklamationen || [],
+        blockHistory: p.block_history || [],
+        dokumente: p.dokumente || [],
+        wirkstoff: p.wirkstoff || '',
+        description: p.description || '',
+        ean: p.ean || '',
+        icon: p.icon || '',
+        images: p.images || [],
+        content: p.content || '',
+        unit: p.unit || '',
+        weight: p.weight || '',
+        stock: p.stock || 0,
+        labels: p.labels || [],
+        allergens: p.allergens || [],
+        manufacturer: p.manufacturer || '',
+        ingredients: p.ingredients || '',
+        dosage: p.dosage || '',
+        warnings: p.warnings || ''
+      };
+    });
+    return _liveProducts;
+  } catch(e) {
+    console.log('Products load error:', e);
+    return null;
+  }
+}
+
+// ═══ LETZTE AKTIVITÄTEN aus Supabase ═══
+async function loadRecentActivity() {
+  var sb = initSupabase();
+  if (!sb) return;
+  try {
+    var { data } = await sb.from('profiles').select('name, email, role, seller_type, created_at')
+      .order('created_at', { ascending: false }).limit(10);
+    if (!data || !data.length) return;
+
+    var container = document.getElementById('activityList');
+    if (!container) return;
+
+    container.innerHTML = data.map(function(u) {
+      var isSeller = u.role === 'seller';
+      var icon = isSeller ? '🏪' : '👤';
+      var iconClass = isSeller ? 'seller' : 'user';
+      var text = isSeller
+        ? esc(u.name || u.email) + ' hat sich als Partner registriert'
+        : 'Neuer Kunde: ' + esc(u.name || u.email);
+      var badge = isSeller ? '<div class="activity-badge new">Partner</div>' : '';
+      var timeStr = u.created_at ? timeAgo(new Date(u.created_at)) : '';
+
+      return '<div class="activity-item">'
+        + '<div class="activity-icon ' + iconClass + '">' + icon + '</div>'
+        + '<div class="activity-info">'
+        + '<div class="activity-text">' + text + '</div>'
+        + '<div class="activity-time">' + timeStr + '</div>'
+        + '</div>' + badge + '</div>';
+    }).join('');
+  } catch(e) {
+    console.log('Activity load error:', e);
+  }
+}
+
+function timeAgo(date) {
+  var now = new Date();
+  var diff = Math.floor((now - date) / 1000);
+  if (diff < 60) return 'gerade eben';
+  if (diff < 3600) return 'vor ' + Math.floor(diff/60) + ' Min.';
+  if (diff < 86400) return 'vor ' + Math.floor(diff/3600) + ' Std.';
+  if (diff < 604800) return 'vor ' + Math.floor(diff/86400) + ' Tagen';
+  return date.toLocaleDateString('de-DE');
+}
+
+async function renderOnboardingStats() {
+  var container = document.getElementById('onboardingStatsContent');
+  if (!container) return;
+
+  container.innerHTML = '<div style="color:#6b7280;font-size:13px;text-align:center;padding:12px 0">Laden...</div>';
+
+  var stats = await loadOnboardingStats();
+  if (!stats || !stats.total) {
+    container.innerHTML = '<div style="color:#6b7280;font-size:13px;text-align:center;padding:12px 0">Noch keine Anmeldungen</div>';
+    return;
+  }
+
+  var html = '';
+
+  // Total-Zähler
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">';
+  html += '<div style="font-size:14px;font-weight:700;color:#1a1a1a">Registrierungen gesamt</div>';
+  html += '<div style="font-size:28px;font-weight:800;color:var(--primary,#16a34a)">' + stats.total + '</div>';
+  html += '</div>';
+
+  // Kategorie-Balken
+  html += '<div style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Nach Hauptkategorie</div>';
+  var cats = Object.keys(stats.categories || {}).sort(function(a, b) { return (stats.categories[b] || 0) - (stats.categories[a] || 0); });
+  for (var ci = 0; ci < cats.length; ci++) {
+    var ck = cats[ci], cv = stats.categories[ck];
+    var pct = Math.round((cv / stats.total) * 100);
+    html += '<div style="margin-bottom:8px">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">';
+    html += '<span style="font-size:13px;color:#374151">' + (OB_CAT_ICONS[ck] || '') + ' ' + (OB_CAT_LABELS[ck] || ck) + '</span>';
+    html += '<span style="font-size:13px;font-weight:700;color:#1a1a1a">' + cv + ' <span style="font-weight:400;color:#6b7280;font-size:11px">(' + pct + '%)</span></span>';
+    html += '</div>';
+    html += '<div style="height:8px;background:#f3f4f6;border-radius:4px;overflow:hidden">';
+    html += '<div style="height:100%;width:' + pct + '%;background:' + (OB_CAT_COLORS[ck] || '#6b7280') + ';border-radius:4px;transition:width .5s"></div>';
+    html += '</div></div>';
+  }
+
+  // Spezialitäten-Aufschlüsselung
+  var specs = Object.keys(stats.specialties || {}).sort(function(a, b) { return (stats.specialties[b] || 0) - (stats.specialties[a] || 0); });
+  if (specs.length > 0) {
+    html += '<div style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 8px">Nach Spezialisierung</div>';
+    for (var si = 0; si < specs.length; si++) {
+      var sk = specs[si], sv = stats.specialties[sk];
+      var spct = Math.round((sv / stats.total) * 100);
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f3f4f6">';
+      html += '<span style="font-size:13px;color:#374151">' + (OB_SPEC_ICONS[sk] || '📋') + ' ' + (OB_SPEC_LABELS[sk] || sk) + '</span>';
+      html += '<span style="font-size:13px;font-weight:600;color:#1a1a1a">' + sv + ' <span style="font-weight:400;color:#6b7280;font-size:11px">(' + spct + '%)</span></span>';
+      html += '</div>';
+    }
+  }
+
+  // Letzte Anmeldungen (Timeline)
+  if (stats.timeline && stats.timeline.length > 0) {
+    html += '<div style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 8px">Letzte Anmeldungen</div>';
+    var recent = stats.timeline.slice(0, 5);
+    for (var ti = 0; ti < recent.length; ti++) {
+      var t = recent[ti];
+      var subtitle = t.jobTitle || OB_SPEC_LABELS[t.specialty] || OB_CAT_LABELS[t.category] || t.specialty;
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f3f4f6">';
+      html += '<div style="display:flex;align-items:center;gap:8px">';
+      html += '<span style="font-size:14px">' + (OB_SPEC_ICONS[t.specialty] || OB_CAT_ICONS[t.category] || '👤') + '</span>';
+      html += '<div><div style="font-size:13px;font-weight:600;color:#1a1a1a">' + (t.name || 'Unbekannt') + '</div>';
+      html += '<div style="font-size:11px;color:#6b7280">' + subtitle + '</div></div>';
+      html += '</div>';
+      html += '<span style="font-size:11px;color:#9ca3af">' + t.date + '</span>';
+      html += '</div>';
+    }
+  }
+
+  container.innerHTML = html;
+}
+
+// Beim Laden rendern
+renderOnboardingStats();
+loadDashboardStats();
+loadRecentActivity();
 
 console.log('🌳 SuppTree Admin-Dashboard geladen');
 </script>

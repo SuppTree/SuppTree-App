@@ -1508,9 +1508,152 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .doc-info-banner{background:var(--green-light);border-radius:10px;padding:14px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
 .doc-info-banner .info-icon{font-size:20px;flex-shrink:0}
 .doc-info-banner .info-text{font-size:12px;color:var(--green-dark);line-height:1.5}
+
+/* ── Partner Auth Overlay ── */
+#partnerAuthOverlay{display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#1a5a3a 0%,#00A67E 40%,#f8f9fa 100%);flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;padding-top:60px;overflow-y:auto}
+#partnerAuthOverlay.visible{display:flex}
+.pa-logo{text-align:center;margin-bottom:28px}
+.pa-logo-icon{font-size:48px;margin-bottom:8px}
+.pa-logo-text{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px}
+.pa-logo-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px}
+.pa-card{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:0;box-shadow:0 8px 32px rgba(0,0,0,0.15);overflow:hidden}
+.pa-tabs{display:flex;border-bottom:2px solid #f0f0f0}
+.pa-tab{flex:1;padding:14px;text-align:center;font-size:14px;font-weight:600;background:none;border:none;cursor:pointer;color:#999;transition:all 0.2s;border-bottom:2px solid transparent;margin-bottom:-2px}
+.pa-tab.active{color:var(--green-dark);border-bottom-color:var(--green-accent)}
+.pa-form{padding:24px;display:none}
+.pa-form.active{display:block}
+.pa-form-group{margin-bottom:16px}
+.pa-form-group label{display:block;font-size:13px;font-weight:600;color:#333;margin-bottom:6px}
+.pa-form-group input{width:100%;padding:13px 14px;border:2px solid #e5e7eb;border-radius:var(--r);font-size:15px;transition:border-color 0.2s;box-sizing:border-box;font-family:inherit}
+.pa-form-group input:focus{outline:none;border-color:var(--green-accent)}
+.pa-form-group input.pa-error{border-color:#ef4444!important;background:#fef2f2!important;animation:paShake 0.3s ease}
+@keyframes paShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.pa-form-row{display:flex;gap:12px}
+.pa-form-row .pa-form-group{flex:1}
+.pa-pw-wrap{position:relative}
+.pa-pw-wrap input{padding-right:44px}
+.pa-pw-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;cursor:pointer;padding:4px}
+.pa-btn{width:100%;padding:15px;background:var(--green-accent);border:none;border-radius:var(--r);font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;font-family:inherit}
+.pa-btn:hover{background:var(--green-dark)}
+.pa-btn:active{transform:scale(0.98)}
+.pa-btn:disabled{opacity:0.6;cursor:not-allowed}
+.pa-btn .pa-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pa-link{background:none;border:none;font-size:13px;color:var(--green-accent);cursor:pointer;padding:6px 0;font-family:inherit}
+.pa-link:hover{text-decoration:underline}
+.pa-links{text-align:center;margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.pa-alert{padding:12px 14px;border-radius:var(--r);font-size:13px;margin-bottom:14px;display:none;line-height:1.4}
+.pa-alert.error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.pa-alert.success{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.pa-alert.show{display:block}
+.pa-legal{font-size:11px;color:#9ca3af;text-align:center;margin-top:20px;line-height:1.5}
+.pa-legal a{color:var(--green-accent)}
+.pa-dev{margin-top:20px;padding-top:16px;border-top:2px dashed #e5e7eb;text-align:center}
+.pa-dev-label{font-size:11px;color:#9ca3af;margin-bottom:10px;font-weight:600;letter-spacing:0.5px}
+.pa-dev-btns{display:flex;gap:8px}
+.pa-dev-btn{flex:1;padding:11px 8px;border:2px solid;border-radius:var(--r);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
   </style>
 </head>
 <body>
+
+<!-- ═══ Partner Auth Overlay ═══ -->
+<div id="partnerAuthOverlay">
+  <div class="pa-logo">
+    <div class="pa-logo-icon">🌿</div>
+    <div class="pa-logo-text">SuppTree Partner</div>
+    <div class="pa-logo-sub">Dein Partner-Portal</div>
+  </div>
+  <div class="pa-card">
+    <div class="pa-tabs">
+      <button class="pa-tab active" onclick="setPartnerAuthMode('login')">Anmelden</button>
+      <button class="pa-tab" onclick="setPartnerAuthMode('register')">Registrieren</button>
+    </div>
+
+    <!-- Login Form -->
+    <div class="pa-form active" id="partnerLoginForm">
+      <div class="pa-alert error" id="paLoginError"></div>
+      <div class="pa-alert success" id="paLoginSuccess"></div>
+      <div class="pa-form-group">
+        <label>E-Mail</label>
+        <input type="email" id="paLoginEmail" placeholder="name@beispiel.de" autocomplete="email">
+      </div>
+      <div class="pa-form-group">
+        <label>Passwort</label>
+        <div class="pa-pw-wrap">
+          <input type="password" id="paLoginPassword" placeholder="Dein Passwort" autocomplete="current-password">
+          <button type="button" class="pa-pw-toggle" onclick="togglePartnerPw('paLoginPassword',this)">👁️</button>
+        </div>
+      </div>
+      <button class="pa-btn" id="paLoginBtn" onclick="handlePartnerLogin()">Anmelden</button>
+      <div class="pa-links">
+        <button class="pa-link" onclick="setPartnerAuthMode('reset')">Passwort vergessen?</button>
+      </div>
+
+      <div class="pa-dev" id="paDevAccess">
+        <div class="pa-dev-label">DEV-ZUGANG (ohne Login)</div>
+        <div class="pa-dev-btns">
+          <button class="pa-dev-btn" style="border-color:#00A67E;background:#E0F2F1;color:#00695C" onclick="localStorage.setItem('suppTreePartnerType','supplement');hidePartnerAuth();document.getElementById('authLoading').classList.add('hidden')">🏪 Demo-Modus</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Form -->
+    <div class="pa-form" id="partnerRegisterForm">
+      <div class="pa-alert error" id="paRegError"></div>
+      <div class="pa-alert success" id="paRegSuccess"></div>
+      <div class="pa-form-row">
+        <div class="pa-form-group">
+          <label>Vorname</label>
+          <input type="text" id="paRegFirstName" placeholder="Max" autocomplete="given-name">
+        </div>
+        <div class="pa-form-group">
+          <label>Nachname</label>
+          <input type="text" id="paRegLastName" placeholder="Mustermann" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="pa-form-group">
+        <label>Firmenname <span style="font-weight:400;color:#999">(optional)</span></label>
+        <input type="text" id="paRegCompany" placeholder="Meine Praxis / Firma" autocomplete="organization">
+      </div>
+      <div class="pa-form-group">
+        <label>E-Mail</label>
+        <input type="email" id="paRegEmail" placeholder="name@beispiel.de" autocomplete="email">
+      </div>
+      <div class="pa-form-group">
+        <label>Passwort</label>
+        <div class="pa-pw-wrap">
+          <input type="password" id="paRegPassword" placeholder="Min. 6 Zeichen" autocomplete="new-password">
+          <button type="button" class="pa-pw-toggle" onclick="togglePartnerPw('paRegPassword',this)">👁️</button>
+        </div>
+      </div>
+      <div class="pa-form-group">
+        <label>Passwort bestätigen</label>
+        <div class="pa-pw-wrap">
+          <input type="password" id="paRegPasswordConfirm" placeholder="Passwort wiederholen" autocomplete="new-password">
+          <button type="button" class="pa-pw-toggle" onclick="togglePartnerPw('paRegPasswordConfirm',this)">👁️</button>
+        </div>
+      </div>
+      <button class="pa-btn" id="paRegBtn" onclick="handlePartnerRegister()">Partner-Konto erstellen</button>
+      <p class="pa-legal">Mit der Registrierung akzeptierst du unsere <a href="#">AGB</a> und <a href="#">Datenschutzrichtlinie</a>.</p>
+    </div>
+
+    <!-- Reset Form -->
+    <div class="pa-form" id="partnerResetForm">
+      <div class="pa-alert error" id="paResetError"></div>
+      <div class="pa-alert success" id="paResetSuccess"></div>
+      <p style="font-size:14px;color:#666;margin-bottom:16px;line-height:1.5">Gib deine E-Mail ein und wir senden dir einen Link zum Zurücksetzen.</p>
+      <div class="pa-form-group">
+        <label>E-Mail</label>
+        <input type="email" id="paResetEmail" placeholder="name@beispiel.de" autocomplete="email">
+      </div>
+      <button class="pa-btn" onclick="handlePartnerReset()">Link senden</button>
+      <div class="pa-links">
+        <button class="pa-link" onclick="setPartnerAuthMode('login')">← Zurück zur Anmeldung</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Auth Loading Overlay -->
 <div class="auth-loading" id="authLoading">
   <div class="auth-spinner"></div>
@@ -3154,7 +3297,13 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
       <div class="mehr-item" onclick="showScreen('sicherheit')"><span class="mehr-item-icon">🔒</span><span class="mehr-item-label">Sicherheit & Datenschutz</span><span class="mehr-item-arrow">›</span></div>
       <div class="mehr-item" onclick="showScreen('team')"><span class="mehr-item-icon">👥</span><span class="mehr-item-label">Team & Mitarbeiter</span><span class="mehr-item-badge">1</span><span class="mehr-item-arrow">›</span></div>
     </div>
-    
+
+    <!-- Module & Features (dynamisch je nach Typ) -->
+    <div class="mehr-section" id="mehrModuleSection" style="display:none">
+      <div class="mehr-section-title">Module & Features</div>
+      <div id="mehrModuleToggles"></div>
+    </div>
+
     <div class="mehr-section">
       <div class="mehr-section-title">Verifizierung</div>
       <div class="mehr-item" onclick="showScreen('unterlagen')" id="mehrUnterlagenItem"><span class="mehr-item-icon">📄</span><span class="mehr-item-label">Unterlagen & Dokumente</span><span class="mehr-item-badge" id="unterlagenBadge" style="background:#fef3c7;color:#d97706">2/6</span><span class="mehr-item-arrow">›</span></div>
@@ -3513,6 +3662,182 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
 
 <script>
 // =============================================
+// PARTNER AUTH OVERLAY - Login/Register/Reset
+// =============================================
+function showPartnerAuth() {
+  var el = document.getElementById('partnerAuthOverlay');
+  if (el) { el.classList.add('visible'); document.body.style.overflow = 'hidden'; }
+  // DEV-Zugang nur im Demo-Modus
+  var dev = document.getElementById('paDevAccess');
+  if (dev) dev.style.display = localStorage.getItem('suppTreeAppMode') === 'production' ? 'none' : 'block';
+}
+function hidePartnerAuth() {
+  var el = document.getElementById('partnerAuthOverlay');
+  if (el) { el.classList.remove('visible'); document.body.style.overflow = ''; }
+}
+function setPartnerAuthMode(mode) {
+  document.getElementById('partnerLoginForm').classList.toggle('active', mode === 'login');
+  document.getElementById('partnerRegisterForm').classList.toggle('active', mode === 'register');
+  document.getElementById('partnerResetForm').classList.toggle('active', mode === 'reset');
+  document.querySelectorAll('.pa-tab').forEach(function(t, i) {
+    t.classList.toggle('active', (i === 0 && mode === 'login') || (i === 1 && mode === 'register'));
+  });
+  // Alerts ausblenden
+  document.querySelectorAll('.pa-alert').forEach(function(a) { a.classList.remove('show'); });
+}
+function togglePartnerPw(id, btn) {
+  var el = document.getElementById(id);
+  el.type = el.type === 'password' ? 'text' : 'password';
+  btn.textContent = el.type === 'password' ? '👁️' : '🙈';
+}
+function showPaAlert(id, msg) {
+  var el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+}
+function hidePaAlerts() {
+  document.querySelectorAll('.pa-alert').forEach(function(a) { a.classList.remove('show'); a.textContent = ''; });
+}
+function setPaLoading(btn, on) {
+  if (on) { btn.disabled = true; btn.dataset.text = btn.textContent; btn.innerHTML = '<span class="pa-spinner"></span>Bitte warten...'; }
+  else { btn.disabled = false; btn.textContent = btn.dataset.text || 'Anmelden'; }
+}
+
+async function handlePartnerLogin() {
+  hidePaAlerts();
+  var emailEl = document.getElementById('paLoginEmail');
+  var pwEl = document.getElementById('paLoginPassword');
+  var email = emailEl.value.trim();
+  var pw = pwEl.value;
+  var btn = document.getElementById('paLoginBtn');
+
+  var hasErr = false;
+  if (!email) { emailEl.classList.add('pa-error'); hasErr = true; }
+  if (!pw) { pwEl.classList.add('pa-error'); hasErr = true; }
+  if (hasErr) { showPaAlert('paLoginError', 'Bitte alle Felder ausfüllen'); return; }
+  emailEl.classList.remove('pa-error'); pwEl.classList.remove('pa-error');
+
+  setPaLoading(btn, true);
+  var result = await loginUser(email, pw);
+  if (result.error) {
+    showPaAlert('paLoginError', result.error);
+    setPaLoading(btn, false);
+    return;
+  }
+
+  // Rolle prüfen
+  var role = await getCurrentUserRole();
+  if (role !== 'seller' && role !== 'admin') {
+    showPaAlert('paLoginError', 'Du benötigst ein Partner-Konto. Registriere dich als Partner.');
+    await logoutUser();
+    setPaLoading(btn, false);
+    return;
+  }
+
+  // Erfolg → App starten
+  localStorage.setItem('suppTreeAppMode', 'production');
+  hidePartnerAuth();
+  document.getElementById('authLoading').classList.add('hidden');
+
+  // Supabase Session + Daten laden
+  _sb = initSupabase();
+  if (_sb) {
+    var { data: { session } } = await _sb.auth.getSession();
+    _currentUser = session?.user || null;
+    if (_currentUser) {
+      setTimeout(updatePartnerModeBadge, 100);
+      try {
+        var { data: profile } = await _sb.from('profiles').select('seller_type').eq('id', _currentUser.id).single();
+        if (profile && profile.seller_type) {
+          partnerType = profile.seller_type;
+          localStorage.setItem('suppTreePartnerType', partnerType);
+          renderBottomNav();
+          renderMehrMenu();
+          await partnerLoadFromSupabase();
+          renderDashboard();
+        } else {
+          showPartnerOnboarding();
+        }
+      } catch(e) { console.log('Profile load after login:', e); }
+    }
+  }
+  setPaLoading(btn, false);
+}
+
+async function handlePartnerRegister() {
+  hidePaAlerts();
+  var firstName = document.getElementById('paRegFirstName').value.trim();
+  var lastName = document.getElementById('paRegLastName').value.trim();
+  var company = document.getElementById('paRegCompany').value.trim();
+  var emailEl = document.getElementById('paRegEmail');
+  var pwEl = document.getElementById('paRegPassword');
+  var pwcEl = document.getElementById('paRegPasswordConfirm');
+  var email = emailEl.value.trim();
+  var pw = pwEl.value;
+  var pwc = pwcEl.value;
+  var btn = document.getElementById('paRegBtn');
+
+  // Validierung
+  var hasErr = false;
+  if (!firstName) { document.getElementById('paRegFirstName').classList.add('pa-error'); hasErr = true; }
+  if (!email) { emailEl.classList.add('pa-error'); hasErr = true; }
+  if (!pw) { pwEl.classList.add('pa-error'); hasErr = true; }
+  if (!pwc) { pwcEl.classList.add('pa-error'); hasErr = true; }
+  if (hasErr) { showPaAlert('paRegError', 'Bitte alle Pflichtfelder ausfüllen'); return; }
+
+  if (pw.length < 6) { showPaAlert('paRegError', 'Passwort muss mindestens 6 Zeichen haben'); return; }
+  if (pw !== pwc) { showPaAlert('paRegError', 'Passwörter stimmen nicht überein'); return; }
+
+  // Inputs zurücksetzen
+  document.querySelectorAll('#partnerRegisterForm input').forEach(function(i) { i.classList.remove('pa-error'); });
+
+  var userData = { name: (firstName + ' ' + lastName).trim() };
+  if (company) userData.company = company;
+
+  setPaLoading(btn, true);
+  var result = await registerUser(email, pw, 'seller', userData);
+
+  if (result.error) {
+    showPaAlert('paRegError', result.error);
+    setPaLoading(btn, false);
+    return;
+  }
+
+  // Bereits registrierte E-Mail
+  if (result.user?.identities?.length === 0) {
+    showPaAlert('paRegError', 'Diese E-Mail ist bereits registriert');
+    setPaLoading(btn, false);
+    return;
+  }
+
+  // Direkt eingeloggt (Email-Bestätigung deaktiviert)
+  if (result.session) {
+    showPaAlert('paRegSuccess', 'Konto erstellt! Du wirst weitergeleitet...');
+    setPaLoading(btn, false);
+    setTimeout(function() { window.location.reload(); }, 1500);
+    return;
+  }
+
+  // Email-Bestätigung nötig
+  showPaAlert('paRegSuccess', 'Konto erstellt! Bitte bestätige deine E-Mail-Adresse und melde dich dann an.');
+  setPaLoading(btn, false);
+  setTimeout(function() { setPartnerAuthMode('login'); }, 3000);
+}
+
+async function handlePartnerReset() {
+  hidePaAlerts();
+  var emailEl = document.getElementById('paResetEmail');
+  var email = emailEl.value.trim();
+  if (!email) { emailEl.classList.add('pa-error'); showPaAlert('paResetError', 'Bitte E-Mail eingeben'); return; }
+  emailEl.classList.remove('pa-error');
+
+  var result = await resetPassword(email);
+  if (result.error) { showPaAlert('paResetError', result.error); return; }
+
+  showPaAlert('paResetSuccess', 'Link gesendet! Prüfe deinen Posteingang.');
+  setTimeout(function() { setPartnerAuthMode('login'); }, 3000);
+}
+
+// =============================================
 // AUTH CHECK - Vor allem anderen ausführen
 // =============================================
 (async function() {
@@ -3523,13 +3848,9 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
     const session = await checkSession();
 
     if (!session) {
-      // DEV-MODUS: Ohne Login laden
-      console.warn('⚠️ DEV-Modus: Kein Login, lade trotzdem...');
       authLoading.classList.add('hidden');
+      showPartnerAuth();
       return;
-      // ORIGINAL:
-      // window.location.href = '../www/login.html';
-      // return;
     }
 
     // Rolle prüfen
@@ -3579,6 +3900,12 @@ function escapeHtml(str) {
 let _sb = null;
 let _currentUser = null;
 (async function initPartnerSync() {
+  // DEV: ?onboarding=true → Onboarding-Preview ohne Login
+  if (new URLSearchParams(window.location.search).get('onboarding') === 'true') {
+    localStorage.removeItem('suppTreePartnerType');
+    setTimeout(() => showPartnerOnboarding(), 300);
+    return;
+  }
   try {
     _sb = typeof initSupabase === 'function' ? initSupabase() : null;
     if (!_sb && window.supabase && SUPPTREE_CONFIG) {
@@ -3597,9 +3924,18 @@ let _currentUser = null;
             localStorage.setItem('suppTreePartnerType', partnerType);
             renderBottomNav();
             renderMehrMenu();
+            // Alle Partner-Daten aus Supabase laden → localStorage aktualisieren
+            await partnerLoadFromSupabase();
+          } else {
+            // Kein seller_type → Onboarding zeigen
+            showPartnerOnboarding();
           }
         } catch(e) { console.log('Profile load:', e); }
       }
+    }
+    // Nicht eingeloggt → Auth-Overlay (oder Demo-Modus mit localStorage)
+    if (!_currentUser && !localStorage.getItem('suppTreePartnerType')) {
+      setTimeout(function(){ showPartnerAuth(); }, 300);
     }
   } catch(e) { console.log('Partner sync init:', e); }
 })();
@@ -3626,6 +3962,227 @@ function partnerSync(table, key, data, options) {
       });
     }
   } catch(e) { console.error(`partnerSync(${table}):`, e); }
+}
+
+// ── Daten beim Login aus Supabase laden (Reverse von partnerSync) ──
+async function partnerLoadFromSupabase() {
+  if (!_sb || !_currentUser) return;
+  var uid = _currentUser.id;
+  try {
+    // 1. Products → reverse transform: snake_case → camelCase
+    var { data: dbProd } = await _sb.from('partner_products').select('*').eq('user_id', uid);
+    if (dbProd && dbProd.length) {
+      products = dbProd.map(function(p) { return {
+        id: p.product_id, name: p.name, wirkstoff: p.wirkstoff, desc: p.description,
+        sku: p.sku, ean: p.ean, cat: p.category, icon: p.icon, images: p.images || [],
+        price: p.price, content: p.content, unit: p.unit, weight: p.weight,
+        stock: p.stock, flavor: p.flavor, vat: p.vat, storage: p.storage, origin: p.origin,
+        status: p.status, labels: p.labels || [], zielgruppen: p.zielgruppen || [],
+        wirkungsbereiche: p.wirkungsbereiche || [], allergens: p.allergens || [],
+        naehrwerte: p.naehrwerte || {}, manufacturer: p.manufacturer,
+        manuData: p.manu_data || {}, pflichthinweise: p.pflichthinweise || [],
+        ingredients: p.ingredients, zutaten: p.zutaten || [], dosage: p.dosage,
+        warnings: p.warnings, discount: p.discount,
+        sales: p.sales || 0, revenue: p.revenue || 0, views: p.views || 0
+      }; });
+      localStorage.setItem('suppTreeProducts', JSON.stringify(products));
+    }
+
+    // 2. Services → reverse transform
+    var { data: dbSvc } = await _sb.from('partner_services').select('*').eq('user_id', uid);
+    if (dbSvc && dbSvc.length) {
+      services = dbSvc.map(function(s) { return {
+        id: s.service_id, cat: s.category, name: s.name, desc: s.description,
+        duration: s.duration, priceType: s.price_type, price: s.price,
+        modes: s.modes || [], bookingType: s.booking_type,
+        includes: s.includes || [], paketItems: s.paket_items || [],
+        prep: s.prep, status: s.status,
+        bookings: s.bookings || 0, revenue: s.revenue || 0
+      }; });
+      localStorage.setItem('suppTreeServices', JSON.stringify(services));
+    }
+
+    // 3. Partner Docs → reverse transform
+    var { data: dbDocs } = await _sb.from('partner_docs').select('*').eq('user_id', uid);
+    if (dbDocs && dbDocs.length) {
+      var loadedDocs = dbDocs.map(function(d) { return {
+        type: d.doc_type, docType: d.doc_type, fileName: d.file_name,
+        fileData: d.file_data, status: d.status
+      }; });
+      localStorage.setItem('suppTreePartnerDocs', JSON.stringify(loadedDocs));
+    }
+
+    // 4. Bluttests → unwrap data field (single row)
+    var { data: dbBt } = await _sb.from('partner_bluttests').select('data').eq('user_id', uid).maybeSingle();
+    if (dbBt && dbBt.data) {
+      partnerBluttests = dbBt.data;
+      localStorage.setItem('suppTreePartnerBluttests', JSON.stringify(dbBt.data));
+    }
+
+    // 5. Appointments → unwrap data field
+    var { data: dbApp } = await _sb.from('appointments').select('*').eq('user_id', uid);
+    if (dbApp && dbApp.length) {
+      var loadedKa = dbApp.map(function(a) { return a.data; });
+      localStorage.setItem('suppTreeKundenAnfragen', JSON.stringify(loadedKa));
+    }
+
+    // 6. Brand Profile → unwrap data field (single row)
+    var { data: dbBp } = await _sb.from('brand_profiles').select('data').eq('user_id', uid).maybeSingle();
+    if (dbBp && dbBp.data) {
+      brandProfile = dbBp.data;
+      localStorage.setItem('suppTreeBrandProfile', JSON.stringify(dbBp.data));
+    }
+
+    // 7. Team Members → reverse transform
+    var { data: dbTm } = await _sb.from('team_members').select('*').eq('user_id', uid);
+    if (dbTm && dbTm.length) {
+      teamMembers = dbTm.map(function(m) { return {
+        name: m.name, email: m.email, role: m.role,
+        status: m.status, permissions: m.permissions || {}
+      }; });
+      localStorage.setItem('suppTreeTeamMembers', JSON.stringify(teamMembers));
+    }
+
+    // 8. Recht Docs → unwrap data field (single row)
+    var { data: dbRd } = await _sb.from('recht_docs').select('data').eq('user_id', uid).maybeSingle();
+    if (dbRd && dbRd.data) {
+      localStorage.setItem('suppTreeRechtDocs', JSON.stringify(dbRd.data));
+    }
+
+    // 9. Dash Config → unwrap config field (single row)
+    var { data: dbDc } = await _sb.from('partner_dash_config').select('config').eq('user_id', uid).maybeSingle();
+    if (dbDc && dbDc.config) {
+      localStorage.setItem('suppTreeDashConfig', JSON.stringify(dbDc.config));
+    }
+
+    // 10. Training Plan Drafts → unwrap data field
+    var { data: dbTp } = await _sb.from('training_plans').select('*').eq('user_id', uid);
+    if (dbTp && dbTp.length) {
+      var tpDrafts = dbTp.filter(function(d){ return d.type === 'draft'; }).map(function(d) { return d.data; });
+      if (tpDrafts.length) localStorage.setItem('suppTreeTpDrafts', JSON.stringify(tpDrafts));
+    }
+
+    // 11. Nutrition Plan Drafts → unwrap data field
+    var { data: dbEp } = await _sb.from('nutrition_plans').select('*').eq('user_id', uid);
+    if (dbEp && dbEp.length) {
+      var epDrafts = dbEp.filter(function(d){ return d.type === 'draft'; }).map(function(d) { return d.data; });
+      if (epDrafts.length) localStorage.setItem('suppTreeEpDrafts', JSON.stringify(epDrafts));
+    }
+
+    // 12. Community Recipes → unwrap data field
+    var { data: dbRec } = await _sb.from('community_recipes').select('*').eq('user_id', uid);
+    if (dbRec && dbRec.length) {
+      var loadedRecipes = dbRec.map(function(r) { return r.data; });
+      localStorage.setItem('suppTreeCommunityRecipes', JSON.stringify(loadedRecipes));
+    }
+
+    // 13. Feature Overrides aus Profil laden
+    var { data: dbProf } = await _sb.from('profiles').select('feature_overrides').eq('id', uid).maybeSingle();
+    if (dbProf && dbProf.feature_overrides) {
+      localStorage.setItem('suppTreeFeatureOverrides', JSON.stringify(dbProf.feature_overrides));
+    }
+
+    // 14. Kunden aus customer_berater + profiles
+    try {
+      var { data: dbCb } = await _sb.from('customer_berater').select('*').eq('partner_id', uid);
+      if (dbCb && dbCb.length) {
+        var customerIds = dbCb.map(function(c) { return c.customer_id; });
+        var results14 = await Promise.all([
+          _sb.from('profiles').select('id, name, email, phone, personal_data').in('id', customerIds),
+          _sb.from('orders').select('total, user_id, created_at, status').eq('partner_id', uid)
+        ]);
+        var custProfiles = results14[0].data || [];
+        var custOrders = results14[1].data || [];
+        var profMap = {};
+        custProfiles.forEach(function(p) { profMap[p.id] = p; });
+        var ordersByUser = {};
+        custOrders.forEach(function(o) {
+          if (!o.user_id) return;
+          if (!ordersByUser[o.user_id]) ordersByUser[o.user_id] = [];
+          ordersByUser[o.user_id].push(o);
+        });
+        _liveKunden = dbCb.map(function(cb) {
+          var prof = profMap[cb.customer_id] || {};
+          var pd = prof.personal_data || {};
+          var uOrders = ordersByUser[cb.customer_id] || [];
+          var validOrders = uOrders.filter(function(o) { return o.status !== 'cancelled'; });
+          var totalSpent = validOrders.reduce(function(s, o) { return s + (parseFloat(o.total) || 0); }, 0);
+          var firstOrder = validOrders.length ? validOrders.sort(function(a, b) { return new Date(a.created_at) - new Date(b.created_at); })[0] : null;
+          var lastOrder = validOrders.length ? validOrders.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); })[0] : null;
+          var provRate = cb.channel === 'link' ? 0.07 : 0.10;
+          var nm = prof.name || prof.email || '';
+          var initials = nm.split(' ').map(function(w) { return w.charAt(0).toUpperCase(); }).join('').slice(0, 2);
+          return {
+            id: cb.customer_id,
+            cbId: cb.id,
+            name: nm,
+            email: prof.email || '',
+            avatar: initials || '?',
+            phone: prof.phone || pd.phone || '',
+            quelle: cb.channel || 'qr',
+            cookieStart: cb.connected_at ? cb.connected_at.slice(0, 10) : new Date().toISOString().slice(0, 10),
+            firstPurchase: firstOrder ? firstOrder.created_at.slice(0, 10) : null,
+            provisionStart: firstOrder ? firstOrder.created_at.slice(0, 10) : null,
+            provisionResets: 0,
+            provisionEarned: totalSpent * provRate,
+            lastVisit: lastOrder ? lastOrder.created_at.slice(0, 10) : (cb.connected_at ? cb.connected_at.slice(0, 10) : ''),
+            orders: validOrders.length,
+            spent: totalSpent,
+            notizen: '',
+            notizenList: cb.notizen || [],
+            empfehlungen: cb.empfehlungen || []
+          };
+        });
+      }
+    } catch(e14) { console.log('Kunden-Load:', e14); }
+
+    // 15. Partner-Bestellungen aus orders
+    try {
+      var { data: dbOrd } = await _sb.from('orders').select('*, order_items(*)').eq('partner_id', uid)
+        .order('created_at', { ascending: false }).limit(100);
+      if (dbOrd && dbOrd.length) {
+        _livePartnerOrders = dbOrd.map(function(o) {
+          var statusMap = { pending: 'ready', processing: 'ready', shipped: 'shipped', delivered: 'delivered', cancelled: 'cancelled' };
+          var items = (o.order_items || []).map(function(i) {
+            return { name: i.product_name || '', icon: '💊', qty: i.quantity || 1, price: parseFloat(i.unit_price) || 0 };
+          });
+          var tr = null;
+          if (o.tracking_number || o.shipping_carrier) {
+            tr = { carrier: (o.shipping_carrier || 'dhl').toLowerCase(), number: o.tracking_number || '' };
+          }
+          var timeline = [{ date: fmtTimeline(o.created_at), text: 'Bestellung eingegangen', active: true }];
+          if (o.paid_at) timeline.push({ date: fmtTimeline(o.paid_at), text: 'Zahlung bestätigt', active: true });
+          if (o.status === 'shipped' || o.status === 'delivered') timeline.push({ date: fmtTimeline(o.shipped_at || o.status_changed_at || o.created_at), text: 'Versendet', active: true });
+          if (o.status === 'delivered') timeline.push({ date: fmtTimeline(o.delivered_at || o.status_changed_at || o.created_at), text: 'Zugestellt', active: true });
+          return {
+            id: o.id,
+            number: o.order_number || '',
+            status: statusMap[o.status] || o.status || 'ready',
+            customer: { name: o.customer_name || '', email: '', street: '', city: '', phone: '' },
+            items: items,
+            subtotal: parseFloat(o.subtotal) || 0,
+            shipping: parseFloat(o.shipping_cost) || 0,
+            total: parseFloat(o.total) || 0,
+            payment: o.payment_method || '',
+            createdAt: o.created_at,
+            paidAt: o.paid_at || o.created_at,
+            tracking: tr,
+            timeline: timeline
+          };
+        });
+      }
+    } catch(e15) { console.log('Partner-Orders-Load:', e15); }
+
+    console.log('✅ Partner-Daten aus Supabase geladen');
+  } catch(e) {
+    console.log('⚠️ Supabase-Load fehlgeschlagen, nutze localStorage:', e);
+  }
+}
+
+function fmtTimeline(dateStr) {
+  if (!dateStr) return '';
+  var d = new Date(dateStr);
+  return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 }
 
 // LIVE/LOCAL Badge
@@ -3658,7 +4215,18 @@ const FEATURE_GATES = {
   heilpraktiker: { produkte:false, services:true, bluttests:true, termine:true, trainingsPlan:false, ernaehrungsPlan:true, rezepte:false, markenprofil:false },
   coach:         { produkte:false, services:true, bluttests:false, termine:true, trainingsPlan:true, ernaehrungsPlan:true, rezepte:true, markenprofil:false }
 };
+// Feature-Overrides: Partner kann einzelne Features an/aus schalten
+function getFeatureOverrides() {
+  try { return JSON.parse(localStorage.getItem('suppTreeFeatureOverrides')) || {}; } catch(e) { return {}; }
+}
+function setFeatureOverride(key, enabled) {
+  var o = getFeatureOverrides();
+  if (enabled === null || enabled === undefined) { delete o[key]; } else { o[key] = enabled; }
+  localStorage.setItem('suppTreeFeatureOverrides', JSON.stringify(o));
+}
 function hasFeature(key) {
+  var overrides = getFeatureOverrides();
+  if (overrides.hasOwnProperty(key)) return overrides[key];
   return (FEATURE_GATES[partnerType] || FEATURE_GATES.supplement)[key] !== false;
 }
 
@@ -3696,6 +4264,53 @@ function renderMehrMenu(){
   // Shop section: nur für Produkt-Partner
   const shopSec=document.getElementById('mehrShopSection');
   if(shopSec) shopSec.style.display=hasFeature('markenprofil')||hasFeature('produkte')?'':'none';
+
+  // Module-Toggles (Feature-Overrides)
+  renderModuleToggles();
+}
+
+function renderModuleToggles() {
+  var sec = document.getElementById('mehrModuleSection');
+  var container = document.getElementById('mehrModuleToggles');
+  if (!sec || !container) return;
+
+  // Definiere optionale Module pro Typ
+  var modules = [];
+  if (partnerType === 'heilpraktiker') {
+    modules.push({key:'bluttests', icon:'🩸', label:'Bluttests anbieten', desc:'Blutanalysen für Patienten verwalten'});
+  }
+
+  if (modules.length === 0) { sec.style.display = 'none'; return; }
+  sec.style.display = '';
+
+  var overrides = getFeatureOverrides();
+  var html = '';
+  for (var i = 0; i < modules.length; i++) {
+    var m = modules[i];
+    // Default-Wert aus FEATURE_GATES, Override hat Vorrang
+    var defaultVal = (FEATURE_GATES[partnerType] || {})[m.key] || false;
+    var isOn = overrides.hasOwnProperty(m.key) ? overrides[m.key] : defaultVal;
+    html += '<div class="mehr-item" style="cursor:default">' +
+      '<span class="mehr-item-icon">'+m.icon+'</span>' +
+      '<div style="flex:1"><div class="mehr-item-label" style="margin-bottom:1px">'+m.label+'</div>' +
+      '<div style="font-size:11px;color:var(--text-muted)">'+m.desc+'</div></div>' +
+      '<label style="position:relative;width:44px;height:24px;flex-shrink:0;cursor:pointer">' +
+        '<input type="checkbox" '+(isOn?'checked':'')+' onchange="toggleFeatureModule(\''+m.key+'\',this.checked)" style="opacity:0;width:0;height:0;position:absolute">' +
+        '<span style="position:absolute;inset:0;border-radius:12px;background:'+(isOn?'var(--green-accent)':'#ccc')+';transition:background .3s"></span>' +
+        '<span style="position:absolute;top:2px;left:'+(isOn?'22px':'2px')+';width:20px;height:20px;border-radius:50%;background:#fff;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>' +
+      '</label>' +
+    '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function toggleFeatureModule(key, enabled) {
+  setFeatureOverride(key, enabled);
+  // Nav + Menü neu rendern
+  renderBottomNav();
+  renderMehrMenu();
+  if (typeof renderDashboard === 'function') renderDashboard();
+  toast(enabled ? 'Modul aktiviert' : 'Modul deaktiviert', enabled ? 'success' : 'info');
 }
 renderMehrMenu();
 
@@ -3712,7 +4327,11 @@ function updateUserDisplay(user) {
 // Logout Handler
 async function handleLogout() {
   await logoutUser();
-  window.location.href = '../www/login.html?logout=true';
+  _currentUser = null;
+  _sb = null;
+  localStorage.removeItem('suppTreePartnerType');
+  showPartnerAuth();
+  showPaAlert('paLoginSuccess', 'Erfolgreich abgemeldet.');
 }
 
 // =============================================
@@ -3783,16 +4402,37 @@ function savePartnerDocs(docs) {
   partnerSync('partner_docs', 'suppTreePartnerDocs', docs, { replaceAll: true, transform: d => ({ doc_type: d.type||d.docType, file_name: d.fileName, file_data: d.fileData, status: d.status||'uploaded' }) });
 }
 
-// PROVIDER PROFILE
-let provider={
-  name:'Dr. Max Eichkorn',title:'Heilpraktiker · Ernährungsberater',avatar:'👨‍⚕️',
-  bio:'Seit über 15 Jahren begleite ich Menschen auf ihrem Weg zu mehr Gesundheit. Spezialisiert auf orthomolekulare Medizin und Mikronährstofftherapie.',
-  qualifications:['Heilpraktiker (seit 2009)','Zertifizierter Ernährungsberater (DGE)','Orthomolekulare Medizin','Sportmedizinische Zusatzqualifikation'],
-  location:'Praxis für Naturheilkunde, Maximilianstr. 42, 80539 München',
-  phone:'+49 89 123 456 78',website:'https://praxis-eichkorn.de',
-  hours:{week:'09:00 - 18:00',sat:'10:00 - 14:00',sun:'Geschlossen'},
-  modes:['praxis','video','phone'],rating:4.9,reviews:47
+// PROVIDER PROFILE (dynamisch pro partnerType)
+const DEMO_PROVIDERS = {
+  supplement: {
+    name:'NaturVital GmbH',title:'Supplement-Hersteller',avatar:'💊',
+    bio:'Premium Nahrungsergänzungsmittel aus Deutschland. Laborgeprüft, vegan & nachhaltig.',
+    qualifications:['GMP-zertifiziert','ISO 22000','Bio-Siegel','Made in Germany'],
+    location:'Leopoldstraße 42, 80802 München',
+    phone:'+49 89 123 456 78',website:'https://naturvital-supplements.de',
+    hours:{week:'09:00 - 17:00',sat:'Geschlossen',sun:'Geschlossen'},
+    modes:['online'],rating:4.8,reviews:124
+  },
+  heilpraktiker: {
+    name:'Dr. Max Eichkorn',title:'Heilpraktiker · Ernährungsberater',avatar:'👨‍⚕️',
+    bio:'Seit über 15 Jahren begleite ich Menschen auf ihrem Weg zu mehr Gesundheit. Spezialisiert auf orthomolekulare Medizin und Mikronährstofftherapie.',
+    qualifications:['Heilpraktiker (seit 2009)','Zertifizierter Ernährungsberater (DGE)','Orthomolekulare Medizin','Sportmedizinische Zusatzqualifikation'],
+    location:'Praxis für Naturheilkunde, Maximilianstr. 42, 80539 München',
+    phone:'+49 89 123 456 78',website:'https://praxis-eichkorn.de',
+    hours:{week:'09:00 - 18:00',sat:'10:00 - 14:00',sun:'Geschlossen'},
+    modes:['praxis','video','phone'],rating:4.9,reviews:47
+  },
+  coach: {
+    name:'Lisa Berger',title:'Fitness- & Ernährungscoach',avatar:'💪',
+    bio:'Ich helfe dir, deine Fitnessziele zu erreichen — mit individuellen Trainingsplänen und Ernährungsberatung.',
+    qualifications:['Zertifizierte Personal Trainerin (DSHS)','Ernährungsberaterin (IHK)','Functional Training Specialist','Yoga-Lehrerin (RYT 200)'],
+    location:'FitSpace Studio, Schillerstr. 15, 80336 München',
+    phone:'+49 176 9876 5432',website:'https://lisaberger-coaching.de',
+    hours:{week:'07:00 - 20:00',sat:'09:00 - 16:00',sun:'Geschlossen'},
+    modes:['studio','video','outdoor'],rating:4.9,reviews:63
+  }
 };
+let provider = JSON.parse(JSON.stringify(DEMO_PROVIDERS[partnerType] || DEMO_PROVIDERS.supplement));
 
 // BRAND PROFILE DATA
 let brandProfile={
@@ -3960,6 +4600,8 @@ let anfragen=[
   }
 ];
 // KUNDEN DATA
+var _liveKunden = null;
+var _livePartnerOrders = null;
 let demoKunden=[
   // Maria: QR in Praxis gescannt, gekauft nach 12 Tagen, Provision verlängert durch neue Empfehlung+Kauf Aug → läuft bald ab
   {id:1,name:'Maria Schmidt',email:'maria.schmidt@email.de',avatar:'MS',phone:'+49 171 234 5678',quelle:'qr',
@@ -6762,6 +7404,35 @@ function saveService(asDraft){
 }
 
 // PROVIDER PROFILE FUNCTIONS
+function updateProviderUI() {
+  // Header-Karte auf Services-Screen
+  var el = document.getElementById('providerName');
+  if (el) el.textContent = provider.name;
+  el = document.getElementById('providerTitle');
+  if (el) el.textContent = provider.title;
+  el = document.getElementById('svcRating');
+  if (el) el.textContent = '⭐ ' + provider.rating;
+  // Provider-Avatar
+  var av = document.querySelector('#servicesScreen .ob-avatar, [onclick="openProviderProfile()"] > div:first-child');
+  // Edit-Form Felder
+  el = document.getElementById('provName');
+  if (el) el.value = provider.name;
+  el = document.getElementById('provTitle');
+  if (el) el.value = provider.title;
+  el = document.getElementById('provBio');
+  if (el) el.value = provider.bio;
+  el = document.getElementById('provQuals');
+  if (el) el.value = (provider.qualifications || []).join('\n');
+  el = document.getElementById('provLocation');
+  if (el) el.value = provider.location || '';
+  el = document.getElementById('provPhone');
+  if (el) el.value = provider.phone || '';
+  el = document.getElementById('provWeb');
+  if (el) el.value = provider.website || '';
+}
+// Beim Laden ausführen
+setTimeout(updateProviderUI, 200);
+
 function openProviderProfile(){
   renderProviderProfile();
   showScreen('provider');
@@ -8169,14 +8840,14 @@ function updateKundenProvTabs(){
 function renderKunden(){
   // Only count non-expired customers (expired = invisible)
   const isVisible=k=>{const p=getProvisionInfo(k);return p.phase!=='expired'&&p.phase!=='cookie_expired';};
-  const allQR=demoKunden.filter(k=>k.quelle==='qr'&&isVisible(k));
-  const allLink=demoKunden.filter(k=>k.quelle==='link'&&isVisible(k));
+  const allQR=(_liveKunden || demoKunden).filter(k=>k.quelle==='qr'&&isVisible(k));
+  const allLink=(_liveKunden || demoKunden).filter(k=>k.quelle==='link'&&isVisible(k));
   document.getElementById('kundenTabQRCount').textContent=allQR.length;
   document.getElementById('kundenTabLinkCount').textContent=allLink.length;
   updateKundenProvTabs();
 
   // Filter by search + active tab (exclude expired)
-  const tabFiltered=demoKunden.filter(k=>k.quelle===(kundenProvTab==='qr'?'qr':'link')&&isVisible(k));
+  const tabFiltered=(_liveKunden || demoKunden).filter(k=>k.quelle===(kundenProvTab==='qr'?'qr':'link')&&isVisible(k));
   const filtered=tabFiltered.filter(k=>{
     if(!kundenSearch)return true;
     return k.name.toLowerCase().includes(kundenSearch);
@@ -8315,7 +8986,7 @@ function openKundenDetail(id){
 }
 
 function renderKundenDetail(id){
-  const k=demoKunden.find(c=>c.id===(id||currentKundeId));
+  const k=(_liveKunden || demoKunden).find(c=>c.id===(id||currentKundeId));
   if(!k)return;
   document.getElementById('kundenDetailTitle').textContent=k.name;
 
@@ -8853,8 +9524,16 @@ function showEmpfAutoPreviewW(wi){
   preview.innerHTML=`<div class="empf-auto-label">✨ KI-Einnahmezeit</div>${ki.kiZeit}`;
 }
 
+function persistKundeData(kundeId, fields) {
+  if (!_sb) return;
+  var k = (_liveKunden || []).find(function(c) { return c.id === kundeId; });
+  if (!k || !k.cbId) return;
+  _sb.from('customer_berater').update(fields).eq('id', k.cbId)
+    .then(function(res) { if (res.error) console.error('Kunde persist:', res.error); });
+}
+
 function sendEmpfehlung(){
-  const k=demoKunden.find(c=>c.id===currentKundeId);
+  const k=(_liveKunden || demoKunden).find(c=>c.id===currentKundeId);
   if(!k)return;
   const checked=document.querySelectorAll('.empf-product-pick input:checked');
   if(checked.length===0){toast('Bitte mindestens einen Wirkstoff auswählen','error');return;}
@@ -8900,6 +9579,7 @@ function sendEmpfehlung(){
     empf.plan={type:empfPlanType||'custom',text:planText};
   }
   k.empfehlungen.unshift(empf);
+  persistKundeData(k.id, { empfehlungen: k.empfehlungen });
 
   // localStorage Bridge → Kunden-App (Supplement-Plan)
   try {
@@ -8954,27 +9634,30 @@ function sendEmpfehlung(){
 }
 
 function saveKundenNotiz(){
-  const k=demoKunden.find(c=>c.id===currentKundeId);
+  const k=(_liveKunden || demoKunden).find(c=>c.id===currentKundeId);
   if(!k)return;
   const text=document.getElementById('kundeNotizenInput').value.trim();
   if(!text){toast('Bitte Notiz eingeben','error');return;}
   if(!k.notizenList)k.notizenList=[];
   k.notizenList.push({text:text,date:new Date().toISOString()});
+  persistKundeData(k.id, { notizen: k.notizenList });
   toast('💾 Notiz gespeichert','success');
   renderKundenDetail();
 }
 
 function deleteKundenNotiz(idx){
-  const k=demoKunden.find(c=>c.id===currentKundeId);
+  const k=(_liveKunden || demoKunden).find(c=>c.id===currentKundeId);
   if(!k||!k.notizenList)return;
   k.notizenList[idx].deleted=true;
+  persistKundeData(k.id, { notizen: k.notizenList });
   renderKundenDetail();
 }
 
 function restoreKundenNotiz(idx){
-  const k=demoKunden.find(c=>c.id===currentKundeId);
+  const k=(_liveKunden || demoKunden).find(c=>c.id===currentKundeId);
   if(!k||!k.notizenList)return;
   delete k.notizenList[idx].deleted;
+  persistKundeData(k.id, { notizen: k.notizenList });
   renderKundenDetail();
 }
 
@@ -9182,18 +9865,18 @@ function searchOrdersList(q) {
 }
 
 function renderOrders(){
-  const readyC=orders.filter(o=>o.status==='ready').length;
-  const shipC=orders.filter(o=>o.status==='shipped').length;
-  const delC=orders.filter(o=>o.status==='delivered').length;
+  const readyC=(_livePartnerOrders || orders).filter(o=>o.status==='ready').length;
+  const shipC=(_livePartnerOrders || orders).filter(o=>o.status==='shipped').length;
+  const delC=(_livePartnerOrders || orders).filter(o=>o.status==='delivered').length;
   document.getElementById('ordReady').textContent=readyC;
   document.getElementById('ordShipped').textContent=shipC;
   document.getElementById('ordDelivered').textContent=delC;
-  document.getElementById('ordTotal').textContent=orders.length;
+  document.getElementById('ordTotal').textContent=(_livePartnerOrders || orders).length;
   // Open revenue
-  const openRev=orders.filter(o=>o.status==='ready'||o.status==='shipped').reduce((s,o)=>s+o.total,0);
+  const openRev=(_livePartnerOrders || orders).filter(o=>o.status==='ready'||o.status==='shipped').reduce((s,o)=>s+o.total,0);
   document.getElementById('ordOpenRevenue').textContent='€'+openRev.toFixed(0);
   // Tab counts
-  const counts={ready:readyC,shipped:shipC,delivered:delC,cancelled:orders.filter(o=>o.status==='cancelled').length,returned:orders.filter(o=>o.status==='returned').length};
+  const counts={ready:readyC,shipped:shipC,delivered:delC,cancelled:(_livePartnerOrders || orders).filter(o=>o.status==='cancelled').length,returned:(_livePartnerOrders || orders).filter(o=>o.status==='returned').length};
   const tabKeys=['all','ready','shipped','delivered','cancelled','returned'];
   document.querySelectorAll('#orderStatusTabs .status-tab').forEach((tab,i)=>{
     const key=tabKeys[i];
@@ -9211,7 +9894,8 @@ function filterOrders(f){
 }
 
 function renderOrdersList(){
-  let filtered=orderFilter==='all'?[...orders]:orders.filter(o=>o.status===orderFilter);
+  var _ordList=_livePartnerOrders || orders;
+  let filtered=orderFilter==='all'?[..._ordList]:_ordList.filter(o=>o.status===orderFilter);
   if(orderSearchQuery){
     filtered=filtered.filter(o=>
       o.id.toLowerCase().includes(orderSearchQuery) ||
@@ -9263,7 +9947,7 @@ function renderOrdersList(){
 }
 
 function openOrderDetail(id){
-  const o=orders.find(x=>x.id===id);
+  const o=(_livePartnerOrders || orders).find(x=>x.id==id);
   if(!o)return;
   currentOrderId=id;
   document.getElementById('orderDetailTitle').textContent='Bestellung #'+o.id;
@@ -9340,13 +10024,21 @@ function openOrderDetail(id){
 }
 
 function updateOrderStatus(id,status){
-  const o=orders.find(x=>x.id===id);
+  const o=(_livePartnerOrders || orders).find(x=>x.id==id);
   if(!o)return;
   const now=new Date();
   const ts=now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
   o.status=status;
   const msgs={shipped:'Versendet',delivered:'Zugestellt',cancelled:'Storniert – Rückerstattung eingeleitet'};
   o.timeline.push({date:ts,text:msgs[status]||status,active:true});
+  if (_sb && o.id) {
+    var dbStatus = status === 'ready' ? 'processing' : status;
+    var upd = { status: dbStatus };
+    if (status === 'shipped') upd.shipped_at = now.toISOString();
+    if (status === 'delivered') upd.delivered_at = now.toISOString();
+    _sb.from('orders').update(upd).eq('id', o.id)
+      .then(function(res) { if (res.error) console.error('Order status persist:', res.error); });
+  }
   renderOrders();
   toast('✓ '+ordStatusLabels[status],'success');
 }
@@ -9369,9 +10061,13 @@ function closeTrackingSheet(){
 function saveTracking(){
   const num=document.getElementById('trackNumber').value.trim();
   if(!num){toast('Bitte Sendungsnummer eingeben','error');return;}
-  const o=orders.find(x=>x.id===currentOrderId);
+  const o=(_livePartnerOrders || orders).find(x=>x.id==currentOrderId);
   if(!o)return;
   o.tracking={carrier:document.getElementById('trackCarrier').value,number:num};
+  if (_sb && o.id) {
+    _sb.from('orders').update({ shipping_carrier: o.tracking.carrier, tracking_number: o.tracking.number }).eq('id', o.id)
+      .then(function(res) { if (res.error) console.error('Tracking persist:', res.error); });
+  }
   updateOrderStatus(currentOrderId,'shipped');
   closeTrackingSheet();
   toast('📦 Versand bestätigt & Kunde benachrichtigt','success');
@@ -10178,17 +10874,17 @@ function renderWidget_finanzenUebersicht(cfg={}){
 function renderWidget_kundenUebersicht(cfg={}){
   const showStatus=cfg.showStatus!==false;
   const showProv=cfg.showProvision!==false;
-  const qrKunden=demoKunden.filter(k=>k.quelle==='qr');
-  const linkKunden=demoKunden.filter(k=>k.quelle==='link');
+  const qrKunden=(_liveKunden || demoKunden).filter(k=>k.quelle==='qr');
+  const linkKunden=(_liveKunden || demoKunden).filter(k=>k.quelle==='link');
   const now=new Date();
   let green=0,orange=0,red=0;
-  demoKunden.forEach(k=>{
+  (_liveKunden || demoKunden).forEach(k=>{
     if(!k.firstPurchase) return;
     const pStart=new Date(k.provisionStart||k.firstPurchase);
     const daysLeft=Math.ceil((pStart.getTime()+PROVISION_DAYS*86400000-now.getTime())/86400000);
     if(daysLeft>40) green++; else if(daysLeft>=14) orange++; else red++;
   });
-  const totalProv=demoKunden.reduce((s,k)=>s+k.provisionEarned,0);
+  const totalProv=(_liveKunden || demoKunden).reduce((s,k)=>s+k.provisionEarned,0);
   return`<div class="section">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="section-title" style="margin:0">Meine Kunden</div><div style="font-size:12px;color:var(--green-accent);cursor:pointer" onclick="showScreen('kunden')">Alle &rarr;</div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
@@ -10207,10 +10903,10 @@ function renderWidget_kundenUebersicht(cfg={}){
 function renderWidget_bestellungenUebersicht(cfg={}){
   const showGrid=cfg.showStatusGrid!==false;
   const showUmsatz=cfg.showUmsatz!==false;
-  const readyC=orders.filter(o=>o.status==='ready').length;
-  const shipC=orders.filter(o=>o.status==='shipped').length;
-  const delC=orders.filter(o=>o.status==='delivered').length;
-  const openRev=orders.filter(o=>o.status==='ready'||o.status==='shipped').reduce((s,o)=>s+o.total,0);
+  const readyC=(_livePartnerOrders || orders).filter(o=>o.status==='ready').length;
+  const shipC=(_livePartnerOrders || orders).filter(o=>o.status==='shipped').length;
+  const delC=(_livePartnerOrders || orders).filter(o=>o.status==='delivered').length;
+  const openRev=(_livePartnerOrders || orders).filter(o=>o.status==='ready'||o.status==='shipped').reduce((s,o)=>s+o.total,0);
   return`<div class="section">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="section-title" style="margin:0">Bestellungen</div><div style="font-size:12px;color:var(--green-accent);cursor:pointer" onclick="showScreen('orders')">Alle &rarr;</div></div>
     ${showGrid?`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
@@ -10361,12 +11057,18 @@ const DASH_WIDGETS=[
   ]}
 ];
 
-// ── Dashboard-Presets pro Partner-Typ ──
-const DASHBOARD_PRESETS = {
-  supplement: ['umsatzHero','handlung','heuteKarten','produkteTop','bestellungenUebersicht','umsatzverlauf','markenprofil','kennzahlen','finanzenUebersicht','schnellzugriffe','kundenUebersicht','affiliateUebersicht','analyticsKpi'],
-  heilpraktiker: ['anbieterProfil','handlung','termine','heuteKarten','serviceUebersicht','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','aktivitaeten','analyticsKpi'],
-  coach: ['anbieterProfil','handlung','termine','serviceUebersicht','heuteKarten','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','schnellzugriffe','aktivitaeten']
-};
+// ── Dashboard-Presets pro Partner-Typ (aus Admin oder Fallback) ──
+const DASHBOARD_PRESETS = (function() {
+  try {
+    const s = JSON.parse(localStorage.getItem('suppTreeAdminWidgetPresets'));
+    if (s && s.supplement) return s;
+  } catch(e) {}
+  return {
+    supplement: ['umsatzHero','handlung','heuteKarten','produkteTop','bestellungenUebersicht','umsatzverlauf','markenprofil','kennzahlen','finanzenUebersicht','schnellzugriffe','kundenUebersicht','affiliateUebersicht','analyticsKpi'],
+    heilpraktiker: ['anbieterProfil','handlung','termine','heuteKarten','serviceUebersicht','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','aktivitaeten','analyticsKpi'],
+    coach: ['anbieterProfil','handlung','termine','serviceUebersicht','heuteKarten','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','schnellzugriffe','aktivitaeten']
+  };
+})();
 
 const WIDGET_META={
   umsatzHero:{dataSources:['Umsatzdaten','Bestellungen','Termine','Kunden'],navigatesTo:'Finanzen-Screen',category:'Umsatz & Finanzen'},
@@ -10557,13 +11259,13 @@ function renderDashboard(){
   const newAnfr=anfragen.filter(a=>a.status==='new').length;
   const el=document.getElementById('dashNewAnfragen');if(el)el.textContent=newAnfr;
   const isVisible=k=>{const p=getProvisionInfo(k);return p.phase!=='expired'&&p.phase!=='cookie_expired';};
-  const kundenCount=demoKunden.filter(k=>isVisible(k)).length;
+  const kundenCount=(_liveKunden || demoKunden).filter(k=>isVisible(k)).length;
   const kEl=document.getElementById('dashKunden');if(kEl)kEl.textContent=kundenCount;
   const activeProducts=products.filter(p=>p.status==='active').length;
   const totalSales=products.reduce((s,p)=>s+(p.sales||0),0);
   const activeSvc=services.filter(s=>s.status==='active').length;
   const svcRevenue=services.reduce((s,sv)=>s+(sv.revenue||0),0);
-  const totalProv=demoKunden.reduce((s,k)=>s+getProvisionInfo(k).provision,0);
+  const totalProv=(_liveKunden || demoKunden).reduce((s,k)=>s+getProvisionInfo(k).provision,0);
   const dp=document.getElementById('dashProdCount');if(dp)dp.textContent=activeProducts;
   const dps=document.getElementById('dashProdSales');if(dps)dps.textContent=totalSales+' verkauft';
   const dk=document.getElementById('dashKundenCount');if(dk)dk.textContent=kundenCount;
@@ -10800,7 +11502,7 @@ function renderStatistiken(){
   // Calculate data
   const prodRev=products.reduce((s,p)=>s+(p.revenue||0),0);
   const svcRev=services.reduce((s,sv)=>s+(sv.revenue||0),0);
-  const affRev=Math.round(demoKunden.reduce((s,k)=>s+(k.provisionEarned||0),0)*3);
+  const affRev=Math.round((_liveKunden || demoKunden).reduce((s,k)=>s+(k.provisionEarned||0),0)*3);
   const totalRev=prodRev+svcRev+affRev;
   const scaled=Math.round(totalRev*mult);
   const prevScaled=Math.round(scaled*0.85);
@@ -10810,24 +11512,25 @@ function renderStatistiken(){
 
   // Visible kunden
   const isVisible=k=>{const p=getProvisionInfo(k);return p.phase!=='expired'&&p.phase!=='cookie_expired';};
-  const visKunden=demoKunden.filter(isVisible);
+  const visKunden=(_liveKunden || demoKunden).filter(isVisible);
   const qrKunden=visKunden.filter(k=>k.quelle==='qr');
   const linkKunden=visKunden.filter(k=>k.quelle==='link');
-  const totalProv=demoKunden.reduce((s,k)=>s+(k.provisionEarned||0),0);
+  const totalProv=(_liveKunden || demoKunden).reduce((s,k)=>s+(k.provisionEarned||0),0);
 
   // Funnel
-  const empfohlen=demoKunden.filter(k=>k.empfehlungen&&k.empfehlungen.length>0).length;
-  const gekauft=demoKunden.filter(k=>k.firstPurchase).length;
-  const aktiv=demoKunden.filter(k=>{const p=getProvisionInfo(k);return p.phase==='active';}).length;
-  const funnelMax=Math.max(demoKunden.length,1);
+  const empfohlen=(_liveKunden || demoKunden).filter(k=>k.empfehlungen&&k.empfehlungen.length>0).length;
+  const gekauft=(_liveKunden || demoKunden).filter(k=>k.firstPurchase).length;
+  const aktiv=(_liveKunden || demoKunden).filter(k=>{const p=getProvisionInfo(k);return p.phase==='active';}).length;
+  const funnelMax=Math.max((_liveKunden || demoKunden).length,1);
 
   // Orders
-  const readyC=orders.filter(o=>o.status==='ready').length;
-  const shipC=orders.filter(o=>o.status==='shipped').length;
-  const delC=orders.filter(o=>o.status==='delivered').length;
-  const canC=orders.filter(o=>o.status==='cancelled').length;
-  const ordCount=Math.round(orders.length*mult);
-  const avgOrder=orders.length?Math.round(orders.reduce((s,o)=>s+o.total,0)/orders.length*100)/100:0;
+  const readyC=(_livePartnerOrders || orders).filter(o=>o.status==='ready').length;
+  const shipC=(_livePartnerOrders || orders).filter(o=>o.status==='shipped').length;
+  const delC=(_livePartnerOrders || orders).filter(o=>o.status==='delivered').length;
+  const canC=(_livePartnerOrders || orders).filter(o=>o.status==='cancelled').length;
+  var _oList=_livePartnerOrders || orders;
+  const ordCount=Math.round(_oList.length*mult);
+  const avgOrder=_oList.length?Math.round(_oList.reduce((s,o)=>s+o.total,0)/_oList.length*100)/100:0;
 
   // Services ranking
   const svcSorted=[...services].filter(s=>s.status==='active').sort((a,b)=>(b.bookings||0)-(a.bookings||0));
@@ -10987,7 +11690,7 @@ function renderStatistiken(){
       <!-- Funnel -->
       <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Kunden-Funnel</div>
       ${[
-        {label:'Registriert',count:demoKunden.length,color:'#94a3b8'},
+        {label:'Registriert',count:(_liveKunden || demoKunden).length,color:'#94a3b8'},
         {label:'Empfohlen',count:empfohlen,color:'#60a5fa'},
         {label:'Gekauft',count:gekauft,color:'#34d399'},
         {label:'Aktiv',count:aktiv,color:'#16a34a'}
@@ -11794,7 +12497,7 @@ function renderTpStep1(c) {
 }
 
 function tpRenderKundenList(q) {
-  const filtered = demoKunden.filter(k => !q || k.name.toLowerCase().includes(q.toLowerCase()));
+  const filtered = (_liveKunden || demoKunden).filter(k => !q || k.name.toLowerCase().includes(q.toLowerCase()));
   return filtered.map(k => `
     <div class="tp-kunde-item${tpState.kundeId === k.id ? ' selected' : ''}" onclick="tpSelectKunde(${k.id})">
       <div class="tp-kunde-avatar">${k.avatar}</div>
@@ -11824,7 +12527,7 @@ function tpSelectKunde(id) {
 
 // ── STEP 2: PLAN-GRUNDDATEN ──
 function renderTpStep2(c) {
-  const kunde = tpState.mode!=='vorlage'?demoKunden.find(k => k.id === tpState.kundeId):null;
+  const kunde = tpState.mode!=='vorlage'?(_liveKunden || demoKunden).find(k => k.id === tpState.kundeId):null;
   let html = '';
   if(kunde) {
     html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--green-light);border-radius:var(--r);margin-bottom:16px">
@@ -12180,7 +12883,7 @@ function tpAddSelectedExercises() {
 
 // ── STEP 5: VORSCHAU & SENDEN ──
 function renderTpStep5(c) {
-  const kunde = tpState.mode!=='vorlage'?demoKunden.find(k => k.id === tpState.kundeId):null;
+  const kunde = tpState.mode!=='vorlage'?(_liveKunden || demoKunden).find(k => k.id === tpState.kundeId):null;
   const levelLabels = {anfaenger:'Anfänger',fortgeschritten:'Fortgeschritten',profi:'Profi'};
 
   let html = `<div class="tp-preview">
@@ -12244,7 +12947,7 @@ function tpGetBeraterEntry() {
 }
 
 function tpSendPlan() {
-  const kunde = demoKunden.find(k => k.id === tpState.kundeId);
+  const kunde = (_liveKunden || demoKunden).find(k => k.id === tpState.kundeId);
   if(!kunde) { toast('Kein Kunde ausgewählt','error'); return; }
 
   const levelLabels = {anfaenger:'Anfänger',fortgeschritten:'Fortgeschritten',profi:'Profi'};
@@ -12827,7 +13530,7 @@ function renderEpStep1(c) {
 }
 
 function epRenderKundenList(q) {
-  return demoKunden.filter(k => !q || k.name.toLowerCase().includes(q.toLowerCase())).map(k => `
+  return (_liveKunden || demoKunden).filter(k => !q || k.name.toLowerCase().includes(q.toLowerCase())).map(k => `
     <div class="tp-kunde-item${epState.kundeId===k.id?' selected':''}" onclick="epSelectKunde(${k.id})">
       <div class="tp-kunde-avatar">${k.avatar}</div>
       <div class="tp-kunde-info"><div class="tp-kunde-name">${k.name}</div><div class="tp-kunde-email">${k.email}</div></div>
@@ -12840,7 +13543,7 @@ function epSelectKunde(id) { epState.kundeId=id; renderEpStep1(document.getEleme
 
 // ── STEP 2: PLAN-INFO ──
 function renderEpStep2(c) {
-  const kunde = epState.mode!=='vorlage'?demoKunden.find(k => k.id === epState.kundeId):null;
+  const kunde = epState.mode!=='vorlage'?(_liveKunden || demoKunden).find(k => k.id === epState.kundeId):null;
   let html = '';
   if(kunde) html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--green-light);border-radius:var(--r);margin-bottom:16px"><div class="tp-kunde-avatar">${kunde.avatar}</div><div><div style="font-size:13px;font-weight:600">${kunde.name}</div></div></div>`;
 
@@ -13638,7 +14341,7 @@ function submitNewRecipe() {
 
 // ── STEP 5: VORSCHAU ──
 function renderEpStep5(c) {
-  const kunde = epState.mode!=='vorlage'?demoKunden.find(k => k.id === epState.kundeId):null;
+  const kunde = epState.mode!=='vorlage'?(_liveKunden || demoKunden).find(k => k.id === epState.kundeId):null;
   const goalLabels = {abnehmen:'Abnehmen',muskelaufbau:'Muskelaufbau',gesundheit:'Gesundheit',maintenance:'Halten'};
 
   let html = `<div class="tp-preview">
@@ -13684,7 +14387,7 @@ function renderEpStep5(c) {
 
 // ── SENDEN ──
 function epSendPlan() {
-  const kunde = demoKunden.find(k => k.id === epState.kundeId);
+  const kunde = (_liveKunden || demoKunden).find(k => k.id === epState.kundeId);
   if(!kunde) { toast('Kein Kunde ausgewählt','error'); return; }
 
   const goalLabels = {abnehmen:'Abnehmen',muskelaufbau:'Muskelaufbau',gesundheit:'Gesundheit',maintenance:'Halten'};
@@ -13749,6 +14452,395 @@ function epSaveDraft() {
   epSaveDraftsLS(drafts);
 }
 
+// ── ONBOARDING: Personalisiertes Multi-Step Setup ──
+// 3 Hauptkategorien: supplement, partner, unternehmen
+// Supplement: 2 Steps | Partner: 4 Steps | Unternehmen: 3 Steps
+var _obStep = 1;
+var _obCategory = null;
+var _obData = { name:'', company:'', bio:'', specialty:'', jobTitle:'' };
+
+// Mapping: Alle Spezialitäten → Backend-Dashboard-Typ
+var OB_TYPE_MAP = {
+  supplement:'supplement',
+  heilpraktiker:'heilpraktiker',
+  ernaehrung:'coach',
+  trainer:'coach',
+  beauty:'coach',
+  hebamme:'heilpraktiker',
+  creator:'coach',
+  bgm:'coach',
+  klinik:'heilpraktiker',
+  studio:'coach',
+  sonstiges_u:'coach'
+};
+
+// Anzeige-Labels für Badge im Personal-Step
+var OB_SPECIALTY_LABELS = {
+  heilpraktiker:'Heilpraktiker/in',
+  ernaehrung:'Ernährungsexpert/in',
+  trainer:'Trainer/in & Coach',
+  beauty:'Beauty & Wellness',
+  hebamme:'Hebamme & Stillberater/in',
+  creator:'Creator',
+  bgm:'BGM',
+  klinik:'Klinik / Praxis',
+  studio:'Studio / Salon',
+  sonstiges_u:'Unternehmen'
+};
+
+// Partner-Spezialisierungen
+var OB_PARTNER_SPECS = [
+  {key:'heilpraktiker',icon:'🩺',bg:'#E3F2FD',label:'Heilpraktiker/in',desc:'Bluttests, Therapien, Naturheilkunde'},
+  {key:'ernaehrung',icon:'🥗',bg:'#E8F5E9',label:'Ernährungsexpert/in',desc:'Ernährungspläne, Beratung, Rezepte'},
+  {key:'trainer',icon:'💪',bg:'#FFF3E0',label:'Trainer/in & Coach',desc:'Training, Fitness, Kurse'},
+  {key:'beauty',icon:'✨',bg:'#FCE4EC',label:'Beauty & Wellness',desc:'Kosmetik, Massage, Wellness'},
+  {key:'hebamme',icon:'👶',bg:'#FFF8E1',label:'Hebamme & Stillberater/in',desc:'Schwangerschaft, Geburt, Stillberatung'},
+  {key:'creator',icon:'🎬',bg:'#F3E5F5',label:'Creator',desc:'Content, Social Media, Empfehlungen'}
+];
+
+// Unternehmens-Typen
+var OB_BUSINESS_SPECS = [
+  {key:'bgm',icon:'🏋️',bg:'#E3F2FD',label:'BGM',desc:'Betriebliches Gesundheitsmanagement'},
+  {key:'klinik',icon:'🏥',bg:'#E8F5E9',label:'Klinik / Praxis',desc:'Arztpraxen, Kliniken, Rehazentren'},
+  {key:'sonstiges_u',icon:'🏢',bg:'#F3E5F5',label:'Sonstige Unternehmen',desc:'Fitnessstudios, Vereine, Verbände & mehr'}
+];
+
+function showPartnerOnboarding() {
+  _obStep = 1; _obCategory = null;
+  _obData = { name:'', company:'', bio:'', specialty:'', jobTitle:'' };
+  var overlay = document.getElementById('onboardingOverlay');
+  if (overlay) overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  renderOnboardingStep();
+}
+
+function obTotalSteps() {
+  if (_obCategory === 'supplement') return 2;
+  if (_obCategory === 'unternehmen') return 3;
+  return 3; // partner (ohne Arbeitsweise-Step)
+}
+
+function renderProgressBar() {
+  var total = obTotalSteps();
+  var bar = document.getElementById('obProgressBar');
+  if (!bar) return;
+  if (_obStep <= 1) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  var html = '';
+  for (var i = 1; i <= total; i++) {
+    var active = i <= _obStep;
+    html += '<div style="flex:1;height:4px;border-radius:2px;background:'+(active?'#fff':'rgba(255,255,255,0.3)')+';transition:background .3s"></div>';
+  }
+  bar.innerHTML = html;
+}
+
+function obBuildCard(key, icon, bg, label, desc, size) {
+  var p = size === 'lg' ? '20px' : '18px';
+  var iw = size === 'lg' ? '52px' : '44px';
+  var fs = size === 'lg' ? '26px' : '20px';
+  var lfs = size === 'lg' ? '16px' : '14px';
+  var dfs = size === 'lg' ? '12px' : '11px';
+  return '<div class="ob-type-card" onclick="obSelectCard(this,\''+key+'\')" style="background:#fff;border:3px solid var(--border);border-radius:14px;padding:'+p+';cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px">' +
+    '<div style="width:'+iw+';height:'+iw+';border-radius:12px;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:'+fs+';flex-shrink:0">'+icon+'</div>' +
+    '<div><div style="font-weight:700;font-size:'+lfs+';color:#1a1a1a">'+label+'</div>' +
+    '<div style="font-size:'+dfs+';color:#6b7280;margin-top:2px">'+desc+'</div></div></div>';
+}
+
+function renderOnboardingStep() {
+  var container = document.getElementById('obContent');
+  var title = document.getElementById('obTitle');
+  var subtitle = document.getElementById('obSubtitle');
+  var btn = document.getElementById('obConfirmBtn');
+  var backBtn = document.getElementById('obBackBtn');
+  if (!container || !title || !btn) return;
+
+  renderProgressBar();
+
+  // ── SCHRITT 1: Drei Hauptkategorien ──
+  if (_obStep === 1) {
+    title.textContent = 'Willkommen bei SuppTree';
+    subtitle.textContent = 'Was beschreibt dich am besten?';
+    if (backBtn) backBtn.style.display = 'none';
+    btn.disabled = true; btn.style.opacity = '0.5';
+    btn.textContent = 'Weiter';
+
+    container.innerHTML =
+      obBuildCard('supplement','💊','#E8F5E9','Supplement-Marken','Eigene Produkte verkaufen & verwalten','lg') +
+      obBuildCard('partner','🤝','#EDE9FE','Partner / Experte','Services anbieten & Kunden betreuen','lg') +
+      obBuildCard('unternehmen','🏢','#E3F2FD','Unternehmen / Einrichtung','Teams, Studios, Kliniken, BGM','lg');
+
+  // ── SCHRITT 2: Spezialisierung (Partner ODER Unternehmen) ──
+  } else if (_obStep === 2 && (_obCategory === 'partner' || _obCategory === 'unternehmen')) {
+    var isPartner = _obCategory === 'partner';
+    title.textContent = isPartner ? 'Deine Spezialisierung' : 'Art der Einrichtung';
+    subtitle.textContent = isPartner ? 'In welche Richtung gehst du?' : 'Was für ein Unternehmen bist du?';
+    if (backBtn) backBtn.style.display = '';
+    btn.disabled = true; btn.style.opacity = '0.5';
+    btn.textContent = 'Weiter';
+
+    var list = isPartner ? OB_PARTNER_SPECS : OB_BUSINESS_SPECS;
+    var h = '';
+    for (var i=0; i<list.length; i++) {
+      h += obBuildCard(list[i].key, list[i].icon, list[i].bg, list[i].label, list[i].desc, 'sm');
+    }
+    container.innerHTML = h;
+
+  // ── Persönliche Daten (Supplement=Step2, Partner=Step3, Unternehmen=Step3) ──
+  } else if (
+    (_obStep === 2 && _obCategory === 'supplement') ||
+    (_obStep === 3 && _obCategory === 'partner') ||
+    (_obStep === 3 && _obCategory === 'unternehmen')
+  ) {
+    var cat = _obCategory;
+    var specLabel = OB_SPECIALTY_LABELS[_obData.specialty] || '';
+
+    var titles = { supplement:'Dein Unternehmen', partner:'Erzähl uns von dir', unternehmen:'Eure Einrichtung' };
+    var subtitles = { supplement:'So lernen dich deine Kunden kennen', partner:'Damit dein Dashboard persönlich wird', unternehmen:'Damit euer Dashboard passt' };
+    title.textContent = titles[cat] || 'Über dich';
+    subtitle.textContent = subtitles[cat] || '';
+    if (backBtn) backBtn.style.display = '';
+    btn.disabled = true; btn.style.opacity = '0.5';
+    btn.textContent = 'Loslegen';
+
+    var nameLabel, namePH, compLabel, compPH, bioPH, jobPH;
+    if (cat === 'supplement') {
+      nameLabel = 'Ansprechpartner *'; namePH = 'z.B. Max Mustermann';
+      compLabel = 'Firmenname / Marke'; compPH = 'z.B. NaturVital GmbH';
+      bioPH = 'z.B. Wir stehen für natürliche, hochwertige Supplements...';
+      jobPH = '';
+    } else if (cat === 'unternehmen') {
+      nameLabel = 'Ansprechpartner *'; namePH = 'z.B. Dr. Julia Weber';
+      compLabel = 'Name der Einrichtung'; compPH = 'z.B. Vitalcenter München';
+      bioPH = 'z.B. Unser Gesundheitszentrum bietet ganzheitliche Betreuung...';
+      jobPH = 'z.B. Geschäftsführer, Leitung BGM';
+    } else {
+      nameLabel = 'Dein Name *'; namePH = 'z.B. Dr. Anna Schmidt';
+      compLabel = 'Praxis / Firma (optional)'; compPH = 'z.B. Praxis für Naturheilkunde';
+      bioPH = 'z.B. Seit 10 Jahren begleite ich Menschen auf ihrem Weg zu mehr Gesundheit...';
+      var jobPHmap = {
+        heilpraktiker:'z.B. Naturheilkunde, Osteopathie, Homöopathie',
+        ernaehrung:'z.B. Ernährungsberaterin, Diätassistentin, Ökotrophologin',
+        trainer:'z.B. Personal Trainer, Yoga-Lehrerin, Physiotherapeut',
+        beauty:'z.B. Kosmetikerin, Masseurin, Wellness-Therapeutin',
+        hebamme:'z.B. Hebamme, Stillberaterin IBCLC',
+        creator:'z.B. Health Creator, Fitness-Influencer'
+      };
+      jobPH = jobPHmap[_obData.specialty] || 'z.B. Deine genaue Berufsbezeichnung';
+    }
+
+    // Berufsbezeichnung-Feld (nur für Partner & Unternehmen, nicht Supplement)
+    var jobTitleField = '';
+    if (cat !== 'supplement') {
+      jobTitleField =
+        '<div>' +
+          '<label style="font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;display:block">Berufsbezeichnung *</label>' +
+          '<input id="obJobTitle" type="text" value="'+(_obData.jobTitle||'')+'" oninput="obCheckPersonalFields()" placeholder="'+jobPH+'" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;box-sizing:border-box;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'var(--green-accent)\'" onblur="this.style.borderColor=\'var(--border)\'">' +
+        '</div>';
+    }
+
+    container.innerHTML =
+      (specLabel ? '<div style="text-align:center;margin-bottom:8px"><span style="background:rgba(255,255,255,0.2);color:#fff;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600">'+specLabel+'</span></div>' : '') +
+      '<div style="background:#fff;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px">' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;display:block">'+nameLabel+'</label>' +
+          '<input id="obName" type="text" value="'+(_obData.name||'')+'" oninput="obCheckPersonalFields()" placeholder="'+namePH+'" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;box-sizing:border-box;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'var(--green-accent)\'" onblur="this.style.borderColor=\'var(--border)\'">' +
+        '</div>' +
+        jobTitleField +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;display:block">'+compLabel+'</label>' +
+          '<input id="obCompany" type="text" value="'+(_obData.company||'')+'" oninput="obCheckPersonalFields()" placeholder="'+compPH+'" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;box-sizing:border-box;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'var(--green-accent)\'" onblur="this.style.borderColor=\'var(--border)\'">' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;display:block">Kurze Beschreibung (optional)</label>' +
+          '<textarea id="obBio" rows="3" oninput="obCheckPersonalFields()" placeholder="'+bioPH+'" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box;outline:none;resize:none;transition:border-color .2s" onfocus="this.style.borderColor=\'var(--green-accent)\'" onblur="this.style.borderColor=\'var(--border)\'">'+(_obData.bio||'')+'</textarea>' +
+        '</div>' +
+      '</div>';
+
+    setTimeout(function(){ obCheckPersonalFields(); }, 50);
+
+  }
+}
+
+function obSelectCard(el, value) {
+  document.querySelectorAll('#obContent .ob-type-card').forEach(function(c) {
+    c.style.borderColor = 'var(--border)'; c.style.background = '#fff';
+  });
+  el.style.borderColor = 'var(--green-accent)';
+  el.style.background = '#E8F5E9';
+
+  var btn = document.getElementById('obConfirmBtn');
+  btn.disabled = false; btn.style.opacity = '1';
+  btn.textContent = 'Weiter';
+
+  if (_obStep === 1) {
+    _obCategory = value;
+  } else if (_obStep === 2 && (_obCategory === 'partner' || _obCategory === 'unternehmen')) {
+    _obData.specialty = value;
+  }
+}
+
+function obCheckPersonalFields() {
+  var nameEl = document.getElementById('obName');
+  var jobEl = document.getElementById('obJobTitle');
+  var btn = document.getElementById('obConfirmBtn');
+  if (!nameEl || !btn) return;
+  var nameOk = nameEl.value.trim().length >= 2;
+  var jobOk = !jobEl || jobEl.value.trim().length >= 2; // kein Feld = ok (Supplement)
+  if (nameOk && jobOk) { btn.disabled = false; btn.style.opacity = '1'; }
+  else { btn.disabled = true; btn.style.opacity = '0.5'; }
+}
+
+function obSavePersonalFields() {
+  var n = document.getElementById('obName');
+  var c = document.getElementById('obCompany');
+  var b = document.getElementById('obBio');
+  var j = document.getElementById('obJobTitle');
+  if (n) _obData.name = n.value.trim();
+  if (c) _obData.company = c.value.trim();
+  if (b) _obData.bio = b.value.trim();
+  if (j) _obData.jobTitle = j.value.trim();
+}
+
+function obBack() {
+  // Felder sichern falls auf Personal-Step
+  var isPersonalStep = (_obStep === 2 && _obCategory === 'supplement') ||
+    (_obStep === 3 && (_obCategory === 'partner' || _obCategory === 'unternehmen'));
+  if (isPersonalStep) obSavePersonalFields();
+
+  if (_obStep === 2) {
+    _obStep = 1; _obCategory = null;
+  } else if (_obStep === 3) {
+    _obStep = 2;
+  } else {
+    _obStep = 1; _obCategory = null;
+  }
+  renderOnboardingStep();
+}
+
+async function confirmOnboardingType() {
+  var btn = document.getElementById('obConfirmBtn');
+
+  // Schritt 1 → Schritt 2
+  if (_obStep === 1) {
+    if (!_obCategory) return;
+    _obStep = 2;
+    renderOnboardingStep();
+    return;
+  }
+
+  // Schritt 2 Spezialisierung (Partner/Unternehmen) → Schritt 3
+  if (_obStep === 2 && (_obCategory === 'partner' || _obCategory === 'unternehmen')) {
+    if (!_obData.specialty) return;
+    _obStep = 3;
+    renderOnboardingStep();
+    return;
+  }
+
+  // Schritt 2 Supplement (Personal) → fertig
+  if (_obStep === 2 && _obCategory === 'supplement') {
+    obSavePersonalFields();
+    if (!_obData.name || _obData.name.length < 2) return;
+    finishOnboarding('supplement');
+    return;
+  }
+
+  // Schritt 3 Personal (Partner oder Unternehmen) → fertig
+  if (_obStep === 3 && (_obCategory === 'partner' || _obCategory === 'unternehmen')) {
+    obSavePersonalFields();
+    if (!_obData.name || _obData.name.length < 2) return;
+    var backendType = OB_TYPE_MAP[_obData.specialty] || 'coach';
+    finishOnboarding(backendType);
+    return;
+  }
+}
+
+async function finishOnboarding(backendType) {
+  var btn = document.getElementById('obConfirmBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px"><span class="ob-spinner"></span> Dein Dashboard wird vorbereitet...</span>';
+
+  // Specialty-Label für Profil speichern
+  var specLabel = OB_SPECIALTY_LABELS[_obData.specialty] || '';
+
+  // In Supabase speichern
+  if (_sb && _currentUser) {
+    try {
+      var profileUpdate = {
+        seller_type: backendType,
+        onboarding_completed_at: new Date().toISOString()
+      };
+      if (_obData.specialty) profileUpdate.specialty = _obData.specialty;
+      if (_obData.name) profileUpdate.display_name = _obData.name;
+      if (_obData.company) profileUpdate.company_name = _obData.company;
+      if (_obData.bio) profileUpdate.bio = _obData.bio;
+      if (_obData.jobTitle) profileUpdate.job_title = _obData.jobTitle;
+      if (_obCategory) profileUpdate.partner_category = _obCategory;
+      await _sb.from('profiles').update(profileUpdate).eq('id', _currentUser.id);
+    } catch(e) { console.log('Onboarding save error:', e); }
+  }
+
+  // Onboarding-Statistik tracken
+  try {
+    var stats = JSON.parse(localStorage.getItem('suppTreeOnboardingStats')) || { total:0, categories:{}, specialties:{}, timeline:[] };
+    stats.total++;
+    var cat = _obCategory || 'supplement';
+    stats.categories[cat] = (stats.categories[cat] || 0) + 1;
+    var spec = _obData.specialty || 'supplement';
+    stats.specialties[spec] = (stats.specialties[spec] || 0) + 1;
+    stats.timeline.push({ date: new Date().toISOString().slice(0,10), category: cat, specialty: spec, name: _obData.name || '' });
+    if (stats.timeline.length > 500) stats.timeline = stats.timeline.slice(-500);
+    localStorage.setItem('suppTreeOnboardingStats', JSON.stringify(stats));
+  } catch(e) {}
+
+  // Lokal setzen
+  partnerType = backendType;
+  localStorage.setItem('suppTreePartnerType', backendType);
+
+  // Provider mit echten Daten befüllen
+  provider = JSON.parse(JSON.stringify(DEMO_PROVIDERS[backendType] || DEMO_PROVIDERS.supplement));
+  if (_obData.name) provider.name = _obData.name;
+  // Berufsbezeichnung hat Vorrang → dann Firma → dann Specialty-Label
+  if (_obData.jobTitle) provider.title = _obData.jobTitle;
+  else if (_obData.company) provider.title = _obData.company;
+  else if (specLabel) provider.title = specLabel;
+  if (_obData.bio) provider.bio = _obData.bio;
+  if (typeof updateProviderUI === 'function') updateProviderUI();
+
+  // UI aktualisieren
+  renderBottomNav();
+  renderMehrMenu();
+  if (typeof renderDashboard === 'function') renderDashboard();
+
+  // Kurz warten für Feedback
+  await new Promise(function(r){ setTimeout(r, 800); });
+
+  // Overlay schließen
+  document.getElementById('onboardingOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
 </script>
+
+<style>
+@keyframes obSpin { to { transform: rotate(360deg); } }
+.ob-spinner { display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:obSpin .6s linear infinite; }
+</style>
+
+<!-- ═══ ONBOARDING OVERLAY ═══ -->
+<div id="onboardingOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#1a5a3a 0%,#00A67E 40%,#f8f9fa 100%);flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;padding-top:60px;overflow-y:auto">
+  <div style="text-align:center;margin-bottom:20px;position:relative;width:100%;max-width:400px">
+    <button id="obBackBtn" onclick="obBack()" style="display:none;position:absolute;top:-30px;left:0;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer">←</button>
+    <div style="font-size:48px;margin-bottom:10px">🌿</div>
+    <div id="obTitle" style="font-size:24px;font-weight:800;color:#fff">Willkommen bei SuppTree</div>
+    <div id="obSubtitle" style="font-size:14px;color:rgba(255,255,255,0.8);margin-top:6px">Was beschreibt dich am besten?</div>
+    <div id="obProgressBar" style="display:none;gap:6px;margin-top:16px;width:100%;max-width:200px;margin-left:auto;margin-right:auto"></div>
+  </div>
+
+  <div id="obContent" style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px"></div>
+
+  <button id="obConfirmBtn" disabled onclick="confirmOnboardingType()" style="margin-top:24px;width:100%;max-width:400px;padding:16px;background:linear-gradient(135deg,#1a5a3a,#00A67E);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;opacity:0.5;transition:opacity .2s;font-family:inherit">Weiter</button>
+  <div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,0.6);text-align:center">Du kannst das später in den Einstellungen ändern.</div>
+</div>
+
 </body>
 </html>

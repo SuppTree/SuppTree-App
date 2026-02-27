@@ -36083,6 +36083,48 @@ input.input-error,
 .ta-anfragen-empty{text-align:center;padding:16px;color:var(--text-muted);font-size:13px}
 .ta-anfragen-section{margin-top:12px}
 
+/* ── Customer Auth Overlay ── */
+#customerAuthOverlay{display:none;position:fixed;inset:0;z-index:999999;background:linear-gradient(180deg,#1a5a3a 0%,#00A67E 40%,#f8f9fa 100%);flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;padding-top:60px;overflow-y:auto}
+#customerAuthOverlay.visible{display:flex}
+.ca-logo{text-align:center;margin-bottom:28px}
+.ca-logo-icon{font-size:48px;margin-bottom:8px}
+.ca-logo-text{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px}
+.ca-logo-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px}
+.ca-card{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:0;box-shadow:0 8px 32px rgba(0,0,0,0.15);overflow:hidden}
+.ca-tabs{display:flex;border-bottom:2px solid #f0f0f0}
+.ca-tab{flex:1;padding:14px;text-align:center;font-size:14px;font-weight:600;background:none;border:none;cursor:pointer;color:#999;transition:all 0.2s;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:inherit}
+.ca-tab.active{color:#1a5a3a;border-bottom-color:#00A67E}
+.ca-form{padding:24px;display:none}
+.ca-form.active{display:block}
+.ca-form-group{margin-bottom:16px}
+.ca-form-group label{display:block;font-size:13px;font-weight:600;color:#333;margin-bottom:6px}
+.ca-form-group input{width:100%;padding:13px 14px;border:2px solid #e5e7eb;border-radius:8px;font-size:15px;transition:border-color 0.2s;box-sizing:border-box;font-family:inherit}
+.ca-form-group input:focus{outline:none;border-color:#00A67E}
+.ca-form-group input.ca-error{border-color:#ef4444!important;background:#fef2f2!important;animation:caShake 0.3s ease}
+@keyframes caShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.ca-pw-wrap{position:relative}
+.ca-pw-wrap input{padding-right:44px}
+.ca-pw-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;cursor:pointer;padding:4px}
+.ca-btn{width:100%;padding:15px;background:#00A67E;border:none;border-radius:8px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;font-family:inherit}
+.ca-btn:hover{background:#1a5a3a}
+.ca-btn:active{transform:scale(0.98)}
+.ca-btn:disabled{opacity:0.6;cursor:not-allowed}
+.ca-btn .ca-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:caSpin 0.6s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes caSpin{to{transform:rotate(360deg)}}
+.ca-link{background:none;border:none;font-size:13px;color:#00A67E;cursor:pointer;padding:6px 0;font-family:inherit}
+.ca-link:hover{text-decoration:underline}
+.ca-links{text-align:center;margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.ca-alert{padding:12px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;line-height:1.4}
+.ca-alert.error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.ca-alert.success{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.ca-alert.show{display:block}
+.ca-legal{font-size:11px;color:#9ca3af;text-align:center;margin-top:20px;line-height:1.5}
+.ca-legal a{color:#00A67E}
+.ca-dev{margin-top:20px;padding-top:16px;border-top:2px dashed #e5e7eb;text-align:center}
+.ca-dev-label{font-size:11px;color:#9ca3af;margin-bottom:10px;font-weight:600;letter-spacing:0.5px}
+.ca-dev-btns{display:flex;gap:8px}
+.ca-dev-btn{flex:1;padding:11px 8px;border:2px solid;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+
 </style>
 
 
@@ -36092,6 +36134,95 @@ input.input-error,
 </head>
 <body>
 
+<!-- ═══ Customer Auth Overlay ═══ -->
+<div id="customerAuthOverlay">
+  <div class="ca-logo">
+    <div class="ca-logo-icon">🌿</div>
+    <div class="ca-logo-text">SuppTree</div>
+    <div class="ca-logo-sub">Supplements. Einfach. Gesund.</div>
+  </div>
+  <div class="ca-card">
+    <div class="ca-tabs">
+      <button class="ca-tab active" onclick="setCustomerAuthMode('login')">Anmelden</button>
+      <button class="ca-tab" onclick="setCustomerAuthMode('register')">Registrieren</button>
+    </div>
+
+    <!-- Login Form -->
+    <div class="ca-form active" id="custLoginForm">
+      <div class="ca-alert error" id="caLoginError"></div>
+      <div class="ca-alert success" id="caLoginSuccess"></div>
+      <div class="ca-form-group">
+        <label>E-Mail</label>
+        <input type="email" id="caLoginEmail" placeholder="deine@email.de" autocomplete="email">
+      </div>
+      <div class="ca-form-group">
+        <label>Passwort</label>
+        <div class="ca-pw-wrap">
+          <input type="password" id="caLoginPassword" placeholder="Dein Passwort" autocomplete="current-password">
+          <button type="button" class="ca-pw-toggle" onclick="toggleCustomerPw('caLoginPassword',this)">👁️</button>
+        </div>
+      </div>
+      <button class="ca-btn" id="caLoginBtn" onclick="handleCustomerLogin()">Anmelden</button>
+      <div class="ca-links">
+        <button class="ca-link" onclick="setCustomerAuthMode('reset')">Passwort vergessen?</button>
+      </div>
+
+      <div class="ca-dev" id="caDevAccess">
+        <div class="ca-dev-label">DEV-ZUGANG (ohne Login)</div>
+        <div class="ca-dev-btns">
+          <button class="ca-dev-btn" style="border-color:#43A047;background:#E8F5E9;color:#2E7D32" onclick="hideCustomerAuth()">🛒 Demo-Modus</button>
+          <button class="ca-dev-btn" style="border-color:#00A67E;background:#E0F2F1;color:#00695C" onclick="localStorage.setItem('suppTreePartnerType','supplement');window.location.href='../partner/index.html'">🏪 Seller</button>
+          <button class="ca-dev-btn" style="border-color:#3F51B5;background:#E8EAF6;color:#1A237E" onclick="window.location.href='../admin/index.html'">👑 Admin</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Form -->
+    <div class="ca-form" id="custRegisterForm">
+      <div class="ca-alert error" id="caRegError"></div>
+      <div class="ca-alert success" id="caRegSuccess"></div>
+      <div class="ca-form-group">
+        <label>Name</label>
+        <input type="text" id="caRegName" placeholder="Dein Name" autocomplete="name">
+      </div>
+      <div class="ca-form-group">
+        <label>E-Mail</label>
+        <input type="email" id="caRegEmail" placeholder="deine@email.de" autocomplete="email">
+      </div>
+      <div class="ca-form-group">
+        <label>Passwort</label>
+        <div class="ca-pw-wrap">
+          <input type="password" id="caRegPassword" placeholder="Min. 6 Zeichen" autocomplete="new-password">
+          <button type="button" class="ca-pw-toggle" onclick="toggleCustomerPw('caRegPassword',this)">👁️</button>
+        </div>
+      </div>
+      <div class="ca-form-group">
+        <label>Passwort bestätigen</label>
+        <div class="ca-pw-wrap">
+          <input type="password" id="caRegPasswordConfirm" placeholder="Passwort wiederholen" autocomplete="new-password">
+          <button type="button" class="ca-pw-toggle" onclick="toggleCustomerPw('caRegPasswordConfirm',this)">👁️</button>
+        </div>
+      </div>
+      <button class="ca-btn" id="caRegBtn" onclick="handleCustomerRegister()">Konto erstellen</button>
+      <p class="ca-legal">Mit der Registrierung akzeptierst du unsere <a href="#">AGB</a> und <a href="#">Datenschutzrichtlinie</a>.</p>
+    </div>
+
+    <!-- Reset Form -->
+    <div class="ca-form" id="custResetForm">
+      <div class="ca-alert error" id="caResetError"></div>
+      <div class="ca-alert success" id="caResetSuccess"></div>
+      <p style="font-size:14px;color:#666;margin-bottom:16px;line-height:1.5">Gib deine E-Mail ein und wir senden dir einen Link zum Zurücksetzen.</p>
+      <div class="ca-form-group">
+        <label>E-Mail</label>
+        <input type="email" id="caResetEmail" placeholder="deine@email.de" autocomplete="email">
+      </div>
+      <button class="ca-btn" onclick="handleCustomerReset()">Link senden</button>
+      <div class="ca-links">
+        <button class="ca-link" onclick="setCustomerAuthMode('login')">← Zurück zur Anmeldung</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- FESTE SCHWARZE STATUS-LEISTE OBEN -->
 <div class="status-bar-spacer"></div>

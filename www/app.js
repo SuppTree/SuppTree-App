@@ -449,6 +449,138 @@ let supabase = null;
 let currentUser = null;
 let userProfile = null;
 
+// =============================================
+// CUSTOMER AUTH OVERLAY - Login/Register/Reset
+// =============================================
+function showCustomerAuth() {
+  var el = document.getElementById('customerAuthOverlay');
+  if (el) { el.classList.add('visible'); document.body.style.overflow = 'hidden'; }
+  // DEV-Zugang nur im Demo-Modus
+  var dev = document.getElementById('caDevAccess');
+  if (dev) dev.style.display = (localStorage.getItem('suppTreeAppMode') === 'production') ? 'none' : 'block';
+}
+function hideCustomerAuth() {
+  var el = document.getElementById('customerAuthOverlay');
+  if (el) { el.classList.remove('visible'); document.body.style.overflow = ''; }
+}
+function setCustomerAuthMode(mode) {
+  var lf = document.getElementById('custLoginForm');
+  var rf = document.getElementById('custRegisterForm');
+  var sf = document.getElementById('custResetForm');
+  if (lf) lf.classList.toggle('active', mode === 'login');
+  if (rf) rf.classList.toggle('active', mode === 'register');
+  if (sf) sf.classList.toggle('active', mode === 'reset');
+  document.querySelectorAll('.ca-tab').forEach(function(t, i) {
+    t.classList.toggle('active', (i === 0 && mode === 'login') || (i === 1 && mode === 'register'));
+  });
+  document.querySelectorAll('.ca-alert').forEach(function(a) { a.classList.remove('show'); });
+}
+function toggleCustomerPw(id, btn) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.type = el.type === 'password' ? 'text' : 'password';
+  btn.textContent = el.type === 'password' ? '👁️' : '🙈';
+}
+function showCaAlert(id, msg) {
+  var el = document.getElementById(id);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+function hideCaAlerts() {
+  document.querySelectorAll('.ca-alert').forEach(function(a) { a.classList.remove('show'); a.textContent = ''; });
+}
+function setCaLoading(btn, on) {
+  if (!btn) return;
+  if (on) { btn.disabled = true; btn.dataset.text = btn.textContent; btn.innerHTML = '<span class="ca-spinner"></span>Bitte warten...'; }
+  else { btn.disabled = false; btn.textContent = btn.dataset.text || 'Anmelden'; }
+}
+
+async function handleCustomerLogin() {
+  hideCaAlerts();
+  var emailEl = document.getElementById('caLoginEmail');
+  var pwEl = document.getElementById('caLoginPassword');
+  var email = emailEl ? emailEl.value.trim() : '';
+  var pw = pwEl ? pwEl.value : '';
+  var btn = document.getElementById('caLoginBtn');
+
+  var hasErr = false;
+  if (!email) { if (emailEl) emailEl.classList.add('ca-error'); hasErr = true; }
+  if (!pw) { if (pwEl) pwEl.classList.add('ca-error'); hasErr = true; }
+  if (hasErr) { showCaAlert('caLoginError', 'Bitte alle Felder ausfüllen'); return; }
+  if (emailEl) emailEl.classList.remove('ca-error');
+  if (pwEl) pwEl.classList.remove('ca-error');
+
+  setCaLoading(btn, true);
+  var result = await signIn(email, pw);
+  setCaLoading(btn, false);
+
+  if (!result.success) {
+    showCaAlert('caLoginError', 'Ungültige Anmeldedaten');
+    return;
+  }
+
+  // Erfolg — signIn setzt currentUser und ruft onAuthStateChange auf
+  localStorage.setItem('suppTreeAppMode', 'production');
+  hideCustomerAuth();
+}
+
+async function handleCustomerRegister() {
+  hideCaAlerts();
+  var nameEl = document.getElementById('caRegName');
+  var emailEl = document.getElementById('caRegEmail');
+  var pwEl = document.getElementById('caRegPassword');
+  var pwcEl = document.getElementById('caRegPasswordConfirm');
+  var name = nameEl ? nameEl.value.trim() : '';
+  var email = emailEl ? emailEl.value.trim() : '';
+  var pw = pwEl ? pwEl.value : '';
+  var pwc = pwcEl ? pwcEl.value : '';
+  var btn = document.getElementById('caRegBtn');
+
+  var hasErr = false;
+  if (!name) { if (nameEl) nameEl.classList.add('ca-error'); hasErr = true; }
+  if (!email) { if (emailEl) emailEl.classList.add('ca-error'); hasErr = true; }
+  if (!pw) { if (pwEl) pwEl.classList.add('ca-error'); hasErr = true; }
+  if (!pwc) { if (pwcEl) pwcEl.classList.add('ca-error'); hasErr = true; }
+  if (hasErr) { showCaAlert('caRegError', 'Bitte alle Felder ausfüllen'); return; }
+
+  if (pw.length < 6) { showCaAlert('caRegError', 'Passwort muss mindestens 6 Zeichen haben'); return; }
+  if (pw !== pwc) { showCaAlert('caRegError', 'Passwörter stimmen nicht überein'); return; }
+
+  document.querySelectorAll('#custRegisterForm input').forEach(function(i) { i.classList.remove('ca-error'); });
+
+  setCaLoading(btn, true);
+  var result = await signUp(email, pw, name);
+  setCaLoading(btn, false);
+
+  if (!result.success) {
+    showCaAlert('caRegError', result.error?.message || 'Registrierung fehlgeschlagen');
+    return;
+  }
+
+  // Erfolg
+  if (result.data?.session) {
+    showCaAlert('caRegSuccess', 'Konto erstellt! Du wirst weitergeleitet...');
+    setTimeout(function() { hideCustomerAuth(); }, 1500);
+    return;
+  }
+
+  showCaAlert('caRegSuccess', 'Konto erstellt! Bitte bestätige deine E-Mail und melde dich dann an.');
+  setTimeout(function() { setCustomerAuthMode('login'); }, 3000);
+}
+
+async function handleCustomerReset() {
+  hideCaAlerts();
+  var emailEl = document.getElementById('caResetEmail');
+  var email = emailEl ? emailEl.value.trim() : '';
+  if (!email) { if (emailEl) emailEl.classList.add('ca-error'); showCaAlert('caResetError', 'Bitte E-Mail eingeben'); return; }
+  if (emailEl) emailEl.classList.remove('ca-error');
+
+  var result = await resetPassword(email);
+  if (!result.success) { showCaAlert('caResetError', result.error?.message || 'Fehler beim Senden'); return; }
+
+  showCaAlert('caResetSuccess', 'Link gesendet! Prüfe deinen Posteingang.');
+  setTimeout(function() { setCustomerAuthMode('login'); }, 3000);
+}
+
 // Supabase initialisieren (sicher)
 function initSupabase() {
   try {
@@ -758,11 +890,42 @@ async function loadUserDataFromSupabase() {
       .from('favorites')
       .select('product_id')
       .eq('user_id', currentUser.id);
-    
+
     if (favs) {
       favorites = new Set(favs.map(f => f.product_id));
+      localStorage.setItem('suppTreeFavorites', JSON.stringify([...favorites]));
     }
-    
+
+    // Health Profile & Personal Data aus Profil laden
+    if (userProfile) {
+      if (userProfile.health_profile) {
+        healthProfileData = userProfile.health_profile;
+        localStorage.setItem('suppTreeHealthProfile', JSON.stringify(healthProfileData));
+      }
+      if (userProfile.personal_data) {
+        localStorage.setItem('suppTreePersonalData', JSON.stringify(userProfile.personal_data));
+      }
+    }
+
+    // Berater-Verbindungen laden
+    const { data: berater } = await supabase
+      .from('customer_berater')
+      .select('*')
+      .eq('customer_id', currentUser.id)
+      .eq('status', 'active');
+
+    if (berater && berater.length) {
+      const beraterList = berater.map(b => ({
+        id: b.partner_id,
+        name: b.partner_name,
+        avatar: b.partner_avatar || '👨‍🏫',
+        role: b.partner_role,
+        roleLabel: b.partner_role_label,
+        connectedAt: b.connected_at
+      }));
+      localStorage.setItem('suppTreeMeineBerater', JSON.stringify(beraterList));
+    }
+
     console.log('✅ User Daten geladen');
   } catch (error) {
     console.error('Load Data Error:', error);
@@ -2185,36 +2348,125 @@ const cartKuren = new Map(); // kurId -> { kur, qty }
 const subscriptions = new Map(); // productId -> { interval, daysSupply, nextDelivery, status, price }
 const pendingOrders = new Map(); // orderId -> { items: [], orderDate, status: 'shipped'|'delivered' }
 
-// Lade Bestellungen aus localStorage
+// Lade Bestellungen aus localStorage + Supabase
 function loadPendingOrders() {
   const saved = localStorage.getItem('suppTreePendingOrders');
   if (saved) {
     const parsed = JSON.parse(saved);
     parsed.forEach(([key, value]) => pendingOrders.set(key, value));
   }
+  // Supabase-Orders nachladen (async, merged mit localStorage)
+  if (supabase && currentUser) {
+    supabase.from('orders').select('*, order_items(*)')
+      .eq('user_id', currentUser.id)
+      .not('status', 'in', '("delivered","cancelled")')
+      .order('created_at', { ascending: false })
+      .limit(20)
+      .then(function(res) {
+        if (res.error || !res.data || !res.data.length) return;
+        var changed = false;
+        res.data.forEach(function(o) {
+          var key = o.order_number || o.id;
+          if (pendingOrders.has(key)) {
+            // Existierend → dbId nachtragen falls fehlend
+            var existing = pendingOrders.get(key);
+            if (!existing.dbId) { existing.dbId = o.id; changed = true; }
+          } else {
+            // Neu aus Supabase → hinzufügen
+            var statusMap = { pending: 'shipped', processing: 'shipped', shipped: 'shipped' };
+            var items = (o.order_items || []).map(function(i) {
+              return { productId: null, name: i.product_name || '', icon: i.product_icon || '💊', brand: i.product_brand || '', qty: i.quantity || 1, price: parseFloat(i.unit_price) || 0 };
+            });
+            pendingOrders.set(key, {
+              dbId: o.id,
+              items: items,
+              orderDate: o.created_at ? new Date(o.created_at).toLocaleDateString('de-DE') : '',
+              status: statusMap[o.status] || 'shipped',
+              total: parseFloat(o.total) || 0,
+              shippingAddress: o.billing_address || null,
+              shippingType: o.shipping_method || 'standard',
+              shippingCost: parseFloat(o.shipping_cost) || 0,
+              paymentMethod: null
+            });
+            changed = true;
+          }
+        });
+        if (changed) {
+          savePendingOrders();
+          try { renderPendingOrders(); } catch(e) {}
+        }
+      }).catch(function(e) { console.log('Orders load from Supabase:', e); });
+  }
 }
 
 function savePendingOrders() {
+  // Nur localStorage — Orders werden einzeln in placeOrder() nach Supabase geschrieben
   localStorage.setItem('suppTreePendingOrders', JSON.stringify([...pendingOrders]));
-  if (supabase && currentUser) {
-    const ordersArray = [];
-    pendingOrders.forEach((order, orderId) => {
-      ordersArray.push({
+}
+
+// Order nach Supabase schreiben (einzeln, nicht destructive)
+async function placeOrderToSupabase(orderData, orderItems) {
+  if (!supabase || !currentUser) return null;
+  try {
+    // 1. Order einfügen
+    var { data: order, error: orderError } = await supabase
+      .from('orders')
+      .insert({
         user_id: currentUser.id,
-        order_number: orderId,
-        status: order.status || 'pending',
-        subtotal: order.total || 0,
-        shipping_cost: order.shipping || 0,
-        discount_amount: order.discount || 0,
-        total: order.total || 0,
-        shipping_address: order.address ? JSON.stringify(order.address) : null,
-        payment_method: order.paymentMethod || null
+        order_number: orderData.orderId,
+        status: 'pending',
+        subtotal: orderData.subtotal || 0,
+        shipping_cost: orderData.shippingCost || 0,
+        discount_amount: orderData.discountAmount || 0,
+        points_used: orderData.pointsUsed || 0,
+        points_discount: orderData.pointsDiscount || 0,
+        tax_amount: orderData.taxAmount || 0,
+        total: orderData.total || 0,
+        points_earned: orderData.pointsEarned || 0,
+        shipping_method: orderData.shippingType || 'standard',
+        customer_name: orderData.customerName || '',
+        seller_name: orderData.sellerName || '',
+        items_summary: orderData.itemsSummary || '',
+        partner_id: orderData.partnerId || null,
+        partner_name: orderData.partnerName || null,
+        channel: orderData.channel || null,
+        provision_rate: orderData.provisionRate || 0,
+        billing_address: orderData.billingAddress || null
+      })
+      .select()
+      .single();
+
+    if (orderError) throw orderError;
+
+    // 2. Order-Items einfügen
+    if (order && orderItems.length > 0) {
+      var items = orderItems.map(function(item) {
+        return {
+          order_id: order.id,
+          product_id: null, // Produkte noch nicht in products-Tabelle
+          product_name: item.name || '',
+          product_brand: item.brand || '',
+          product_icon: item.icon || '',
+          quantity: item.qty || 1,
+          unit_price: item.price || 0,
+          total_price: (item.price || 0) * (item.qty || 1),
+          is_subscription: item.isAbo || false,
+          subscription_interval: item.isAbo ? 'monthly' : null
+        };
       });
-    });
-    DataStore.set('orders', 'suppTreePendingOrders', ordersArray, {
-      replaceAll: true,
-      transform: (o) => o
-    }).catch(e => console.error('Orders sync error:', e));
+
+      var { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(items);
+
+      if (itemsError) console.error('Order items insert error:', itemsError);
+    }
+
+    console.log('✅ Order in Supabase gespeichert:', order.order_number);
+    return order;
+  } catch(e) {
+    console.error('placeOrderToSupabase error:', e);
+    return null;
   }
 }
 
@@ -4573,9 +4825,15 @@ let healthProfileData = {
 };
 
 function loadHealthProfileData() {
-  const saved = localStorage.getItem('suppTreeHealthProfile');
-  if (saved) {
-    healthProfileData = JSON.parse(saved);
+  // Supabase-first: userProfile wird bei Login geladen
+  if (userProfile && userProfile.health_profile) {
+    healthProfileData = userProfile.health_profile;
+    localStorage.setItem('suppTreeHealthProfile', JSON.stringify(healthProfileData));
+  } else {
+    const saved = localStorage.getItem('suppTreeHealthProfile');
+    if (saved) {
+      healthProfileData = JSON.parse(saved);
+    }
   }
   
   // Set age dropdown
@@ -4771,6 +5029,11 @@ function updateHealthProfileProgress() {
 function saveHealthProfile() {
   updateHealthProfile();
   localStorage.setItem('suppTreeHealthProfile', JSON.stringify(healthProfileData));
+  // Supabase sync
+  if (supabase && currentUser) {
+    supabase.from('profiles').update({ health_profile: healthProfileData }).eq('id', currentUser.id)
+      .then(r => { if (r.error) console.error('Health profile sync:', r.error); });
+  }
   closeHealthProfile();
   showToast('✅ Gesundheitsprofil gespeichert');
 }
@@ -4786,7 +5049,13 @@ function saveHealthProfileScreen() {
   
   // Save to localStorage
   localStorage.setItem('suppTreeHealthProfile', JSON.stringify(healthProfileData));
-  
+
+  // Supabase sync
+  if (supabase && currentUser) {
+    supabase.from('profiles').update({ health_profile: healthProfileData }).eq('id', currentUser.id)
+      .then(r => { if (r.error) console.error('Health profile sync:', r.error); });
+  }
+
   // Also sync to old profile system for compatibility
   syncHealthProfileToOldSystem();
   
@@ -4818,10 +5087,16 @@ function checkProfileCompletion() {
 }
 
 function openPersonalDataSheet() {
-  // Load saved data
-  const saved = localStorage.getItem('suppTreePersonalData');
-  if (saved) {
-    const data = JSON.parse(saved);
+  // Load saved data — Supabase-first, dann localStorage
+  var data = null;
+  if (userProfile && userProfile.personal_data) {
+    data = userProfile.personal_data;
+    localStorage.setItem('suppTreePersonalData', JSON.stringify(data));
+  } else {
+    const saved = localStorage.getItem('suppTreePersonalData');
+    if (saved) data = JSON.parse(saved);
+  }
+  if (data) {
     document.getElementById('personalFirstName').value = data.firstName || '';
     document.getElementById('personalLastName').value = data.lastName || '';
     document.getElementById('personalEmail').value = data.email || '';
@@ -4858,7 +5133,16 @@ function savePersonalData() {
   };
   
   localStorage.setItem('suppTreePersonalData', JSON.stringify(data));
-  
+
+  // Supabase sync
+  if (supabase && currentUser) {
+    supabase.from('profiles').update({
+      personal_data: data,
+      name: (data.firstName + ' ' + (data.lastName || '')).trim()
+    }).eq('id', currentUser.id)
+      .then(r => { if (r.error) console.error('Personal data sync:', r.error); });
+  }
+
   // Update profile name display if exists
   const profileName = document.querySelector('.profile-name');
   if (profileName && data.firstName) {
@@ -20423,6 +20707,25 @@ function mbGetBerater() {
 
 function mbSaveBerater(list) {
   localStorage.setItem('suppTreeMeineBerater', JSON.stringify(list));
+  // Supabase sync: replaceAll
+  if (supabase && currentUser) {
+    supabase.from('customer_berater').delete().eq('customer_id', currentUser.id).then(() => {
+      if (list.length) {
+        var rows = list.map(b => ({
+          customer_id: currentUser.id,
+          partner_id: b.id,
+          partner_name: b.name,
+          partner_avatar: b.avatar,
+          partner_role: b.role,
+          partner_role_label: b.roleLabel,
+          status: 'active',
+          connected_at: b.connectedAt || new Date().toISOString()
+        }));
+        supabase.from('customer_berater').insert(rows)
+          .then(r => { if (r.error) console.error('Berater sync:', r.error); });
+      }
+    });
+  }
 }
 
 function mbGetPlaene() {
@@ -32026,6 +32329,8 @@ function confirmLogout() {
       }
       setTimeout(() => {
         switchScreen('homeScreen');
+        showCustomerAuth();
+        showCaAlert('caLoginSuccess', 'Erfolgreich abgemeldet.');
       }, 500);
     }
   );
@@ -33046,6 +33351,13 @@ function markOrderDelivered(orderId) {
       }
     });
     if (arrivedIds.length > 0) saveMySupplements();
+  }
+
+  // Supabase: Status auf 'delivered' setzen
+  if (order.dbId && supabase && currentUser) {
+    supabase.from('orders').update({ status: 'delivered' }).eq('id', order.dbId)
+      .then(function(res) { if (res.error) console.error('Order deliver update error:', res.error); })
+      .catch(function(e) { console.error('Order deliver update:', e); });
   }
 
   // Bestellung als geliefert markieren und entfernen
@@ -34124,19 +34436,81 @@ function placeOrder() {
   
   // Save the order if has items
   if (orderItems.length > 0) {
+    // Referral-Daten extrahieren (bevor cartReferrals geleert wird)
+    var referralPartner = null;
+    var referralChannel = null;
+    var referralRate = 0;
+    cartReferrals.forEach(function(ref) {
+      if (!referralPartner && ref.beraterId) {
+        referralPartner = { id: ref.beraterId, name: ref.beraterName || '' };
+        referralChannel = 'qr';
+        referralRate = 0.10;
+      }
+    });
+
+    // Fallback: Link-Referral aus Berater-Verbindung (7% Provision)
+    if (!referralPartner) {
+      try {
+        var beraterList = JSON.parse(localStorage.getItem('suppTreeMeineBerater') || '[]');
+        if (beraterList.length > 0) {
+          referralPartner = { id: beraterList[0].id || beraterList[0].partnerId, name: beraterList[0].name || '' };
+          referralChannel = 'link';
+          referralRate = 0.07;
+        }
+      } catch(e) {}
+    }
+
+    // Items-Summary für Admin-Anzeige
+    var itemsSummary = orderItems.map(function(i) { return i.qty + 'x ' + i.name; }).join(', ');
+
+    // Supabase-Write (async, non-blocking)
+    var selectedAddr = checkoutState.selectedAddress;
+    placeOrderToSupabase({
+      orderId: orderId,
+      subtotal: subtotal,
+      shippingCost: shipping,
+      discountAmount: 0,
+      pointsUsed: usePoints ? (checkoutState.pointsUsed || 0) : 0,
+      pointsDiscount: pointsDiscount,
+      taxAmount: +(total - total / 1.19).toFixed(2),
+      total: total,
+      pointsEarned: Math.floor(total),
+      shippingType: checkoutState.shippingType || 'standard',
+      customerName: selectedAddr ? ((selectedAddr.firstName || '') + ' ' + (selectedAddr.lastName || '')).trim() : '',
+      sellerName: '',
+      itemsSummary: itemsSummary,
+      partnerId: referralPartner ? referralPartner.id : null,
+      partnerName: referralPartner ? referralPartner.name : null,
+      channel: referralChannel,
+      provisionRate: referralRate,
+      billingAddress: selectedAddr ? {
+        street: selectedAddr.street || '',
+        zip: selectedAddr.zip || selectedAddr.postalCode || '',
+        city: selectedAddr.city || '',
+        country: selectedAddr.country || 'DE'
+      } : null
+    }, orderItems).then(function(order) {
+      // dbId aus Supabase-Response in pendingOrders speichern
+      if (order && order.id) {
+        var po = pendingOrders.get(orderId);
+        if (po) { po.dbId = order.id; savePendingOrders(); }
+      }
+    }).catch(function(e) { console.error('Order Supabase write failed:', e); });
+
+    // localStorage-Fallback
     pendingOrders.set(orderId, {
       items: orderItems,
       orderDate: formatDate(orderDate),
       status: 'shipped',
       total: total,
-      shippingAddress: checkoutState.selectedAddress,
+      shippingAddress: selectedAddr,
       shippingType: checkoutState.shippingType,
       shippingCost: checkoutState.shipping,
       paymentMethod: checkoutState.selectedPayment
     });
     savePendingOrders();
   }
-  
+
   // Berater-Empfehlungen als "gekauft" markieren (über Referrals)
   try {
     const purchasedPlanIds = new Set();
@@ -34969,20 +35343,21 @@ async function initApp() {
     console.log('Supabase nicht verfügbar:', e);
   }
 
-  // Production-Modus: Auth prüfen (nur wenn Supabase geladen)
-  if (isProductionMode() && supabase) {
+  // Auth prüfen — Overlay anzeigen wenn nicht eingeloggt
+  if (supabase) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        window.location.href = 'login.html';
-        return;
+        showCustomerAuth();
+      } else {
+        currentUser = session.user;
+        await loadUserProfile();
+        await loadUserDataFromSupabase();
+        updateUIForLoggedInUser();
       }
-      currentUser = session.user;
-      await loadUserProfile();
-      await loadUserDataFromSupabase();
-      updateUIForLoggedInUser();
     } catch(e) {
-      console.warn('Auth-Check fehlgeschlagen, nutze Demo-Modus:', e);
+      console.warn('Auth-Check fehlgeschlagen:', e);
+      showCustomerAuth();
     }
   }
   
