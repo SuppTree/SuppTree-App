@@ -210,6 +210,39 @@ function saveTermine(termine) {
 }
 
 // =============================================
+// LOCAL NOTIFICATIONS - Native Push via Capacitor
+// =============================================
+var _notifId = 1;
+
+function sendLocalNotification(title, body) {
+  // Quiet Hours prüfen (Kunden-App)
+  var settings = JSON.parse(localStorage.getItem('suppTreeNotificationSettings') || '{}');
+  if (settings.quietHours) {
+    var now = new Date();
+    var h = now.getHours() * 60 + now.getMinutes();
+    var qs = (settings.quietStart || '22:00').split(':');
+    var qe = (settings.quietEnd || '07:00').split(':');
+    var start = parseInt(qs[0]) * 60 + parseInt(qs[1]);
+    var end = parseInt(qe[0]) * 60 + parseInt(qe[1]);
+    if (start > end ? (h >= start || h < end) : (h >= start && h < end)) return;
+  }
+
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+    window.Capacitor.Plugins.LocalNotifications.schedule({
+      notifications: [{
+        title: title,
+        body: body,
+        id: _notifId++,
+        schedule: { at: new Date(Date.now() + 100) },
+        sound: null,
+        smallIcon: 'ic_stat_icon_config_sample',
+        iconColor: '#00A67E'
+      }]
+    });
+  }
+}
+
+// =============================================
 // CAPACITOR STATUS BAR - System UI sichtbar machen
 // =============================================
 document.addEventListener('DOMContentLoaded', function() {
@@ -226,6 +259,12 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Status Bar konfiguriert');
   }
   
+  // Local Notifications Permission
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+    window.Capacitor.Plugins.LocalNotifications.requestPermissions();
+    console.log('✅ Local Notifications Permission angefordert');
+  }
+
   // Navigation Bar (unten) sichtbar machen
   if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.NavigationBar) {
     const { NavigationBar } = window.Capacitor.Plugins;
@@ -1070,8 +1109,10 @@ function handleCustomerBookingUpdate(payload) {
 
   if (b.status === 'proposed') {
     showToast('Neuer Terminvorschlag erhalten!');
+    sendLocalNotification('SuppTree', 'Neuer Terminvorschlag erhalten!');
   } else if (b.status === 'completed') {
     showToast('Termin als abgeschlossen markiert');
+    sendLocalNotification('SuppTree', 'Dein Termin wurde als abgeschlossen markiert.');
   }
 }
 
@@ -1087,6 +1128,7 @@ function handleNewPlan(payload) {
   localStorage.setItem('suppTreeBeraterPlaene', JSON.stringify(plans));
 
   showToast('Neuer Plan von deinem Berater!');
+  sendLocalNotification('SuppTree', 'Neuer Plan von deinem Berater!');
 }
 
 // =============================================

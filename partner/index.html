@@ -4339,9 +4339,32 @@ function updatePartnerBTStatus(id, newStatus) {
   renderPartnerBTList();
 }
 
+// ═══ LOCAL NOTIFICATIONS ═══
+var _notifIdP = 1;
+function sendLocalNotification(title, body) {
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+    window.Capacitor.Plugins.LocalNotifications.schedule({
+      notifications: [{
+        title: title,
+        body: body,
+        id: _notifIdP++,
+        schedule: { at: new Date(Date.now() + 100) },
+        sound: null,
+        smallIcon: 'ic_stat_icon_config_sample',
+        iconColor: '#00A67E'
+      }]
+    });
+  }
+}
+
 // ═══ REALTIME SUBSCRIPTIONS ═══
 function startPartnerRealtime() {
   if (!_sb || !_currentUser) return;
+
+  // Local Notifications Permission
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+    window.Capacitor.Plugins.LocalNotifications.requestPermissions();
+  }
 
   // Alte Channels entfernen
   _sb.removeAllChannels();
@@ -4386,6 +4409,7 @@ function handleBloodTestChange(payload) {
     });
     renderPartnerBTList();
     toast('Neue Bluttest-Buchung von ' + (bt.customer_name || 'Kunde') + '!', 'success');
+    sendLocalNotification('SuppTree Partner', 'Neue Bluttest-Buchung von ' + (bt.customer_name || 'Kunde') + '!');
   } else if (payload.eventType === 'UPDATE') {
     var existing = _livePartnerBT.find(function(b) { return b.id === bt.id; });
     if (existing) { existing.status = bt.status; renderPartnerBTList(); }
@@ -4420,6 +4444,7 @@ function handleBookingChange(payload) {
     renderAnfragenList();
     updateTermineBadge();
     toast('Neue Anfrage von ' + (b.customer_name || 'Kunde') + '!', 'success');
+    sendLocalNotification('SuppTree Partner', 'Neue Anfrage von ' + (b.customer_name || 'Kunde') + '!');
 
   } else if (payload.eventType === 'UPDATE') {
     // Status-Update (Kunde hat bestätigt/abgelehnt/storniert)
@@ -4442,10 +4467,13 @@ function handleBookingChange(payload) {
 
     if (b.status === 'confirmed' && oldStatus !== 'confirmed') {
       toast('Kunde hat Termin bestätigt und bezahlt!', 'success');
+      sendLocalNotification('SuppTree Partner', 'Kunde hat Termin bestätigt und bezahlt!');
     } else if (b.status === 'declined') {
       toast('Kunde hat Terminvorschlag abgelehnt', '');
+      sendLocalNotification('SuppTree Partner', 'Kunde hat Terminvorschlag abgelehnt.');
     } else if (b.status === 'cancelled') {
       toast('Kunde hat Termin storniert', '');
+      sendLocalNotification('SuppTree Partner', 'Kunde hat Termin storniert.');
     }
   }
 }
