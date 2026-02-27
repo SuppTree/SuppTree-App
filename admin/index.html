@@ -665,6 +665,26 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
   </div>
 
   <div class="mehr-section">
+    <div class="mehr-title">Buchungen</div>
+    <div class="mehr-item" onclick="showSubScreen('termine')">
+      <div class="mehr-icon" style="background:#dbeafe">📅</div>
+      <div class="mehr-info">
+        <div class="mehr-label">Termine</div>
+        <div class="mehr-desc">Service-Buchungen verwalten & Status ändern</div>
+      </div>
+      <div class="mehr-arrow">›</div>
+    </div>
+    <div class="mehr-item" onclick="showSubScreen('bluttests')">
+      <div class="mehr-icon" style="background:#f3e8ff">🩸</div>
+      <div class="mehr-info">
+        <div class="mehr-label">Bluttests</div>
+        <div class="mehr-desc">Bluttest-Buchungen verwalten & Status ändern</div>
+      </div>
+      <div class="mehr-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="mehr-section">
     <div class="mehr-title">Finanzen</div>
     <div class="mehr-item" onclick="showSubScreen('finanzen')">
       <div class="mehr-icon" style="background:#ccfbf1">💶</div>
@@ -730,6 +750,66 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 </div>
 
 <!-- ========== SUB-SCREENS (unter Mehr) ========== -->
+
+<!-- TERMINE -->
+<div id="termineSubScreen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="goBackFromSub()">←</button>
+    <div class="screen-title">Termine</div>
+  </div>
+  <div class="tabs" style="overflow-x:auto;flex-wrap:nowrap" id="terminTabs">
+    <button class="tab active" onclick="filterTermine('all',this)">Alle <span class="cnt" id="tCntAll">0</span></button>
+    <button class="tab" onclick="filterTermine('requested',this)">Angefragt <span class="cnt" id="tCntRequested">0</span></button>
+    <button class="tab" onclick="filterTermine('proposed',this)">Vorgeschlagen <span class="cnt" id="tCntProposed">0</span></button>
+    <button class="tab" onclick="filterTermine('confirmed',this)">Bestätigt <span class="cnt" id="tCntConfirmed">0</span></button>
+    <button class="tab" onclick="filterTermine('completed',this)">Abgeschlossen <span class="cnt" id="tCntCompleted">0</span></button>
+    <button class="tab" onclick="filterTermine('cancelled',this)">Storniert <span class="cnt" id="tCntCancelled">0</span></button>
+  </div>
+  <div class="search-bar">
+    <div class="search-wrap">
+      <input type="text" class="search-input" placeholder="Termin suchen (Kunde, Partner, Service)..." oninput="searchTermine(this.value)">
+    </div>
+  </div>
+  <div id="terminList"></div>
+</div>
+
+<!-- TERMIN-DETAIL -->
+<div id="terminDetailScreen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="showSubScreen('termine')">←</button>
+    <div class="screen-title" id="terminDetailTitle">Termin-Details</div>
+  </div>
+  <div class="detail-section" id="terminDetailContent"></div>
+</div>
+
+<!-- BLUTTESTS -->
+<div id="bluttestsSubScreen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="goBackFromSub()">←</button>
+    <div class="screen-title">Bluttests</div>
+  </div>
+  <div class="tabs" style="overflow-x:auto;flex-wrap:nowrap" id="bluttestTabs">
+    <button class="tab active" onclick="filterBluttests('all',this)">Alle <span class="cnt" id="btCntAll">0</span></button>
+    <button class="tab" onclick="filterBluttests('pending',this)">Ausstehend <span class="cnt" id="btCntPending">0</span></button>
+    <button class="tab" onclick="filterBluttests('completed',this)">Abgeschlossen <span class="cnt" id="btCntCompleted">0</span></button>
+    <button class="tab" onclick="filterBluttests('cancelled',this)">Storniert <span class="cnt" id="btCntCancelled">0</span></button>
+  </div>
+  <div class="search-bar">
+    <div class="search-wrap">
+      <input type="text" class="search-input" placeholder="Bluttest suchen (Kunde, Partner, Test, Labor)..." oninput="searchBluttests(this.value)">
+    </div>
+  </div>
+  <div id="bluttestList"></div>
+</div>
+
+<!-- BLUTTEST-DETAIL -->
+<div id="bluttestDetailScreen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="showSubScreen('bluttests')">←</button>
+    <div class="screen-title" id="bluttestDetailTitle">Bluttest-Details</div>
+  </div>
+  <div class="detail-section" id="bluttestDetailContent"></div>
+</div>
 
 <!-- PRODUKTE -->
 <div id="productsSubScreen" class="screen">
@@ -1532,6 +1612,8 @@ function showSubScreen(id) {
   // Inhalte rendern
   if (id === 'products') { populateProductDropdowns(); renderProducts(); updateProductCounts(); loadProducts().then(function() { populateProductDropdowns(); renderProducts(); updateProductCounts(); }); }
   if (id === 'categories') renderCategories();
+  if (id === 'termine') { renderTermineList(); updateTermineCounts(); loadTermine().then(function() { renderTermineList(); updateTermineCounts(); }); }
+  if (id === 'bluttests') { renderBluttestList(); updateBluttestCounts(); loadBluttests().then(function() { renderBluttestList(); updateBluttestCounts(); }); }
   if (id === 'finanzen') { renderFinanzen(); Promise.all([loadOrders(), loadTermine(), loadBluttests()]).then(function() { renderFinanzen(); }).catch(function(e) { console.log('Finance load:', e); }); }
   if (id === 'payouts') renderPayouts();
   if (id === 'widgets') { renderAdminWidgets(); switchWidgetTab(_activeWidgetTab); }
@@ -6298,7 +6380,15 @@ async function loadTermine() {
         service: b.service,
         price: Number(b.price),
         date: b.booking_date,
-        status: b.status
+        status: b.status,
+        mode: b.mode || 'praxis',
+        duration: b.duration,
+        customer_message: b.customer_message,
+        notes: b.notes,
+        termin_vorschlag: b.termin_vorschlag,
+        zahlung: b.zahlung,
+        storno: b.storno,
+        created_at: b.created_at
       };
     });
     return _liveTermine;
@@ -6326,6 +6416,380 @@ async function loadBluttests() {
     });
     return _liveBluttests;
   } catch(e) { console.log('Bluttests load:', e); return null; }
+}
+
+// ═══ TERMINE VERWALTUNG ═══
+var terminFilter = 'all';
+var terminSearch = '';
+
+var terminStatusLabels = {requested:'Angefragt', proposed:'Vorgeschlagen', confirmed:'Bestätigt', completed:'Abgeschlossen', cancelled:'Storniert', declined:'Abgelehnt', pending:'Offen'};
+var terminStatusIcons = {requested:'⏳', proposed:'📨', confirmed:'✅', completed:'🏁', cancelled:'✖', declined:'🚫', pending:'⏳'};
+var terminStatusColors = {requested:'#d97706', proposed:'#2563eb', confirmed:'#16a34a', completed:'#166534', cancelled:'#dc2626', declined:'#dc2626', pending:'#6b7280'};
+
+function filterTermine(filter, btn) {
+  terminFilter = filter;
+  document.querySelectorAll('#terminTabs .tab').forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  renderTermineList();
+}
+
+function searchTermine(query) {
+  terminSearch = query.toLowerCase();
+  renderTermineList();
+}
+
+function updateTermineCounts() {
+  var list = _liveTermine || demoTerminBuchungen;
+  var el = function(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; };
+  el('tCntAll', list.length);
+  el('tCntRequested', list.filter(function(t) { return t.status === 'requested'; }).length);
+  el('tCntProposed', list.filter(function(t) { return t.status === 'proposed'; }).length);
+  el('tCntConfirmed', list.filter(function(t) { return t.status === 'confirmed'; }).length);
+  el('tCntCompleted', list.filter(function(t) { return t.status === 'completed'; }).length);
+  el('tCntCancelled', list.filter(function(t) { return t.status === 'cancelled' || t.status === 'declined'; }).length);
+}
+
+function renderTermineList() {
+  var list = _liveTermine || demoTerminBuchungen;
+  if (terminFilter !== 'all') {
+    if (terminFilter === 'cancelled') {
+      list = list.filter(function(t) { return t.status === 'cancelled' || t.status === 'declined'; });
+    } else {
+      list = list.filter(function(t) { return t.status === terminFilter; });
+    }
+  }
+  if (terminSearch) {
+    list = list.filter(function(t) {
+      return (t.kunde || '').toLowerCase().includes(terminSearch) ||
+             (t.partner || '').toLowerCase().includes(terminSearch) ||
+             (t.service || '').toLowerCase().includes(terminSearch);
+    });
+  }
+
+  var container = document.getElementById('terminList');
+  if (!container) return;
+  if (list.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">📅</div><div class="empty-text">Keine Termine gefunden</div></div>';
+    return;
+  }
+
+  var modeLabels = {praxis:'Vor Ort', video:'Video', phone:'Telefon', home:'Hausbesuch'};
+
+  container.innerHTML = '<div class="order-grid">' + list.map(function(t) {
+    var icon = terminStatusIcons[t.status] || '📅';
+    var color = terminStatusColors[t.status] || '#6b7280';
+    var label = terminStatusLabels[t.status] || t.status;
+    var dateStr = t.date ? t.date.split('-').reverse().join('.') : 'Noch offen';
+    var modeStr = modeLabels[t.mode] || t.mode || '';
+
+    return '<div class="order-card" style="cursor:pointer;border-left:3px solid ' + color + '" onclick="showTerminDetail(\'' + esc(t.id) + '\')">' +
+      '<div class="order-card-top">' +
+        '<div class="order-avatar" style="background:' + color + '20;font-size:18px">' + icon + '</div>' +
+        '<div class="order-card-header">' +
+          '<div class="order-card-id" style="font-size:12px;font-weight:700">' + esc(t.service) + '</div>' +
+          '<div class="order-card-date">' + dateStr + '</div>' +
+        '</div>' +
+        '<div class="order-card-amount">\u20AC' + (t.price || 0).toFixed(2) + '</div>' +
+      '</div>' +
+      '<div class="order-card-meta">' +
+        '<span class="order-chip customer">\uD83D\uDC64 ' + esc(t.kunde) + '</span>' +
+        '<span class="order-chip seller">\uD83C\uDFE5 ' + esc(t.partner) + '</span>' +
+        (modeStr ? '<span class="order-chip" style="background:#eff6ff;color:#1e40af">' + modeStr + '</span>' : '') +
+        (t.duration ? '<span class="order-chip" style="background:#f0fdf4;color:#166534">' + t.duration + ' Min</span>' : '') +
+      '</div>' +
+      '<div class="order-card-footer">' +
+        '<span style="font-size:11px;font-weight:700;color:' + color + '">' + label + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('') + '</div>';
+}
+
+function showTerminDetail(id) {
+  var list = _liveTermine || demoTerminBuchungen;
+  var t = list.find(function(x) { return x.id == id; });
+  if (!t) return;
+
+  var modeLabels = {praxis:'Vor Ort in der Praxis', video:'Video-Beratung', phone:'Telefon-Beratung', home:'Hausbesuch'};
+  var color = terminStatusColors[t.status] || '#6b7280';
+  var label = terminStatusLabels[t.status] || t.status;
+  var dateStr = t.date ? t.date.split('-').reverse().join('.') : 'Noch offen';
+
+  var html = '';
+
+  // 1. Termin-Details
+  html += '<div class="detail-card">';
+  html += '<div class="detail-card-title">\uD83D\uDCC5 Termin-Details</div>';
+  html += '<div class="detail-row"><span class="detail-label">Service</span><span class="detail-value" style="font-weight:700">' + esc(t.service) + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Kunde</span><span class="detail-value">' + esc(t.kunde) + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Partner</span><span class="detail-value">' + esc(t.partner) + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Datum</span><span class="detail-value">' + dateStr + '</span></div>';
+  if (t.mode) html += '<div class="detail-row"><span class="detail-label">Modus</span><span class="detail-value">' + (modeLabels[t.mode] || t.mode) + '</span></div>';
+  if (t.duration) html += '<div class="detail-row"><span class="detail-label">Dauer</span><span class="detail-value">' + t.duration + ' Minuten</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Preis</span><span class="detail-value" style="font-size:16px;font-weight:700">\u20AC' + (t.price || 0).toFixed(2) + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Status</span><span style="font-weight:700;color:' + color + '">' + label + '</span></div>';
+  if (t.created_at) html += '<div class="detail-row"><span class="detail-label">Erstellt</span><span class="detail-value">' + new Date(t.created_at).toLocaleString('de-DE') + '</span></div>';
+  html += '</div>';
+
+  // 2. Anfrage (customer_message / notes)
+  if (t.customer_message || t.notes) {
+    html += '<div class="detail-card">';
+    html += '<div class="detail-card-title">\uD83D\uDCAC Anfrage</div>';
+    if (t.customer_message) html += '<div style="font-size:12px;margin-bottom:6px"><span style="font-weight:600;color:var(--text-muted)">Verf\u00FCgbarkeit:</span><br>' + esc(t.customer_message) + '</div>';
+    if (t.notes) html += '<div style="font-size:12px"><span style="font-weight:600;color:var(--text-muted)">Nachricht:</span><br>' + esc(t.notes) + '</div>';
+    html += '</div>';
+  }
+
+  // 3. Terminvorschlag
+  if (t.termin_vorschlag) {
+    var tv = t.termin_vorschlag;
+    html += '<div class="detail-card" style="border:1px solid #bfdbfe;background:#eff6ff">';
+    html += '<div class="detail-card-title" style="color:#1e40af">\uD83D\uDCE8 Terminvorschlag vom Partner</div>';
+    if (tv.optionen && tv.optionen.length) {
+      tv.optionen.forEach(function(opt, i) {
+        var optDate = opt.date ? opt.date.split('-').reverse().join('.') : '';
+        html += '<div class="detail-row"><span class="detail-label">Option ' + (i + 1) + '</span><span class="detail-value">' + optDate + ' um ' + (opt.time || '') + ' Uhr</span></div>';
+      });
+    }
+    if (tv.art) html += '<div class="detail-row"><span class="detail-label">Art</span><span class="detail-value">' + esc(tv.art) + '</span></div>';
+    if (tv.dauer) html += '<div class="detail-row"><span class="detail-label">Dauer</span><span class="detail-value">' + tv.dauer + ' Min</span></div>';
+    if (tv.preis) html += '<div class="detail-row"><span class="detail-label">Preis</span><span class="detail-value">\u20AC' + Number(tv.preis).toFixed(2) + '</span></div>';
+    if (tv.nachricht) html += '<div style="font-size:12px;margin-top:6px;padding:8px;background:white;border-radius:6px">' + esc(tv.nachricht) + '</div>';
+    html += '</div>';
+  }
+
+  // 4. Zahlung
+  if (t.zahlung) {
+    var z = t.zahlung;
+    html += '<div class="detail-card" style="border:1px solid #bbf7d0;background:#f0fdf4">';
+    html += '<div class="detail-card-title" style="color:#166534">\uD83D\uDCB3 Zahlung</div>';
+    html += '<div class="detail-row"><span class="detail-label">Betrag</span><span class="detail-value" style="font-weight:700">\u20AC' + Number(z.amount || 0).toFixed(2) + '</span></div>';
+    if (z.method) html += '<div class="detail-row"><span class="detail-label">Methode</span><span class="detail-value">' + esc(z.method) + '</span></div>';
+    if (z.paidAt) html += '<div class="detail-row"><span class="detail-label">Bezahlt am</span><span class="detail-value">' + new Date(z.paidAt).toLocaleString('de-DE') + '</span></div>';
+    if (z.status) html += '<div class="detail-row"><span class="detail-label">Zahlungsstatus</span><span class="detail-value">' + esc(z.status) + '</span></div>';
+    html += '</div>';
+  }
+
+  // 5. Storno
+  if (t.storno) {
+    var s = t.storno;
+    html += '<div class="detail-card" style="border:1px solid #fecaca;background:#fef2f2">';
+    html += '<div class="detail-card-title" style="color:#dc2626">\u26A0\uFE0F Stornierung</div>';
+    if (s.stornoAt) html += '<div class="detail-row"><span class="detail-label">Storniert am</span><span class="detail-value">' + new Date(s.stornoAt).toLocaleString('de-DE') + '</span></div>';
+    if (s.type) html += '<div class="detail-row"><span class="detail-label">Typ</span><span class="detail-value">' + (s.type === 'kostenlos' ? 'Kostenlose Stornierung' : 'Sp\u00E4te Stornierung (50% Geb\u00FChr)') + '</span></div>';
+    if (s.fee !== undefined) html += '<div class="detail-row"><span class="detail-label">Stornogeb\u00FChr</span><span class="detail-value" style="font-weight:700;color:#dc2626">\u20AC' + Number(s.fee || 0).toFixed(2) + '</span></div>';
+    if (s.refund !== undefined) html += '<div class="detail-row"><span class="detail-label">R\u00FCckerstattung</span><span class="detail-value" style="font-weight:700;color:#16a34a">\u20AC' + Number(s.refund || 0).toFixed(2) + '</span></div>';
+    html += '</div>';
+  }
+
+  // 6. Aktionen
+  html += '<div class="detail-card">';
+  html += '<div class="detail-card-title">\u2699\uFE0F Aktionen</div>';
+  html += '<div class="detail-actions" style="flex-wrap:wrap">';
+  if (t.status === 'confirmed') {
+    html += '<button class="btn btn-success" onclick="changeTerminStatus(\'' + esc(t.id) + '\',\'completed\')">\uD83C\uDFC1 Als abgeschlossen markieren</button>';
+    html += '<button class="btn btn-danger" onclick="changeTerminStatus(\'' + esc(t.id) + '\',\'cancelled\')">\u274C Stornieren</button>';
+  } else if (t.status === 'requested' || t.status === 'proposed') {
+    html += '<button class="btn btn-danger" onclick="changeTerminStatus(\'' + esc(t.id) + '\',\'cancelled\')">\u274C Stornieren</button>';
+  } else if (t.status === 'cancelled' || t.status === 'declined') {
+    html += '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">Keine Aktionen verf\u00FCgbar</div>';
+  } else if (t.status === 'completed') {
+    html += '<div style="font-size:12px;color:#166534;padding:8px 0">\u2705 Termin abgeschlossen</div>';
+  }
+  html += '</div></div>';
+
+  // Geldfluss
+  if (t.price && t.status !== 'cancelled' && t.status !== 'declined') {
+    var fee = t.price * 0.10;
+    var partnerGet = t.price - fee;
+    html += '<div class="detail-card" style="background:#f8fafc">';
+    html += '<div class="detail-card-title">\uD83D\uDCB0 Geldfluss</div>';
+    html += '<div class="detail-row"><span class="detail-label">Kunde zahlt</span><span class="detail-value" style="font-weight:700">\u20AC' + t.price.toFixed(2) + '</span></div>';
+    html += '<div class="detail-row"><span class="detail-label">Partner erh\u00E4lt (90%)</span><span class="detail-value">\u20AC' + partnerGet.toFixed(2) + '</span></div>';
+    html += '<div class="detail-row" style="border-top:2px solid #166534;padding-top:6px;margin-top:6px"><span class="detail-label" style="font-weight:800;color:#166534">SuppTree Fee (10%)</span><span class="detail-value" style="font-weight:800;color:#166534">\u20AC' + fee.toFixed(2) + '</span></div>';
+    html += '</div>';
+  }
+
+  document.getElementById('terminDetailTitle').textContent = 'Termin: ' + (t.service || '');
+  document.getElementById('terminDetailContent').innerHTML = html;
+
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('terminDetailScreen').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n, i) { n.classList.toggle('active', i === 4); });
+  window.scrollTo(0, 0);
+}
+
+function changeTerminStatus(id, newStatus) {
+  var list = _liveTermine || demoTerminBuchungen;
+  var t = list.find(function(x) { return x.id == id; });
+  if (!t) return;
+
+  adminConfirm('Termin-Status auf "' + (terminStatusLabels[newStatus] || newStatus) + '" setzen?', function() {
+    t.status = newStatus;
+
+    var sb = initSupabase();
+    if (sb && typeof t.id === 'string' && t.id.length > 10) {
+      var updates = { status: newStatus };
+      sb.from('bookings').update(updates).eq('id', t.id)
+        .then(function(res) { if (res.error) console.error('Termin status update:', res.error); });
+    }
+
+    showToast('Status ge\u00E4ndert: ' + (terminStatusLabels[newStatus] || newStatus));
+    updateTermineCounts();
+    showTerminDetail(id);
+  });
+}
+
+// ═══ BLUTTESTS VERWALTUNG ═══
+var bluttestFilter = 'all';
+var bluttestSearch = '';
+
+var bluttestStatusLabels = {pending:'Ausstehend', completed:'Abgeschlossen', cancelled:'Storniert'};
+var bluttestStatusIcons = {pending:'⏳', completed:'✅', cancelled:'✖'};
+var bluttestStatusColors = {pending:'#d97706', completed:'#16a34a', cancelled:'#dc2626'};
+
+function filterBluttests(filter, btn) {
+  bluttestFilter = filter;
+  document.querySelectorAll('#bluttestTabs .tab').forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  renderBluttestList();
+}
+
+function searchBluttests(query) {
+  bluttestSearch = query.toLowerCase();
+  renderBluttestList();
+}
+
+function updateBluttestCounts() {
+  var list = _liveBluttests || demoBluttestBuchungen;
+  var el = function(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; };
+  el('btCntAll', list.length);
+  el('btCntPending', list.filter(function(b) { return b.status === 'pending'; }).length);
+  el('btCntCompleted', list.filter(function(b) { return b.status === 'completed'; }).length);
+  el('btCntCancelled', list.filter(function(b) { return b.status === 'cancelled'; }).length);
+}
+
+function renderBluttestList() {
+  var list = _liveBluttests || demoBluttestBuchungen;
+  if (bluttestFilter !== 'all') {
+    list = list.filter(function(b) { return b.status === bluttestFilter; });
+  }
+  if (bluttestSearch) {
+    list = list.filter(function(b) {
+      return (b.kunde || '').toLowerCase().includes(bluttestSearch) ||
+             (b.partner || '').toLowerCase().includes(bluttestSearch) ||
+             (b.test || '').toLowerCase().includes(bluttestSearch) ||
+             (b.labor || '').toLowerCase().includes(bluttestSearch);
+    });
+  }
+
+  var container = document.getElementById('bluttestList');
+  if (!container) return;
+  if (list.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">\uD83E\uDE78</div><div class="empty-text">Keine Bluttests gefunden</div></div>';
+    return;
+  }
+
+  container.innerHTML = '<div class="order-grid">' + list.map(function(b) {
+    var icon = bluttestStatusIcons[b.status] || '\uD83E\uDE78';
+    var color = bluttestStatusColors[b.status] || '#6b7280';
+    var label = bluttestStatusLabels[b.status] || b.status;
+    var dateStr = b.date ? b.date.split('-').reverse().join('.') : '';
+
+    return '<div class="order-card" style="cursor:pointer;border-left:3px solid ' + color + '" onclick="showBluttestDetail(\'' + esc(b.id) + '\')">' +
+      '<div class="order-card-top">' +
+        '<div class="order-avatar" style="background:' + color + '20;font-size:18px">' + icon + '</div>' +
+        '<div class="order-card-header">' +
+          '<div class="order-card-id" style="font-size:12px;font-weight:700">' + esc(b.test) + '</div>' +
+          '<div class="order-card-date">' + dateStr + '</div>' +
+        '</div>' +
+        '<div class="order-card-amount">\u20AC' + (b.price || 0).toFixed(2) + '</div>' +
+      '</div>' +
+      '<div class="order-card-meta">' +
+        '<span class="order-chip customer">\uD83D\uDC64 ' + esc(b.kunde) + '</span>' +
+        '<span class="order-chip seller">\uD83C\uDFE5 ' + esc(b.partner) + '</span>' +
+        '<span class="order-chip" style="background:#faf5ff;color:#6b21a8">\uD83E\uDDEA ' + esc(b.labor) + '</span>' +
+      '</div>' +
+      '<div class="order-card-footer">' +
+        '<span style="font-size:11px;font-weight:700;color:' + color + '">' + label + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('') + '</div>';
+}
+
+function showBluttestDetail(id) {
+  var list = _liveBluttests || demoBluttestBuchungen;
+  var b = list.find(function(x) { return x.id == id; });
+  if (!b) return;
+
+  var color = bluttestStatusColors[b.status] || '#6b7280';
+  var label = bluttestStatusLabels[b.status] || b.status;
+  var dateStr = b.date ? b.date.split('-').reverse().join('.') : '';
+
+  var html = '';
+
+  // 1. Test-Details
+  html += '<div class="detail-card">';
+  html += '<div class="detail-card-title">\uD83E\uDE78 Bluttest-Details</div>';
+  html += '<div class="detail-row"><span class="detail-label">Test</span><span class="detail-value" style="font-weight:700">' + esc(b.test) + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Kunde</span><span class="detail-value">' + esc(b.kunde) + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Partner</span><span class="detail-value">' + esc(b.partner) + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Labor</span><span class="detail-value">' + esc(b.labor) + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Datum</span><span class="detail-value">' + dateStr + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Preis</span><span class="detail-value" style="font-size:16px;font-weight:700">\u20AC' + (b.price || 0).toFixed(2) + '</span></div>';
+  html += '<div class="detail-row"><span class="detail-label">Status</span><span style="font-weight:700;color:' + color + '">' + label + '</span></div>';
+  html += '</div>';
+
+  // 2. Geldfluss
+  if (b.price && b.status !== 'cancelled') {
+    var partnerProv = b.price * 0.25;
+    var suppTreeLabor = b.price - partnerProv;
+    html += '<div class="detail-card" style="background:#f8fafc">';
+    html += '<div class="detail-card-title">\uD83D\uDCB0 Geldfluss</div>';
+    html += '<div class="detail-row"><span class="detail-label">Kunde zahlt</span><span class="detail-value" style="font-weight:700">\u20AC' + b.price.toFixed(2) + '</span></div>';
+    html += '<div class="detail-row"><span class="detail-label">Partner-Provision (25%)</span><span class="detail-value" style="color:#d97706">\u20AC' + partnerProv.toFixed(2) + '</span></div>';
+    html += '<div class="detail-row" style="border-top:2px solid #166534;padding-top:6px;margin-top:6px"><span class="detail-label" style="font-weight:800;color:#166534">SuppTree + Labor (75%)</span><span class="detail-value" style="font-weight:800;color:#166534">\u20AC' + suppTreeLabor.toFixed(2) + '</span></div>';
+    html += '</div>';
+  }
+
+  // 3. Aktionen
+  html += '<div class="detail-card">';
+  html += '<div class="detail-card-title">\u2699\uFE0F Aktionen</div>';
+  html += '<div class="detail-actions" style="flex-wrap:wrap">';
+  if (b.status === 'pending') {
+    html += '<button class="btn btn-success" onclick="changeBluttestStatus(\'' + esc(b.id) + '\',\'completed\')">\u2705 Als abgeschlossen markieren</button>';
+    html += '<button class="btn btn-danger" onclick="changeBluttestStatus(\'' + esc(b.id) + '\',\'cancelled\')">\u274C Stornieren</button>';
+  }
+  if (b.status === 'completed') html += '<div style="font-size:12px;color:#166534;padding:8px 0">\u2705 Test abgeschlossen</div>';
+  if (b.status === 'cancelled') html += '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">Keine Aktionen verf\u00FCgbar</div>';
+  html += '</div></div>';
+
+  document.getElementById('bluttestDetailTitle').textContent = 'Bluttest: ' + (b.test || '');
+  document.getElementById('bluttestDetailContent').innerHTML = html;
+
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('bluttestDetailScreen').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n, i) { n.classList.toggle('active', i === 4); });
+  window.scrollTo(0, 0);
+}
+
+function changeBluttestStatus(id, newStatus) {
+  var list = _liveBluttests || demoBluttestBuchungen;
+  var b = list.find(function(x) { return x.id == id; });
+  if (!b) return;
+
+  adminConfirm('Bluttest-Status auf "' + (bluttestStatusLabels[newStatus] || newStatus) + '" setzen?', function() {
+    b.status = newStatus;
+
+    var sb = initSupabase();
+    if (sb && typeof b.id === 'string' && b.id.length > 10) {
+      sb.from('blood_tests').update({ status: newStatus }).eq('id', b.id)
+        .then(function(res) { if (res.error) console.error('Bluttest status update:', res.error); });
+    }
+
+    showToast('Status ge\u00E4ndert: ' + (bluttestStatusLabels[newStatus] || newStatus));
+    updateBluttestCounts();
+    showBluttestDetail(id);
+  });
 }
 
 // ═══ PRODUKTE aus Supabase ═══
