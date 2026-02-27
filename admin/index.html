@@ -6800,7 +6800,13 @@ function showBluttestDetail(id) {
     html += '</div>';
   }
 
-  // 3. Aktionen
+  // 3. Laborergebnisse (wird asynchron nachgeladen)
+  html += '<div class="detail-card" id="adminBTResultsCard">';
+  html += '<div class="detail-card-title">\uD83E\uDDEA Laborergebnisse</div>';
+  html += '<div id="adminBTResultsContent" style="text-align:center;padding:12px;color:var(--text-muted);font-size:12px">Laden...</div>';
+  html += '</div>';
+
+  // 4. Aktionen
   html += '<div class="detail-card">';
   html += '<div class="detail-card-title">\u2699\uFE0F Aktionen</div>';
   html += '<div class="detail-actions" style="flex-wrap:wrap">';
@@ -6815,10 +6821,47 @@ function showBluttestDetail(id) {
   document.getElementById('bluttestDetailTitle').textContent = 'Bluttest: ' + (b.test || '');
   document.getElementById('bluttestDetailContent').innerHTML = html;
 
+  // Ergebnisse asynchron laden
+  loadAdminBTResults(b.id);
+
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById('bluttestDetailScreen').classList.add('active');
   document.querySelectorAll('.nav-item').forEach(function(n, i) { n.classList.toggle('active', i === 4); });
   window.scrollTo(0, 0);
+}
+
+function loadAdminBTResults(btId) {
+  var el = document.getElementById('adminBTResultsContent');
+  if (!el) return;
+  var sb = initSupabase();
+  if (!sb || typeof btId !== 'string' || btId.length < 10) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text-muted)">Keine Ergebnisse</div>';
+    return;
+  }
+  sb.from('blood_test_results').select('*').eq('blood_test_id', btId).order('category')
+    .then(function(res) {
+      if (!res.data || res.data.length === 0) {
+        el.innerHTML = '<div style="font-size:12px;color:var(--text-muted)">Noch keine Ergebnisse eingetragen</div>';
+        return;
+      }
+      var catLabels = { blutbild:'Blutbild', vitamine:'Vitamine & Mineralien', eisen:'Eisenstoffwechsel', schilddruese:'Schilddrüse', leber:'Leberwerte', niere:'Nierenwerte', stoffwechsel:'Stoffwechsel', entzuendung:'Entzündung', hormone:'Hormone', elektrolyte:'Elektrolyte' };
+      var cats = {};
+      res.data.forEach(function(r) { var c = r.category || 'sonstige'; if (!cats[c]) cats[c] = []; cats[c].push(r); });
+
+      var html = '';
+      Object.keys(cats).forEach(function(ck) {
+        html += '<div style="font-size:11px;font-weight:700;color:var(--text-muted);margin:8px 0 4px;text-transform:uppercase">' + (catLabels[ck] || ck) + '</div>';
+        cats[ck].forEach(function(r) {
+          var ampel = r.status === 'normal' ? '#16a34a' : '#dc2626';
+          var ampelLabel = r.status === 'low' ? '↓' : r.status === 'high' ? '↑' : '✓';
+          html += '<div class="detail-row"><span class="detail-label">' + esc(r.marker_name) + '</span>';
+          html += '<span class="detail-value"><span style="font-weight:700">' + r.value + '</span> <span style="font-size:11px;color:var(--text-muted)">' + esc(r.unit) + '</span>';
+          html += ' <span style="color:' + ampel + ';font-weight:700;font-size:11px">' + ampelLabel + '</span></span></div>';
+        });
+      });
+      el.innerHTML = html;
+    })
+    .catch(function(e) { el.innerHTML = '<div style="font-size:12px;color:#dc2626">Fehler: ' + e.message + '</div>'; });
 }
 
 function changeBluttestStatus(id, newStatus) {

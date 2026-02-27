@@ -1866,6 +1866,28 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
     <div id="partnerBTList" style="padding:0 16px 20px"></div>
   </div>
 
+  <!-- BLUTTEST DETAIL SCREEN -->
+  <div class="screen" id="bluttestDetailScreen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('bluttests')">←</button>
+      <h1 class="screen-title">Bluttest-Details</h1>
+    </div>
+    <div id="btDetailContent" style="padding:16px"></div>
+  </div>
+
+  <!-- BLUTTEST ERGEBNISSE EINGEBEN -->
+  <div class="screen" id="btErgebnisseScreen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="showBTDetail(_currentBTDetail.id)">←</button>
+      <h1 class="screen-title">Ergebnisse eintragen</h1>
+    </div>
+    <div style="padding:0 16px">
+      <div class="status-tabs" id="markerCatTabs" style="margin-bottom:12px;flex-wrap:wrap"></div>
+      <div id="markerInputList" style="padding-bottom:20px"></div>
+      <button onclick="saveBTResults()" style="width:100%;padding:14px;border:none;border-radius:12px;background:var(--green-accent);color:white;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:20px">Ergebnisse speichern</button>
+    </div>
+  </div>
+
   <!-- CHAT SCREEN -->
   <div class="screen" id="chatScreen">
     <div class="chat-header">
@@ -4303,7 +4325,7 @@ function renderPartnerBTList() {
     var dateStr = bt.date ? bt.date.split('-').reverse().join('.') : '';
     var initials = (bt.kunde || '??').split(' ').map(function(w) { return w.charAt(0).toUpperCase(); }).join('').slice(0, 2);
 
-    return '<div style="background:white;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--border);border-left:3px solid ' + color + '">' +
+    return '<div onclick="showBTDetail(\'' + bt.id + '\')" style="background:white;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--border);border-left:3px solid ' + color + ';cursor:pointer">' +
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
         '<div style="width:36px;height:36px;border-radius:50%;background:#faf5ff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#6b21a8">' + esc(initials) + '</div>' +
         '<div style="flex:1;min-width:0">' +
@@ -4337,6 +4359,300 @@ function updatePartnerBTStatus(id, newStatus) {
   }
   toast(newStatus === 'completed' ? 'Bluttest als abgeschlossen markiert' : 'Bluttest storniert', newStatus === 'completed' ? 'success' : '');
   renderPartnerBTList();
+}
+
+// ═══ MARKER-KATALOG ═══
+var MARKER_CATEGORIES = [
+  { key:'blutbild', name:'Blutbild', icon:'🔴' },
+  { key:'vitamine', name:'Vitamine', icon:'💊' },
+  { key:'eisen', name:'Eisen', icon:'🔗' },
+  { key:'schilddruese', name:'Schilddrüse', icon:'🦋' },
+  { key:'leber', name:'Leber', icon:'🫀' },
+  { key:'niere', name:'Niere', icon:'🫘' },
+  { key:'stoffwechsel', name:'Stoffwechsel', icon:'⚗️' },
+  { key:'entzuendung', name:'Entzündung', icon:'🔥' },
+  { key:'hormone', name:'Hormone', icon:'⚖️' },
+  { key:'elektrolyte', name:'Elektrolyte', icon:'🔋' }
+];
+
+var BLOOD_MARKERS = [
+  // Blutbild
+  { key:'hb', name:'Hämoglobin (Hb)', unit:'g/dL', refMin:12.0, refMax:17.5, cat:'blutbild' },
+  { key:'hkt', name:'Hämatokrit (Hkt)', unit:'%', refMin:36, refMax:48, cat:'blutbild' },
+  { key:'rbc', name:'Erythrozyten', unit:'Mio/µL', refMin:4.0, refMax:5.5, cat:'blutbild' },
+  { key:'wbc', name:'Leukozyten', unit:'Tsd/µL', refMin:4.0, refMax:10.0, cat:'blutbild' },
+  { key:'plt', name:'Thrombozyten', unit:'Tsd/µL', refMin:150, refMax:400, cat:'blutbild' },
+  // Vitamine & Mineralien
+  { key:'vitamin_d', name:'Vitamin D (25-OH)', unit:'ng/mL', refMin:30, refMax:80, cat:'vitamine' },
+  { key:'b12', name:'Vitamin B12', unit:'pg/mL', refMin:200, refMax:900, cat:'vitamine' },
+  { key:'folat', name:'Folsäure', unit:'ng/mL', refMin:3.0, refMax:17.0, cat:'vitamine' },
+  { key:'zink', name:'Zink', unit:'µg/dL', refMin:70, refMax:120, cat:'vitamine' },
+  { key:'selen', name:'Selen', unit:'µg/L', refMin:70, refMax:150, cat:'vitamine' },
+  { key:'magnesium', name:'Magnesium', unit:'mg/dL', refMin:1.7, refMax:2.2, cat:'vitamine' },
+  // Eisenstoffwechsel
+  { key:'eisen', name:'Eisen', unit:'µg/dL', refMin:60, refMax:170, cat:'eisen' },
+  { key:'ferritin', name:'Ferritin', unit:'ng/mL', refMin:15, refMax:300, cat:'eisen' },
+  { key:'transferrin', name:'Transferrin', unit:'mg/dL', refMin:200, refMax:360, cat:'eisen' },
+  // Schilddrüse
+  { key:'tsh', name:'TSH', unit:'mU/L', refMin:0.27, refMax:4.2, cat:'schilddruese' },
+  { key:'ft3', name:'Freies T3 (fT3)', unit:'pg/mL', refMin:2.0, refMax:4.4, cat:'schilddruese' },
+  { key:'ft4', name:'Freies T4 (fT4)', unit:'ng/dL', refMin:0.9, refMax:1.7, cat:'schilddruese' },
+  // Leberwerte
+  { key:'got', name:'GOT (AST)', unit:'U/L', refMin:0, refMax:40, cat:'leber' },
+  { key:'gpt', name:'GPT (ALT)', unit:'U/L', refMin:0, refMax:45, cat:'leber' },
+  { key:'ggt', name:'GGT', unit:'U/L', refMin:0, refMax:60, cat:'leber' },
+  { key:'bilirubin', name:'Bilirubin (gesamt)', unit:'mg/dL', refMin:0, refMax:1.2, cat:'leber' },
+  // Nierenwerte
+  { key:'kreatinin', name:'Kreatinin', unit:'mg/dL', refMin:0.6, refMax:1.2, cat:'niere' },
+  { key:'harnstoff', name:'Harnstoff', unit:'mg/dL', refMin:10, refMax:50, cat:'niere' },
+  { key:'gfr', name:'GFR (geschätzt)', unit:'mL/min', refMin:90, refMax:999, cat:'niere' },
+  // Stoffwechsel
+  { key:'glukose', name:'Nüchtern-Glukose', unit:'mg/dL', refMin:70, refMax:100, cat:'stoffwechsel' },
+  { key:'hba1c', name:'HbA1c', unit:'%', refMin:4.0, refMax:5.6, cat:'stoffwechsel' },
+  { key:'cholesterin', name:'Cholesterin (gesamt)', unit:'mg/dL', refMin:0, refMax:200, cat:'stoffwechsel' },
+  { key:'ldl', name:'LDL-Cholesterin', unit:'mg/dL', refMin:0, refMax:130, cat:'stoffwechsel' },
+  { key:'hdl', name:'HDL-Cholesterin', unit:'mg/dL', refMin:40, refMax:999, cat:'stoffwechsel' },
+  { key:'triglyceride', name:'Triglyceride', unit:'mg/dL', refMin:0, refMax:150, cat:'stoffwechsel' },
+  // Entzündung
+  { key:'crp', name:'CRP', unit:'mg/L', refMin:0, refMax:5.0, cat:'entzuendung' },
+  { key:'bsg', name:'BSG (1h)', unit:'mm/h', refMin:0, refMax:20, cat:'entzuendung' },
+  // Hormone
+  { key:'testosteron', name:'Testosteron', unit:'ng/dL', refMin:250, refMax:1000, cat:'hormone' },
+  { key:'oestradiol', name:'Östradiol', unit:'pg/mL', refMin:10, refMax:400, cat:'hormone' },
+  { key:'cortisol', name:'Cortisol (morgens)', unit:'µg/dL', refMin:6, refMax:23, cat:'hormone' },
+  // Elektrolyte
+  { key:'natrium', name:'Natrium', unit:'mmol/L', refMin:136, refMax:145, cat:'elektrolyte' },
+  { key:'kalium', name:'Kalium', unit:'mmol/L', refMin:3.5, refMax:5.0, cat:'elektrolyte' },
+  { key:'calcium', name:'Calcium', unit:'mg/dL', refMin:8.5, refMax:10.5, cat:'elektrolyte' }
+];
+
+// ═══ BLUTTEST-DETAIL + ERGEBNISSE ═══
+var _currentBTDetail = null;
+var _currentBTResults = [];
+var _markerCatFilter = 'blutbild';
+
+function showBTDetail(id) {
+  var bt = (_livePartnerBT || []).find(function(b) { return b.id === id; });
+  if (!bt) return;
+  _currentBTDetail = bt;
+
+  // Ergebnisse aus Supabase laden
+  _currentBTResults = [];
+  if (_sb) {
+    _sb.from('blood_test_results').select('*').eq('blood_test_id', id)
+      .then(function(res) {
+        if (res.data) _currentBTResults = res.data;
+        renderBTDetail();
+      });
+  } else {
+    renderBTDetail();
+  }
+
+  // Screen zeigen
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  var screen = document.getElementById('bluttestDetailScreen');
+  if (screen) screen.classList.add('active');
+}
+
+function renderBTDetail() {
+  var bt = _currentBTDetail;
+  if (!bt) return;
+  var el = document.getElementById('btDetailContent');
+  if (!el) return;
+
+  var statusLabels = { pending:'Ausstehend', completed:'Abgeschlossen', cancelled:'Storniert' };
+  var statusColors = { pending:'#d97706', completed:'#16a34a', cancelled:'#dc2626' };
+  var color = statusColors[bt.status] || '#6b7280';
+  var label = statusLabels[bt.status] || bt.status;
+  var dateStr = bt.date ? bt.date.split('-').reverse().join('.') : '-';
+
+  var html = '';
+
+  // Info-Karte
+  html += '<div style="background:white;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid var(--border)">';
+  html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px">' + esc(bt.test || 'Bluttest') + '</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">';
+  html += '<div><span style="color:var(--text-muted)">Kunde:</span> ' + esc(bt.kunde) + '</div>';
+  html += '<div><span style="color:var(--text-muted)">Labor:</span> ' + esc(bt.labor || '-') + '</div>';
+  html += '<div><span style="color:var(--text-muted)">Datum:</span> ' + dateStr + '</div>';
+  html += '<div><span style="color:var(--text-muted)">Preis:</span> €' + (bt.price || 0).toFixed(2) + '</div>';
+  html += '</div>';
+  html += '<div style="margin-top:10px"><span style="font-size:11px;padding:3px 10px;border-radius:10px;background:' + color + '20;color:' + color + ';font-weight:600">' + label + '</span></div>';
+  html += '</div>';
+
+  // Ergebnisse-Karte
+  html += '<div style="background:white;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid var(--border)">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
+  html += '<div style="font-size:14px;font-weight:700">Laborergebnisse</div>';
+  if (bt.status !== 'cancelled') {
+    html += '<button onclick="openBTErgebnisse()" style="padding:6px 14px;border:none;border-radius:8px;background:var(--green-accent);color:white;font-size:12px;font-weight:600;cursor:pointer">' + (_currentBTResults.length ? 'Bearbeiten' : 'Eintragen') + '</button>';
+  }
+  html += '</div>';
+
+  if (_currentBTResults.length === 0) {
+    html += '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">Noch keine Ergebnisse eingetragen</div>';
+  } else {
+    // Gruppiert nach Kategorie
+    var cats = {};
+    _currentBTResults.forEach(function(r) {
+      var c = r.category || 'sonstige';
+      if (!cats[c]) cats[c] = [];
+      cats[c].push(r);
+    });
+    Object.keys(cats).forEach(function(catKey) {
+      var catInfo = MARKER_CATEGORIES.find(function(c) { return c.key === catKey; });
+      html += '<div style="font-size:12px;font-weight:600;color:var(--text-muted);margin:10px 0 6px">' + (catInfo ? catInfo.icon + ' ' + catInfo.name : catKey) + '</div>';
+      cats[catKey].forEach(function(r) {
+        var ampel = r.status === 'low' ? '#dc2626' : r.status === 'high' ? '#dc2626' : '#16a34a';
+        var ampelBg = r.status === 'normal' ? '#f0fdf4' : '#fef2f2';
+        var ampelLabel = r.status === 'low' ? '↓ niedrig' : r.status === 'high' ? '↑ hoch' : '✓ normal';
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f3f4f6">';
+        html += '<div style="font-size:13px">' + esc(r.marker_name) + '</div>';
+        html += '<div style="display:flex;align-items:center;gap:8px">';
+        html += '<span style="font-size:13px;font-weight:700">' + r.value + ' ' + esc(r.unit) + '</span>';
+        html += '<span style="font-size:10px;padding:2px 6px;border-radius:8px;background:' + ampelBg + ';color:' + ampel + ';font-weight:600">' + ampelLabel + '</span>';
+        html += '</div></div>';
+      });
+    });
+  }
+  html += '</div>';
+
+  // Aktionen
+  if (bt.status === 'pending') {
+    html += '<div style="display:flex;gap:8px">';
+    html += '<button onclick="updatePartnerBTStatus(\'' + bt.id + '\',\'completed\');showBTDetail(\'' + bt.id + '\')" style="flex:1;padding:12px;border:none;border-radius:10px;background:#16a34a;color:white;font-size:13px;font-weight:600;cursor:pointer">Abgeschlossen</button>';
+    html += '<button onclick="updatePartnerBTStatus(\'' + bt.id + '\',\'cancelled\');showBTDetail(\'' + bt.id + '\')" style="flex:1;padding:12px;border:none;border-radius:10px;background:#fee2e2;color:#dc2626;font-size:13px;font-weight:600;cursor:pointer">Stornieren</button>';
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
+// ═══ ERGEBNISSE EINGEBEN ═══
+var _btInputValues = {};
+
+function openBTErgebnisse() {
+  if (!_currentBTDetail) return;
+  _btInputValues = {};
+  // Bestehende Werte laden
+  _currentBTResults.forEach(function(r) {
+    _btInputValues[r.marker_key] = r.value;
+  });
+
+  // Screen zeigen
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('btErgebnisseScreen').classList.add('active');
+
+  // Kategorie-Tabs rendern
+  _markerCatFilter = MARKER_CATEGORIES[0].key;
+  renderMarkerCatTabs();
+  renderMarkerInputs();
+}
+
+function renderMarkerCatTabs() {
+  var tabsEl = document.getElementById('markerCatTabs');
+  if (!tabsEl) return;
+  tabsEl.innerHTML = MARKER_CATEGORIES.map(function(c) {
+    var cnt = BLOOD_MARKERS.filter(function(m) { return m.cat === c.key && _btInputValues[m.key] !== undefined; }).length;
+    var active = c.key === _markerCatFilter ? ' active' : '';
+    var badge = cnt > 0 ? ' <span style="background:var(--green-accent);color:white;border-radius:50%;padding:0 5px;font-size:9px;margin-left:2px">' + cnt + '</span>' : '';
+    return '<button class="status-tab' + active + '" onclick="switchMarkerCat(\'' + c.key + '\')" style="font-size:11px;white-space:nowrap">' + c.icon + ' ' + c.name + badge + '</button>';
+  }).join('');
+}
+
+function switchMarkerCat(cat) {
+  _markerCatFilter = cat;
+  renderMarkerCatTabs();
+  renderMarkerInputs();
+}
+
+function renderMarkerInputs() {
+  var markers = BLOOD_MARKERS.filter(function(m) { return m.cat === _markerCatFilter; });
+  var el = document.getElementById('markerInputList');
+  if (!el) return;
+
+  el.innerHTML = markers.map(function(m) {
+    var val = _btInputValues[m.key];
+    var hasVal = val !== undefined && val !== '';
+    var status = '';
+    var statusHtml = '';
+    if (hasVal) {
+      var v = parseFloat(val);
+      if (v < m.refMin) { status = 'low'; statusHtml = '<span style="color:#dc2626;font-weight:600;font-size:11px">↓ niedrig</span>'; }
+      else if (v > m.refMax) { status = 'high'; statusHtml = '<span style="color:#dc2626;font-weight:600;font-size:11px">↑ hoch</span>'; }
+      else { status = 'normal'; statusHtml = '<span style="color:#16a34a;font-weight:600;font-size:11px">✓ normal</span>'; }
+    }
+
+    return '<div style="background:white;border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid ' + (hasVal ? (status === 'normal' ? '#bbf7d0' : '#fecaca') : 'var(--border)') + '">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+        '<div style="font-size:13px;font-weight:600">' + esc(m.name) + '</div>' +
+        statusHtml +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<input type="number" step="any" placeholder="Wert" value="' + (hasVal ? val : '') + '" ' +
+          'oninput="onMarkerInput(\'' + m.key + '\',this.value)" ' +
+          'style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:500">' +
+        '<span style="font-size:12px;color:var(--text-muted);min-width:50px">' + esc(m.unit) + '</span>' +
+      '</div>' +
+      '<div style="font-size:10px;color:var(--text-muted);margin-top:4px">Ref: ' + m.refMin + ' – ' + (m.refMax >= 999 ? '∞' : m.refMax) + ' ' + esc(m.unit) + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function onMarkerInput(key, val) {
+  if (val === '' || val === undefined) {
+    delete _btInputValues[key];
+  } else {
+    _btInputValues[key] = parseFloat(val);
+  }
+  renderMarkerCatTabs();
+  renderMarkerInputs();
+}
+
+function saveBTResults() {
+  if (!_currentBTDetail || !_sb) return;
+  var btId = _currentBTDetail.id;
+  var entries = [];
+
+  Object.keys(_btInputValues).forEach(function(key) {
+    var val = _btInputValues[key];
+    if (val === undefined || val === '' || isNaN(val)) return;
+    var m = BLOOD_MARKERS.find(function(mk) { return mk.key === key; });
+    if (!m) return;
+    var v = parseFloat(val);
+    var status = v < m.refMin ? 'low' : v > m.refMax ? 'high' : 'normal';
+    entries.push({
+      blood_test_id: btId,
+      marker_key: m.key,
+      marker_name: m.name,
+      value: v,
+      unit: m.unit,
+      ref_min: m.refMin,
+      ref_max: m.refMax,
+      status: status,
+      category: m.cat
+    });
+  });
+
+  if (entries.length === 0) { toast('Keine Werte eingegeben'); return; }
+
+  // Alte Ergebnisse löschen, neue einfügen
+  _sb.from('blood_test_results').delete().eq('blood_test_id', btId)
+    .then(function() {
+      return _sb.from('blood_test_results').insert(entries);
+    })
+    .then(function(res) {
+      if (res.error) { toast('Fehler beim Speichern: ' + res.error.message); return; }
+      // Status auf completed setzen
+      if (_currentBTDetail.status === 'pending') {
+        _currentBTDetail.status = 'completed';
+        _sb.from('blood_tests').update({ status: 'completed' }).eq('id', btId);
+        renderPartnerBTList();
+      }
+      toast('Ergebnisse gespeichert (' + entries.length + ' Werte)', 'success');
+      showBTDetail(btId);
+    })
+    .catch(function(e) { toast('Fehler: ' + e.message); });
 }
 
 // ═══ LOCAL NOTIFICATIONS ═══

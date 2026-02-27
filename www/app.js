@@ -6327,30 +6327,111 @@ function saveBloodValues() {
 
 // Load and display blood values
 function loadBloodValues() {
+  const emptyState = document.getElementById('bloodEmptyState');
+  const valuesSection = document.getElementById('bloodValuesSection');
+
+  // Zuerst: Lab-Ergebnisse aus Supabase laden (haben Priorität)
+  if (supabase && currentUser) {
+    loadLabResults().then(function(labData) {
+      if (labData && Object.keys(labData).length > 0) {
+        if (emptyState) emptyState.style.display = 'none';
+        if (valuesSection) valuesSection.style.display = 'block';
+        renderBloodValuesGrid(labData);
+        var dateEl = document.getElementById('bloodTestDate');
+        if (dateEl && labData._testDate) {
+          dateEl.textContent = 'Zuletzt: ' + new Date(labData._testDate).toLocaleDateString('de-DE');
+        }
+        return;
+      }
+      // Fallback: manuell eingetragene Werte
+      loadManualBloodValues();
+    }).catch(function() { loadManualBloodValues(); });
+  } else {
+    loadManualBloodValues();
+  }
+}
+
+function loadManualBloodValues() {
   const saved = localStorage.getItem('suppTreeBloodValues');
   const emptyState = document.getElementById('bloodEmptyState');
   const valuesSection = document.getElementById('bloodValuesSection');
-  
+
   if (!saved) {
     if (emptyState) emptyState.style.display = 'block';
     if (valuesSection) valuesSection.style.display = 'none';
     return;
   }
-  
+
   const data = JSON.parse(saved);
-  
   if (emptyState) emptyState.style.display = 'none';
   if (valuesSection) valuesSection.style.display = 'block';
-  
-  // Update date
+
   const dateEl = document.getElementById('bloodTestDate');
   if (dateEl && data.testDate) {
-    const date = new Date(data.testDate);
-    dateEl.textContent = `Zuletzt: ${date.toLocaleDateString('de-DE')}`;
+    dateEl.textContent = 'Zuletzt: ' + new Date(data.testDate).toLocaleDateString('de-DE');
   }
-  
-  // Render values grid
   renderBloodValuesGrid(data);
+}
+
+// Lab-Ergebnisse aus Supabase laden (vom Partner eingetragen)
+async function loadLabResults() {
+  if (!supabase || !currentUser) return null;
+  try {
+    // Neuesten abgeschlossenen Bluttest mit Ergebnissen finden
+    var { data: tests } = await supabase
+      .from('blood_tests')
+      .select('id, test_date')
+      .eq('customer_id', currentUser.id)
+      .eq('status', 'completed')
+      .order('test_date', { ascending: false })
+      .limit(1);
+
+    if (!tests || tests.length === 0) return null;
+    var testId = tests[0].id;
+
+    var { data: results } = await supabase
+      .from('blood_test_results')
+      .select('*')
+      .eq('blood_test_id', testId);
+
+    if (!results || results.length === 0) return null;
+
+    // Ergebnisse in das bloodTestRanges-Format mappen
+    var labKeyMap = {
+      vitamin_d: 'vitaminD', b12: 'b12', eisen: 'iron', ferritin: 'ferritin',
+      folat: 'folate', magnesium: 'magnesium', zink: 'zinc'
+    };
+
+    var data = { _testDate: tests[0].test_date, _labResults: results };
+    results.forEach(function(r) {
+      var gridKey = labKeyMap[r.marker_key];
+      if (gridKey) {
+        data[gridKey] = parseFloat(r.value);
+      }
+    });
+
+    // Lab-Ergebnisse auch in localStorage cachen
+    localStorage.setItem('suppTreeLabResults', JSON.stringify(data));
+    return data;
+  } catch(e) {
+    console.log('Lab results load:', e);
+    // Fallback auf Cache
+    var cached = localStorage.getItem('suppTreeLabResults');
+    return cached ? JSON.parse(cached) : null;
+  }
+}
+
+// Alle Lab-Ergebnisse für einen bestimmten Bluttest laden
+async function loadBloodTestResults(bloodTestId) {
+  if (!supabase) return [];
+  try {
+    var { data } = await supabase
+      .from('blood_test_results')
+      .select('*')
+      .eq('blood_test_id', bloodTestId)
+      .order('category');
+    return data || [];
+  } catch(e) { return []; }
 }
 
 // Render blood values grid
@@ -6410,7 +6491,55 @@ function openPartnerConnect() {
 }
 
 function openBloodValuesDetail() {
-  showToast('📊 Detail-Ansicht kommt bald!');
+  var cached = localStorage.getItem('suppTreeLabResults');
+  if (!cached) { showToast('Keine Lab-Ergebnisse vorhanden'); return; }
+  var data = JSON.parse(cached);
+  var results = data._labResults;
+  if (!results || results.length === 0) { showToast('Keine Lab-Ergebnisse vorhanden'); return; }
+
+  // Gruppiert nach Kategorie anzeigen
+  var catLabels = { blutbild:'Blutbild', vitamine:'Vitamine & Mineralien', eisen:'Eisenstoffwechsel', schilddruese:'Schilddrüse', leber:'Leberwerte', niere:'Nierenwerte', stoffwechsel:'Stoffwechsel', entzuendung:'Entzündung', hormone:'Hormone', elektrolyte:'Elektrolyte' };
+  var catIcons = { blutbild:'🔴', vitamine:'💊', eisen:'🔗', schilddruese:'🦋', leber:'🫀', niere:'🫘', stoffwechsel:'⚗️', entzuendung:'🔥', hormone:'⚖️', elektrolyte:'🔋' };
+
+  var cats = {};
+  results.forEach(function(r) {
+    var c = r.category || 'sonstige';
+    if (!cats[c]) cats[c] = [];
+    cats[c].push(r);
+  });
+
+  var html = '<div style="padding:16px 0">';
+  html += '<div style="text-align:center;margin-bottom:16px"><div style="font-size:14px;font-weight:700">Laborergebnisse</div>';
+  if (data._testDate) html += '<div style="font-size:12px;color:var(--text-muted)">' + new Date(data._testDate).toLocaleDateString('de-DE') + '</div>';
+  html += '</div>';
+
+  Object.keys(cats).forEach(function(catKey) {
+    html += '<div style="font-size:12px;font-weight:600;color:var(--text-muted);margin:16px 0 8px">' + (catIcons[catKey] || '') + ' ' + (catLabels[catKey] || catKey) + '</div>';
+    cats[catKey].forEach(function(r) {
+      var ampelColor = r.status === 'normal' ? '#16a34a' : '#dc2626';
+      var ampelBg = r.status === 'normal' ? '#f0fdf4' : '#fef2f2';
+      var ampelText = r.status === 'low' ? '↓ niedrig' : r.status === 'high' ? '↑ hoch' : '✓ normal';
+      var refText = (r.ref_min != null && r.ref_max != null) ? 'Ref: ' + r.ref_min + '-' + (r.ref_max >= 999 ? '∞' : r.ref_max) + ' ' + r.unit : '';
+
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:white;border-radius:8px;margin-bottom:4px;border:1px solid #f3f4f6">';
+      html += '<div><div style="font-size:13px;font-weight:500">' + r.marker_name + '</div>';
+      if (refText) html += '<div style="font-size:10px;color:var(--text-muted)">' + refText + '</div>';
+      html += '</div>';
+      html += '<div style="text-align:right"><span style="font-size:14px;font-weight:700">' + r.value + '</span> <span style="font-size:11px;color:var(--text-muted)">' + r.unit + '</span>';
+      html += '<div style="font-size:10px;padding:1px 6px;border-radius:6px;background:' + ampelBg + ';color:' + ampelColor + ';font-weight:600;display:inline-block;margin-left:6px">' + ampelText + '</div>';
+      html += '</div></div>';
+    });
+  });
+  html += '</div>';
+
+  // In einem Bottom Sheet anzeigen
+  var sheet = document.getElementById('bloodValuesSheet');
+  if (sheet) {
+    var content = sheet.querySelector('.sheet-body') || sheet.querySelector('.sheet-content');
+    if (content) content.innerHTML = html;
+    document.getElementById('bloodValuesOverlay').classList.add('visible');
+    sheet.classList.add('visible');
+  }
 }
 
 function showBloodTestInfo() {
