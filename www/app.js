@@ -943,6 +943,44 @@ async function loadUserDataFromSupabase() {
       localStorage.setItem('suppTreeBeraterPlaene', JSON.stringify(plans));
     }
 
+    // Buchungen (Termin-Anfragen) aus Supabase laden
+    const { data: dbBookings } = await supabase
+      .from('bookings')
+      .select('*')
+      .eq('customer_id', currentUser.id)
+      .order('created_at', { ascending: false });
+
+    if (dbBookings && dbBookings.length > 0) {
+      var statusMap = { requested: 'pending', proposed: 'termin_vorgeschlagen', confirmed: 'confirmed', declined: 'declined', cancelled: 'storniert', completed: 'completed' };
+      var dbAnfragen = dbBookings.map(function(b) {
+        return {
+          id: b.id,
+          dbId: b.id,
+          practitionerId: b.partner_id,
+          practitionerName: b.partner_name,
+          practitionerAvatar: '',
+          practitionerTitle: '',
+          practitionerCity: '',
+          service: { name: b.service, price: Number(b.price) || 0, duration: b.duration || 60 },
+          mode: b.mode || 'praxis',
+          verfuegbarkeit: b.customer_message || '',
+          message: b.notes || '',
+          status: statusMap[b.status] || b.status,
+          terminVorschlag: b.termin_vorschlag || null,
+          zahlung: b.zahlung || null,
+          storno: b.storno || null,
+          paidAt: b.zahlung ? b.zahlung.paidAt : null,
+          createdAt: b.created_at,
+          updatedAt: b.created_at,
+          partnerAnfrageId: null
+        };
+      });
+      // Merge: DB hat Vorrang, lokale ohne dbId behalten
+      var existingLocal = taGetAnfragen().filter(function(a) { return !a.dbId; });
+      var merged = dbAnfragen.concat(existingLocal);
+      taSaveAnfragen(merged);
+    }
+
     console.log('✅ User Daten geladen');
   } catch (error) {
     console.error('Load Data Error:', error);
