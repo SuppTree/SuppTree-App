@@ -1532,7 +1532,7 @@ function showSubScreen(id) {
   // Inhalte rendern
   if (id === 'products') { populateProductDropdowns(); renderProducts(); updateProductCounts(); loadProducts().then(function() { populateProductDropdowns(); renderProducts(); updateProductCounts(); }); }
   if (id === 'categories') renderCategories();
-  if (id === 'finanzen') { renderFinanzen(); Promise.all([loadOrders(), loadTermine(), loadBluttests()]).then(function() { renderFinanzen(); }); }
+  if (id === 'finanzen') { renderFinanzen(); Promise.all([loadOrders(), loadTermine(), loadBluttests()]).then(function() { renderFinanzen(); }).catch(function(e) { console.log('Finance load:', e); }); }
   if (id === 'payouts') renderPayouts();
   if (id === 'widgets') { renderAdminWidgets(); switchWidgetTab(_activeWidgetTab); }
   if (id === 'team') renderAdminTeam();
@@ -6287,41 +6287,45 @@ var _liveTermine = null;
 async function loadTermine() {
   var sb = initSupabase();
   if (!sb) return null;
-  var res = await sb.from('bookings').select('*').order('booking_date', { ascending: false });
-  if (res.error || !res.data || res.data.length === 0) return null;
-  _liveTermine = res.data.map(function(b) {
-    return {
-      id: b.id,
-      kunde: b.customer_name,
-      partner: b.partner_name,
-      service: b.service,
-      price: Number(b.price),
-      date: b.booking_date,
-      status: b.status
-    };
-  });
-  return _liveTermine;
+  try {
+    var res = await sb.from('bookings').select('*').order('booking_date', { ascending: false });
+    if (res.error || !res.data || res.data.length === 0) return null;
+    _liveTermine = res.data.map(function(b) {
+      return {
+        id: b.id,
+        kunde: b.customer_name,
+        partner: b.partner_name,
+        service: b.service,
+        price: Number(b.price),
+        date: b.booking_date,
+        status: b.status
+      };
+    });
+    return _liveTermine;
+  } catch(e) { console.log('Termine load:', e); return null; }
 }
 
 var _liveBluttests = null;
 async function loadBluttests() {
   var sb = initSupabase();
   if (!sb) return null;
-  var res = await sb.from('blood_tests').select('*').order('test_date', { ascending: false });
-  if (res.error || !res.data || res.data.length === 0) return null;
-  _liveBluttests = res.data.map(function(b) {
-    return {
-      id: b.id,
-      kunde: b.customer_name,
-      partner: b.partner_name,
-      test: b.test_name,
-      labor: b.lab_name,
-      price: Number(b.price),
-      date: b.test_date,
-      status: b.status
-    };
-  });
-  return _liveBluttests;
+  try {
+    var res = await sb.from('blood_tests').select('*').order('test_date', { ascending: false });
+    if (res.error || !res.data || res.data.length === 0) return null;
+    _liveBluttests = res.data.map(function(b) {
+      return {
+        id: b.id,
+        kunde: b.customer_name,
+        partner: b.partner_name,
+        test: b.test_name,
+        labor: b.lab_name,
+        price: Number(b.price),
+        date: b.test_date,
+        status: b.status
+      };
+    });
+    return _liveBluttests;
+  } catch(e) { console.log('Bluttests load:', e); return null; }
 }
 
 // ═══ PRODUKTE aus Supabase ═══

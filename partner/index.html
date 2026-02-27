@@ -9578,6 +9578,7 @@ function sendEmpfehlung(){
   if(planText.trim()){
     empf.plan={type:empfPlanType||'custom',text:planText};
   }
+  if(!k.empfehlungen) k.empfehlungen = [];
   k.empfehlungen.unshift(empf);
   persistKundeData(k.id, { empfehlungen: k.empfehlungen });
 
@@ -10065,7 +10066,7 @@ function saveTracking(){
   if(!o)return;
   o.tracking={carrier:document.getElementById('trackCarrier').value,number:num};
   if (_sb && o.id) {
-    _sb.from('orders').update({ shipping_carrier: o.tracking.carrier, tracking_number: o.tracking.number }).eq('id', o.id)
+    _sb.from('orders').update({ shipping_carrier: o.tracking.carrier, tracking_number: o.tracking.number, status: 'shipped', shipped_at: new Date().toISOString() }).eq('id', o.id)
       .then(function(res) { if (res.error) console.error('Tracking persist:', res.error); });
   }
   updateOrderStatus(currentOrderId,'shipped');

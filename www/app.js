@@ -34453,7 +34453,7 @@ function placeOrder() {
       try {
         var beraterList = JSON.parse(localStorage.getItem('suppTreeMeineBerater') || '[]');
         if (beraterList.length > 0) {
-          referralPartner = { id: beraterList[0].id || beraterList[0].partnerId, name: beraterList[0].name || '' };
+          referralPartner = { id: beraterList[0].id, name: beraterList[0].name || '' };
           referralChannel = 'link';
           referralRate = 0.07;
         }
