@@ -981,6 +981,30 @@ async function loadUserDataFromSupabase() {
       taSaveAnfragen(merged);
     }
 
+    // Bluttest-Buchungen aus Supabase laden
+    const { data: dbBloodTests } = await supabase
+      .from('blood_tests')
+      .select('*')
+      .eq('customer_id', currentUser.id)
+      .order('test_date', { ascending: false });
+
+    if (dbBloodTests && dbBloodTests.length > 0) {
+      var dbHpBookings = dbBloodTests.map(function(bt) {
+        return {
+          id: bt.id,
+          dbId: bt.id,
+          heilpraktiker: { id: bt.partner_id, name: bt.partner_name },
+          testType: bt.test_name,
+          date: bt.test_date,
+          time: bt.notes || '',
+          status: bt.status === 'completed' ? 'completed' : bt.status === 'cancelled' ? 'cancelled' : 'confirmed',
+          createdAt: bt.created_at
+        };
+      });
+      var localHpBookings = JSON.parse(localStorage.getItem('supptree_hp_bookings') || '[]').filter(function(b) { return !b.dbId; });
+      localStorage.setItem('supptree_hp_bookings', JSON.stringify(dbHpBookings.concat(localHpBookings)));
+    }
+
     console.log('✅ User Daten geladen');
   } catch (error) {
     console.error('Load Data Error:', error);
@@ -29762,6 +29786,13 @@ function showBookingConfirmation() {
 }
 
 function saveBooking() {
+  const testInfo = bloodTestNames[selectedTestForBooking] || bloodTestNames['grosses-blutbild'];
+  const testPrice = bloodTestPrices[selectedTestForBooking] || 25;
+  const totalPrice = (selectedHeilpraktiker.basePrice || 0) + testPrice;
+  const bookingDate = selectedBookingDate === 'Heute'
+    ? new Date().toISOString().split('T')[0]
+    : selectedBookingDate;
+
   const booking = {
     id: 'booking_' + Date.now(),
     heilpraktiker: selectedHeilpraktiker,
@@ -29771,21 +29802,39 @@ function saveBooking() {
     status: 'confirmed',
     createdAt: new Date().toISOString()
   };
-  
+
   // Buchungen laden
   let bookings = JSON.parse(localStorage.getItem('supptree_hp_bookings') || '[]');
   bookings.push(booking);
   localStorage.setItem('supptree_hp_bookings', JSON.stringify(bookings));
-  
-  // Auch als Erinnerung im Schichtkalender eintragen
-  const reminderDate = selectedBookingDate === 'Heute' 
-    ? new Date().toISOString().split('T')[0] 
-    : selectedBookingDate;
-    
+
+  // Supabase: Bluttest in blood_tests speichern
+  if (supabase && currentUser) {
+    supabase.from('blood_tests').insert({
+      customer_id: currentUser.id,
+      customer_name: currentUser.user_metadata?.name || currentUser.email || '',
+      partner_id: selectedHeilpraktiker.id,
+      partner_name: selectedHeilpraktiker.name,
+      test_name: testInfo.name,
+      lab_name: 'Labor (via ' + selectedHeilpraktiker.name + ')',
+      price: totalPrice,
+      test_date: bookingDate,
+      status: 'pending',
+      notes: selectedBookingTime + ' Uhr'
+    }).select().single().then(function(res) {
+      if (res.data) {
+        booking.dbId = res.data.id;
+        var bk = JSON.parse(localStorage.getItem('supptree_hp_bookings') || '[]');
+        var idx = bk.findIndex(function(b) { return b.id === booking.id; });
+        if (idx > -1) { bk[idx].dbId = res.data.id; localStorage.setItem('supptree_hp_bookings', JSON.stringify(bk)); }
+      }
+      if (res.error) console.error('Blood test insert:', res.error);
+    }).catch(function(e) { console.error('Blood test insert:', e); });
+  }
+
   // Optional: Push-Notification vorbereiten
   if ('Notification' in window && Notification.permission === 'granted') {
-    // Erinnerung für Tag vorher setzen
-    console.log('Erinnerung geplant für:', reminderDate);
+    console.log('Erinnerung geplant für:', bookingDate);
   }
 }
 
