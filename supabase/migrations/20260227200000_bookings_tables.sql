@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   partner_name TEXT NOT NULL,
   service TEXT NOT NULL,
   price NUMERIC(10,2) NOT NULL DEFAULT 0,
-  booking_date DATE NOT NULL,
+  booking_date DATE,
   status TEXT DEFAULT 'pending',
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()

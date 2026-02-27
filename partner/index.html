@@ -4173,6 +4173,40 @@ async function partnerLoadFromSupabase() {
       }
     } catch(e15) { console.log('Partner-Orders-Load:', e15); }
 
+    // 16. Booking-Anfragen laden
+    try {
+      var { data: dbBookings } = await _sb.from('bookings')
+        .select('*').eq('partner_id', uid)
+        .in('status', ['requested','proposed','confirmed','declined','cancelled'])
+        .order('created_at', { ascending: false });
+      if (dbBookings && dbBookings.length) {
+        var dbAnfragen = dbBookings.map(function(b) {
+          var statusMap = { requested: 'new', proposed: 'chat', confirmed: 'confirmed', declined: 'declined', cancelled: 'storniert' };
+          var tv = b.termin_vorschlag || null;
+          return {
+            id: b.id,
+            dbId: b.id,
+            status: statusMap[b.status] || b.status,
+            kunde: { name: b.customer_name || '', email: '', avatar: (b.customer_name || '??').split(' ').map(function(w){ return w.charAt(0).toUpperCase(); }).join('').slice(0,2) },
+            service: { name: b.service || '', price: parseFloat(b.price) || 0, duration: b.duration || 60 },
+            mode: b.mode || 'praxis',
+            verfuegbarkeit: b.customer_message || '',
+            message: b.notes || '',
+            createdAt: b.created_at,
+            messages: [],
+            terminVorschlag: tv,
+            zahlung: b.zahlung || null,
+            storno: b.storno || null
+          };
+        });
+        // Merge: DB-Anfragen mit bestehenden Demo-Anfragen zusammenführen
+        var existingIds = {};
+        dbAnfragen.forEach(function(a) { existingIds[a.dbId] = true; });
+        var demoAnfragen = anfragen.filter(function(a) { return !a.dbId; });
+        anfragen = dbAnfragen.concat(demoAnfragen);
+      }
+    } catch(e16) { console.log('Booking-Anfragen-Load:', e16); }
+
     console.log('✅ Partner-Daten aus Supabase geladen');
   } catch(e) {
     console.log('⚠️ Supabase-Load fehlgeschlagen, nutze localStorage:', e);
@@ -6832,55 +6866,84 @@ function sendTerminVorschlag(){
     }
   }catch(e){}
 
+  // Supabase: Terminvorschlag senden
+  if (_sb && currentAnfrage.dbId) {
+    _sb.from('bookings').update({
+      status: 'proposed',
+      termin_vorschlag: vorschlag,
+      booking_date: vorschlag.optionen[0].date
+    }).eq('id', currentAnfrage.dbId).then(function(res) {
+      if (res.error) console.error('Booking propose:', res.error);
+    });
+  }
+
   closeTerminSheet();
   renderChatMessages();
   renderTerminBar();
   toast('📅 '+optionen.length+' Terminvorschläge gesendet','success');
 }
 
-// Prüfe ob Kunde Termin akzeptiert hat (Bridge lesen)
+// Prüfe ob Kunde Termin akzeptiert hat (Bridge lesen + Supabase)
 function checkKundenAntwort(){
   if(!currentAnfrage||!currentAnfrage.terminVorschlag)return;
+
+  // Supabase: Status aus DB lesen
+  if (_sb && currentAnfrage.dbId) {
+    _sb.from('bookings').select('status, zahlung, storno').eq('id', currentAnfrage.dbId).single()
+      .then(function(res) {
+        if (!res.data) return;
+        var db = res.data;
+        applyKundenAntwort(db.status, db.zahlung, db.storno);
+      });
+    return; // Supabase hat Vorrang
+  }
+
+  // Fallback: localStorage Bridge
   try{
     let ka=JSON.parse(localStorage.getItem('suppTreeKundenAnfragen')||'[]');
     const entry=ka.find(a=>a.partnerAnfrageId===currentAnfrage.id);
     if(!entry)return;
-
-    // Kunde hat bestätigt + bezahlt (Status ist jetzt 'confirmed' statt 'paid')
-    if((entry.status==='confirmed'||entry.status==='paid')&&currentAnfrage.terminVorschlag.status==='pending'){
-      currentAnfrage.termin={...currentAnfrage.terminVorschlag,status:'confirmed'};
-      currentAnfrage.terminVorschlag.status='confirmed';
-      currentAnfrage.status='confirmed';
-      currentAnfrage.zahlung={amount:entry.zahlung?entry.zahlung.amount:(currentAnfrage.service?currentAnfrage.service.price:0),paidAt:entry.paidAt||new Date().toISOString(),method:'stripe',status:'held'};
-      currentAnfrage.messages.push({from:'kunde',text:'Termin bestätigt und bezahlt! Ich freue mich auf den Termin. ✅',time:new Date().toISOString()});
-      renderChatMessages();
-      renderTerminBar();
-      document.getElementById('chatHeaderStatus').textContent='Termin bestätigt';
-      toast('✅ Kunde hat bestätigt und bezahlt!','success');
-
-    // Kunde hat abgelehnt
-    }else if(entry.status==='declined'&&currentAnfrage.terminVorschlag.status==='pending'){
-      currentAnfrage.terminVorschlag.status='declined';
-      delete currentAnfrage.terminVorschlag;
-      currentAnfrage.messages.push({from:'kunde',text:'Der vorgeschlagene Termin passt mir leider nicht. Haben Sie noch andere Zeiten?',time:new Date().toISOString()});
-      renderChatMessages();
-      renderTerminBar();
-      toast('Kunde hat den Termin abgelehnt','');
-
-    // Kunde hat storniert
-    }else if(entry.status==='storniert'&&currentAnfrage.status==='confirmed'){
-      const storno=entry.storno||{};
-      currentAnfrage.status='storniert';
-      currentAnfrage.storno=storno;
-      const isFree=storno.type==='kostenlos';
-      const feeText=isFree?'Keine Stornogebühr – volle Rückerstattung an Kunden.':'Entschädigung: €'+storno.fee+' (50%) wird an Sie ausgezahlt.';
-      currentAnfrage.messages.push({from:'system',text:'⚠️ Der Kunde hat den Termin storniert.\n'+feeText,time:storno.stornoAt||new Date().toISOString()});
-      renderChatMessages();
-      renderTerminBar();
-      document.getElementById('chatHeaderStatus').textContent='Storniert';
-      toast(isFree?'Kunde hat kostenlos storniert':'Kunde hat storniert – Entschädigung: €'+storno.fee,isFree?'':'success');
-    }
+    applyKundenAntwort(entry.status==='storniert'?'cancelled':entry.status, entry.zahlung, entry.storno);
   }catch(e){}
+}
+
+function applyKundenAntwort(status, zahlung, storno) {
+  if(!currentAnfrage||!currentAnfrage.terminVorschlag)return;
+
+  // Kunde hat bestätigt + bezahlt
+  if((status==='confirmed'||status==='paid')&&currentAnfrage.terminVorschlag.status==='pending'){
+    currentAnfrage.termin={...currentAnfrage.terminVorschlag,status:'confirmed'};
+    currentAnfrage.terminVorschlag.status='confirmed';
+    currentAnfrage.status='confirmed';
+    currentAnfrage.zahlung={amount:zahlung?zahlung.amount:(currentAnfrage.service?currentAnfrage.service.price:0),paidAt:(zahlung&&zahlung.paidAt)||new Date().toISOString(),method:'stripe',status:'held'};
+    currentAnfrage.messages.push({from:'kunde',text:'Termin bestätigt und bezahlt! Ich freue mich auf den Termin. ✅',time:new Date().toISOString()});
+    renderChatMessages();
+    renderTerminBar();
+    document.getElementById('chatHeaderStatus').textContent='Termin bestätigt';
+    toast('✅ Kunde hat bestätigt und bezahlt!','success');
+
+  // Kunde hat abgelehnt
+  }else if(status==='declined'&&currentAnfrage.terminVorschlag.status==='pending'){
+    currentAnfrage.terminVorschlag.status='declined';
+    delete currentAnfrage.terminVorschlag;
+    currentAnfrage.messages.push({from:'kunde',text:'Der vorgeschlagene Termin passt mir leider nicht. Haben Sie noch andere Zeiten?',time:new Date().toISOString()});
+    renderChatMessages();
+    renderTerminBar();
+    toast('Kunde hat den Termin abgelehnt','');
+
+  // Kunde hat storniert
+  }else if(status==='cancelled'&&currentAnfrage.status==='confirmed'){
+    storno=storno||{};
+    currentAnfrage.status='storniert';
+    currentAnfrage.storno=storno;
+    const isFree=storno.type==='kostenlos';
+    const feeText=isFree?'Keine Stornogebühr – volle Rückerstattung an Kunden.':'Entschädigung: €'+(storno.fee||0)+' (50%) wird an Sie ausgezahlt.';
+    currentAnfrage.messages.push({from:'system',text:'⚠️ Der Kunde hat den Termin storniert.\n'+feeText,time:storno.stornoAt||new Date().toISOString()});
+    renderChatMessages();
+    renderTerminBar();
+    document.getElementById('chatHeaderStatus').textContent='Storniert';
+    toast(isFree?'Kunde hat kostenlos storniert':'Kunde hat storniert – Entschädigung: €'+(storno.fee||0),isFree?'':'success');
+  }
 }
 
 function updateTermineBadge(){

@@ -37916,6 +37916,29 @@ function taSubmitAnfrage(){
   anfragen.unshift(anfrage);
   taSaveAnfragen(anfragen);
 
+  // Supabase: Buchung erstellen
+  if (supabase && currentUser) {
+    supabase.from('bookings').insert({
+      customer_id: currentUser.id,
+      customer_name: currentUser.user_metadata?.name || currentUser.email || '',
+      partner_id: p.id,
+      partner_name: p.name,
+      service: svc.name,
+      price: svc.price,
+      duration: svc.duration,
+      mode: taSelectedMode,
+      customer_message: verfuegbarkeit,
+      notes: nachricht,
+      status: 'requested'
+    }).select().single().then(function(res) {
+      if (res.data) {
+        anfrage.dbId = res.data.id;
+        taSaveAnfragen(taGetAnfragen().map(function(a) { return a.id === anfrage.id ? anfrage : a; }));
+      }
+      if (res.error) console.error('Booking insert:', res.error);
+    }).catch(function(e) { console.error('Booking insert:', e); });
+  }
+
   // Sheet schließen + Bestätigung
   closeTerminAnfrage();
   showToast('📅 Anfrage an '+p.name+' gesendet!');
@@ -38065,6 +38088,17 @@ function taAcceptTermin(id){
   a.updatedAt = new Date().toISOString();
   taSaveAnfragen(anfragen);
 
+  // Supabase: Bestätigung + Zahlung
+  if (supabase && currentUser && a.dbId) {
+    supabase.from('bookings').update({
+      status: 'confirmed',
+      zahlung: a.zahlung,
+      booking_date: tv.date || (tv.optionen && tv.optionen[0] ? tv.optionen[0].date : null)
+    }).eq('id', a.dbId).then(function(res) {
+      if (res.error) console.error('Booking confirm:', res.error);
+    });
+  }
+
   renderEkMeineAnfragen();
   showToast('💳 Bezahlt & bestätigt! Termin ist verbindlich.');
 }
@@ -38079,6 +38113,12 @@ function taDeclineTermin(id){
   a.terminVorschlag = null;
   a.updatedAt = new Date().toISOString();
   taSaveAnfragen(anfragen);
+
+  // Supabase: Ablehnung
+  if (supabase && currentUser && a.dbId) {
+    supabase.from('bookings').update({ status: 'declined' }).eq('id', a.dbId)
+      .then(function(res) { if (res.error) console.error('Booking decline:', res.error); });
+  }
 
   renderEkMeineAnfragen();
   showToast('Terminvorschlag abgelehnt');
@@ -38126,6 +38166,16 @@ function taCancelTermin(id){
   };
   a.updatedAt = new Date().toISOString();
   taSaveAnfragen(anfragen);
+
+  // Supabase: Stornierung
+  if (supabase && currentUser && a.dbId) {
+    supabase.from('bookings').update({
+      status: 'cancelled',
+      storno: a.storno
+    }).eq('id', a.dbId).then(function(res) {
+      if (res.error) console.error('Booking cancel:', res.error);
+    });
+  }
 
   renderEkMeineAnfragen();
   if(stornoFee > 0){
