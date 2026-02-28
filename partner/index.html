@@ -3887,10 +3887,13 @@ async function handlePartnerReset() {
 (async function() {
   const authLoading = document.getElementById('authLoading');
 
-  // Demo-Modus: Auth überspringen wenn partnerType gesetzt
+  // Demo-Modus: Auth komplett überspringen
   const appMode = localStorage.getItem('suppTreeAppMode') || 'demo';
-  if (appMode !== 'production' && localStorage.getItem('suppTreePartnerType')) {
+  if (appMode !== 'production') {
     authLoading.classList.add('hidden');
+    if (!localStorage.getItem('suppTreePartnerType')) {
+      showPartnerAuth();
+    }
     return;
   }
 
@@ -3957,6 +3960,16 @@ let _currentUser = null;
     setTimeout(() => showPartnerOnboarding(), 300);
     return;
   }
+
+  // Demo-Modus: Supabase-Sync überspringen
+  var _appMode = localStorage.getItem('suppTreeAppMode') || 'demo';
+  if (_appMode !== 'production') {
+    if (!localStorage.getItem('suppTreePartnerType')) {
+      setTimeout(function(){ showPartnerAuth(); }, 300);
+    }
+    return;
+  }
+
   try {
     _sb = typeof initSupabase === 'function' ? initSupabase() : null;
     if (!_sb && window.supabase && SUPPTREE_CONFIG) {
