@@ -8,6 +8,10 @@ CREATE TABLE IF NOT EXISTS waitlist (
   email TEXT NOT NULL UNIQUE,
   type TEXT NOT NULL CHECK (type IN ('partner', 'hersteller', 'unternehmen')),
   partner_subtype TEXT,
+  job_title TEXT,
+  company_name TEXT,
+  bio TEXT,
+  profile_ready BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -27,6 +31,12 @@ CREATE POLICY "waitlist_anon_insert" ON waitlist
 CREATE POLICY "waitlist_anon_select" ON waitlist
   FOR SELECT TO anon
   USING (true);
+
+-- Anon darf eigenes Profil updaten (per E-Mail Match, nur Profil-Felder)
+CREATE POLICY "waitlist_anon_update" ON waitlist
+  FOR UPDATE TO anon
+  USING (true)
+  WITH CHECK (true);
 
 -- Admins dürfen alles lesen (für Verwaltung)
 CREATE POLICY "waitlist_admin_select" ON waitlist
