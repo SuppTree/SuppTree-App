@@ -3697,11 +3697,34 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
 <div class="toast" id="toastEl"></div>
 
 
-<!-- Supabase & Auth Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Demo-Modus: Spinner sofort ausblenden BEVOR Supabase-SDK lädt -->
+<script>
+(function(){
+  var m = localStorage.getItem('suppTreeAppMode') || 'demo';
+  if (m !== 'production') {
+    var el = document.getElementById('authLoading');
+    if (el) el.classList.add('hidden');
+    if (!localStorage.getItem('suppTreePartnerType')) {
+      var ov = document.getElementById('partnerAuthOverlay');
+      if (ov) { ov.classList.add('visible'); document.body.style.overflow = 'hidden'; }
+      var dev = document.getElementById('paDevAccess');
+      if (dev) dev.style.display = 'block';
+    }
+    // Im Demo-Modus: Supabase-SDK NICHT laden → kein Hänger
+    window.__skipSupabaseLoad = true;
+  }
+})();
+</script>
+
+<!-- Supabase & Auth Scripts (nur im Production-Modus wirklich genutzt) -->
+<script>
+if (!window.__skipSupabaseLoad) {
+  document.write('<scr'+'ipt src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/scr'+'ipt>');
+}
+</script>
 <script src="../shared/config.js"></script>
-<script src="../shared/supabase.js"></script>
-<script src="../shared/auth.js"></script>
+<script>if (!window.__skipSupabaseLoad) { document.write('<scr'+'ipt src="../shared/supabase.js"><\/scr'+'ipt>'); }</script>
+<script>if (!window.__skipSupabaseLoad) { document.write('<scr'+'ipt src="../shared/auth.js"><\/scr'+'ipt>'); }</script>
 
 <script>
 // =============================================
