@@ -3697,6 +3697,19 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
 <div class="toast" id="toastEl"></div>
 
 
+<!-- Sofort-Fix: Spinner weg + Login zeigen BEVOR CDN lädt -->
+<script>
+(function(){
+  document.getElementById('authLoading').classList.add('hidden');
+  if (!localStorage.getItem('suppTreePartnerType')) {
+    var ov = document.getElementById('partnerAuthOverlay');
+    if (ov) ov.classList.add('visible');
+    var dev = document.getElementById('paDevAccess');
+    if (dev) dev.style.display = 'block';
+  }
+})();
+</script>
+
 <!-- Supabase & Auth Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../shared/config.js"></script>
