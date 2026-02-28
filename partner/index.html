@@ -1592,7 +1592,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
       <div class="pa-dev" id="paDevAccess">
         <div class="pa-dev-label">DEV-ZUGANG (ohne Login)</div>
         <div class="pa-dev-btns">
-          <button class="pa-dev-btn" style="border-color:#00A67E;background:#E0F2F1;color:#00695C" onclick="localStorage.setItem('suppTreePartnerType','supplement');hidePartnerAuth();document.getElementById('authLoading').classList.add('hidden')">🏪 Demo-Modus</button>
+          <button class="pa-dev-btn" style="border-color:#00A67E;background:#E0F2F1;color:#00695C" onclick="localStorage.setItem('suppTreeAppMode','demo');localStorage.setItem('suppTreePartnerType','supplement');hidePartnerAuth();document.getElementById('authLoading').classList.add('hidden')">🏪 Demo-Modus</button>
         </div>
       </div>
     </div>
@@ -3712,7 +3712,7 @@ function showPartnerAuth() {
   if (el) { el.classList.add('visible'); document.body.style.overflow = 'hidden'; }
   // DEV-Zugang nur im Demo-Modus
   var dev = document.getElementById('paDevAccess');
-  if (dev) dev.style.display = localStorage.getItem('suppTreeAppMode') === 'production' ? 'none' : 'block';
+  if (dev) dev.style.display = 'block';
 }
 function hidePartnerAuth() {
   var el = document.getElementById('partnerAuthOverlay');
