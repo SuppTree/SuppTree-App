@@ -1074,6 +1074,20 @@ const SB_KEY = SUPPTREE_CONFIG.SUPABASE_ANON_KEY;
 
 let selectedType = 'partner';
 
+// ===== TEST-BYPASS: ?test=1 → direkt zur Status-Seite (ENTFERNEN VOR GO-LIVE) =====
+(function testBypass() {
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('test') === '1') {
+    localStorage.setItem('stWaitlistEmail', 'test@supptree.de');
+    localStorage.setItem('stWaitlistName', 'Florian (Test)');
+    localStorage.setItem('stWaitlistType', 'partner');
+    localStorage.setItem('stWaitlistSubtype', 'heilpraktiker');
+    window.location.href = 'status.html';
+    return;
+  }
+})();
+// ===== ENDE TEST-BYPASS =====
+
 // Auto-Erkennung: Bereits registriert?
 (function checkReturningUser() {
   const email = localStorage.getItem('stWaitlistEmail');

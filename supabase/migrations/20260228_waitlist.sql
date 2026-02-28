@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS waitlist (
   company_name TEXT,
   bio TEXT,
   profile_ready BOOLEAN DEFAULT false,
+  profile_data JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
