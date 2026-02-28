@@ -547,6 +547,33 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
   .type-toggle{grid-template-columns:1fr;gap:4px}
 }
 
+/* ========== RETURN BANNER ========== */
+.return-banner{
+  display:none;
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:linear-gradient(135deg,var(--green-dark),var(--green-primary));
+  color:white;
+  padding:12px 32px;
+  text-align:center;
+  font-size:14px;font-weight:600;
+  box-shadow:0 2px 12px rgba(0,0,0,0.15);
+  animation:slideDown 0.4s ease;
+}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+.return-banner a{
+  color:white;text-decoration:underline;
+  font-weight:700;margin-left:8px;
+}
+.return-banner a:hover{opacity:0.85}
+.return-banner .rb-close{
+  position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:white;font-size:18px;
+  cursor:pointer;opacity:0.7;padding:4px 8px;
+}
+.return-banner .rb-close:hover{opacity:1}
+body.has-banner .navbar{top:44px}
+body.has-banner .hero{padding-top:204px}
+
 /* ========== ANIMATIONS ========== */
 .anim{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
 .anim.vis{opacity:1;transform:translateY(0)}
@@ -556,6 +583,13 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
 </style>
 </head>
 <body>
+
+<!-- ===== RETURN BANNER (für bereits registrierte) ===== -->
+<div class="return-banner" id="returnBanner">
+  Willkommen zurück! Du bist bereits registriert.
+  <a href="status.html">Zum Insider-Bereich &#8594;</a>
+  <button class="rb-close" onclick="closeReturnBanner()">&times;</button>
+</div>
 
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar">
@@ -568,6 +602,7 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
       <a href="#partner" class="navbar-link">Partner</a>
       <a href="#hersteller" class="navbar-link">Hersteller</a>
       <a href="#pitchdecks" class="navbar-link">Pitchdecks</a>
+      <a href="status.html" class="navbar-link" id="navInsider" style="display:none">Insider-Bereich</a>
       <a href="#registrieren" class="navbar-cta">Jetzt registrieren</a>
     </div>
   </div>
@@ -987,6 +1022,11 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
         <button class="submit-btn" id="regBtn" onclick="submitRegistration()">Jetzt vorab registrieren &#8594;</button>
 
         <div class="form-msg" id="regMsg"></div>
+
+        <div id="alreadyRegistered" style="display:none;text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+          <span style="font-size:14px;color:var(--text-muted)">Bereits registriert?</span>
+          <a href="status.html" style="font-size:14px;font-weight:600;color:var(--green-accent);text-decoration:none;margin-left:6px">Zum Insider-Bereich &#8594;</a>
+        </div>
       </div>
 
       <div id="regSuccess" class="register-success" style="display:none">
@@ -1033,6 +1073,22 @@ const SB_URL = SUPPTREE_CONFIG.SUPABASE_URL;
 const SB_KEY = SUPPTREE_CONFIG.SUPABASE_ANON_KEY;
 
 let selectedType = 'partner';
+
+// Auto-Erkennung: Bereits registriert?
+(function checkReturningUser() {
+  const email = localStorage.getItem('stWaitlistEmail');
+  if (email) {
+    document.getElementById('returnBanner').style.display = 'block';
+    document.body.classList.add('has-banner');
+    document.getElementById('navInsider').style.display = '';
+    document.getElementById('alreadyRegistered').style.display = 'block';
+  }
+})();
+
+function closeReturnBanner() {
+  document.getElementById('returnBanner').style.display = 'none';
+  document.body.classList.remove('has-banner');
+}
 
 function setType(type, btn) {
   selectedType = type;
@@ -1107,7 +1163,24 @@ async function submitRegistration() {
     } else {
       const errText = await res.text();
       if (errText.includes('duplicate') || errText.includes('unique') || res.status === 409) {
-        showMsg('Diese E-Mail ist bereits registriert. Wir melden uns bei dir!', 'success');
+        // Bereits registriert → Daten laden und weiterleiten
+        try {
+          const lookup = await fetch(SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email.toLowerCase()) + '&select=name,type,partner_subtype', {
+            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+          });
+          const data = await lookup.json();
+          if (data && data.length > 0) {
+            localStorage.setItem('stWaitlistEmail', email.toLowerCase());
+            localStorage.setItem('stWaitlistName', data[0].name);
+            localStorage.setItem('stWaitlistType', data[0].type);
+            localStorage.setItem('stWaitlistSubtype', data[0].partner_subtype || '');
+            window.location.href = 'status.html';
+            return;
+          }
+        } catch(e2) {}
+        showMsg('Diese E-Mail ist bereits registriert.', 'success');
+        setTimeout(function(){ window.location.href = 'status.html'; }, 1500);
+        return;
       } else {
         showMsg('Ein Fehler ist aufgetreten. Bitte versuche es später erneut.', 'error');
       }
