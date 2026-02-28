@@ -1592,7 +1592,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
       <div class="pa-dev" id="paDevAccess">
         <div class="pa-dev-label">DEV-ZUGANG (ohne Login)</div>
         <div class="pa-dev-btns">
-          <button class="pa-dev-btn" style="border-color:#00A67E;background:#E0F2F1;color:#00695C" onclick="localStorage.setItem('suppTreeAppMode','demo');localStorage.setItem('suppTreePartnerType','supplement');hidePartnerAuth();document.getElementById('authLoading').classList.add('hidden')">🏪 Demo-Modus</button>
+          <button class="pa-dev-btn" style="border-color:#00A67E;background:#E0F2F1;color:#00695C" onclick="localStorage.setItem('suppTreePartnerType','supplement');hidePartnerAuth();document.getElementById('authLoading').classList.add('hidden')">🏪 Demo-Modus</button>
         </div>
       </div>
     </div>
@@ -3697,21 +3697,6 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
 <div class="toast" id="toastEl"></div>
 
 
-<!-- Demo-Modus: Spinner sofort weg -->
-<script>
-(function(){
-  var m = localStorage.getItem('suppTreeAppMode') || 'demo';
-  if (m !== 'production') {
-    document.getElementById('authLoading').classList.add('hidden');
-    if (!localStorage.getItem('suppTreePartnerType')) {
-      document.getElementById('partnerAuthOverlay').classList.add('visible');
-      document.body.style.overflow = 'hidden';
-      document.getElementById('paDevAccess').style.display = 'block';
-    }
-  }
-})();
-</script>
-
 <!-- Supabase & Auth Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../shared/config.js"></script>
@@ -3725,9 +3710,9 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
 function showPartnerAuth() {
   var el = document.getElementById('partnerAuthOverlay');
   if (el) { el.classList.add('visible'); document.body.style.overflow = 'hidden'; }
-  // DEV-Zugang immer anzeigen (für Entwicklung)
+  // DEV-Zugang nur im Demo-Modus
   var dev = document.getElementById('paDevAccess');
-  if (dev) dev.style.display = 'block';
+  if (dev) dev.style.display = localStorage.getItem('suppTreeAppMode') === 'production' ? 'none' : 'block';
 }
 function hidePartnerAuth() {
   var el = document.getElementById('partnerAuthOverlay');
@@ -3902,16 +3887,6 @@ async function handlePartnerReset() {
 (async function() {
   const authLoading = document.getElementById('authLoading');
 
-  // Demo-Modus: Auth komplett überspringen
-  const appMode = localStorage.getItem('suppTreeAppMode') || 'demo';
-  if (appMode !== 'production') {
-    authLoading.classList.add('hidden');
-    if (!localStorage.getItem('suppTreePartnerType')) {
-      showPartnerAuth();
-    }
-    return;
-  }
-
   try {
     // Session prüfen
     const session = await checkSession();
@@ -3975,16 +3950,6 @@ let _currentUser = null;
     setTimeout(() => showPartnerOnboarding(), 300);
     return;
   }
-
-  // Demo-Modus: Supabase-Sync überspringen
-  var _appMode = localStorage.getItem('suppTreeAppMode') || 'demo';
-  if (_appMode !== 'production') {
-    if (!localStorage.getItem('suppTreePartnerType')) {
-      setTimeout(function(){ showPartnerAuth(); }, 300);
-    }
-    return;
-  }
-
   try {
     _sb = typeof initSupabase === 'function' ? initSupabase() : null;
     if (!_sb && window.supabase && SUPPTREE_CONFIG) {
