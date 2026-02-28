@@ -3900,8 +3900,15 @@ async function handlePartnerReset() {
 (async function() {
   const authLoading = document.getElementById('authLoading');
 
+  // Demo-Modus: Auth komplett überspringen
+  if ((localStorage.getItem('suppTreeAppMode') || 'demo') !== 'production') {
+    authLoading.classList.add('hidden');
+    if (!localStorage.getItem('suppTreePartnerType')) showPartnerAuth();
+    return;
+  }
+
   try {
-    // Session prüfen
+    // Session prüfen (nur Production)
     const session = await checkSession();
 
     if (!session) {
@@ -3961,6 +3968,13 @@ let _currentUser = null;
   if (new URLSearchParams(window.location.search).get('onboarding') === 'true') {
     localStorage.removeItem('suppTreePartnerType');
     setTimeout(() => showPartnerOnboarding(), 300);
+    return;
+  }
+  // Demo-Modus: Supabase-Sync überspringen
+  if ((localStorage.getItem('suppTreeAppMode') || 'demo') !== 'production') {
+    if (!localStorage.getItem('suppTreePartnerType')) {
+      setTimeout(function(){ showPartnerAuth(); }, 300);
+    }
     return;
   }
   try {
