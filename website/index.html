@@ -284,8 +284,9 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
 .deck-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:24px;
+  gap:20px;
 }
+.deck-grid.wide{grid-template-columns:repeat(4,1fr)}
 .deck-card{
   background:var(--white);
   border:1px solid var(--border);
@@ -521,14 +522,14 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
 
 /* ========== RESPONSIVE ========== */
 @media(max-width:1024px){
-  .features-grid,.partner-grid,.deck-grid{grid-template-columns:repeat(2,1fr)}
+  .features-grid,.partner-grid,.deck-grid,.deck-grid.wide{grid-template-columns:repeat(2,1fr)}
   .two-col,.register-wrapper{grid-template-columns:1fr;gap:40px}
   .register-info{text-align:center}
   .register-perks{align-items:center}
   .footer-inner{grid-template-columns:1fr 1fr}
 }
 @media(max-width:768px){
-  .features-grid,.steps,.partner-grid,.deck-grid{grid-template-columns:1fr;gap:16px}
+  .features-grid,.steps,.partner-grid,.deck-grid,.deck-grid.wide{grid-template-columns:1fr;gap:16px}
   .hero{padding:130px 20px 70px}
   .hero-metrics{gap:28px;flex-wrap:wrap}
   .section{padding:64px 20px}
@@ -549,9 +550,9 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
 /* ========== ANIMATIONS ========== */
 .anim{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
 .anim.vis{opacity:1;transform:translateY(0)}
-.anim-d1{transition-delay:0.1s}
-.anim-d2{transition-delay:0.2s}
-.anim-d3{transition-delay:0.3s}
+.anim-d1{transition-delay:0.12s}
+.anim-d2{transition-delay:0.24s}
+.anim-d3{transition-delay:0.36s}
 </style>
 </head>
 <body>
@@ -742,27 +743,28 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
       <span class="section-label anim">Unternehmen &amp; Einrichtungen</span>
       <p class="section-sub center anim" style="margin-bottom:32px">Auch für Teams, Studios und Einrichtungen — SuppTree skaliert mit dir.</p>
     </div>
-    <div class="partner-grid" style="max-width:900px;margin:0 auto">
+    <div class="partner-grid" style="max-width:900px;margin:0 auto;grid-template-columns:repeat(2,1fr)">
       <div class="partner-type-card anim">
         <div class="ptc-header">
           <div class="ptc-icon fi-blue">&#x1F3CB;&#xFE0F;</div>
           <div class="ptc-title">BGM</div>
         </div>
-        <div class="ptc-desc">Betriebliches Gesundheitsmanagement — Supplements und Gesundheitsprogramme für Mitarbeiter.</div>
+        <div class="ptc-desc">Betriebliches Gesundheitsmanagement — Supplements und Gesundheitsprogramme für deine Mitarbeiter.</div>
+        <div class="ptc-features">
+          <span class="ptc-chip">Firmenprogramme</span>
+          <span class="ptc-chip">Team-Verwaltung</span>
+        </div>
       </div>
       <div class="partner-type-card anim anim-d1">
         <div class="ptc-header">
-          <div class="ptc-icon fi-green">&#x1F3E5;</div>
-          <div class="ptc-title">Klinik / Praxis</div>
-        </div>
-        <div class="ptc-desc">Arztpraxen, Kliniken und Rehazentren — integriere Supplements in die Patientenversorgung.</div>
-      </div>
-      <div class="partner-type-card anim anim-d2">
-        <div class="ptc-header">
           <div class="ptc-icon fi-purple">&#x1F3E2;</div>
-          <div class="ptc-title">Studio / Salon / Verein</div>
+          <div class="ptc-title">Unternehmen</div>
         </div>
-        <div class="ptc-desc">Fitnessstudios, Salons, Sportvereine — biete deinen Mitgliedern kuratierte Supplements an.</div>
+        <div class="ptc-desc">Fitnessstudios, Salons, Sportvereine, Rehazentren — biete deinen Mitgliedern kuratierte Supplements an.</div>
+        <div class="ptc-features">
+          <span class="ptc-chip">Mitglieder</span>
+          <span class="ptc-chip">Empfehlungen</span>
+        </div>
       </div>
     </div>
   </div>
@@ -774,22 +776,22 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
     <div class="two-col">
       <div class="info-block anim">
         <span class="section-label">Für Hersteller</span>
-        <h3>Dein Vertrieb läuft über Experten — nicht über Werbung</h3>
-        <p class="desc">Erreiche Endkunden über ein Netzwerk aus Heilpraktikern, Trainern und Ernährungsberatern. Authentische Empfehlungen statt anonymer Ads.</p>
+        <h3>Dein neuer Vertriebskanal — ohne eigenen Außendienst</h3>
+        <p class="desc">Liste deine Produkte auf SuppTree und lasse sie von tausenden Gesundheitsexperten empfehlen. Du versendest direkt an den Endkunden — wir kümmern uns um den Rest.</p>
         <ul class="benefit-list">
-          <li><span class="benefit-check">&#x2713;</span> Zugang zu tausenden qualifizierten Gesundheitspartnern</li>
-          <li><span class="benefit-check">&#x2713;</span> Performance-basiert — du zahlst nur bei echtem Verkauf</li>
-          <li><span class="benefit-check">&#x2713;</span> Kein eigener Vertrieb oder Außendienst nötig</li>
+          <li><span class="benefit-check">&#x2713;</span> Direktversand an Endkunden (Dropshipping-Modell)</li>
+          <li><span class="benefit-check">&#x2713;</span> Tausende Gesundheitspartner als Vertriebsnetzwerk</li>
+          <li><span class="benefit-check">&#x2713;</span> Kein eigener Außendienst oder Marketingbudget nötig</li>
+          <li><span class="benefit-check">&#x2713;</span> Eigenes Markenprofil mit vollständigem Produktkatalog</li>
           <li><span class="benefit-check">&#x2713;</span> Transparentes Dashboard mit Echtzeit-Statistiken</li>
-          <li><span class="benefit-check">&#x2713;</span> Automatische Rechnungsstellung &amp; Zahlungsabwicklung</li>
-          <li><span class="benefit-check">&#x2713;</span> Eigenes Markenprofil mit Produktkatalog</li>
+          <li><span class="benefit-check">&#x2713;</span> Automatische Zahlungsabwicklung &amp; Rechnungsstellung</li>
         </ul>
       </div>
       <div class="info-visual anim anim-d1">
-        <div class="iv-icon">&#x1F3ED;</div>
-        <div class="iv-title">Deine Produkte, empfohlen von Experten</div>
-        <div class="iv-sub">Partner empfehlen gezielt — Kunden vertrauen persönlichen Empfehlungen mehr als Werbung</div>
-        <div class="iv-badge">0 &#8364; Grundgebühr</div>
+        <div class="iv-icon">&#x1F4E6;</div>
+        <div class="iv-title">Du produzierst &amp; versendest — wir verkaufen</div>
+        <div class="iv-sub">Kunden bestellen über SuppTree, du versendest direkt. Kein Zwischenlager, kein Umweg.</div>
+        <div class="iv-badge">Dropshipping-Modell</div>
       </div>
     </div>
   </div>
@@ -831,30 +833,89 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
       <h2 class="section-title center anim">Pitchdecks zum Download</h2>
       <p class="section-sub center anim">Erfahre mehr über SuppTree — zugeschnitten auf deine Perspektive.</p>
     </div>
-    <div class="deck-grid">
+    <div class="deck-grid wide">
       <div class="deck-card anim">
-        <div class="deck-icon fi-green">&#x1FA7A;</div>
-        <h3>Für Partner &amp; Experten</h3>
-        <p>Alles über Provisionen, die Partner-App, Empfehlungswege und wie du mit SuppTree verdienst.</p>
-        <a href="decks/pitchdeck-partner.pdf" class="deck-btn" download>
+        <div class="deck-icon fi-blue">&#x1FA7A;</div>
+        <h3>Heilpraktiker/in</h3>
+        <p>Bluttests, Therapien, Supplement-Empfehlungen auf Basis individueller Laborwerte.</p>
+        <a href="decks/pitchdeck-heilpraktiker.pdf" class="deck-btn" download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
           PDF herunterladen
         </a>
       </div>
       <div class="deck-card anim anim-d1">
-        <div class="deck-icon fi-blue">&#x1F3ED;</div>
-        <h3>Für Hersteller</h3>
-        <p>Wie SuppTree deinen Vertrieb revolutioniert — Partner-Netzwerk, Performance-Modell und Reichweite.</p>
-        <a href="decks/pitchdeck-hersteller.pdf" class="deck-btn" download>
+        <div class="deck-icon fi-green">&#x1F957;</div>
+        <h3>Ernährungsexpert/in</h3>
+        <p>Ernährungspläne, Rezepte und passende Supplements für deine Kunden.</p>
+        <a href="decks/pitchdeck-ernaehrung.pdf" class="deck-btn" download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
           PDF herunterladen
         </a>
       </div>
       <div class="deck-card anim anim-d2">
-        <div class="deck-icon fi-purple">&#x1F3E2;</div>
-        <h3>Für Unternehmen</h3>
-        <p>BGM, Kliniken, Studios — wie Einrichtungen SuppTree für ihre Teams und Mitglieder nutzen.</p>
+        <div class="deck-icon fi-orange">&#x1F4AA;</div>
+        <h3>Trainer/in &amp; Coach</h3>
+        <p>Trainingspläne, Fitness-Coaching und Supplement-Empfehlungen.</p>
+        <a href="decks/pitchdeck-trainer.pdf" class="deck-btn" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          PDF herunterladen
+        </a>
+      </div>
+      <div class="deck-card anim anim-d3">
+        <div class="deck-icon fi-pink">&#x2728;</div>
+        <h3>Beauty &amp; Wellness</h3>
+        <p>Kosmetik, Massage und hochwertige Nahrungsergänzung kombiniert.</p>
+        <a href="decks/pitchdeck-beauty.pdf" class="deck-btn" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          PDF herunterladen
+        </a>
+      </div>
+      <div class="deck-card anim">
+        <div class="deck-icon" style="background:linear-gradient(135deg,#FFF8E1,#FFE082)">&#x1F476;</div>
+        <h3>Hebamme &amp; Stillberater/in</h3>
+        <p>Supplements für Schwangere und junge Mütter in jeder Phase.</p>
+        <a href="decks/pitchdeck-hebamme.pdf" class="deck-btn" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          PDF herunterladen
+        </a>
+      </div>
+      <div class="deck-card anim anim-d1">
+        <div class="deck-icon fi-purple">&#x1F3AC;</div>
+        <h3>Creator</h3>
+        <p>Nutze deine Reichweite und empfehle Supplements über deinen Link.</p>
+        <a href="decks/pitchdeck-creator.pdf" class="deck-btn" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          PDF herunterladen
+        </a>
+      </div>
+      <div class="deck-card anim anim-d2">
+        <div class="deck-icon fi-blue">&#x1F3CB;&#xFE0F;</div>
+        <h3>BGM</h3>
+        <p>Betriebliches Gesundheitsmanagement mit Supplements für dein Team.</p>
+        <a href="decks/pitchdeck-bgm.pdf" class="deck-btn" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          PDF herunterladen
+        </a>
+      </div>
+      <div class="deck-card anim anim-d3">
+        <div class="deck-icon fi-teal">&#x1F3E2;</div>
+        <h3>Unternehmen</h3>
+        <p>Studios, Salons, Vereine — Supplements für deine Mitglieder.</p>
         <a href="decks/pitchdeck-unternehmen.pdf" class="deck-btn" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          PDF herunterladen
+        </a>
+      </div>
+    </div>
+    <!-- Hersteller Pitchdeck separat -->
+    <div style="max-width:420px;margin:24px auto 0">
+      <div class="deck-card anim" style="border:2px solid var(--green-accent);background:linear-gradient(145deg,var(--green-light),#fff)">
+        <div class="deck-icon" style="background:linear-gradient(135deg,var(--green-accent),var(--green-primary))">
+          <span style="font-size:28px;filter:none">&#x1F4E6;</span>
+        </div>
+        <h3>Für Hersteller</h3>
+        <p>Dropshipping-Modell, Partner-Netzwerk und wie SuppTree deinen Vertrieb übernimmt.</p>
+        <a href="decks/pitchdeck-hersteller.pdf" class="deck-btn" download style="border-color:var(--green-accent);color:var(--green-dark)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
           PDF herunterladen
         </a>
@@ -919,9 +980,7 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
           <select id="regBusinessType" class="form-select">
             <option value="">Bitte wählen...</option>
             <option value="bgm">BGM (Betriebliches Gesundheitsmanagement)</option>
-            <option value="klinik">Klinik / Praxis</option>
-            <option value="studio">Studio / Salon / Verein</option>
-            <option value="sonstiges">Sonstiges Unternehmen</option>
+            <option value="unternehmen">Studio / Salon / Verein / Sonstige</option>
           </select>
         </div>
 
