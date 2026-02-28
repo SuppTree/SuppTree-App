@@ -23,6 +23,11 @@ CREATE POLICY "waitlist_anon_insert" ON waitlist
   FOR INSERT TO anon
   WITH CHECK (true);
 
+-- Anon darf per E-Mail prüfen (für Status-Seite Login-Gate)
+CREATE POLICY "waitlist_anon_select" ON waitlist
+  FOR SELECT TO anon
+  USING (true);
+
 -- Admins dürfen alles lesen (für Verwaltung)
 CREATE POLICY "waitlist_admin_select" ON waitlist
   FOR SELECT TO authenticated

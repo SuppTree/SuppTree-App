@@ -1098,8 +1098,12 @@ async function submitRegistration() {
     });
 
     if (res.ok) {
-      document.getElementById('regForm').style.display = 'none';
-      document.getElementById('regSuccess').style.display = 'block';
+      localStorage.setItem('stWaitlistEmail', email.toLowerCase());
+      localStorage.setItem('stWaitlistName', name);
+      localStorage.setItem('stWaitlistType', selectedType);
+      localStorage.setItem('stWaitlistSubtype', subtype || '');
+      window.location.href = 'status.html';
+      return;
     } else {
       const errText = await res.text();
       if (errText.includes('duplicate') || errText.includes('unique') || res.status === 409) {

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuppTree — Insider-Status</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../www/assets/icon.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --green-dark:#1a5a3a;
+  --green-primary:#2E7D32;
+  --green-medium:#43A047;
+  --green-accent:#00A67E;
+  --green-light:#E8F5E9;
+  --cream:#FAF9F6;
+  --white:#FFFFFF;
+  --text-dark:#111827;
+  --text-body:#374151;
+  --text-muted:#6b7280;
+  --border:#e5e7eb;
+  --shadow:0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg:0 12px 40px rgba(0,0,0,0.1);
+  --r:8px;
+  --r-lg:16px;
+  --orange:#f59e0b;
+  --gray:#9ca3af;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:var(--text-body);background:var(--cream);
+  line-height:1.65;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
+
+/* ========== GATE / LOGIN ========== */
+.gate{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  background:linear-gradient(165deg,#0d3320 0%,#1a5a3a 40%,#2E7D32 100%);
+}
+.gate-card{
+  background:var(--white);border-radius:20px;
+  padding:48px 40px;max-width:440px;width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,0.2);
+  text-align:center;
+}
+.gate-logo{width:56px;height:56px;border-radius:14px;margin:0 auto 16px}
+.gate-card h2{font-size:22px;font-weight:800;margin-bottom:6px}
+.gate-card .gate-sub{color:var(--text-muted);font-size:14px;margin-bottom:28px}
+.gate-input{
+  width:100%;padding:14px 16px;
+  border:2px solid var(--border);border-radius:var(--r);
+  font-size:15px;font-family:inherit;outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  background:var(--cream);margin-bottom:12px;
+}
+.gate-input:focus{border-color:var(--green-accent);box-shadow:0 0 0 3px rgba(0,166,126,0.1);background:white}
+.gate-btn{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--green-accent),var(--green-primary));
+  color:white;border:none;border-radius:var(--r);
+  font-size:15px;font-weight:700;font-family:inherit;
+  cursor:pointer;transition:all 0.2s;
+}
+.gate-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,167,126,0.3)}
+.gate-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.gate-msg{
+  margin-top:12px;padding:10px;border-radius:var(--r);
+  font-size:13px;font-weight:600;display:none;
+}
+.gate-msg.error{display:block;background:#fef2f2;color:#991b1b}
+.gate-link{
+  display:inline-block;margin-top:20px;
+  color:var(--text-muted);font-size:13px;text-decoration:none;
+}
+.gate-link:hover{color:var(--green-accent)}
+
+/* ========== NAVBAR ========== */
+.navbar{
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;height:64px;
+  display:flex;align-items:center;justify-content:center;
+  position:sticky;top:0;z-index:50;
+}
+.navbar-inner{
+  max-width:900px;width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.navbar-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.navbar-logo{width:32px;height:32px;border-radius:8px}
+.navbar-name{font-size:18px;font-weight:800;color:var(--green-dark)}
+.navbar-right{display:flex;align-items:center;gap:16px}
+.navbar-user{font-size:13px;color:var(--text-muted);font-weight:500}
+.navbar-logout{
+  padding:6px 14px;border:1px solid var(--border);border-radius:var(--r);
+  font-size:12px;font-weight:600;color:var(--text-muted);
+  background:none;cursor:pointer;font-family:inherit;
+  transition:all 0.2s;
+}
+.navbar-logout:hover{border-color:var(--green-accent);color:var(--green-accent)}
+
+/* ========== MAIN CONTENT ========== */
+.main{max-width:900px;margin:0 auto;padding:40px 32px 80px}
+
+/* Welcome Banner */
+.welcome-banner{
+  background:linear-gradient(145deg,var(--green-dark),var(--green-accent));
+  border-radius:var(--r-lg);
+  padding:32px;color:white;
+  margin-bottom:40px;
+  position:relative;overflow:hidden;
+}
+.welcome-banner::before{
+  content:'';position:absolute;top:-50%;right:-20%;
+  width:300px;height:300px;border-radius:50%;
+  background:rgba(255,255,255,0.06);
+}
+.welcome-banner h1{font-size:clamp(22px,3vw,28px);font-weight:800;margin-bottom:8px;color:white}
+.welcome-banner p{font-size:15px;opacity:0.85;max-width:500px}
+
+/* Stats Bar */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  margin-bottom:48px;
+}
+.stat-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:24px;text-align:center;
+}
+.stat-val{font-size:28px;font-weight:800;color:var(--green-primary)}
+.stat-label{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:4px}
+
+/* Section */
+.sec{margin-bottom:48px}
+.sec-header{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:20px;
+}
+.sec-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.sec-icon.green{background:linear-gradient(135deg,#dcfce7,#bbf7d0)}
+.sec-icon.blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe)}
+.sec-icon.orange{background:linear-gradient(135deg,#ffedd5,#fed7aa)}
+.sec-icon.purple{background:linear-gradient(135deg,#ede9fe,#ddd6fe)}
+.sec-title{font-size:20px;font-weight:800}
+
+/* ========== TIMELINE ========== */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{
+  content:'';position:absolute;left:11px;top:8px;bottom:8px;
+  width:2px;background:var(--border);
+}
+.tl-item{position:relative;padding-bottom:24px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{
+  position:absolute;left:-32px;top:4px;
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:white;
+  z-index:1;
+}
+.tl-dot.done{background:var(--green-accent)}
+.tl-dot.wip{background:var(--orange);animation:tlPulse 2s infinite}
+.tl-dot.planned{background:var(--gray)}
+@keyframes tlPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0.4)}50%{box-shadow:0 0 0 6px rgba(245,158,11,0)}}
+.tl-date{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:2px}
+.tl-title{font-size:15px;font-weight:700;color:var(--text-dark)}
+.tl-desc{font-size:13px;color:var(--text-muted);margin-top:2px}
+.tl-badge{
+  display:inline-block;margin-top:4px;
+  padding:2px 8px;border-radius:999px;
+  font-size:10px;font-weight:700;
+}
+.tl-badge.done{background:#dcfce7;color:#166534}
+.tl-badge.wip{background:#fef3c7;color:#92400e}
+.tl-badge.planned{background:#f3f4f6;color:#6b7280}
+
+/* ========== TIPS ========== */
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tip-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:20px;
+  display:flex;gap:14px;align-items:flex-start;
+  transition:all 0.2s;
+}
+.tip-card:hover{border-color:var(--green-accent);box-shadow:var(--shadow)}
+.tip-icon{
+  width:40px;height:40px;min-width:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;background:var(--green-light);
+}
+.tip-card h4{font-size:14px;font-weight:700;margin-bottom:3px}
+.tip-card p{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+/* ========== FAQ ========== */
+.faq-item{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden;
+}
+.faq-q{
+  padding:18px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;font-size:15px;font-weight:700;
+  transition:background 0.2s;
+}
+.faq-q:hover{background:var(--cream)}
+.faq-arrow{font-size:12px;color:var(--text-muted);transition:transform 0.2s}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.3s ease,padding 0.3s;
+  font-size:14px;color:var(--text-muted);line-height:1.7;
+  padding:0 20px;
+}
+.faq-item.open .faq-a{max-height:200px;padding:0 20px 18px}
+
+/* ========== FOOTER ========== */
+.footer{
+  background:#111827;color:rgba(255,255,255,0.5);
+  padding:32px;text-align:center;font-size:12px;
+}
+.footer a{color:var(--green-accent);text-decoration:none}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:768px){
+  .main{padding:24px 20px 60px}
+  .stats-bar{grid-template-columns:1fr}
+  .tips-grid{grid-template-columns:1fr}
+  .gate-card{padding:32px 24px}
+  .welcome-banner{padding:24px}
+  .navbar-inner{padding:0 20px}
+  .navbar-user{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== GATE (Login-Check) ===== -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <img src="../www/assets/icon.png" alt="SuppTree" class="gate-logo">
+    <h2>Insider-Bereich</h2>
+    <p class="gate-sub">Diese Seite ist exklusiv für registrierte SuppTree-Mitglieder.</p>
+    <input type="email" id="gateEmail" class="gate-input" placeholder="Deine registrierte E-Mail" onkeydown="if(event.key==='Enter')gateLogin()">
+    <button class="gate-btn" id="gateBtn" onclick="gateLogin()">Zugang erhalten</button>
+    <div class="gate-msg" id="gateMsg"></div>
+    <a href="index.html" class="gate-link">Noch nicht registriert? Hier anmelden &#8594;</a>
+  </div>
+</div>
+
+<!-- ===== APP (nach Login) ===== -->
+<div id="app" style="display:none">
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-brand">
+      <img src="../www/assets/icon.png" alt="SuppTree" class="navbar-logo">
+      <span class="navbar-name">SuppTree</span>
+    </a>
+    <div class="navbar-right">
+      <span class="navbar-user" id="navUser"></span>
+      <button class="navbar-logout" onclick="logout()">Abmelden</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <h1 id="welcomeTitle">Willkommen!</h1>
+    <p>Du bist unter den Ersten bei SuppTree. Hier siehst du transparent, was wir gerade bauen und wann es losgeht.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-val" id="statMembers">--</div>
+      <div class="stat-label">Registrierte Mitglieder</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">28+</div>
+      <div class="stat-label">Features fertiggestellt</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">Q2 2026</div>
+      <div class="stat-label">Geplanter Start</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="sec">
+    <div class="sec-header">
+      <div class="sec-icon green">&#x1F4C5;</div>
+      <div class="sec-title">Entwicklungs-Timeline</div>
+    </div>
+    <div class="timeline" id="timeline">
+      <div class="tl-item">
+        <div class="tl-dot planned">&#x25CB;</div>
+        <div class="tl-date">Geplant</div>
+        <div class="tl-title">Go-Live &amp; offizielle Einladungen</div>
+        <div class="tl-desc">Alle registrierten Partner und Hersteller erhalten Zugang.</div>
+        <span class="tl-badge planned">Geplant</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot planned">&#x25CB;</div>
+        <div class="tl-date">Geplant</div>
+        <div class="tl-title">Beta-Phase mit Testpartnern</div>
+        <div class="tl-desc">Ausgewählte Partner testen die Plattform vor dem offiziellen Start.</div>
+        <span class="tl-badge planned">Geplant</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot wip">&#x25CF;</div>
+        <div class="tl-date">In Arbeit</div>
+        <div class="tl-title">Partner-Akquise &amp; Landingpage</div>
+        <div class="tl-desc">Landingpage mit Vorab-Registrierung, Pitchdecks und Insider-Bereich.</div>
+        <span class="tl-badge wip">In Arbeit</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Februar 2026</div>
+        <div class="tl-title">Security-Hardening</div>
+        <div class="tl-desc">CORS-Schutz, JWT-Authentifizierung, XSS-Pr&auml;vention in allen Systemen.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Februar 2026</div>
+        <div class="tl-title">Lexoffice Rechnungs-Integration</div>
+        <div class="tl-desc">Automatische Rechnungserstellung nach jeder Zahlung via Lexoffice API.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Februar 2026</div>
+        <div class="tl-title">Payment-Integration: Stripe &amp; PayPal</div>
+        <div class="tl-desc">Sichere Zahlungen f&uuml;r Produkte, Termine und Bluttests.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Februar 2026</div>
+        <div class="tl-title">Bluttest-Ergebnisse &amp; Marker-Katalog</div>
+        <div class="tl-desc">Partner k&ouml;nnen Blutwerte erfassen und passende Supplements empfehlen.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Februar 2026</div>
+        <div class="tl-title">Push-Notifications</div>
+        <div class="tl-desc">Benachrichtigungen f&uuml;r neue Bestellungen, Termine und Empfehlungen.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Februar 2026</div>
+        <div class="tl-title">Echtzeit-Dashboard &amp; Realtime-Subscriptions</div>
+        <div class="tl-desc">Live-Updates f&uuml;r Partner und Admin ohne Seite neu zu laden.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Februar 2026</div>
+        <div class="tl-title">Termin- &amp; Bluttest-Buchungen live</div>
+        <div class="tl-desc">Kunden k&ouml;nnen Termine buchen und Bluttests bestellen — alles in Echtzeit.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Februar 2026</div>
+        <div class="tl-title">Supabase Live-Integration</div>
+        <div class="tl-desc">Backend komplett angebunden: Datenbank, Auth, Edge Functions.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Januar 2026</div>
+        <div class="tl-title">Partner-App &amp; Admin-Dashboard</div>
+        <div class="tl-desc">Komplette Partner-App mit Kunden-Management, Services, Trainings- und Ern&auml;hrungspl&auml;nen.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">&#x2713;</div>
+        <div class="tl-date">Januar 2026</div>
+        <div class="tl-title">Kunden-App Grundstruktur</div>
+        <div class="tl-desc">Shop, Warenkorb, Bestellungen, Profil — die Basis f&uuml;r Endkunden.</div>
+        <span class="tl-badge done">Fertig</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPPS -->
+  <div class="sec">
+    <div class="sec-header">
+      <div class="sec-icon orange">&#x1F4A1;</div>
+      <div class="sec-title">Tipps &amp; Vorbereitung</div>
+    </div>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px">Damit du bestens vorbereitet bist, wenn SuppTree live geht:</p>
+
+    <!-- Allgemeine Tipps -->
+    <div class="tips-grid" id="tipsGeneral">
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4CB;</div>
+        <div>
+          <h4>Kontaktliste vorbereiten</h4>
+          <p>Sammle schon jetzt die E-Mails deiner Kunden, die du sp&auml;ter einladen m&ouml;chtest.</p>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4F8;</div>
+        <div>
+          <h4>Social Media Profil</h4>
+          <p>&Uuml;berlege dir, auf welchen Plattformen du SuppTree teilen m&ouml;chtest.</p>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4DD;</div>
+        <div>
+          <h4>Profiltext vorbereiten</h4>
+          <p>Schreibe einen kurzen Text &uuml;ber dich und deine Spezialisierung f&uuml;r dein Partner-Profil.</p>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4F7;</div>
+        <div>
+          <h4>Profilbild bereitlegen</h4>
+          <p>Ein professionelles Foto sch&auml;rft deinen Auftritt — Kunden vertrauen Gesichtern.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typ-spezifische Tipps -->
+    <div id="tipsSpecific" style="margin-top:16px"></div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="sec">
+    <div class="sec-header">
+      <div class="sec-icon purple">&#x2753;</div>
+      <div class="sec-title">Häufige Fragen</div>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Wann geht SuppTree live?<span class="faq-arrow">&#x25BC;</span></div>
+      <div class="faq-a">Wir planen den offiziellen Start f&uuml;r Q2 2026. Davor gibt es eine Beta-Phase mit ausgew&auml;hlten Partnern. Als fr&uuml;h Registrierter bist du unter den Ersten, die Zugang bekommen.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Muss ich etwas vorbereiten?<span class="faq-arrow">&#x25BC;</span></div>
+      <div class="faq-a">Nein, es ist nichts zwingend n&ouml;tig. Aber du kannst schon deine Kontaktliste, Profiltext und ein Profilbild vorbereiten — das spart Zeit beim Start. Schau dir auch die Tipps oben an!</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Kostet mich das etwas?<span class="faq-arrow">&#x25BC;</span></div>
+      <div class="faq-a">Nein. SuppTree ist f&uuml;r Partner komplett kostenlos — keine monatlichen Geb&uuml;hren, kein Abo. Du verdienst Provisionen pro Verkauf, und wir verdienen nur, wenn du verdienst.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Wie funktioniert das Dropshipping f&uuml;r Hersteller?<span class="faq-arrow">&#x25BC;</span></div>
+      <div class="faq-a">Du listest deine Produkte auf SuppTree. Wenn ein Kunde bestellt, erh&auml;ltst du die Bestellung und versendest direkt an den Endkunden. SuppTree k&uuml;mmert sich um Zahlung, Rechnung und das Partner-Netzwerk.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Kann ich SuppTree weiterempfehlen?<span class="faq-arrow">&#x25BC;</span></div>
+      <div class="faq-a">Unbedingt! Teile die Landingpage mit Kollegen und Kontakten aus der Gesundheitsbranche. Je gr&ouml;&szlig;er das Netzwerk beim Start, desto besser f&uuml;r alle.</div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- Footer -->
+<footer class="footer">
+  <p>&copy; 2026 SuppTree &middot; <a href="index.html">Zur Landingpage</a> &middot; <a href="mailto:info@supptree.de">info@supptree.de</a></p>
+</footer>
+
+</div><!-- /app -->
+
+<!-- ===== SCRIPTS ===== -->
+<script src="../shared/config.js"></script>
+<script>
+const SB_URL = SUPPTREE_CONFIG.SUPABASE_URL;
+const SB_KEY = SUPPTREE_CONFIG.SUPABASE_ANON_KEY;
+
+// Typ-spezifische Tipps
+const TYPED_TIPS = {
+  heilpraktiker: [
+    { icon: '&#x1FA78;', title: 'Bluttest-Marker vorbereiten', desc: 'Überlege welche Blutwerte du häufig testest — SuppTree hat einen umfangreichen Marker-Katalog.' },
+    { icon: '&#x1F489;', title: 'Therapie-Services definieren', desc: 'Welche Behandlungen bietest du an? Du kannst sie direkt als buchbare Services einstellen.' }
+  ],
+  ernaehrung: [
+    { icon: '&#x1F957;', title: 'Ernährungsplan-Vorlagen', desc: 'Erstelle schon mal gedanklich 2-3 Basis-Ernährungspläne die du häufig empfiehlst.' },
+    { icon: '&#x1F372;', title: 'Lieblingsrezepte sammeln', desc: 'Du kannst in SuppTree eigene Rezepte anlegen und mit Kunden teilen.' }
+  ],
+  trainer: [
+    { icon: '&#x1F3CB;&#xFE0F;', title: 'Trainingspläne skizzieren', desc: 'SuppTree hat einen Trainingsplan-Builder — überlege welche Pläne du häufig verwendest.' },
+    { icon: '&#x1F4AA;', title: 'Supplement-Favoriten', desc: 'Welche Supplements empfiehlst du am meisten? Du kannst sie direkt in deinem Profil hervorheben.' }
+  ],
+  beauty: [
+    { icon: '&#x2728;', title: 'Beauty-Supplements identifizieren', desc: 'Kollagen, Biotin, Vitamin E — welche Supplements passen zu deinen Treatments?' },
+    { icon: '&#x1F485;', title: 'Services mit Supplementen kombinieren', desc: 'Biete Pakete an: z.B. Facial + Kollagen-Kur als Bundle.' }
+  ],
+  hebamme: [
+    { icon: '&#x1F476;', title: 'Schwangerschafts-Supplements', desc: 'Folsäure, Eisen, DHA — bereite eine Empfehlungsliste für jede Schwangerschaftsphase vor.' },
+    { icon: '&#x1F37C;', title: 'Stillzeit-Beratung planen', desc: 'Welche Supplements empfiehlst du in der Stillzeit? Du kannst individuelle Pläne erstellen.' }
+  ],
+  creator: [
+    { icon: '&#x1F3AC;', title: 'Content-Ideen sammeln', desc: 'Unboxings, Reviews, Vorher/Nachher — plane Content rund um Supplements.' },
+    { icon: '&#x1F517;', title: 'Link-Strategie überlegen', desc: 'Dein persönlicher Empfehlungslink bringt dir 7% Provision pro Verkauf über Social Media.' }
+  ]
+};
+
+function checkAccess() {
+  const email = localStorage.getItem('stWaitlistEmail');
+  const name = localStorage.getItem('stWaitlistName');
+  if (email && name) {
+    showApp(name, localStorage.getItem('stWaitlistType') || '', localStorage.getItem('stWaitlistSubtype') || '');
+  } else {
+    document.getElementById('gate').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+}
+
+async function gateLogin() {
+  const emailInput = document.getElementById('gateEmail');
+  const email = emailInput.value.trim().toLowerCase();
+  const btn = document.getElementById('gateBtn');
+  const msg = document.getElementById('gateMsg');
+
+  msg.className = 'gate-msg';
+  msg.style.display = 'none';
+
+  if (!email || !email.includes('@')) {
+    msg.textContent = 'Bitte gib eine gültige E-Mail-Adresse ein.';
+    msg.className = 'gate-msg error';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Wird geprüft...';
+
+  try {
+    const res = await fetch(
+      SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email) + '&select=name,type,partner_subtype',
+      {
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': 'Bearer ' + SB_KEY
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    if (data && data.length > 0) {
+      const entry = data[0];
+      localStorage.setItem('stWaitlistEmail', email);
+      localStorage.setItem('stWaitlistName', entry.name);
+      localStorage.setItem('stWaitlistType', entry.type);
+      localStorage.setItem('stWaitlistSubtype', entry.partner_subtype || '');
+      showApp(entry.name, entry.type, entry.partner_subtype || '');
+    } else {
+      msg.textContent = 'Diese E-Mail ist nicht registriert.';
+      msg.className = 'gate-msg error';
+    }
+  } catch (e) {
+    msg.textContent = 'Verbindungsfehler. Bitte versuche es erneut.';
+    msg.className = 'gate-msg error';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Zugang erhalten';
+}
+
+function showApp(name, type, subtype) {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // Welcome
+  const firstName = name.split(' ')[0];
+  document.getElementById('welcomeTitle').textContent = 'Willkommen, ' + firstName + '!';
+  document.getElementById('navUser').textContent = name;
+
+  // Live stats
+  loadStats();
+
+  // Typ-spezifische Tipps
+  renderTypedTips(subtype || type);
+}
+
+async function loadStats() {
+  try {
+    const res = await fetch(
+      SB_URL + '/rest/v1/waitlist?select=id',
+      {
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': 'Bearer ' + SB_KEY,
+          'Prefer': 'count=exact'
+        }
+      }
+    );
+    const count = res.headers.get('content-range');
+    if (count) {
+      const total = count.split('/')[1];
+      if (total && total !== '*') {
+        document.getElementById('statMembers').textContent = total;
+      }
+    }
+  } catch (e) {
+    // Fallback bleibt bei --
+  }
+}
+
+function renderTypedTips(subtype) {
+  const tips = TYPED_TIPS[subtype];
+  if (!tips || tips.length === 0) return;
+
+  const container = document.getElementById('tipsSpecific');
+  const typeLabels = {
+    heilpraktiker: 'Heilpraktiker/in',
+    ernaehrung: 'Ernährungsexpert/in',
+    trainer: 'Trainer/in & Coach',
+    beauty: 'Beauty & Wellness',
+    hebamme: 'Hebamme & Stillberater/in',
+    creator: 'Creator'
+  };
+
+  const label = typeLabels[subtype] || '';
+  let html = '';
+  if (label) {
+    html += '<div style="font-size:12px;font-weight:700;color:var(--green-accent);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Speziell für ' + label + '</div>';
+  }
+  html += '<div class="tips-grid">';
+  tips.forEach(t => {
+    html += '<div class="tip-card"><div class="tip-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">' + t.icon + '</div><div><h4>' + t.title + '</h4><p>' + t.desc + '</p></div></div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function logout() {
+  localStorage.removeItem('stWaitlistEmail');
+  localStorage.removeItem('stWaitlistName');
+  localStorage.removeItem('stWaitlistType');
+  localStorage.removeItem('stWaitlistSubtype');
+  document.getElementById('gate').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// Init
+checkAccess();
+</script>
+
+</body>
+</html>
