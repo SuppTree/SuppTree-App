@@ -373,6 +373,7 @@ textarea.prep-input{resize:vertical;min-height:80px}
   .navbar-inner{padding:0 20px}
   .navbar-user{display:none}
   .prep-form-row,.prep-form-row-3{grid-template-columns:1fr}
+  .prep-form-row[style*="100px"]{grid-template-columns:80px 1fr 1fr}
 }
 </style>
 </head>
@@ -464,23 +465,40 @@ textarea.prep-input{resize:vertical;min-height:80px}
       </div>
       <div class="prep-card-body">
         <div class="prep-card-inner">
-          <div class="prep-form-group">
-            <label class="prep-label">Name *</label>
-            <input type="text" class="prep-input" id="prepName" placeholder="Dein vollst&auml;ndiger Name">
+          <div class="prep-form-row" style="grid-template-columns:100px 1fr 1fr">
+            <div class="prep-form-group">
+              <label class="prep-label">Titel (opt.)</label>
+              <select class="prep-input" id="prepTitle" style="padding:11px 8px">
+                <option value="">Kein</option>
+                <option value="Dr.">Dr.</option>
+                <option value="Prof.">Prof.</option>
+                <option value="Prof. Dr.">Prof. Dr.</option>
+                <option value="Dipl.">Dipl.</option>
+                <option value="HP">HP</option>
+              </select>
+            </div>
+            <div class="prep-form-group">
+              <label class="prep-label">Vorname *</label>
+              <input type="text" class="prep-input" id="prepFirstName" placeholder="Max" autocomplete="given-name">
+            </div>
+            <div class="prep-form-group">
+              <label class="prep-label">Nachname *</label>
+              <input type="text" class="prep-input" id="prepLastName" placeholder="Mustermann" autocomplete="family-name">
+            </div>
           </div>
           <div class="prep-form-group" id="prepJobGroup">
-            <label class="prep-label">Berufsbezeichnung *</label>
+            <label class="prep-label" id="prepJobLabel">Titel / Berufsbezeichnung</label>
             <input type="text" class="prep-input" id="prepJob" placeholder="">
-            <div class="prep-hint" id="prepJobHint"></div>
+            <div class="prep-hint" id="prepJobHint">So erscheinst du auf deinem Profil, z.B. &bdquo;Heilpraktiker &middot; Ern&auml;hrungsberater&ldquo;</div>
           </div>
           <div class="prep-form-group">
             <label class="prep-label" id="prepCompanyLabel">Praxis / Firma (optional)</label>
             <input type="text" class="prep-input" id="prepCompany" placeholder="">
           </div>
           <div class="prep-form-group">
-            <label class="prep-label">Kurze Beschreibung (optional)</label>
-            <textarea class="prep-input" id="prepBio" placeholder="Erz&auml;hle kurz &uuml;ber dich und was dich ausmacht..."></textarea>
-            <div class="prep-hint">Wird sp&auml;ter auf deinem Partner-Profil angezeigt. Max. 280 Zeichen.</div>
+            <label class="prep-label" id="prepBioLabel">&Uuml;ber mich</label>
+            <textarea class="prep-input" id="prepBio" placeholder=""></textarea>
+            <div class="prep-hint" id="prepBioHint">Wird auf deinem Profil angezeigt. Erz&auml;hle was du anbietest und was dich ausmacht.</div>
           </div>
           <button class="prep-save-btn" id="prepSaveBtn" onclick="saveProfile()">Profil speichern</button>
           <span class="prep-save-msg" id="prepSaveMsg">Gespeichert!</span>
@@ -1066,6 +1084,17 @@ let _clState = [false, false, false, false];
 let _activeModes = ['praxis']; // Terminarten
 let _currentType = '';
 
+const BIO_PLACEHOLDERS = {
+  partner: 'z.B. Seit 10 Jahren begleite ich Menschen auf ihrem Weg zu mehr Gesundheit. Spezialisiert auf...',
+  hersteller: 'z.B. Wir stehen für natürliche, hochwertige Supplements aus deutscher Herstellung...',
+  unternehmen: 'z.B. Unser Gesundheitszentrum bietet ganzheitliche Betreuung und individuelle Beratung...'
+};
+const BIO_LABELS = {
+  partner: 'Über mich — Was bietest du an?',
+  hersteller: 'Über uns — Was macht euch aus?',
+  unternehmen: 'Über uns — Was bieten Sie an?'
+};
+
 const LOCATION_PLACEHOLDERS = {
   partner: 'z.B. Maximilianstr. 42, 80539 München',
   hersteller: 'z.B. Industriestr. 15, 70173 Stuttgart',
@@ -1085,18 +1114,24 @@ const LOCATION_HINTS = {
 function initPreparations(name, type, subtype) {
   _currentType = type;
 
-  // Name vorbelegen
-  document.getElementById('prepName').value = name;
+  // Name in Vor-/Nachname splitten
+  var parts = (name || '').trim().split(/\s+/);
+  var firstName = parts[0] || '';
+  var lastName = parts.slice(1).join(' ') || '';
+  document.getElementById('prepFirstName').value = firstName;
+  document.getElementById('prepLastName').value = lastName;
 
   // Job-Placeholder basierend auf Subtype
   const jobInput = document.getElementById('prepJob');
-  const jobHint = document.getElementById('prepJobHint');
   if (type === 'hersteller') {
     document.getElementById('prepJobGroup').style.display = 'none';
   } else {
-    jobInput.placeholder = JOB_PLACEHOLDERS[subtype] || 'z.B. Deine Berufsbezeichnung';
-    jobHint.textContent = 'So erscheinst du auf deinem Partner-Profil.';
+    jobInput.placeholder = JOB_PLACEHOLDERS[subtype] || 'z.B. Heilpraktiker · Ernährungsberater';
   }
+
+  // Bio-Placeholder & Label
+  document.getElementById('prepBio').placeholder = BIO_PLACEHOLDERS[type] || '';
+  document.getElementById('prepBioLabel').innerHTML = BIO_LABELS[type] || 'Über mich';
 
   // Company-Placeholder
   document.getElementById('prepCompany').placeholder = COMPANY_PLACEHOLDERS[type] || 'z.B. Dein Unternehmen';
@@ -1148,6 +1183,10 @@ async function loadProfileData() {
 
       // Extended profile data
       const pd = p.profile_data || {};
+      // Titel + Vor-/Nachname überschreiben falls in profile_data gespeichert
+      if (pd.title) document.getElementById('prepTitle').value = pd.title;
+      if (pd.first_name) document.getElementById('prepFirstName').value = pd.first_name;
+      if (pd.last_name) document.getElementById('prepLastName').value = pd.last_name;
       if (pd.location) document.getElementById('prepLocation').value = pd.location;
       if (pd.phone) document.getElementById('prepPhone').value = pd.phone;
       if (pd.website) document.getElementById('prepWebsite').value = pd.website;
@@ -1188,23 +1227,47 @@ async function saveProfile() {
 
   const btn = document.getElementById('prepSaveBtn');
   const msg = document.getElementById('prepSaveMsg');
-  const name = document.getElementById('prepName').value.trim();
+  const title = document.getElementById('prepTitle').value;
+  const firstName = document.getElementById('prepFirstName').value.trim();
+  const lastName = document.getElementById('prepLastName').value.trim();
   const job = document.getElementById('prepJob').value.trim();
   const company = document.getElementById('prepCompany').value.trim();
-  const bio = document.getElementById('prepBio').value.trim().substring(0, 280);
+  const bio = document.getElementById('prepBio').value.trim();
 
-  if (!name || name.length < 2) { alert('Bitte gib deinen Namen ein.'); return; }
+  if (!firstName) { alert('Bitte gib deinen Vornamen ein.'); return; }
+  if (!lastName) { alert('Bitte gib deinen Nachnamen ein.'); return; }
+
+  // Display-Name zusammensetzen
+  var displayName = (title ? title + ' ' : '') + firstName + ' ' + lastName;
 
   btn.disabled = true;
   btn.textContent = 'Wird gespeichert...';
 
   try {
+    // Erst profile_data laden um zu mergen
+    var existingPd = {};
+    try {
+      var r0 = await fetch(
+        SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email) + '&select=profile_data',
+        { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }
+      );
+      var d0 = await r0.json();
+      if (d0 && d0.length > 0 && d0[0].profile_data) existingPd = d0[0].profile_data;
+    } catch(e) {}
+
+    var mergedPd = Object.assign({}, existingPd, {
+      title: title || null,
+      first_name: firstName,
+      last_name: lastName
+    });
+
     const body = {
-      name: name,
+      name: displayName,
       job_title: job || null,
       company_name: company || null,
       bio: bio || null,
-      profile_ready: true
+      profile_ready: true,
+      profile_data: mergedPd
     };
 
     const res = await fetch(
@@ -1222,7 +1285,7 @@ async function saveProfile() {
     );
 
     if (res.ok) {
-      localStorage.setItem('stWaitlistName', name);
+      localStorage.setItem('stWaitlistName', displayName);
       markProfileDone();
       msg.classList.add('show');
       setTimeout(function() { msg.classList.remove('show'); }, 2500);
