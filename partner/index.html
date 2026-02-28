@@ -3700,6 +3700,20 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
 <!-- Sofort-Fix: Spinner weg + Login zeigen BEVOR CDN lädt -->
 <script>
 (function(){
+  var p = new URLSearchParams(window.location.search);
+  // ?reset=1 → alles zurücksetzen
+  if (p.get('reset') === '1') {
+    localStorage.clear();
+    window.location.href = window.location.pathname;
+    return;
+  }
+  // ?demo=1 → direkt in Demo-Modus
+  if (p.get('demo') === '1') {
+    localStorage.setItem('suppTreeAppMode', 'demo');
+    localStorage.setItem('suppTreePartnerType', 'supplement');
+    window.location.href = window.location.pathname;
+    return;
+  }
   document.getElementById('authLoading').classList.add('hidden');
   if (!localStorage.getItem('suppTreePartnerType')) {
     var ov = document.getElementById('partnerAuthOverlay');
