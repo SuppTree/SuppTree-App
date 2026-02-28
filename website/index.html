@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuppTree — Der Supplement-Marktplatz für Gesundheitspartner</title>
+<meta name="description" content="SuppTree verbindet Gesundheitspartner mit Supplement-Herstellern. Provisionen pro Verkauf, 0€ monatliche Kosten. Jetzt vorab registrieren!">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --green-dark:#2E7D32;
+  --green-medium:#43A047;
+  --green-accent:#00A67E;
+  --green-light:#E8F5E9;
+  --cream:#F5EFE6;
+  --white:#FFFFFF;
+  --text-dark:#1a1a1a;
+  --text-muted:#6b7280;
+  --border:#e5e7eb;
+  --shadow:0 2px 12px rgba(0,0,0,0.06);
+  --r:7px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:var(--text-dark);
+  background:var(--cream);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ========== NAVBAR ========== */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  height:64px;
+  display:flex;align-items:center;justify-content:center;
+}
+.navbar-inner{
+  max-width:1100px;width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.navbar-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text-dark)}
+.navbar-logo{width:36px;height:36px;border-radius:8px}
+.navbar-name{font-size:20px;font-weight:700;color:var(--green-dark)}
+.navbar-cta{
+  background:var(--green-accent);color:white;
+  padding:10px 22px;border-radius:var(--r);
+  font-size:14px;font-weight:600;
+  text-decoration:none;
+  transition:background 0.2s,transform 0.2s;
+}
+.navbar-cta:hover{background:var(--green-dark);transform:translateY(-1px)}
+
+/* ========== HERO ========== */
+.hero{
+  padding:140px 24px 80px;
+  background:linear-gradient(170deg,#1a5a3a 0%,#2E7D32 30%,#43A047 60%,#66BB6A 80%,#A5D6A7 95%);
+  text-align:center;color:white;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:80px;
+  background:linear-gradient(to bottom,transparent,var(--cream));
+}
+.hero-badge{
+  display:inline-block;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(8px);
+  padding:6px 18px;border-radius:999px;
+  font-size:13px;font-weight:600;
+  margin-bottom:24px;
+  border:1px solid rgba(255,255,255,0.2);
+}
+.hero h1{
+  font-size:clamp(28px,5vw,52px);
+  font-weight:800;
+  line-height:1.15;
+  max-width:700px;margin:0 auto 20px;
+}
+.hero p{
+  font-size:clamp(16px,2.5vw,20px);
+  opacity:0.9;
+  max-width:560px;margin:0 auto 36px;
+  line-height:1.5;
+}
+.hero-cta{
+  display:inline-block;
+  background:white;color:var(--green-dark);
+  padding:16px 36px;border-radius:var(--r);
+  font-size:16px;font-weight:700;
+  text-decoration:none;
+  transition:transform 0.2s,box-shadow 0.2s;
+  box-shadow:0 4px 20px rgba(0,0,0,0.15);
+}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.2)}
+.hero-stats{
+  display:flex;justify-content:center;gap:40px;
+  margin-top:48px;
+  position:relative;z-index:1;
+}
+.hero-stat{text-align:center}
+.hero-stat-num{font-size:28px;font-weight:800}
+.hero-stat-label{font-size:12px;opacity:0.8;margin-top:2px}
+
+/* ========== SECTIONS ========== */
+.section{padding:80px 24px}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-title{
+  text-align:center;
+  font-size:clamp(24px,4vw,36px);
+  font-weight:800;
+  margin-bottom:12px;
+  color:var(--text-dark);
+}
+.section-sub{
+  text-align:center;
+  font-size:16px;
+  color:var(--text-muted);
+  max-width:600px;margin:0 auto 48px;
+}
+
+/* ========== WHAT IS SUPPTREE ========== */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+}
+.feature-card{
+  background:var(--white);
+  border-radius:12px;
+  padding:32px 24px;
+  box-shadow:var(--shadow);
+  text-align:center;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.feature-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.1)}
+.feature-icon{
+  width:64px;height:64px;
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;
+  margin:0 auto 16px;
+}
+.feature-icon.green{background:linear-gradient(135deg,#dcfce7,#bbf7d0)}
+.feature-icon.blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe)}
+.feature-icon.orange{background:linear-gradient(135deg,#ffedd5,#fed7aa)}
+.feature-card h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.feature-card p{font-size:14px;color:var(--text-muted);line-height:1.6}
+
+/* ========== FOR PARTNER / HERSTELLER ========== */
+.two-col{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:48px;
+  align-items:center;
+}
+.info-block h3{font-size:28px;font-weight:800;margin-bottom:8px}
+.info-block .tag{
+  display:inline-block;
+  padding:4px 12px;border-radius:999px;
+  font-size:11px;font-weight:700;
+  margin-bottom:16px;
+}
+.tag.partner{background:var(--green-light);color:var(--green-dark)}
+.tag.hersteller{background:#dbeafe;color:#1e40af}
+.info-block p.desc{font-size:15px;color:var(--text-muted);margin-bottom:24px;line-height:1.7}
+.benefit-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+.benefit-list li{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:15px;font-weight:500;
+}
+.benefit-check{
+  width:24px;height:24px;
+  border-radius:6px;
+  background:var(--green-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:var(--green-dark);
+  flex-shrink:0;margin-top:1px;
+}
+.info-visual{
+  background:var(--white);
+  border-radius:16px;
+  padding:40px;
+  box-shadow:var(--shadow);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:320px;
+  text-align:center;
+}
+.info-visual-icon{font-size:64px;margin-bottom:16px}
+.info-visual-title{font-size:18px;font-weight:700;margin-bottom:6px}
+.info-visual-sub{font-size:13px;color:var(--text-muted)}
+
+.section-alt{background:var(--white)}
+
+/* ========== HOW IT WORKS ========== */
+.steps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:32px;
+  position:relative;
+}
+.steps::before{
+  content:'';position:absolute;
+  top:44px;left:16%;right:16%;
+  height:3px;
+  background:linear-gradient(90deg,var(--green-light),var(--green-accent),var(--green-light));
+  border-radius:2px;
+}
+.step{
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+.step-num{
+  width:88px;height:88px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--green-dark),var(--green-accent));
+  color:white;
+  font-size:32px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  box-shadow:0 4px 20px rgba(0,167,126,0.3);
+}
+.step h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.step p{font-size:14px;color:var(--text-muted);max-width:260px;margin:0 auto}
+
+/* ========== REGISTRATION FORM ========== */
+.register-section{
+  background:linear-gradient(170deg,var(--green-dark) 0%,#2E7D32 100%);
+  padding:80px 24px;
+}
+.register-card{
+  max-width:520px;margin:0 auto;
+  background:var(--white);
+  border-radius:16px;
+  padding:40px 32px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15);
+}
+.register-card h2{
+  font-size:24px;font-weight:800;
+  text-align:center;margin-bottom:6px;
+}
+.register-card .reg-sub{
+  text-align:center;color:var(--text-muted);
+  font-size:14px;margin-bottom:28px;
+}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text-dark)}
+.form-input{
+  width:100%;
+  padding:13px 14px;
+  border:2px solid var(--border);
+  border-radius:var(--r);
+  font-size:15px;
+  font-family:inherit;
+  outline:none;
+  transition:border-color 0.2s;
+}
+.form-input:focus{border-color:var(--green-accent)}
+
+/* Type Toggle */
+.type-toggle{
+  display:flex;gap:0;
+  background:var(--cream);
+  border-radius:var(--r);
+  padding:4px;
+  margin-bottom:16px;
+}
+.type-btn{
+  flex:1;
+  padding:12px;
+  text-align:center;
+  border-radius:5px;
+  font-size:14px;font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+  color:var(--text-muted);
+  border:none;background:none;
+  font-family:inherit;
+}
+.type-btn.active{
+  background:var(--white);
+  color:var(--green-dark);
+  box-shadow:0 1px 4px rgba(0,0,0,0.08);
+}
+.type-btn:hover:not(.active){color:var(--text-dark)}
+
+/* Subtype Select */
+.subtype-group{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.3s ease,opacity 0.3s;
+  opacity:0;
+}
+.subtype-group.show{max-height:100px;opacity:1}
+.form-select{
+  width:100%;
+  padding:13px 14px;
+  border:2px solid var(--border);
+  border-radius:var(--r);
+  font-size:15px;
+  font-family:inherit;
+  outline:none;
+  background:white;
+  transition:border-color 0.2s;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+}
+.form-select:focus{border-color:var(--green-accent)}
+
+.submit-btn{
+  width:100%;
+  padding:16px;
+  background:var(--green-accent);
+  color:white;
+  border:none;
+  border-radius:var(--r);
+  font-size:16px;
+  font-weight:700;
+  font-family:inherit;
+  cursor:pointer;
+  transition:background 0.2s,transform 0.2s;
+  margin-top:8px;
+}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-1px)}
+.submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+
+/* Success / Error */
+.form-msg{
+  text-align:center;
+  padding:12px;
+  border-radius:var(--r);
+  font-size:14px;
+  font-weight:600;
+  margin-top:16px;
+  display:none;
+}
+.form-msg.success{display:block;background:#dcfce7;color:#166534}
+.form-msg.error{display:block;background:#fef2f2;color:#991b1b}
+
+/* Success State */
+.register-success{
+  text-align:center;
+  padding:24px 0;
+}
+.register-success .check-icon{
+  width:72px;height:72px;
+  border-radius:50%;
+  background:var(--green-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+  margin:0 auto 16px;
+}
+.register-success h3{font-size:20px;font-weight:700;margin-bottom:8px}
+.register-success p{font-size:14px;color:var(--text-muted)}
+
+/* ========== FOOTER ========== */
+.footer{
+  background:var(--text-dark);
+  color:rgba(255,255,255,0.7);
+  padding:40px 24px;
+  text-align:center;
+}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-brand{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-bottom:12px;
+}
+.footer-logo{width:28px;height:28px;border-radius:6px}
+.footer-name{font-size:16px;font-weight:700;color:white}
+.footer p{font-size:13px;margin-bottom:4px}
+.footer a{color:var(--green-accent);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:768px){
+  .features-grid,.steps{grid-template-columns:1fr;gap:16px}
+  .two-col{grid-template-columns:1fr;gap:32px}
+  .two-col.reverse .info-visual{order:-1}
+  .hero{padding:120px 20px 60px}
+  .hero-stats{gap:24px;flex-wrap:wrap}
+  .section{padding:56px 20px}
+  .register-card{padding:28px 20px}
+  .steps::before{display:none}
+  .navbar-cta{padding:8px 16px;font-size:13px}
+  .info-block h3{font-size:22px}
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.animate{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
+.animate.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="navbar-brand">
+      <img src="../www/assets/icon.png" alt="SuppTree" class="navbar-logo">
+      <span class="navbar-name">SuppTree</span>
+    </a>
+    <a href="#registrieren" class="navbar-cta">Jetzt registrieren</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-badge">Bald verfügbar — Jetzt vorab registrieren</div>
+  <h1>Der Supplement-Marktplatz für Gesundheitspartner</h1>
+  <p>SuppTree verbindet Heilpraktiker, Trainer und Ernährungsberater mit hochwertigen Supplement-Herstellern. Verdiene Provisionen — ohne monatliche Kosten.</p>
+  <a href="#registrieren" class="hero-cta">Kostenlos vorab registrieren</a>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">0 €</div>
+      <div class="hero-stat-label">Monatliche Kosten</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">bis 20 %</div>
+      <div class="hero-stat-label">Provision pro Verkauf</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">QR + Link</div>
+      <div class="hero-stat-label">Empfehlungswege</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WAS IST SUPPTREE ===== -->
+<section class="section">
+  <div class="section-inner">
+    <h2 class="section-title animate">Was ist SuppTree?</h2>
+    <p class="section-sub animate">Eine Plattform, die alle Beteiligten im Supplement-Markt zusammenbringt — einfach, transparent und fair.</p>
+    <div class="features-grid">
+      <div class="feature-card animate">
+        <div class="feature-icon green">&#x1F331;</div>
+        <h3>Supplement-Marktplatz</h3>
+        <p>Ein zentraler Ort für hochwertige Nahrungsergänzungsmittel — kuratiert und vertrauenswürdig.</p>
+      </div>
+      <div class="feature-card animate">
+        <div class="feature-icon blue">&#x1F91D;</div>
+        <h3>Partner trifft Hersteller</h3>
+        <p>Gesundheitsexperten empfehlen Produkte, die sie kennen und vertrauen. Hersteller gewinnen neue Reichweite.</p>
+      </div>
+      <div class="feature-card animate">
+        <div class="feature-icon orange">&#x1F4B0;</div>
+        <h3>Fair & Kostenfrei</h3>
+        <p>Keine Abos, keine Grundgebühr. Du verdienst Provisionen pro Verkauf — wir verdienen nur wenn du verdienst.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FÜR PARTNER ===== -->
+<section class="section section-alt">
+  <div class="section-inner">
+    <div class="two-col">
+      <div class="info-block animate">
+        <span class="tag partner">Für Partner</span>
+        <h3>Empfehle Supplements und verdiene mit</h3>
+        <p class="desc">Als Heilpraktiker, Fitness-Trainer oder Ernährungsberater empfiehlst du ohnehin Produkte. Mit SuppTree verdienst du daran — automatisch und transparent.</p>
+        <ul class="benefit-list">
+          <li><span class="benefit-check">&#x2713;</span> Provisionen pro Verkauf (bis zu 20%)</li>
+          <li><span class="benefit-check">&#x2713;</span> Eigene Partner-App mit Kunden-Management</li>
+          <li><span class="benefit-check">&#x2713;</span> Empfehlungen per QR-Code &amp; persönlichem Link</li>
+          <li><span class="benefit-check">&#x2713;</span> Trainings- &amp; Ernährungspläne erstellen</li>
+          <li><span class="benefit-check">&#x2713;</span> 0 € monatliche Kosten — für immer</li>
+        </ul>
+      </div>
+      <div class="info-visual animate">
+        <div class="info-visual-icon">&#x1F3AF;</div>
+        <div class="info-visual-title">Deine Empfehlung, dein Verdienst</div>
+        <div class="info-visual-sub">QR-Code scannen — Kunde kauft — du verdienst</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FÜR HERSTELLER ===== -->
+<section class="section">
+  <div class="section-inner">
+    <div class="two-col reverse">
+      <div class="info-visual animate">
+        <div class="info-visual-icon">&#x1F3ED;</div>
+        <div class="info-visual-title">Tausende Gesundheitspartner</div>
+        <div class="info-visual-sub">Deine Produkte — empfohlen von Experten</div>
+      </div>
+      <div class="info-block animate">
+        <span class="tag hersteller">Für Hersteller</span>
+        <h3>Vertrieb über qualifizierte Partner</h3>
+        <p class="desc">Erreiche Endkunden über ein Netzwerk von Gesundheitsexperten, die deine Produkte aktiv empfehlen — authentisch und glaubwürdig.</p>
+        <ul class="benefit-list">
+          <li><span class="benefit-check">&#x2713;</span> Zugang zu qualifizierten Gesundheitspartnern</li>
+          <li><span class="benefit-check">&#x2713;</span> Kein eigener Vertrieb oder Außendienst nötig</li>
+          <li><span class="benefit-check">&#x2713;</span> Performance-basiert — nur zahlen bei Verkauf</li>
+          <li><span class="benefit-check">&#x2713;</span> Transparentes Dashboard mit Echtzeit-Statistiken</li>
+          <li><span class="benefit-check">&#x2713;</span> Automatische Rechnungsstellung</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SO FUNKTIONIERT'S ===== -->
+<section class="section section-alt">
+  <div class="section-inner">
+    <h2 class="section-title animate">So funktioniert's</h2>
+    <p class="section-sub animate">In drei einfachen Schritten zum passiven Einkommen.</p>
+    <div class="steps">
+      <div class="step animate">
+        <div class="step-num">1</div>
+        <h3>Registrieren</h3>
+        <p>Erstelle dein Profil als Partner oder stelle deine Produkte als Hersteller ein.</p>
+      </div>
+      <div class="step animate">
+        <div class="step-num">2</div>
+        <h3>Empfehlen</h3>
+        <p>Partner teilen ihren QR-Code oder Link mit Kunden — persönlich oder digital.</p>
+      </div>
+      <div class="step animate">
+        <div class="step-num">3</div>
+        <h3>Verdienen</h3>
+        <p>Bei jedem Kauf über deine Empfehlung verdienst du automatisch eine Provision.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REGISTRIERUNG ===== -->
+<section class="register-section" id="registrieren">
+  <div class="register-card">
+    <div id="regForm">
+      <h2>Vorab registrieren</h2>
+      <p class="reg-sub">Sei von Anfang an dabei. Wir informieren dich, sobald SuppTree startet.</p>
+
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input type="text" id="regName" class="form-input" placeholder="Dein vollständiger Name" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">E-Mail</label>
+        <input type="email" id="regEmail" class="form-input" placeholder="deine@email.de" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Ich bin...</label>
+        <div class="type-toggle">
+          <button class="type-btn active" onclick="setType('partner')">Partner</button>
+          <button class="type-btn" onclick="setType('hersteller')">Hersteller</button>
+        </div>
+      </div>
+
+      <div class="form-group subtype-group show" id="subtypeGroup">
+        <label class="form-label">Bereich</label>
+        <select id="regSubtype" class="form-select">
+          <option value="">Bitte wählen...</option>
+          <option value="heilpraktiker">Heilpraktiker/in</option>
+          <option value="fitness_trainer">Fitness-Trainer/in</option>
+          <option value="ernaehrungsberater">Ernährungsberater/in</option>
+          <option value="apotheke">Apotheke</option>
+          <option value="sonstige">Sonstiges</option>
+        </select>
+      </div>
+
+      <button class="submit-btn" id="regBtn" onclick="submitRegistration()">Kostenlos vorab registrieren</button>
+
+      <div class="form-msg" id="regMsg"></div>
+    </div>
+
+    <div id="regSuccess" class="register-success" style="display:none">
+      <div class="check-icon">&#x2713;</div>
+      <h3>Du bist dabei!</h3>
+      <p>Wir melden uns bei dir, sobald SuppTree startet. Bis bald!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="../www/assets/icon.png" alt="SuppTree" class="footer-logo">
+      <span class="footer-name">SuppTree</span>
+    </div>
+    <p>Der Supplement-Marktplatz für Gesundheitspartner</p>
+    <p style="margin-top:8px">Fragen? <a href="mailto:info@supptree.de">info@supptree.de</a></p>
+    <p style="margin-top:16px;font-size:12px;opacity:0.5">&copy; 2026 SuppTree. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="../shared/config.js"></script>
+<script>
+// Supabase Lite Client (kein CDN nötig — REST API direkt)
+const SB_URL = SUPPTREE_CONFIG.SUPABASE_URL;
+const SB_KEY = SUPPTREE_CONFIG.SUPABASE_ANON_KEY;
+
+let selectedType = 'partner';
+
+function setType(type) {
+  selectedType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const sg = document.getElementById('subtypeGroup');
+  if (type === 'partner') {
+    sg.classList.add('show');
+  } else {
+    sg.classList.remove('show');
+  }
+}
+
+async function submitRegistration() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const subtype = selectedType === 'partner' ? document.getElementById('regSubtype').value : null;
+  const btn = document.getElementById('regBtn');
+  const msg = document.getElementById('regMsg');
+
+  // Validation
+  msg.className = 'form-msg';
+  msg.style.display = 'none';
+
+  if (!name) return showMsg('Bitte gib deinen Namen ein.', 'error');
+  if (!email || !email.includes('@')) return showMsg('Bitte gib eine gültige E-Mail ein.', 'error');
+  if (selectedType === 'partner' && !subtype) return showMsg('Bitte wähle deinen Bereich.', 'error');
+
+  btn.disabled = true;
+  btn.textContent = 'Wird registriert...';
+
+  try {
+    const body = {
+      name: name,
+      email: email.toLowerCase(),
+      type: selectedType,
+      partner_subtype: subtype
+    };
+
+    const res = await fetch(SB_URL + '/rest/v1/waitlist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (res.ok) {
+      document.getElementById('regForm').style.display = 'none';
+      document.getElementById('regSuccess').style.display = 'block';
+    } else {
+      const errText = await res.text();
+      if (errText.includes('duplicate') || errText.includes('unique') || res.status === 409) {
+        showMsg('Diese E-Mail ist bereits registriert. Wir melden uns bei dir!', 'success');
+      } else {
+        showMsg('Ein Fehler ist aufgetreten. Bitte versuche es später erneut.', 'error');
+      }
+    }
+  } catch (e) {
+    showMsg('Verbindungsfehler. Bitte prüfe deine Internetverbindung.', 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Kostenlos vorab registrieren';
+}
+
+function showMsg(text, type) {
+  const msg = document.getElementById('regMsg');
+  msg.textContent = text;
+  msg.className = 'form-msg ' + type;
+  msg.style.display = 'block';
+}
+
+// Scroll Animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
