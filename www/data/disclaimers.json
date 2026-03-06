@@ -1,0 +1,7 @@
+{
+  "global": "SuppTree gibt allgemeine Informationen zu Nahrungsergaenzungsmitteln. Diese ersetzen nicht die Beratung durch Arzt, Apotheker oder medizinische Fachpersonen. Hinweise basieren auf allgemein zugaenglichen Informationen ohne Anspruch auf Vollstaendigkeit. SuppTree ist kein Medizinprodukt.",
+  "medikamenten_eingabe": "Medikamentenangaben werden nur fuer allgemeine Wechselwirkungsinfos verwendet. Keine Empfehlungen zu Einnahme oder Dosierung von Medikamenten.",
+  "rot_disclaimer": "Ich habe die Information zur Kenntnis genommen, dass eine bekannte Wechselwirkung zwischen {supplement} und {medikamentengruppe} besteht. Ich werde Ruecksprache mit meinem Arzt oder Apotheker halten.",
+  "gelb_arzt_verweis": "Bitte sprich mit deinem Arzt oder Apotheker.",
+  "rot_warnung_text": "Diese Information dient nur der allgemeinen Aufklaerung. Bitte nimm dieses Supplement nur nach Ruecksprache mit deinem Arzt oder Apotheker."
+}

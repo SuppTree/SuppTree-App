@@ -92,7 +92,7 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
   display:flex;align-items:center;justify-content:space-between;
 }
 .navbar-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.navbar-logo{width:32px;height:32px;border-radius:8px}
+.navbar-logo{height:36px;width:auto}
 .navbar-name{font-size:18px;font-weight:800;color:var(--green-dark)}
 .navbar-right{display:flex;align-items:center;gap:16px}
 .navbar-user{font-size:13px;color:var(--text-muted);font-weight:500}
@@ -263,7 +263,7 @@ h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
   max-height:0;overflow:hidden;
   transition:max-height 0.4s ease;
 }
-.prep-card.open .prep-card-body{max-height:1200px}
+.prep-card.open .prep-card-body{max-height:5000px}
 .prep-card-inner{padding:0 24px 24px}
 
 .prep-form-group{margin-bottom:16px}
@@ -295,28 +295,6 @@ textarea.prep-input{resize:vertical;min-height:80px}
 }
 .prep-save-msg.show{opacity:1}
 
-.prep-checklist{display:flex;flex-direction:column;gap:10px}
-.prep-cl-item{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 16px;
-  background:var(--cream);border-radius:var(--r);
-  cursor:pointer;transition:all 0.2s;
-  user-select:none;
-}
-.prep-cl-item:hover{background:var(--green-light)}
-.prep-cl-box{
-  width:22px;height:22px;min-width:22px;border-radius:6px;
-  border:2px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:transparent;
-  transition:all 0.2s;
-}
-.prep-cl-item.checked .prep-cl-box{
-  background:var(--green-accent);border-color:var(--green-accent);color:white;
-}
-.prep-cl-text{font-size:14px;font-weight:600;color:var(--text-dark)}
-.prep-cl-desc{font-size:12px;color:var(--text-muted);margin-top:1px}
-
 /* Form-Rows (side-by-side) */
 .prep-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .prep-form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -326,6 +304,39 @@ textarea.prep-input{resize:vertical;min-height:80px}
   border-top:1px solid var(--border);
 }
 .prep-section-label:first-child{border-top:none;margin-top:0;padding-top:0}
+
+/* Öffnungszeiten per-day editor */
+.hours-toggle{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.hours-toggle input[type="checkbox"]{width:18px;height:18px;accent-color:var(--green-accent)}
+.hours-toggle label{font-size:13px;font-weight:600;color:var(--text-dark)}
+.hours-day{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--cream);border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px}
+.hours-day.hclosed{opacity:0.45}
+.hours-day-name{font-size:12px;font-weight:700;min-width:24px;color:var(--text-dark)}
+.hours-day-times{display:flex;align-items:center;gap:4px;flex:1}
+.hours-day-times input[type="time"]{flex:1;padding:6px 4px;border:1.5px solid var(--border);border-radius:5px;font-size:12px;background:white}
+.hours-day-times input[type="time"]:focus{border-color:var(--green-accent);outline:none}
+.hours-day-sep{font-size:11px;color:var(--text-muted);padding:0 2px}
+.hours-day-actions{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
+.hours-mode-toggle{
+  display:inline-flex;border-radius:6px;overflow:hidden;border:1.5px solid var(--border);
+}
+.hours-mode-btn{
+  font-size:10px;padding:3px 8px;border:none;cursor:pointer;
+  font-weight:600;transition:all 0.15s;white-space:nowrap;
+  background:var(--cream);color:var(--text-muted);
+}
+.hours-mode-btn.active{background:var(--green-accent);color:white}
+.hours-mode-btn:first-child{border-right:1px solid var(--border)}
+.hours-closed-btn{
+  font-size:10px;padding:3px 8px;border-radius:6px;border:1.5px solid var(--border);
+  cursor:pointer;font-weight:600;transition:all 0.15s;white-space:nowrap;
+  background:var(--cream);color:var(--text-muted);
+}
+.hours-closed-btn.active{background:#fee2e2;color:#dc2626;border-color:#fca5a5}
+@media(max-width:420px){
+  .hours-day{flex-wrap:wrap;gap:4px}
+  .hours-day-times{min-width:100%;order:2}
+}
 
 /* Appointment type toggles */
 .prep-modes{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
@@ -399,8 +410,7 @@ textarea.prep-input{resize:vertical;min-height:80px}
 <nav class="navbar">
   <div class="navbar-inner">
     <a href="index.html" class="navbar-brand">
-      <img src="../www/assets/icon.png" alt="SuppTree" class="navbar-logo">
-      <span class="navbar-name">SuppTree</span>
+      <img src="assets/logo.png" alt="SuppTree" class="navbar-logo">
     </a>
     <div class="navbar-right">
       <span class="navbar-user" id="navUser"></span>
@@ -421,15 +431,15 @@ textarea.prep-input{resize:vertical;min-height:80px}
   <!-- Stats -->
   <div class="stats-bar">
     <div class="stat-card">
-      <div class="stat-val" id="statMembers">--</div>
+      <div class="stat-val" id="statMembers">23</div>
       <div class="stat-label">Registrierte Mitglieder</div>
     </div>
     <div class="stat-card">
-      <div class="stat-val">28+</div>
+      <div class="stat-val">7</div>
       <div class="stat-label">Features fertiggestellt</div>
     </div>
     <div class="stat-card">
-      <div class="stat-val">Q2 2026</div>
+      <div class="stat-val">Q3 2026</div>
       <div class="stat-label">Geplanter Start</div>
     </div>
   </div>
@@ -451,13 +461,13 @@ textarea.prep-input{resize:vertical;min-height:80px}
       <div class="prep-bar"><div class="prep-bar-fill" id="prepBarFill" style="width:0%"></div></div>
     </div>
 
-    <!-- Profil-Daten -->
-    <div class="prep-card" id="prepProfile">
+    <!-- Profil bearbeiten (1:1 wie Partner-Portal) -->
+    <div class="prep-card open" id="prepProfile">
       <div class="prep-card-header" onclick="togglePrep('prepProfile')">
         <div class="prep-card-left">
           <div class="prep-card-icon" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">&#x1F464;</div>
           <div>
-            <div class="prep-card-title">Profil-Daten</div>
+            <div class="prep-card-title">Mein Profil</div>
             <div class="prep-card-status" id="prepProfileStatus">Noch nicht ausgef&uuml;llt</div>
           </div>
         </div>
@@ -465,7 +475,43 @@ textarea.prep-input{resize:vertical;min-height:80px}
       </div>
       <div class="prep-card-body">
         <div class="prep-card-inner">
-          <div class="prep-form-row" style="grid-template-columns:100px 1fr 1fr">
+
+          <!-- Hintergrundbild (Banner) -->
+          <div style="position:relative;border-radius:12px;overflow:hidden;margin-bottom:16px;border:2px dashed var(--border)">
+            <div id="prepBannerPreview" style="width:100%;height:140px;background:linear-gradient(165deg,#0d3320,#1a5a3a,#2E7D32);display:flex;align-items:center;justify-content:center">
+              <img id="prepBannerImg" style="width:100%;height:100%;object-fit:cover;display:none">
+              <span id="prepBannerPlaceholder" style="color:rgba(255,255,255,0.5);font-size:13px;font-weight:600">Hintergrundbild hochladen</span>
+            </div>
+            <div style="position:absolute;top:8px;right:8px;display:flex;gap:4px">
+              <button type="button" onclick="uploadImage('banner')" style="background:rgba(0,0,0,0.5);color:white;border:none;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer">&#x1F4F8; Banner</button>
+              <button type="button" id="prepBannerRemove" onclick="removeImage('banner')" style="background:rgba(220,38,38,0.7);color:white;border:none;padding:4px 8px;border-radius:7px;font-size:11px;cursor:pointer;display:none">&#x2715;</button>
+            </div>
+          </div>
+
+          <!-- Profilbild -->
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+            <div id="prepAvatarPreview" style="width:72px;height:72px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;overflow:hidden;border:3px solid var(--green-accent)">
+              <span id="prepAvatarEmoji">&#x1F464;</span>
+              <img id="prepAvatarImg" style="width:100%;height:100%;object-fit:cover;display:none">
+            </div>
+            <div style="flex:1">
+              <button type="button" onclick="uploadImage('avatar')" style="font-size:12px;padding:6px 14px;border:1.5px solid var(--border);border-radius:var(--r);background:white;color:var(--text-body);cursor:pointer;font-weight:600">Profilbild hochladen</button>
+              <div class="prep-hint" style="margin-top:4px">JPG oder PNG, max. 500 KB</div>
+            </div>
+          </div>
+
+          <!-- Name -->
+          <div class="prep-form-row" style="grid-template-columns:1fr 1fr">
+            <div class="prep-form-group">
+              <label class="prep-label">Anrede *</label>
+              <select class="prep-input" id="prepAnrede" style="padding:11px 8px">
+                <option value="">Bitte w&auml;hlen</option>
+                <option value="Herr">Herr</option>
+                <option value="Frau">Frau</option>
+                <option value="Divers">Divers</option>
+                <option value="Keine Angabe">Keine Angabe</option>
+              </select>
+            </div>
             <div class="prep-form-group">
               <label class="prep-label">Titel (opt.)</label>
               <select class="prep-input" id="prepTitle" style="padding:11px 8px">
@@ -473,10 +519,11 @@ textarea.prep-input{resize:vertical;min-height:80px}
                 <option value="Dr.">Dr.</option>
                 <option value="Prof.">Prof.</option>
                 <option value="Prof. Dr.">Prof. Dr.</option>
-                <option value="Dipl.">Dipl.</option>
                 <option value="HP">HP</option>
               </select>
             </div>
+          </div>
+          <div class="prep-form-row" style="grid-template-columns:1fr 1fr">
             <div class="prep-form-group">
               <label class="prep-label">Vorname *</label>
               <input type="text" class="prep-input" id="prepFirstName" placeholder="Max" autocomplete="given-name">
@@ -487,43 +534,37 @@ textarea.prep-input{resize:vertical;min-height:80px}
             </div>
           </div>
           <div class="prep-form-group" id="prepJobGroup">
-            <label class="prep-label" id="prepJobLabel">Titel / Berufsbezeichnung</label>
+            <label class="prep-label" id="prepJobLabel">Titel / Berufsbezeichnung *</label>
             <input type="text" class="prep-input" id="prepJob" placeholder="">
             <div class="prep-hint" id="prepJobHint">So erscheinst du auf deinem Profil, z.B. &bdquo;Heilpraktiker &middot; Ern&auml;hrungsberater&ldquo;</div>
           </div>
+
+          <!-- Über mich -->
+          <div class="prep-section-label">&Uuml;ber mich</div>
           <div class="prep-form-group">
-            <label class="prep-label" id="prepCompanyLabel">Praxis / Firma (optional)</label>
-            <input type="text" class="prep-input" id="prepCompany" placeholder="">
-          </div>
-          <div class="prep-form-group">
-            <label class="prep-label" id="prepBioLabel">&Uuml;ber mich</label>
-            <textarea class="prep-input" id="prepBio" placeholder=""></textarea>
+            <textarea class="prep-input" id="prepBio" placeholder="" rows="4"></textarea>
             <div class="prep-hint" id="prepBioHint">Wird auf deinem Profil angezeigt. Erz&auml;hle was du anbietest und was dich ausmacht.</div>
           </div>
-          <button class="prep-save-btn" id="prepSaveBtn" onclick="saveProfile()">Profil speichern</button>
-          <span class="prep-save-msg" id="prepSaveMsg">Gespeichert!</span>
-        </div>
-      </div>
-    </div>
 
-    <!-- Kontakt & Standort -->
-    <div class="prep-card" id="prepContact">
-      <div class="prep-card-header" onclick="togglePrep('prepContact')">
-        <div class="prep-card-left">
-          <div class="prep-card-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">&#x1F4CD;</div>
-          <div>
-            <div class="prep-card-title">Kontakt &amp; Standort</div>
-            <div class="prep-card-status" id="prepContactStatus">Noch nicht ausgef&uuml;llt</div>
+          <!-- Qualifikationen -->
+          <div id="prepQualsSection">
+            <div class="prep-section-label">Qualifikationen</div>
+            <div class="prep-form-group">
+              <textarea class="prep-input" id="prepQualsText" placeholder="Eine Qualifikation pro Zeile" rows="3"></textarea>
+              <div class="prep-hint">z.B. Heilpraktiker (seit 2009), Zertifizierter Ern&auml;hrungsberater (DGE)</div>
+            </div>
           </div>
-        </div>
-        <div class="prep-check" id="prepContactCheck">&#x2713;</div>
-      </div>
-      <div class="prep-card-body">
-        <div class="prep-card-inner">
+
+          <!-- Kontakt & Standort -->
+          <div class="prep-section-label">Kontakt &amp; Standort</div>
           <div class="prep-form-group">
             <label class="prep-label" id="prepLocationLabel">Standort / Adresse</label>
             <input type="text" class="prep-input" id="prepLocation" placeholder="z.B. Maximilianstr. 42, 80539 M&uuml;nchen">
-            <div class="prep-hint" id="prepLocationHint">Wo finden dich deine Kunden? Wird auf deinem Profil &amp; in der Suche angezeigt.</div>
+          </div>
+          <div class="prep-form-group" id="prepCompanyGroup">
+            <label class="prep-label" id="prepCompanyLabel">Praxis / Firma (optional)</label>
+            <input type="text" class="prep-input" id="prepCompany" placeholder="">
+            <div class="prep-hint" id="prepCompanyHint" style="display:none"></div>
           </div>
           <div class="prep-form-row">
             <div class="prep-form-group">
@@ -536,26 +577,17 @@ textarea.prep-input{resize:vertical;min-height:80px}
             </div>
           </div>
 
-          <!-- Öffnungszeiten (nur Partner) -->
+          <!-- Öffnungszeiten -->
           <div id="prepHoursGroup">
             <div class="prep-section-label">&Ouml;ffnungszeiten</div>
-            <div class="prep-form-row-3">
-              <div class="prep-form-group">
-                <label class="prep-label">Mo &ndash; Fr</label>
-                <input type="text" class="prep-input" id="prepHoursWeek" placeholder="09:00 - 18:00">
-              </div>
-              <div class="prep-form-group">
-                <label class="prep-label">Samstag</label>
-                <input type="text" class="prep-input" id="prepHoursSat" placeholder="10:00 - 14:00">
-              </div>
-              <div class="prep-form-group">
-                <label class="prep-label">Sonntag</label>
-                <input type="text" class="prep-input" id="prepHoursSun" placeholder="Geschlossen">
-              </div>
+            <div class="hours-toggle">
+              <input type="checkbox" id="prepHoursEnabled" onchange="toggleHoursEditor(this.checked)">
+              <label for="prepHoursEnabled">Ich habe einen festen Standort (Praxis, Studio, B&uuml;ro...)</label>
             </div>
+            <div id="prepHoursEditor" style="display:none"></div>
           </div>
 
-          <!-- Terminarten (nur Partner) -->
+          <!-- Terminarten -->
           <div id="prepModesGroup">
             <div class="prep-section-label">Terminarten</div>
             <div class="prep-hint" style="margin-bottom:8px">Wie k&ouml;nnen Kunden Termine bei dir buchen?</div>
@@ -575,29 +607,8 @@ textarea.prep-input{resize:vertical;min-height:80px}
             </div>
           </div>
 
-          <div style="margin-top:20px">
-            <button class="prep-save-btn" onclick="saveContact()">Kontaktdaten speichern</button>
-            <span class="prep-save-msg" id="prepContactMsg">Gespeichert!</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Social Media -->
-    <div class="prep-card" id="prepSocial">
-      <div class="prep-card-header" onclick="togglePrep('prepSocial')">
-        <div class="prep-card-left">
-          <div class="prep-card-icon" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8)">&#x1F4F1;</div>
-          <div>
-            <div class="prep-card-title">Social Media</div>
-            <div class="prep-card-status" id="prepSocialStatus">Noch nicht ausgef&uuml;llt</div>
-          </div>
-        </div>
-        <div class="prep-check" id="prepSocialCheck">&#x2713;</div>
-      </div>
-      <div class="prep-card-body">
-        <div class="prep-card-inner">
-          <div class="prep-hint" style="margin-bottom:16px">Deine Social-Media-Profile werden auf deinem Partner-Profil verlinkt.</div>
+          <!-- Social Media -->
+          <div class="prep-section-label">Social Media</div>
           <div class="prep-form-group">
             <label class="prep-label">Instagram</label>
             <div class="prep-social-input">
@@ -619,88 +630,50 @@ textarea.prep-input{resize:vertical;min-height:80px}
               <input type="text" id="prepLinkedin" placeholder="Dein Firmen- oder Profilname">
             </div>
           </div>
-          <div style="margin-top:20px">
-            <button class="prep-save-btn" onclick="saveSocial()">Social Media speichern</button>
-            <span class="prep-save-msg" id="prepSocialMsg">Gespeichert!</span>
+
+          <!-- Speichern -->
+          <div style="margin-top:24px">
+            <button class="prep-save-btn" id="prepSaveBtn" onclick="saveAllProfile()" style="width:100%">Profil speichern</button>
+            <span class="prep-save-msg" id="prepSaveMsg">Gespeichert!</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Qualifikationen (nur Partner) -->
-    <div class="prep-card" id="prepQuals" style="display:none">
-      <div class="prep-card-header" onclick="togglePrep('prepQuals')">
+    <!-- Profil-Vorschau Card -->
+    <div class="prep-card" id="prepPreviewCard">
+      <div class="prep-card-header" onclick="togglePrep('prepPreviewCard');showProfilePreview()">
         <div class="prep-card-left">
-          <div class="prep-card-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">&#x1F393;</div>
+          <div class="prep-card-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">&#x1F441;</div>
           <div>
-            <div class="prep-card-title">Qualifikationen</div>
-            <div class="prep-card-status" id="prepQualsStatus">Noch nicht ausgef&uuml;llt</div>
+            <div class="prep-card-title">Profil-Vorschau</div>
+            <div class="prep-card-status">So sehen dich deine Kunden</div>
           </div>
         </div>
-        <div class="prep-check" id="prepQualsCheck">&#x2713;</div>
-      </div>
-      <div class="prep-card-body">
-        <div class="prep-card-inner">
-          <div class="prep-form-group">
-            <label class="prep-label">Deine Qualifikationen &amp; Zertifizierungen</label>
-            <textarea class="prep-input" id="prepQualsText" placeholder="z.B.&#10;Heilpraktiker-Zulassung&#10;Osteopathie-Zertifikat (5 Jahre)&#10;Ern&auml;hrungsberater IHK" style="min-height:120px"></textarea>
-            <div class="prep-hint">Eine Qualifikation pro Zeile. Wird auf deinem Profil als Liste angezeigt.</div>
-          </div>
-          <div style="margin-top:20px">
-            <button class="prep-save-btn" onclick="saveQuals()">Qualifikationen speichern</button>
-            <span class="prep-save-msg" id="prepQualsMsg">Gespeichert!</span>
-          </div>
-        </div>
+        <span style="font-size:12px;font-weight:700;color:var(--green-accent);padding:6px 14px;border:2px solid var(--green-accent);border-radius:var(--r);white-space:nowrap">Vorschau &ouml;ffnen &#x2197;</span>
       </div>
     </div>
 
-    <!-- Checkliste -->
-    <div class="prep-card" id="prepChecklist">
-      <div class="prep-card-header" onclick="togglePrep('prepChecklist')">
-        <div class="prep-card-left">
-          <div class="prep-card-icon" style="background:linear-gradient(135deg,#ffedd5,#fed7aa)">&#x2705;</div>
-          <div>
-            <div class="prep-card-title">Checkliste</div>
-            <div class="prep-card-status" id="prepChecklistStatus">0 von 4 erledigt</div>
-          </div>
-        </div>
-        <div class="prep-check" id="prepChecklistCheck">&#x2713;</div>
-      </div>
-      <div class="prep-card-body">
-        <div class="prep-card-inner">
-          <div class="prep-checklist" id="prepCL">
-            <div class="prep-cl-item" onclick="toggleCL(this,0)">
-              <div class="prep-cl-box">&#x2713;</div>
-              <div>
-                <div class="prep-cl-text">Kontaktliste vorbereitet</div>
-                <div class="prep-cl-desc">E-Mails deiner Kunden gesammelt, die du sp&auml;ter einladen m&ouml;chtest</div>
-              </div>
-            </div>
-            <div class="prep-cl-item" onclick="toggleCL(this,1)">
-              <div class="prep-cl-box">&#x2713;</div>
-              <div>
-                <div class="prep-cl-text">Profilbild bereit</div>
-                <div class="prep-cl-desc">Professionelles Foto f&uuml;r dein Partner-Profil</div>
-              </div>
-            </div>
-            <div class="prep-cl-item" onclick="toggleCL(this,2)">
-              <div class="prep-cl-box">&#x2713;</div>
-              <div>
-                <div class="prep-cl-text">Social-Media-Strategie &uuml;berlegt</div>
-                <div class="prep-cl-desc">Auf welchen Plattformen willst du SuppTree teilen?</div>
-              </div>
-            </div>
-            <div class="prep-cl-item" onclick="toggleCL(this,3)">
-              <div class="prep-cl-box">&#x2713;</div>
-              <div>
-                <div class="prep-cl-text">Pitchdeck gelesen</div>
-                <div class="prep-cl-desc"><a href="index.html#pitchdecks" style="color:var(--green-accent)">Pitchdeck herunterladen</a> und durchlesen</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Hidden checks für Progress-Berechnung (Compat) -->
+    <div style="display:none">
+      <div id="prepContactCheck"></div>
+      <div id="prepSocialCheck"></div>
+      <div id="prepQualsCheck"></div>
+      <div class="prep-card" id="prepContact"></div>
+      <div class="prep-card" id="prepSocial"></div>
+      <div class="prep-card" id="prepQuals"></div>
+      <span id="prepContactStatus"></span>
+      <span id="prepSocialStatus"></span>
+      <span id="prepQualsStatus"></span>
+      <span id="prepContactMsg"></span>
+      <span id="prepSocialMsg"></span>
+      <span id="prepQualsMsg"></span>
+      <span id="prepNameSectionLabel"></span>
+      <span id="prepBioLabel"></span>
+      <span id="prepLocationHint"></span>
     </div>
+
+
   </div>
 
   <!-- TIMELINE -->
@@ -739,18 +712,18 @@ textarea.prep-input{resize:vertical;min-height:80px}
         <span class="tl-badge done">Fertig</span>
       </div>
       <div class="tl-item">
-        <div class="tl-dot done">&#x2713;</div>
-        <div class="tl-date">Februar 2026</div>
+        <div class="tl-dot wip">&#x25CF;</div>
+        <div class="tl-date">In Arbeit</div>
         <div class="tl-title">Lexoffice Rechnungs-Integration</div>
         <div class="tl-desc">Automatische Rechnungserstellung nach jeder Zahlung via Lexoffice API.</div>
-        <span class="tl-badge done">Fertig</span>
+        <span class="tl-badge wip">In Arbeit</span>
       </div>
       <div class="tl-item">
-        <div class="tl-dot done">&#x2713;</div>
-        <div class="tl-date">Februar 2026</div>
+        <div class="tl-dot wip">&#x25CF;</div>
+        <div class="tl-date">In Arbeit</div>
         <div class="tl-title">Payment-Integration: Stripe &amp; PayPal</div>
         <div class="tl-desc">Sichere Zahlungen f&uuml;r Produkte, Termine und Bluttests.</div>
-        <span class="tl-badge done">Fertig</span>
+        <span class="tl-badge wip">In Arbeit</span>
       </div>
       <div class="tl-item">
         <div class="tl-dot done">&#x2713;</div>
@@ -760,11 +733,11 @@ textarea.prep-input{resize:vertical;min-height:80px}
         <span class="tl-badge done">Fertig</span>
       </div>
       <div class="tl-item">
-        <div class="tl-dot done">&#x2713;</div>
-        <div class="tl-date">Februar 2026</div>
+        <div class="tl-dot wip">&#x25CF;</div>
+        <div class="tl-date">In Arbeit</div>
         <div class="tl-title">Push-Notifications</div>
         <div class="tl-desc">Benachrichtigungen f&uuml;r neue Bestellungen, Termine und Empfehlungen.</div>
-        <span class="tl-badge done">Fertig</span>
+        <span class="tl-badge wip">In Arbeit</span>
       </div>
       <div class="tl-item">
         <div class="tl-dot done">&#x2713;</div>
@@ -857,7 +830,7 @@ textarea.prep-input{resize:vertical;min-height:80px}
 
     <div class="faq-item" onclick="this.classList.toggle('open')">
       <div class="faq-q">Wann geht SuppTree live?<span class="faq-arrow">&#x25BC;</span></div>
-      <div class="faq-a">Wir planen den offiziellen Start f&uuml;r Q2 2026. Davor gibt es eine Beta-Phase mit ausgew&auml;hlten Partnern. Als fr&uuml;h Registrierter bist du unter den Ersten, die Zugang bekommen.</div>
+      <div class="faq-a">Wir planen den offiziellen Start f&uuml;r Q3 2026. Davor gibt es eine Beta-Phase mit ausgew&auml;hlten Partnern. Als fr&uuml;h Registrierter bist du unter den Ersten, die Zugang bekommen.</div>
     </div>
     <div class="faq-item" onclick="this.classList.toggle('open')">
       <div class="faq-q">Muss ich etwas vorbereiten?<span class="faq-arrow">&#x25BC;</span></div>
@@ -882,6 +855,7 @@ textarea.prep-input{resize:vertical;min-height:80px}
 <!-- Footer -->
 <footer class="footer">
   <p>&copy; 2026 SuppTree &middot; <a href="index.html">Zur Landingpage</a> &middot; <a href="mailto:info@supptree.de">info@supptree.de</a></p>
+  <p style="margin-top:12px"><a href="#" onclick="event.preventDefault();unregister()" style="color:#dc2626;font-size:12px">Komplett von der Warteliste austragen</a></p>
 </footer>
 
 </div><!-- /app -->
@@ -921,13 +895,15 @@ const TYPED_TIPS = {
 };
 
 function checkAccess() {
-  // Test-Bypass: status.html?admin=1
+  // Test-Bypass: ?type=partner | ?type=hersteller | ?type=unternehmen | ?admin=1
   const params = new URLSearchParams(window.location.search);
-  if (params.get('admin') === '1') {
+  if (params.get('admin') === '1' || params.get('type')) {
+    var testType = params.get('type') || 'partner';
+    var testSubtype = params.get('subtype') || (testType === 'partner' ? 'heilpraktiker' : '');
     localStorage.setItem('stWaitlistEmail', 'admin@supptree.de');
-    localStorage.setItem('stWaitlistName', 'Florian (Admin)');
-    localStorage.setItem('stWaitlistType', 'partner');
-    localStorage.setItem('stWaitlistSubtype', 'heilpraktiker');
+    localStorage.setItem('stWaitlistName', 'Florian Eichkorn');
+    localStorage.setItem('stWaitlistType', testType);
+    localStorage.setItem('stWaitlistSubtype', testSubtype);
   }
   const email = localStorage.getItem('stWaitlistEmail');
   const name = localStorage.getItem('stWaitlistName');
@@ -1025,7 +1001,7 @@ async function loadStats() {
     if (count) {
       const total = count.split('/')[1];
       if (total && total !== '*') {
-        document.getElementById('statMembers').textContent = total;
+        document.getElementById('statMembers').textContent = (parseInt(total) || 0) + 23;
       }
     }
   } catch (e) {
@@ -1080,9 +1056,109 @@ const COMPANY_LABELS = {
   unternehmen: 'Name der Einrichtung'
 };
 
-let _clState = [false, false, false, false];
 let _activeModes = ['praxis']; // Terminarten
 let _currentType = '';
+
+// ── Öffnungszeiten Per-Tag Editor ──
+var HOURS_DAYS=['mo','di','mi','do','fr','sa','so'];
+var HOURS_LABELS={mo:'Mo',di:'Di',mi:'Mi',do:'Do',fr:'Fr',sa:'Sa',so:'So'};
+var _hoursData={
+  mo:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},
+  di:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},
+  mi:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},
+  do:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},
+  fr:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},
+  sa:{closed:false,am:{from:'10:00',to:'14:00'},pm:{from:'',to:''}},
+  so:{closed:true,am:{from:'',to:''},pm:{from:'',to:''}}
+};
+
+function toggleHoursEditor(on){
+  document.getElementById('prepHoursEditor').style.display=on?'':'none';
+  if(on) renderHoursFields();
+}
+
+function isDaySplit(d){
+  var day=_hoursData[d];
+  return !!(day.pm && day.pm.from);
+}
+
+function renderHoursFields(){
+  var el=document.getElementById('prepHoursEditor');
+  var html='';
+  HOURS_DAYS.forEach(function(d){
+    var day=_hoursData[d];
+    var split=isDaySplit(d);
+    var cls=day.closed?'hours-day hclosed':'hours-day';
+    var dis=day.closed?'disabled':'';
+    html+='<div class="'+cls+'" id="hday_'+d+'">'
+      +'<span class="hours-day-name">'+HOURS_LABELS[d]+'</span>'
+      +'<div class="hours-day-times">'
+      +'<input type="time" id="h_'+d+'_am1" value="'+(day.am.from||'')+'" '+dis+'>'
+      +'<span class="hours-day-sep">&ndash;</span>'
+      +'<input type="time" id="h_'+d+'_am2" value="'+((split?day.am.to:day.pm.to)||day.am.to||'')+'" '+dis+'>';
+    if(split){
+      html+='<span class="hours-day-sep">,</span>'
+        +'<input type="time" id="h_'+d+'_pm1" value="'+(day.pm.from||'')+'" '+dis+'>'
+        +'<span class="hours-day-sep">&ndash;</span>'
+        +'<input type="time" id="h_'+d+'_pm2" value="'+(day.pm.to||'')+'" '+dis+'>';
+    } else {
+      html+='<span style="display:none">,</span>'
+        +'<input type="time" id="h_'+d+'_pm1" value="" style="display:none" disabled>'
+        +'<span style="display:none">&ndash;</span>'
+        +'<input type="time" id="h_'+d+'_pm2" value="" style="display:none" disabled>';
+    }
+    html+='</div>'
+      +'<div class="hours-day-actions">'
+      +'<div class="hours-mode-toggle">'
+      +'<button type="button" class="hours-mode-btn'+(split?'':' active')+'" onclick="setDayMode(\''+d+'\',false)">Ganztags</button>'
+      +'<button type="button" class="hours-mode-btn'+(split?' active':'')+'" onclick="setDayMode(\''+d+'\',true)">VM / NM</button>'
+      +'</div>'
+      +'<button type="button" class="hours-closed-btn'+(day.closed?' active':'')+'" onclick="toggleDayClose(\''+d+'\')">'+(day.closed?'Geschl.':'Offen')+'</button>'
+      +'</div>'
+      +'</div>';
+  });
+  el.innerHTML=html;
+}
+
+function setDayMode(d, wantSplit){
+  collectHoursData();
+  var day=_hoursData[d];
+  var currentlySplit=isDaySplit(d);
+  if(wantSplit && !currentlySplit){
+    // Ganztägig → Split: Mitte als Pause
+    var endTime=day.am.to||'18:00';
+    day.pm={from:'13:00',to:endTime};
+    day.am.to='12:00';
+  } else if(!wantSplit && currentlySplit){
+    // Split → Ganztägig: AM-Start bleibt, PM-Ende wird AM-Ende
+    day.am.to=day.pm.to||day.am.to;
+    day.pm={from:'',to:''};
+  }
+  renderHoursFields();
+}
+
+function toggleDayClose(d){
+  collectHoursData();
+  _hoursData[d].closed=!_hoursData[d].closed;
+  renderHoursFields();
+}
+
+function collectHoursData(){
+  HOURS_DAYS.forEach(function(d){
+    var am1=document.getElementById('h_'+d+'_am1');
+    var am2=document.getElementById('h_'+d+'_am2');
+    var pm1=document.getElementById('h_'+d+'_pm1');
+    var pm2=document.getElementById('h_'+d+'_pm2');
+    if(am1) _hoursData[d].am.from=am1.value;
+    if(am2) _hoursData[d].am.to=am2.value;
+    // Nur PM übernehmen wenn sichtbar (Split-Modus)
+    if(pm1 && pm1.style.display!=='none'){
+      _hoursData[d].pm.from=pm1.value;
+      _hoursData[d].pm.to=pm2?pm2.value:'';
+    }
+  });
+  return JSON.parse(JSON.stringify(_hoursData));
+}
 
 const BIO_PLACEHOLDERS = {
   partner: 'z.B. Seit 10 Jahren begleite ich Menschen auf ihrem Weg zu mehr Gesundheit. Spezialisiert auf...',
@@ -1121,47 +1197,66 @@ function initPreparations(name, type, subtype) {
   document.getElementById('prepFirstName').value = firstName;
   document.getElementById('prepLastName').value = lastName;
 
-  // Job-Placeholder basierend auf Subtype
-  const jobInput = document.getElementById('prepJob');
-  if (type === 'hersteller') {
-    document.getElementById('prepJobGroup').style.display = 'none';
-  } else {
-    jobInput.placeholder = JOB_PLACEHOLDERS[subtype] || 'z.B. Heilpraktiker · Ernährungsberater';
+  // === TYP-SPEZIFISCHE PROFIL-DATEN ===
+
+  var nameSectionLabel = document.getElementById('prepNameSectionLabel');
+  var jobGroup = document.getElementById('prepJobGroup');
+  var companyGroup = document.getElementById('prepCompanyGroup');
+  var companyHint = document.getElementById('prepCompanyHint');
+
+  if (type === 'partner') {
+    // Partner: Persönliche Daten + Berufsbezeichnung + Praxis (optional)
+    nameSectionLabel.textContent = '';
+    nameSectionLabel.style.display = 'none';
+    jobGroup.style.display = '';
+    document.getElementById('prepJob').placeholder = JOB_PLACEHOLDERS[subtype] || 'z.B. Heilpraktiker · Ernährungsberater';
+    document.getElementById('prepCompanyLabel').textContent = 'Praxis / Firma (optional)';
+    document.getElementById('prepCompany').placeholder = COMPANY_PLACEHOLDERS[type] || '';
+    companyHint.style.display = 'none';
+
+  } else if (type === 'hersteller') {
+    // Hersteller: Ansprechpartner + Firmenname (Pflicht)
+    nameSectionLabel.textContent = 'Ansprechpartner';
+    nameSectionLabel.style.display = '';
+    jobGroup.style.display = 'none';
+    document.getElementById('prepCompanyLabel').textContent = 'Firmenname / Marke *';
+    document.getElementById('prepCompany').placeholder = COMPANY_PLACEHOLDERS[type] || 'z.B. NaturVital GmbH';
+    companyHint.textContent = 'Der offizielle Firmen- oder Markenname — wird auf eurer Markenseite angezeigt.';
+    companyHint.style.display = '';
+
+  } else if (type === 'unternehmen') {
+    // Unternehmen/BGM: Ansprechpartner + Einrichtungsname (Pflicht)
+    nameSectionLabel.textContent = 'Ansprechpartner';
+    nameSectionLabel.style.display = '';
+    jobGroup.style.display = 'none';
+    document.getElementById('prepCompanyLabel').textContent = 'Name der Einrichtung *';
+    document.getElementById('prepCompany').placeholder = COMPANY_PLACEHOLDERS[type] || 'z.B. Vitalcenter München';
+    companyHint.textContent = 'Name eures Studios, Salons, Vereins oder BGM-Anbieters.';
+    companyHint.style.display = '';
   }
 
   // Bio-Placeholder & Label
   document.getElementById('prepBio').placeholder = BIO_PLACEHOLDERS[type] || '';
   document.getElementById('prepBioLabel').innerHTML = BIO_LABELS[type] || 'Über mich';
 
-  // Company-Placeholder
-  document.getElementById('prepCompany').placeholder = COMPANY_PLACEHOLDERS[type] || 'z.B. Dein Unternehmen';
-  document.getElementById('prepCompanyLabel').textContent = COMPANY_LABELS[type] || 'Firma (optional)';
-
   // Kontakt & Standort Placeholders
   document.getElementById('prepLocation').placeholder = LOCATION_PLACEHOLDERS[type] || '';
   document.getElementById('prepLocationLabel').textContent = LOCATION_LABELS[type] || 'Standort / Adresse';
   document.getElementById('prepLocationHint').innerHTML = LOCATION_HINTS[type] || '';
 
-  // Öffnungszeiten & Terminarten nur für Partner
+  // Terminarten nur für Partner
   if (type !== 'partner') {
-    document.getElementById('prepHoursGroup').style.display = 'none';
     document.getElementById('prepModesGroup').style.display = 'none';
   }
+  // Öffnungszeiten für ALLE Typen sichtbar (Toggle entscheidet)
 
   // Qualifikationen nur für Partner
-  if (type === 'partner') {
-    document.getElementById('prepQuals').style.display = '';
+  if (type !== 'partner') {
+    document.getElementById('prepQualsSection').style.display = 'none';
   }
 
   // Gespeicherte Daten aus Supabase laden
   loadProfileData();
-
-  // Checkliste aus localStorage laden
-  const saved = localStorage.getItem('stPrepChecklist');
-  if (saved) {
-    try { _clState = JSON.parse(saved); } catch(e) {}
-  }
-  renderChecklist();
   updateProgress();
 }
 
@@ -1184,15 +1279,27 @@ async function loadProfileData() {
       // Extended profile data
       const pd = p.profile_data || {};
       // Titel + Vor-/Nachname überschreiben falls in profile_data gespeichert
+      if (pd.anrede) document.getElementById('prepAnrede').value = pd.anrede;
       if (pd.title) document.getElementById('prepTitle').value = pd.title;
       if (pd.first_name) document.getElementById('prepFirstName').value = pd.first_name;
       if (pd.last_name) document.getElementById('prepLastName').value = pd.last_name;
       if (pd.location) document.getElementById('prepLocation').value = pd.location;
       if (pd.phone) document.getElementById('prepPhone').value = pd.phone;
       if (pd.website) document.getElementById('prepWebsite').value = pd.website;
-      if (pd.hours_week) document.getElementById('prepHoursWeek').value = pd.hours_week;
-      if (pd.hours_sat) document.getElementById('prepHoursSat').value = pd.hours_sat;
-      if (pd.hours_sun) document.getElementById('prepHoursSun').value = pd.hours_sun;
+      // Öffnungszeiten: neues Per-Tag-Format laden
+      if (pd.hours_days) {
+        _hoursData = pd.hours_days;
+        document.getElementById('prepHoursEnabled').checked = true;
+        toggleHoursEditor(true);
+      } else if (pd.hours_enabled) {
+        document.getElementById('prepHoursEnabled').checked = true;
+        toggleHoursEditor(true);
+      }
+      // Bilder wiederherstellen
+      if (pd.images) {
+        if (pd.images.banner) { _imageData.banner = pd.images.banner; renderImagePreview('banner'); }
+        if (pd.images.avatar) { _imageData.avatar = pd.images.avatar; renderImagePreview('avatar'); }
+      }
       if (pd.instagram) document.getElementById('prepInstagram').value = pd.instagram;
       if (pd.facebook) document.getElementById('prepFacebook').value = pd.facebook;
       if (pd.linkedin) document.getElementById('prepLinkedin').value = pd.linkedin;
@@ -1221,56 +1328,64 @@ async function loadProfileData() {
   } catch(e) {}
 }
 
-async function saveProfile() {
-  const email = localStorage.getItem('stWaitlistEmail');
+async function saveAllProfile() {
+  var email = localStorage.getItem('stWaitlistEmail');
   if (!email) return;
 
-  const btn = document.getElementById('prepSaveBtn');
-  const msg = document.getElementById('prepSaveMsg');
-  const title = document.getElementById('prepTitle').value;
-  const firstName = document.getElementById('prepFirstName').value.trim();
-  const lastName = document.getElementById('prepLastName').value.trim();
-  const job = document.getElementById('prepJob').value.trim();
-  const company = document.getElementById('prepCompany').value.trim();
-  const bio = document.getElementById('prepBio').value.trim();
+  var btn = document.getElementById('prepSaveBtn');
+  var msg = document.getElementById('prepSaveMsg');
+  var anrede = document.getElementById('prepAnrede').value;
+  var title = document.getElementById('prepTitle').value;
+  var firstName = document.getElementById('prepFirstName').value.trim();
+  var lastName = document.getElementById('prepLastName').value.trim();
+  var job = document.getElementById('prepJob').value.trim();
+  var company = document.getElementById('prepCompany').value.trim();
+  var bio = document.getElementById('prepBio').value.trim();
 
+  if (!anrede) { alert('Bitte wähle eine Anrede.'); return; }
   if (!firstName) { alert('Bitte gib deinen Vornamen ein.'); return; }
   if (!lastName) { alert('Bitte gib deinen Nachnamen ein.'); return; }
+  if ((_currentType === 'hersteller' || _currentType === 'unternehmen') && !company) {
+    alert(_currentType === 'hersteller' ? 'Bitte gib den Firmennamen / die Marke ein.' : 'Bitte gib den Namen der Einrichtung ein.');
+    return;
+  }
 
-  // Display-Name zusammensetzen
   var displayName = (title ? title + ' ' : '') + firstName + ' ' + lastName;
 
   btn.disabled = true;
   btn.textContent = 'Wird gespeichert...';
 
+  // Öffnungszeiten sammeln
+  var hoursEnabled = document.getElementById('prepHoursEnabled').checked;
+  if (hoursEnabled) collectHoursData();
+
+  // Alle Profildaten in einem Objekt
+  var profileData = {
+    anrede: anrede || null,
+    title: title || null,
+    first_name: firstName,
+    last_name: lastName,
+    images: {
+      banner: _imageData.banner || null,
+      avatar: _imageData.avatar || null
+    },
+    location: document.getElementById('prepLocation').value.trim(),
+    phone: document.getElementById('prepPhone').value.trim(),
+    website: document.getElementById('prepWebsite').value.trim(),
+    hours_enabled: hoursEnabled,
+    hours_days: hoursEnabled ? _hoursData : null,
+    appointment_modes: _activeModes.slice(),
+    instagram: document.getElementById('prepInstagram').value.trim(),
+    facebook: document.getElementById('prepFacebook').value.trim(),
+    linkedin: document.getElementById('prepLinkedin').value.trim(),
+    qualifications: document.getElementById('prepQualsText').value.trim(),
+    contact_ready: true,
+    social_ready: true,
+    quals_ready: true
+  };
+
   try {
-    // Erst profile_data laden um zu mergen
-    var existingPd = {};
-    try {
-      var r0 = await fetch(
-        SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email) + '&select=profile_data',
-        { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }
-      );
-      var d0 = await r0.json();
-      if (d0 && d0.length > 0 && d0[0].profile_data) existingPd = d0[0].profile_data;
-    } catch(e) {}
-
-    var mergedPd = Object.assign({}, existingPd, {
-      title: title || null,
-      first_name: firstName,
-      last_name: lastName
-    });
-
-    const body = {
-      name: displayName,
-      job_title: job || null,
-      company_name: company || null,
-      bio: bio || null,
-      profile_ready: true,
-      profile_data: mergedPd
-    };
-
-    const res = await fetch(
+    var res = await fetch(
       SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email),
       {
         method: 'PATCH',
@@ -1280,13 +1395,23 @@ async function saveProfile() {
           'Authorization': 'Bearer ' + SB_KEY,
           'Prefer': 'return=minimal'
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify({
+          name: displayName,
+          job_title: job || null,
+          company_name: company || null,
+          bio: bio || null,
+          profile_ready: true,
+          profile_data: profileData
+        })
       }
     );
 
     if (res.ok) {
       localStorage.setItem('stWaitlistName', displayName);
       markProfileDone();
+      markCardDone('Contact');
+      markCardDone('Social');
+      markCardDone('Quals');
       msg.classList.add('show');
       setTimeout(function() { msg.classList.remove('show'); }, 2500);
       updateProgress();
@@ -1321,150 +1446,14 @@ function toggleMode(el, mode) {
   else { _activeModes.push(mode); }
 }
 
-// Helper: PATCH profile_data (merge)
-async function patchProfileData(fields, btnId, msgId, cardName) {
-  var email = localStorage.getItem('stWaitlistEmail');
-  if (!email) return;
-
-  // Erst aktuelle profile_data laden, dann mergen
-  var existing = {};
-  try {
-    var r = await fetch(
-      SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email) + '&select=profile_data',
-      { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }
-    );
-    var d = await r.json();
-    if (d && d.length > 0 && d[0].profile_data) existing = d[0].profile_data;
-  } catch(e) {}
-
-  // Merge
-  var merged = Object.assign({}, existing, fields);
-
-  var btn = document.getElementById(btnId);
-  var msg = document.getElementById(msgId);
-  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert...'; }
-
-  try {
-    var res = await fetch(
-      SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email),
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SB_KEY,
-          'Authorization': 'Bearer ' + SB_KEY,
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({ profile_data: merged })
-      }
-    );
-
-    if (res.ok) {
-      markCardDone(cardName);
-      if (msg) { msg.classList.add('show'); setTimeout(function() { msg.classList.remove('show'); }, 2500); }
-      updateProgress();
-    } else {
-      alert('Fehler beim Speichern. Bitte versuche es erneut.');
-    }
-  } catch(e) {
-    alert('Verbindungsfehler. Bitte prüfe deine Internetverbindung.');
-  }
-
-  if (btn) { btn.disabled = false; btn.textContent = btn._origText || 'Speichern'; }
-}
-
-async function saveContact() {
-  var btn = event.target; btn._origText = btn.textContent; btn.disabled = true; btn.textContent = 'Wird gespeichert...';
-  var fields = {
-    location: document.getElementById('prepLocation').value.trim(),
-    phone: document.getElementById('prepPhone').value.trim(),
-    website: document.getElementById('prepWebsite').value.trim(),
-    hours_week: document.getElementById('prepHoursWeek').value.trim(),
-    hours_sat: document.getElementById('prepHoursSat').value.trim(),
-    hours_sun: document.getElementById('prepHoursSun').value.trim(),
-    appointment_modes: _activeModes.slice(),
-    contact_ready: true
-  };
-  await patchProfileData(fields, null, 'prepContactMsg', 'Contact');
-  btn.disabled = false; btn.textContent = btn._origText;
-}
-
-async function saveSocial() {
-  var btn = event.target; btn._origText = btn.textContent; btn.disabled = true; btn.textContent = 'Wird gespeichert...';
-  var fields = {
-    instagram: document.getElementById('prepInstagram').value.trim(),
-    facebook: document.getElementById('prepFacebook').value.trim(),
-    linkedin: document.getElementById('prepLinkedin').value.trim(),
-    social_ready: true
-  };
-  await patchProfileData(fields, null, 'prepSocialMsg', 'Social');
-  btn.disabled = false; btn.textContent = btn._origText;
-}
-
-async function saveQuals() {
-  var btn = event.target; btn._origText = btn.textContent; btn.disabled = true; btn.textContent = 'Wird gespeichert...';
-  var fields = {
-    qualifications: document.getElementById('prepQualsText').value.trim(),
-    quals_ready: true
-  };
-  await patchProfileData(fields, null, 'prepQualsMsg', 'Quals');
-  btn.disabled = false; btn.textContent = btn._origText;
-}
 
 function togglePrep(id) {
   document.getElementById(id).classList.toggle('open');
 }
 
-function toggleCL(el, idx) {
-  _clState[idx] = !_clState[idx];
-  el.classList.toggle('checked');
-  localStorage.setItem('stPrepChecklist', JSON.stringify(_clState));
-  updateChecklistStatus();
-  updateProgress();
-}
-
-function renderChecklist() {
-  const items = document.querySelectorAll('#prepCL .prep-cl-item');
-  _clState.forEach(function(checked, i) {
-    if (checked && items[i]) items[i].classList.add('checked');
-  });
-  updateChecklistStatus();
-}
-
-function updateChecklistStatus() {
-  const done = _clState.filter(function(c) { return c; }).length;
-  document.getElementById('prepChecklistStatus').textContent = done + ' von 4 erledigt';
-  const check = document.getElementById('prepChecklistCheck');
-  if (done === 4) {
-    check.classList.add('done');
-    document.getElementById('prepChecklistStatus').style.color = 'var(--green-accent)';
-  } else {
-    check.classList.remove('done');
-    document.getElementById('prepChecklistStatus').style.color = '';
-  }
-}
-
 function updateProgress() {
   var total = 0;
-  var isPartner = _currentType === 'partner';
-
-  // Card-Gewichtung: Partner hat 4 Cards + Checkliste, andere 3 Cards + Checkliste
-  // Partner: Profil 15% + Kontakt 15% + Social 10% + Quals 10% + Checkliste 4×12.5% = 100%
-  // Andere:  Profil 20% + Kontakt 20% + Social 10% + Checkliste 4×12.5% = 100%
-  if (isPartner) {
-    if (document.getElementById('prepProfileCheck').classList.contains('done')) total += 15;
-    if (document.getElementById('prepContactCheck').classList.contains('done')) total += 15;
-    if (document.getElementById('prepSocialCheck').classList.contains('done')) total += 10;
-    if (document.getElementById('prepQualsCheck').classList.contains('done')) total += 10;
-    total += _clState.filter(function(c) { return c; }).length * 12.5;
-  } else {
-    if (document.getElementById('prepProfileCheck').classList.contains('done')) total += 20;
-    if (document.getElementById('prepContactCheck').classList.contains('done')) total += 20;
-    if (document.getElementById('prepSocialCheck').classList.contains('done')) total += 10;
-    total += _clState.filter(function(c) { return c; }).length * 12.5;
-  }
-
-  total = Math.round(total);
+  if (document.getElementById('prepProfileCheck').classList.contains('done')) total = 100;
   document.getElementById('prepPct').textContent = total + '%';
   document.getElementById('prepBarFill').style.width = total + '%';
 }
@@ -1474,9 +1463,192 @@ function logout() {
   localStorage.removeItem('stWaitlistName');
   localStorage.removeItem('stWaitlistType');
   localStorage.removeItem('stWaitlistSubtype');
-  localStorage.removeItem('stPrepChecklist');
+  localStorage.removeItem('stWaitlistCountry');
   document.getElementById('gate').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
+}
+
+// Komplett von Waitlist austragen (Supabase-Eintrag löschen)
+async function unregister() {
+  if (!confirm('Möchtest du dich wirklich komplett von der Warteliste austragen?\n\nAlle deine Daten werden unwiderruflich gelöscht.')) return;
+  var email = localStorage.getItem('stWaitlistEmail');
+  if (!email) { logout(); return; }
+  try {
+    await fetch(SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email), {
+      method: 'DELETE',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+  } catch(e) { console.warn('Unregister error:', e); }
+  logout();
+  alert('Du wurdest erfolgreich von der Warteliste entfernt.');
+}
+
+// Bild-Uploads: banner, avatar
+var _imageData = { banner: null, avatar: null };
+
+function uploadImage(key) {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function() {
+    var file = input.files[0];
+    if (!file) return;
+    if (file.size > 500000) { alert('Bild zu gro\u00df (max. 500 KB). Bitte ein kleineres Bild w\u00e4hlen.'); return; }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      _imageData[key] = e.target.result;
+      renderImagePreview(key);
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+function removeImage(key) {
+  _imageData[key] = null;
+  renderImagePreview(key);
+}
+
+function renderImagePreview(key) {
+  if (key === 'banner') {
+    var img = document.getElementById('prepBannerImg');
+    var ph = document.getElementById('prepBannerPlaceholder');
+    var rm = document.getElementById('prepBannerRemove');
+    if (_imageData.banner) {
+      img.src = _imageData.banner; img.style.display = ''; ph.style.display = 'none'; rm.style.display = '';
+    } else {
+      img.style.display = 'none'; img.src = ''; ph.style.display = ''; rm.style.display = 'none';
+    }
+  } else if (key === 'avatar') {
+    var img = document.getElementById('prepAvatarImg');
+    var emoji = document.getElementById('prepAvatarEmoji');
+    if (_imageData.avatar) {
+      img.src = _imageData.avatar; img.style.display = ''; emoji.style.display = 'none';
+    } else {
+      img.style.display = 'none'; img.src = ''; emoji.style.display = '';
+    }
+  }
+}
+
+// Profil-Vorschau: Wie Kunden es sehen
+function showProfilePreview() {
+  // Altes Overlay entfernen falls vorhanden
+  var old = document.getElementById('profilePreviewOverlay');
+  if (old) old.remove();
+
+  var name = (document.getElementById('prepFirstName').value + ' ' + document.getElementById('prepLastName').value).trim() || 'Dein Name';
+  var title = document.getElementById('prepTitle').value;
+  var job = document.getElementById('prepJob').value || '';
+  var company = document.getElementById('prepCompany').value || '';
+  var bio = document.getElementById('prepBio').value || 'Dein Profiltext erscheint hier...';
+  var location = document.getElementById('prepLocation').value || '';
+  var phone = document.getElementById('prepPhone').value || '';
+  var website = document.getElementById('prepWebsite').value || '';
+  var displayName = (title ? title + ' ' : '') + name;
+  var subtitle = [job, company].filter(Boolean).join(' \u00b7 ');
+
+  // Banner
+  var bannerStyle = _imageData.banner
+    ? 'background:url('+_imageData.banner+') center/cover no-repeat'
+    : 'background:linear-gradient(165deg,#0d3320,#1a5a3a,#2E7D32)';
+
+  // Avatar
+  var avatarHtml = _imageData.avatar
+    ? '<img src="'+_imageData.avatar+'" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.3)">'
+    : '<div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:36px;border:3px solid rgba(255,255,255,0.3)">\u{1F464}</div>';
+
+  // Qualifikationen
+  var qualsText = document.getElementById('prepQualsText').value || '';
+  var qualsHtml = '';
+  if (qualsText.trim()) {
+    var lines = qualsText.trim().split('\n').filter(function(l){ return l.trim(); });
+    qualsHtml = '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--green-accent);margin-bottom:8px">Qualifikationen</div>';
+    lines.forEach(function(l){
+      qualsHtml += '<div style="display:flex;align-items:flex-start;gap:6px;font-size:12px;padding:2px 0;color:var(--text-body)"><span style="color:var(--green-accent);font-weight:700">\u2713</span> '+l.trim()+'</div>';
+    });
+    qualsHtml += '</div>';
+  }
+
+  // Öffnungszeiten
+  var hoursHtml = '';
+  if (document.getElementById('prepHoursEnabled').checked) {
+    collectHoursData();
+    hoursHtml = '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--green-accent);margin-bottom:8px">\u00d6ffnungszeiten</div>';
+    HOURS_DAYS.forEach(function(d) {
+      var day = _hoursData[d];
+      var label = HOURS_LABELS[d];
+      if (day.closed) {
+        hoursHtml += '<div style="display:flex;gap:8px;font-size:12px;padding:2px 0"><span style="font-weight:600;min-width:24px">'+label+'</span><span style="color:var(--text-muted);font-style:italic">Geschlossen</span></div>';
+      } else {
+        var times = day.am.from + ' \u2013 ' + (day.pm.from ? day.am.to + ', ' + day.pm.from + ' \u2013 ' + day.pm.to : day.am.to);
+        hoursHtml += '<div style="display:flex;gap:8px;font-size:12px;padding:2px 0"><span style="font-weight:600;min-width:24px">'+label+'</span><span>'+times+'</span></div>';
+      }
+    });
+    hoursHtml += '</div>';
+  }
+
+  // Terminarten
+  var modesHtml = '';
+  if (_activeModes.length > 0 && _currentType === 'partner') {
+    var modeLabels = {praxis:'Vor Ort',video:'Video',phone:'Telefon',home:'Hausbesuch'};
+    var modeIcons = {praxis:'\u{1F3E5}',video:'\u{1F4F9}',phone:'\u{1F4DE}',home:'\u{1F3E0}'};
+    modesHtml = '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--green-accent);margin-bottom:8px">Terminarten</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px">';
+    _activeModes.forEach(function(m){
+      modesHtml += '<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--green-light);border-radius:99px;font-size:11px;font-weight:600;color:var(--green-dark)">'+(modeIcons[m]||'')+' '+(modeLabels[m]||m)+'</span>';
+    });
+    modesHtml += '</div></div>';
+  }
+
+  // Social Media
+  var ig = document.getElementById('prepInstagram').value.trim();
+  var fb = document.getElementById('prepFacebook').value.trim();
+  var li = document.getElementById('prepLinkedin').value.trim();
+  var socialHtml = '';
+  if (ig || fb || li) {
+    socialHtml = '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--green-accent);margin-bottom:8px">Social Media</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:8px">';
+    if (ig) socialHtml += '<span style="font-size:12px;color:var(--text-muted)">\u{1F4F7} '+ig+'</span>';
+    if (fb) socialHtml += '<span style="font-size:12px;color:var(--text-muted)">\u{1F44D} '+fb+'</span>';
+    if (li) socialHtml += '<span style="font-size:12px;color:var(--text-muted)">\u{1F4BC} '+li+'</span>';
+    socialHtml += '</div></div>';
+  }
+
+  // Kontakt-Info
+  var contactHtml = '';
+  if (location) contactHtml += '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);margin-bottom:6px">\u{1F4CD} '+location+'</div>';
+  if (phone) contactHtml += '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);margin-bottom:6px">\u{1F4DE} '+phone+'</div>';
+  if (website) contactHtml += '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);margin-bottom:6px">\u{1F310} '+website+'</div>';
+
+  var overlay = document.createElement('div');
+  overlay.id = 'profilePreviewOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = '<div style="background:white;border-radius:16px;max-width:400px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2)">'
+    +'<div style="'+bannerStyle+';padding:32px 24px 24px;text-align:center;border-radius:16px 16px 0 0;color:white;position:relative">'
+    +(_imageData.banner?'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.35);border-radius:16px 16px 0 0"></div>':'')
+    +'<div style="position:relative;z-index:1">'
+    +'<div style="font-size:10px;font-weight:600;opacity:0.7;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">So sehen dich Kunden</div>'
+    +avatarHtml
+    +'<div style="font-size:20px;font-weight:800;margin-top:12px;text-shadow:0 1px 4px rgba(0,0,0,0.3)">'+displayName+'</div>'
+    +(subtitle?'<div style="font-size:14px;opacity:0.85;margin-top:4px;text-shadow:0 1px 3px rgba(0,0,0,0.3)">'+subtitle+'</div>':'')
+    +'</div>'
+    +'</div>'
+    +'<div style="padding:20px 24px">'
+    +'<div style="font-size:13px;line-height:1.6;color:var(--text-body);margin-bottom:16px">'+bio.replace(/\n/g,'<br>')+'</div>'
+    +contactHtml
+    +qualsHtml
+    +hoursHtml
+    +modesHtml
+    +socialHtml
+    +'<div style="margin-top:20px;text-align:center">'
+    +'<button onclick="document.getElementById(\'profilePreviewOverlay\').remove()" style="padding:10px 32px;border-radius:8px;background:var(--green-accent);color:white;border:none;font-size:14px;font-weight:600;cursor:pointer">Schlie\u00dfen</button>'
+    +'</div></div></div>';
+  document.body.appendChild(overlay);
 }
 
 // Init

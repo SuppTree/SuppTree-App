@@ -481,8 +481,10 @@ document.addEventListener('DOMContentLoaded', function() {
 const SUPABASE_URL = 'https://evqiukaxhqmbkcnmafvo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2cWl1a2F4aHFtYmtjbm1hZnZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0MjU4MzEsImV4cCI6MjA4NDAwMTgzMX0.oyblk3zrZoEGnLUT55nepEz6DZt-O3hB5jEwqunuf1c';
 
-// Supabase Client - wird später initialisiert
-let supabase = null;
+// Supabase SDK-Referenz retten (bevor var supabase sie überschreibt)
+var _supabaseSDK = window.supabase;
+// Supabase Client - wird von initSupabase() gesetzt
+var supabase = null;
 
 // Aktueller User
 let currentUser = null;
@@ -491,12 +493,100 @@ let userProfile = null;
 // =============================================
 // CUSTOMER AUTH OVERLAY - Login/Register/Reset
 // =============================================
+
+// Prüft ob User eingeloggt ist — wenn nicht, zeigt Login-Overlay
+// Gibt true zurück wenn eingeloggt, false wenn nicht
+function requireLogin(message) {
+  if (currentUser) return true;
+  showCustomerAuth();
+  if (message) showToast(message);
+  return false;
+}
+
+// Einkauf: Abo-Sektion vergrauen wenn nicht eingeloggt
+function toggleEinkaufAboLock() {
+  // Persönliche Einkauf-Sektionen: Bestellungen + Abos + Abo-Verwaltung
+  var personalIds = ['einkaufOrdersSection', 'einkaufAboSection', 'ekAboSection'];
+
+  if (currentUser) {
+    // Alles einblenden (JS rendert sowieso nur vorhandene Daten)
+    personalIds.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.style.display = ''; el.style.filter = ''; el.style.opacity = ''; el.style.pointerEvents = ''; }
+    });
+  } else {
+    // Bestellungen komplett verstecken
+    var orders = document.getElementById('einkaufOrdersSection');
+    if (orders) orders.style.display = 'none';
+
+    // Abos komplett verstecken
+    ['einkaufAboSection', 'ekAboSection'].forEach(function(id) {
+      var abo = document.getElementById(id);
+      if (abo) abo.style.display = 'none';
+    });
+
+    // Sauberen Lock-Hinweis einfügen
+    var lock = document.getElementById('ekAboLock');
+    if (!lock) {
+      lock = document.createElement('div');
+      lock.id = 'ekAboLock';
+      lock.style.cssText = 'margin:0 16px 12px;padding:24px;background:white;border-radius:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)';
+      lock.innerHTML = '<div style="font-size:28px;margin-bottom:8px">🔒</div>' +
+        '<div style="font-size:15px;font-weight:700;color:#1a5a3a;margin-bottom:4px">Abo-Verwaltung</div>' +
+        '<div style="font-size:13px;color:#6b7280;margin-bottom:14px">Melde dich an um automatische Lieferungen zu verwalten</div>' +
+        '<button onclick="showCustomerAuth();setCustomerAuthMode(\'login\')" style="padding:10px 24px;background:linear-gradient(135deg,#1a5a3a,#00A67E);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Anmelden</button>';
+      var container = document.querySelector('#einkaufScreen .einkauf-content') || document.getElementById('einkaufScreen');
+      if (container) container.appendChild(lock);
+    }
+    lock.style.display = '';
+  }
+}
+
+// Login-Hinweis über persönlichen Screens (Mein, Menü)
+function showMeinLoginHint(screenId) {
+  var hint = document.getElementById('meinLoginHint');
+  if (!hint) return;
+  hint.style.display = 'flex';
+
+  var texts = {
+    meinScreen: {
+      title: 'Dein persönlicher Gesundheitsbereich',
+      desc: 'Tracke deine Supplements, erstelle Ernährungs- und Trainingspläne, verwalte Termine und behalte deine Gesundheit im Blick.',
+      features: ['Supplement-Tracker mit Erinnerungen', 'Ernährungs- & Trainingspläne', 'Bluttest-Ergebnisse & Analysen', 'Persönliche Empfehlungen']
+    },
+    menuScreen: {
+      title: 'Dein Profil & Einstellungen',
+      desc: 'Verwalte dein Konto, deine Bestellungen, Adressen und persönlichen Einstellungen.',
+      features: ['Bestellhistorie & Rechnungen', 'Gespeicherte Adressen', 'Treuepunkte sammeln', 'Benachrichtigungen']
+    },
+    einkaufScreen: {
+      title: 'Dein Warenkorb & Abos',
+      desc: 'Speichere Produkte, verwalte deine Abonnements und behalte deine Bestellungen im Blick.',
+      features: ['Warenkorb & Wunschliste', 'Supplement-Abos verwalten', 'Bestellstatus verfolgen', 'Schnelle Nachbestellung']
+    }
+  };
+
+  var t = texts[screenId] || texts.meinScreen;
+  var featHtml = t.features.map(function(f) { return '<div style="display:flex;align-items:center;gap:8px;font-size:14px;color:#374151"><span style="color:#00A67E;font-size:16px">✓</span>' + f + '</div>'; }).join('');
+
+  hint.innerHTML = '<div style="max-width:360px;width:100%;text-align:center;padding:24px">' +
+    '<div style="font-size:48px;margin-bottom:16px">🌿</div>' +
+    '<h2 style="font-size:22px;font-weight:700;color:#1a5a3a;margin:0 0 8px">' + t.title + '</h2>' +
+    '<p style="font-size:14px;color:#6b7280;line-height:1.5;margin:0 0 20px">' + t.desc + '</p>' +
+    '<div style="display:flex;flex-direction:column;gap:10px;text-align:left;background:#f0fdf4;border-radius:12px;padding:16px;margin-bottom:24px">' + featHtml + '</div>' +
+    '<button onclick="showCustomerAuth();setCustomerAuthMode(\'login\')" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a5a3a,#00A67E);color:white;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px">Jetzt anmelden</button>' +
+    '<button onclick="showCustomerAuth();setCustomerAuthMode(\'register\')" style="width:100%;padding:12px;background:white;color:#00A67E;border:2px solid #00A67E;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Kostenlos registrieren</button>' +
+    '</div>';
+}
+
+function hideMeinLoginHint() {
+  var hint = document.getElementById('meinLoginHint');
+  if (hint) hint.style.display = 'none';
+}
+
 function showCustomerAuth() {
   var el = document.getElementById('customerAuthOverlay');
   if (el) { el.classList.add('visible'); document.body.style.overflow = 'hidden'; }
-  // DEV-Zugang nur im Demo-Modus
-  var dev = document.getElementById('caDevAccess');
-  if (dev) dev.style.display = (localStorage.getItem('suppTreeAppMode') === 'production') ? 'none' : 'block';
 }
 function hideCustomerAuth() {
   var el = document.getElementById('customerAuthOverlay');
@@ -548,46 +638,68 @@ async function handleCustomerLogin() {
   if (emailEl) emailEl.classList.remove('ca-error');
   if (pwEl) pwEl.classList.remove('ca-error');
 
+  // Supabase nochmal initialisieren falls SDK erst nach DOMContentLoaded geladen wurde
+  if (!supabase) {
+    try { initSupabase(); } catch(e) {}
+  }
+  if (!supabase) {
+    showCaAlert('caLoginError', 'Verbindung wird aufgebaut... bitte nochmal versuchen.');
+    return;
+  }
+
   setCaLoading(btn, true);
   var result = await signIn(email, pw);
   setCaLoading(btn, false);
 
   if (!result.success) {
-    showCaAlert('caLoginError', 'Ungültige Anmeldedaten');
+    var msg = (result.error && result.error.message) || 'Ungültige Anmeldedaten';
+    showCaAlert('caLoginError', msg);
     return;
   }
 
   // Erfolg — signIn setzt currentUser und ruft onAuthStateChange auf
   localStorage.setItem('suppTreeAppMode', 'production');
   hideCustomerAuth();
+  hideMeinLoginHint();
 }
 
 async function handleCustomerRegister() {
   hideCaAlerts();
-  var nameEl = document.getElementById('caRegName');
+  var anredeEl = document.getElementById('caRegAnrede');
+  var titelEl = document.getElementById('caRegTitel');
+  var firstNameEl = document.getElementById('caRegFirstName');
+  var lastNameEl = document.getElementById('caRegLastName');
   var emailEl = document.getElementById('caRegEmail');
   var pwEl = document.getElementById('caRegPassword');
   var pwcEl = document.getElementById('caRegPasswordConfirm');
-  var name = nameEl ? nameEl.value.trim() : '';
+  var anrede = anredeEl ? anredeEl.value : '';
+  var titel = titelEl ? titelEl.value : '';
+  var firstName = firstNameEl ? firstNameEl.value.trim() : '';
+  var lastName = lastNameEl ? lastNameEl.value.trim() : '';
   var email = emailEl ? emailEl.value.trim() : '';
   var pw = pwEl ? pwEl.value : '';
   var pwc = pwcEl ? pwcEl.value : '';
   var btn = document.getElementById('caRegBtn');
 
   var hasErr = false;
-  if (!name) { if (nameEl) nameEl.classList.add('ca-error'); hasErr = true; }
+  if (!anrede) { if (anredeEl) anredeEl.classList.add('ca-error'); hasErr = true; }
+  if (!firstName) { if (firstNameEl) firstNameEl.classList.add('ca-error'); hasErr = true; }
+  if (!lastName) { if (lastNameEl) lastNameEl.classList.add('ca-error'); hasErr = true; }
   if (!email) { if (emailEl) emailEl.classList.add('ca-error'); hasErr = true; }
   if (!pw) { if (pwEl) pwEl.classList.add('ca-error'); hasErr = true; }
   if (!pwc) { if (pwcEl) pwcEl.classList.add('ca-error'); hasErr = true; }
-  if (hasErr) { showCaAlert('caRegError', 'Bitte alle Felder ausfüllen'); return; }
+  if (hasErr) { showCaAlert('caRegError', 'Bitte alle Pflichtfelder ausfüllen'); return; }
 
   if (pw.length < 6) { showCaAlert('caRegError', 'Passwort muss mindestens 6 Zeichen haben'); return; }
   if (pw !== pwc) { showCaAlert('caRegError', 'Passwörter stimmen nicht überein'); return; }
 
-  document.querySelectorAll('#custRegisterForm input').forEach(function(i) { i.classList.remove('ca-error'); });
+  document.querySelectorAll('#custRegisterForm input, #custRegisterForm select').forEach(function(i) { i.classList.remove('ca-error'); });
+
+  var name = [firstName, lastName].filter(Boolean).join(' ');
+  var userData = { anrede: anrede, titel: titel, firstName: firstName, lastName: lastName };
 
   setCaLoading(btn, true);
-  var result = await signUp(email, pw, name);
+  var result = await signUp(email, pw, name, userData);
   setCaLoading(btn, false);
 
   if (!result.success) {
@@ -623,8 +735,9 @@ async function handleCustomerReset() {
 // Supabase initialisieren (sicher)
 function initSupabase() {
   try {
-    if (typeof window !== 'undefined' && window.supabase && typeof window.supabase.createClient === 'function') {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var sdk = _supabaseSDK || window.supabase;
+    if (sdk && typeof sdk.createClient === 'function') {
+      supabase = sdk.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       console.log('✅ Supabase verbunden');
       
       // Auth State Listener
@@ -658,14 +771,14 @@ function initSupabase() {
 // =============================================
 
 // Registrieren
-async function signUp(email, password, name) {
+async function signUp(email, password, name, userData) {
   if (!supabase) {
     showToast('❌ Verbindung nicht möglich');
     return { success: false };
   }
   try {
     showLoading('Konto wird erstellt...');
-    
+
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
@@ -675,14 +788,30 @@ async function signUp(email, password, name) {
         }
       }
     });
-    
+
     hideLoading();
-    
+
     if (error) throw error;
-    
-    // Profil updaten mit Name
+
+    // Profil updaten mit Name + personal_data
     if (data.user) {
-      await supabase.from('profiles').update({ name: name }).eq('id', data.user.id);
+      var profileUpdate = { name: name };
+      if (userData) {
+        profileUpdate.personal_data = {
+          anrede: userData.anrede || '',
+          titel: userData.titel || '',
+          firstName: userData.firstName || '',
+          lastName: userData.lastName || ''
+        };
+      }
+      await supabase.from('profiles').update(profileUpdate).eq('id', data.user.id);
+      // Auch in localStorage speichern für sofortigen Zugriff
+      if (userData) {
+        var existingProfile = {};
+        try { existingProfile = JSON.parse(localStorage.getItem('suppTreeProfile') || '{}'); } catch(e) {}
+        Object.assign(existingProfile, userData, { email: email });
+        localStorage.setItem('suppTreeProfile', JSON.stringify(existingProfile));
+      }
     }
     
     showToast('✅ Konto erstellt! Bitte bestätige deine E-Mail.');
@@ -698,29 +827,31 @@ async function signUp(email, password, name) {
 // Einloggen
 async function signIn(email, password) {
   if (!supabase) {
-    showToast('❌ Verbindung nicht möglich');
+    showToast('❌ Verbindung nicht möglich. Bitte Seite neu laden.');
     return { success: false };
   }
   try {
     showLoading('Anmelden...');
-    
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password
     });
-    
+
     hideLoading();
-    
+
     if (error) throw error;
-    
+
     currentUser = data.user;
-    await loadUserProfile();
-    await syncLocalDataToSupabase(); // Lokale Daten hochladen
-    
+    try { await loadUserProfile(); } catch(e) { console.warn('Profil laden:', e); }
+
+    // Sync im Hintergrund (blockiert Login nicht)
+    syncLocalDataToSupabase().catch(function(e) { console.warn('Sync:', e); });
+
     showToast('✅ Willkommen zurück!');
     closeAuthSheet();
     updateUIForLoggedInUser();
-    
+
     return { success: true, data };
   } catch (error) {
     hideLoading();
@@ -945,6 +1076,17 @@ async function loadUserDataFromSupabase() {
       }
       if (userProfile.personal_data) {
         localStorage.setItem('suppTreePersonalData', JSON.stringify(userProfile.personal_data));
+        // Profil-Formular-Daten aus Supabase in localStorage mergen
+        var localProfile = JSON.parse(localStorage.getItem('suppTreeProfile') || '{}');
+        var pd = userProfile.personal_data;
+        if (pd.firstName && !localProfile.firstName) localProfile.firstName = pd.firstName;
+        if (pd.lastName && !localProfile.lastName) localProfile.lastName = pd.lastName;
+        if (pd.birthdate && !localProfile.birthdate) localProfile.birthdate = pd.birthdate;
+        if (pd.gender && !localProfile.gender) localProfile.gender = pd.gender;
+        if (pd.height && !localProfile.height) localProfile.height = pd.height;
+        if (pd.weight && !localProfile.weight) localProfile.weight = pd.weight;
+        if (pd.phone && !localProfile.phone) localProfile.phone = pd.phone;
+        localStorage.setItem('suppTreeProfile', JSON.stringify(localProfile));
       }
     }
 
@@ -1186,16 +1328,9 @@ async function loadProductsFromSupabase() {
 // =============================================
 
 function openAuthSheet(mode = 'login') {
-  const sheet = document.getElementById('authSheet');
-  const overlay = document.getElementById('authOverlay');
-  if (!sheet || !overlay) return;
-  
-  // Mode setzen
-  setAuthMode(mode);
-  
-  overlay.classList.add('visible');
-  sheet.classList.add('visible');
-  lockBody();
+  // Zum neuen Customer-Auth-Overlay weiterleiten
+  setCustomerAuthMode(mode);
+  showCustomerAuth();
 }
 
 function closeAuthSheet() {
@@ -1234,7 +1369,14 @@ function updateUIForLoggedInUser() {
   if (userName && userProfile?.name) {
     userName.textContent = userProfile.name;
   }
-  
+
+  // Mein-Screen Greeting mit Name
+  var meinName = document.getElementById('meinGreetingName');
+  if (meinName) {
+    var displayName = userProfile?.name || currentUser?.user_metadata?.name || '';
+    meinName.textContent = displayName ? displayName + '! 👋' : '👋';
+  }
+
   // Login Button verstecken, Logout zeigen
   const loginBtn = document.getElementById('loginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
@@ -1244,8 +1386,22 @@ function updateUIForLoggedInUser() {
   // Punkte anzeigen
   if (userProfile?.points !== undefined) {
     totalPoints = userProfile.points;
-    updatePointsDisplay();
+    if (typeof updatePointsDisplay === 'function') updatePointsDisplay();
   }
+
+  // Partner-Bereich Button für Seller/Admin anzeigen
+  var partnerBtn = document.getElementById('partnerSwitchBtn');
+  if (partnerBtn) {
+    var role = (userProfile && userProfile.role) || (currentUser && currentUser.user_metadata && currentUser.user_metadata.role);
+    partnerBtn.style.display = (role === 'seller' || role === 'admin') ? 'block' : 'none';
+  }
+
+  // Home-Greeting mit Name aktualisieren
+  if (typeof updateHomeGreeting === 'function') updateHomeGreeting();
+
+  // Persönliche Home-Sektionen einblenden + rendern
+  if (typeof showPersonalHomeSections === 'function') showPersonalHomeSections();
+  try { initHomePage(); } catch(e) {}
 }
 
 function updateUIForLoggedOutUser() {
@@ -1253,13 +1409,27 @@ function updateUIForLoggedOutUser() {
   const logoutBtn = document.getElementById('logoutBtn');
   if (loginBtn) loginBtn.style.display = 'flex';
   if (logoutBtn) logoutBtn.style.display = 'none';
-  
+
   // Reset Profile display
   const profileBtn = document.getElementById('menuAvatarEmoji');
   if (profileBtn) profileBtn.textContent = '👤';
-  
+
   const userName = document.getElementById('menuUserName');
   if (userName) userName.textContent = 'Mein Profil';
+
+  // Partner-Button verstecken
+  var partnerBtn = document.getElementById('partnerSwitchBtn');
+  if (partnerBtn) partnerBtn.style.display = 'none';
+
+  // Mein-Screen Name zurücksetzen
+  var meinName = document.getElementById('meinGreetingName');
+  if (meinName) meinName.textContent = '👋';
+
+  // Greeting zurücksetzen (kein Name)
+  if (typeof updateHomeGreeting === 'function') updateHomeGreeting();
+
+  // Persönliche Home-Sektionen verstecken
+  if (typeof hidePersonalHomeSections === 'function') hidePersonalHomeSections();
 }
 
 // =============================================
@@ -9587,6 +9757,887 @@ const interactionDatabase = {
   'warfarin-vitamin k': { type: 'danger', desc: 'Vitamin K ist Gegenspieler von Warfarin', recommendation: 'Vitamin K vermeiden oder konstant halten!' },
 };
 
+// ===============================
+// AMPELSYSTEM — Wirkstoff-basierte Interaktionsdaten
+// ===============================
+let WIRKSTOFFE = [];
+let SUPP_INTERACTIONS = [];
+let MED_GRUPPEN = [];
+let MED_SUPP_INTERACTIONS = [];
+let MEDIKAMENTE_DB = { gruppen: [], alle_medikamente: [] };
+let KEYWORDS_SYNONYME = [];
+let DISCLAIMERS = {};
+let ampelDataLoaded = false;
+
+async function loadInteractionData() {
+  if (ampelDataLoaded) return;
+  try {
+    const [w, si, mg, msi, mdb, kw, d] = await Promise.all([
+      fetch('data/wirkstoffe.json').then(r => r.json()),
+      fetch('data/supplement_interactions.json').then(r => r.json()),
+      fetch('data/medikament_gruppen.json').then(r => r.json()),
+      fetch('data/med_supp_interactions.json').then(r => r.json()),
+      fetch('data/medikamente_db.json').then(r => r.json()),
+      fetch('data/keywords_synonyme.json').then(r => r.json()),
+      fetch('data/disclaimers.json').then(r => r.json())
+    ]);
+    WIRKSTOFFE = w;
+    SUPP_INTERACTIONS = si;
+    MED_GRUPPEN = mg;
+    MED_SUPP_INTERACTIONS = msi;
+    MEDIKAMENTE_DB = mdb;
+    KEYWORDS_SYNONYME = kw;
+    DISCLAIMERS = d;
+    ampelDataLoaded = true;
+    console.log('Ampelsystem: Daten geladen', {
+      wirkstoffe: w.length,
+      suppInteractions: si.length,
+      medGruppen: mg.length,
+      medSuppInteractions: msi.length,
+      medikamenteDB: mdb.meta,
+      keywords: kw.length
+    });
+  } catch (e) {
+    console.warn('Ampelsystem: Daten konnten nicht geladen werden', e);
+  }
+}
+
+// ===============================
+// WIRKSTOFF-MAPPING
+// ===============================
+function mapSupplementToWirkstoff(suppName) {
+  if (!suppName || !WIRKSTOFFE.length) return null;
+  const lower = suppName.toLowerCase().trim();
+  // Direct name match first
+  const exact = WIRKSTOFFE.find(w => w.name.toLowerCase() === lower || w.id === lower);
+  if (exact) return exact;
+  // Partial match in name
+  const partial = WIRKSTOFFE.find(w => lower.includes(w.name.toLowerCase()) || w.name.toLowerCase().includes(lower));
+  if (partial) return partial;
+  // Check auch_bekannt_als (comma-separated string)
+  return WIRKSTOFFE.find(w => {
+    if (!w.auch_bekannt_als) return false;
+    const aliases = w.auch_bekannt_als.split(',').map(a => a.trim().toLowerCase());
+    return aliases.some(a => a === lower || lower.includes(a) || a.includes(lower));
+  }) || null;
+}
+
+function getWirkstoffById(id) {
+  return WIRKSTOFFE.find(w => w.id === id) || null;
+}
+
+// ===============================
+// SUPPLEMENT-SUPPLEMENT INTERAKTIONEN (wirkstoff-basiert)
+// ===============================
+function pruefeSupplementInteraktionen(userSupplements) {
+  if (!SUPP_INTERACTIONS.length || !userSupplements.length) return { hemmende: [], foerdernde: [] };
+
+  const result = { hemmende: [], foerdernde: [] };
+
+  // Map supplements to wirkstoffe
+  const mapped = userSupplements.map(s => ({
+    supplement: s,
+    wirkstoff: mapSupplementToWirkstoff(s.name)
+  })).filter(m => m.wirkstoff);
+
+  // Check all pairs
+  for (let i = 0; i < mapped.length; i++) {
+    for (let j = i + 1; j < mapped.length; j++) {
+      const a = mapped[i];
+      const b = mapped[j];
+
+      // New data structure uses supplement_a/supplement_b (IDs) + typ
+      const interaction = SUPP_INTERACTIONS.find(ia =>
+        (ia.supplement_a === a.wirkstoff.id && ia.supplement_b === b.wirkstoff.id) ||
+        (ia.supplement_a === b.wirkstoff.id && ia.supplement_b === a.wirkstoff.id)
+      );
+
+      if (interaction) {
+        const isNegativ = interaction.typ === 'negativ' || interaction.typ === 'hemmend';
+        const isPositiv = interaction.typ === 'positiv' || interaction.typ === 'foerdernd';
+        const entry = {
+          supplement_a: a.supplement,
+          supplement_b: b.supplement,
+          wirkstoff_a: a.wirkstoff,
+          wirkstoff_b: b.wirkstoff,
+          typ: interaction.typ,
+          staerke: interaction.staerke,
+          abstand_h: interaction.zeitabstand_h || 0,
+          abstand_minuten: (interaction.zeitabstand_h || 0) * 60,
+          richtung: interaction.richtung,
+          mechanismus: interaction.mechanismus,
+          empfehlung: interaction.empfehlung,
+          beschreibung: interaction.praktische_auswirkung || interaction.mechanismus,
+          schweregrad: interaction.staerke
+        };
+
+        if (isNegativ) {
+          result.hemmende.push(entry);
+        } else if (isPositiv) {
+          result.foerdernde.push(entry);
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
+// ===============================
+// MEDIKAMENT-GRUPPEN MATCHING
+// ===============================
+function findMedikamentGruppe(medName) {
+  if (!medName) return null;
+  const lower = medName.toLowerCase().trim();
+  // First: Search in MEDIKAMENTE_DB.alle_medikamente for exact med name match
+  if (MEDIKAMENTE_DB.alle_medikamente.length) {
+    const medMatch = MEDIKAMENTE_DB.alle_medikamente.find(m => m.name.toLowerCase() === lower);
+    if (medMatch) {
+      const grp = MEDIKAMENTE_DB.gruppen.find(g => g.id === medMatch.gruppe_id);
+      if (grp) return grp;
+    }
+  }
+  // Second: Search in MED_GRUPPEN (backwards-compat) suchbegriffe
+  if (MED_GRUPPEN.length) {
+    const grpMatch = MED_GRUPPEN.find(g =>
+      g.suchbegriffe.some(s => lower.includes(s.toLowerCase()) || s.toLowerCase().includes(lower))
+    );
+    if (grpMatch) return grpMatch;
+  }
+  // Third: Search in MEDIKAMENTE_DB.gruppen namen_normalisiert
+  if (MEDIKAMENTE_DB.gruppen.length) {
+    const grpMatch = MEDIKAMENTE_DB.gruppen.find(g =>
+      g.namen_normalisiert.some(n => lower.includes(n) || n.includes(lower))
+    );
+    if (grpMatch) return grpMatch;
+  }
+  return null;
+}
+
+function searchMedikamente(query) {
+  if (!query || query.length < 2 || !MEDIKAMENTE_DB.alle_medikamente.length) return [];
+  const lower = query.toLowerCase().trim();
+  const seen = new Map(); // name_lower -> best result (deduplicate)
+  for (const med of MEDIKAMENTE_DB.alle_medikamente) {
+    // Skip broken names (contain unclosed parentheses from extraction)
+    if (med.name.includes('(')) continue;
+    const nameLower = med.name.toLowerCase();
+    if (nameLower.includes(lower)) {
+      if (!seen.has(nameLower)) {
+        // Prefer therapeutic groups over CYP/pharmacokinetic categories
+        seen.set(nameLower, med);
+      } else {
+        // Replace if current has a CYP/emoji group and new one doesn't
+        const existing = seen.get(nameLower);
+        const existingIsCyp = /CYP|⛔|⚠/.test(existing.gruppe_name);
+        const newIsCyp = /CYP|⛔|⚠/.test(med.gruppe_name);
+        if (existingIsCyp && !newIsCyp) {
+          seen.set(nameLower, med);
+        }
+      }
+      if (seen.size >= 15) break;
+    }
+  }
+  return Array.from(seen.values());
+}
+
+function searchMedGruppen(query) {
+  if (!query || query.length < 2 || !MEDIKAMENTE_DB.gruppen.length) return [];
+  const lower = query.toLowerCase().trim();
+  const results = [];
+  for (const grp of MEDIKAMENTE_DB.gruppen) {
+    if (grp.name.toLowerCase().includes(lower) || grp.namen_normalisiert.some(n => n.includes(lower))) {
+      results.push(grp);
+      if (results.length >= 15) break;
+    }
+  }
+  return results;
+}
+
+function getMedikamenteByGruppe(gruppeId) {
+  if (!gruppeId || !MEDIKAMENTE_DB.gruppen.length) return [];
+  const grp = MEDIKAMENTE_DB.gruppen.find(g => g.id === gruppeId);
+  return grp ? grp.medikamente : [];
+}
+
+function getMedGruppenSuggestions(query) {
+  if (!query || query.length < 2) return [];
+  const lower = query.toLowerCase().trim();
+  const matches = [];
+  // Search in MEDIKAMENTE_DB first (has real med names)
+  if (MEDIKAMENTE_DB.alle_medikamente.length) {
+    for (const med of MEDIKAMENTE_DB.alle_medikamente) {
+      if (med.name.toLowerCase().includes(lower)) {
+        // Check if this group already in matches
+        if (!matches.find(m => m.gruppe.id === med.gruppe_id || m.gruppe.name === med.gruppe_name)) {
+          const grp = MEDIKAMENTE_DB.gruppen.find(g => g.id === med.gruppe_id);
+          if (grp) matches.push({ gruppe: grp, matchedTerm: med.name, medikament: med });
+        }
+        if (matches.length >= 15) break;
+      }
+    }
+  }
+  // Also search group names
+  if (matches.length < 15 && MEDIKAMENTE_DB.gruppen.length) {
+    for (const grp of MEDIKAMENTE_DB.gruppen) {
+      if (!matches.find(m => m.gruppe.id === grp.id)) {
+        if (grp.name.toLowerCase().includes(lower) || grp.namen_normalisiert.some(n => n.includes(lower))) {
+          matches.push({ gruppe: grp, matchedTerm: grp.name });
+          if (matches.length >= 15) break;
+        }
+      }
+    }
+  }
+  return matches;
+}
+
+// ===============================
+// AMPEL-CHECKER (Medikament-Supplement)
+// ===============================
+function pruefeMedikamentKonflikte(userSupplements, userMedikamente) {
+  if (!MED_SUPP_INTERACTIONS.length || !userSupplements.length || !userMedikamente.length) return [];
+
+  const konflikte = [];
+
+  for (const med of userMedikamente) {
+    // Find primary medication group
+    const gruppe = med.gruppe_id
+      ? (MEDIKAMENTE_DB.gruppen.find(g => g.id === med.gruppe_id) || MED_GRUPPEN.find(g => g.id === med.gruppe_id))
+      : findMedikamentGruppe(med.name);
+
+    // Collect ALL group names this medication belongs to
+    const alleGruppenNamen = [];
+    if (gruppe) alleGruppenNamen.push(gruppe.name);
+    if (med.alle_gruppen && Array.isArray(med.alle_gruppen)) {
+      for (const gn of med.alle_gruppen) {
+        if (!alleGruppenNamen.includes(gn)) alleGruppenNamen.push(gn);
+      }
+    }
+    // Also look up in MEDIKAMENTE_DB for alle_gruppen field
+    if (MEDIKAMENTE_DB.alle_medikamente) {
+      const dbMed = MEDIKAMENTE_DB.alle_medikamente.find(m => m.name.toLowerCase() === (med.name || '').toLowerCase());
+      if (dbMed && dbMed.alle_gruppen) {
+        for (const gn of dbMed.alle_gruppen) {
+          if (!alleGruppenNamen.includes(gn)) alleGruppenNamen.push(gn);
+        }
+      }
+    }
+
+    if (!alleGruppenNamen.length) continue;
+
+    for (const supp of userSupplements) {
+      const wirkstoff = mapSupplementToWirkstoff(supp.name);
+      if (!wirkstoff) continue;
+
+      // Check interactions against ALL groups this medication belongs to
+      let bestInteraction = null;
+      for (const grpName of alleGruppenNamen) {
+        const grpLower = grpName.toLowerCase();
+        const interaction = MED_SUPP_INTERACTIONS.find(ia =>
+          ia.supplement_id === wirkstoff.id &&
+          (ia.medikament_gruppe === grpName ||
+           ia.medikament_gruppe_raw === grpName ||
+           ia.medikament_gruppe.toLowerCase().includes(grpLower) ||
+           grpLower.includes(ia.medikament_gruppe.toLowerCase()))
+        );
+        if (interaction) {
+          // Keep the most severe interaction (rot > gelb > gruen)
+          if (!bestInteraction || ampelSeverity(interaction.ampel) > ampelSeverity(bestInteraction.ampel)) {
+            bestInteraction = interaction;
+          }
+        }
+      }
+
+      if (bestInteraction) {
+        konflikte.push({
+          supplement: supp,
+          supplementName: supp.name,
+          wirkstoff: wirkstoff,
+          medikament: med,
+          medikamentName: med.name,
+          medGruppe: gruppe,
+          medGruppeName: bestInteraction.medikament_gruppe || (gruppe ? gruppe.name : ''),
+          ampel: bestInteraction.ampel,
+          wirkung: bestInteraction.mechanismus || bestInteraction.empfehlung,
+          abstandInfo: bestInteraction.empfehlung,
+          empfehlung: bestInteraction.empfehlung,
+          risiko: bestInteraction.risiko_level,
+          interaktionsTyp: bestInteraction.interaktions_typ,
+          abstandMinuten: null
+        });
+      }
+    }
+  }
+
+  return konflikte;
+}
+
+function ampelSeverity(ampel) {
+  if (ampel === 'rot') return 3;
+  if (ampel === 'gelb') return 2;
+  if (ampel === 'gruen') return 1;
+  return 0;
+}
+
+function bestimmeKalenderStatus(supplement, medKonflikte) {
+  const k = medKonflikte.filter(x => x.supplement.id === supplement.id);
+  if (!k.length) return { status: 'eingeplant', ampel: 'gruen', konflikte: [] };
+
+  if (k.some(x => x.ampel === 'rot')) {
+    return {
+      status: 'gesperrt',
+      ampel: 'rot',
+      konflikte: k.filter(x => x.ampel === 'rot'),
+      erfordert_disclaimer: true
+    };
+  }
+
+  if (k.some(x => x.ampel === 'gelb')) {
+    return {
+      status: 'pausiert',
+      ampel: 'gelb',
+      konflikte: k.filter(x => x.ampel === 'gelb'),
+      erfordert_disclaimer: false
+    };
+  }
+
+  return { status: 'eingeplant', ampel: 'gruen', konflikte: [] };
+}
+
+// ===============================
+// KALENDER OVERLAY (additiv — Kalender bleibt unverändert)
+// ===============================
+function applyInteractionOverlay(scheduledItems) {
+  if (!ampelDataLoaded || !scheduledItems || !scheduledItems.length) return scheduledItems;
+
+  // Get user supplements and medications
+  const supps = (typeof mySupplements !== 'undefined') ? mySupplements : [];
+  const meds = (typeof myMedications !== 'undefined') ? myMedications : [];
+
+  // 1. Check supplement-supplement interactions
+  const suppInteractions = pruefeSupplementInteraktionen(supps);
+
+  // 2. Check medication-supplement conflicts
+  const medKonflikte = pruefeMedikamentKonflikte(supps, meds);
+
+  // 3. Annotate each scheduled item
+  return scheduledItems.map(item => {
+    const annotated = { ...item };
+
+    // Find supplement for this item
+    const supp = supps.find(s => s.id === item.suppId || s.name === item.name);
+    if (!supp) return annotated;
+
+    // Ampel status from medications
+    const kalenderStatus = bestimmeKalenderStatus(supp, medKonflikte);
+    annotated.ampel = kalenderStatus.ampel;
+    annotated.ampelStatus = kalenderStatus.status;
+    annotated.ampelKonflikte = kalenderStatus.konflikte;
+    annotated.erfordertDisclaimer = kalenderStatus.erfordert_disclaimer || false;
+
+    // Check if user has overridden (accepted disclaimer or chosen "trotzdem einplanen")
+    const overrides = JSON.parse(localStorage.getItem('suppTreeAmpelOverrides') || '{}');
+    if (overrides[supp.id]) {
+      annotated.ampelOverridden = true;
+      annotated.ampelDisclaimerTs = overrides[supp.id].timestamp;
+    }
+
+    // Supplement-supplement interaction labels
+    const hemmend = suppInteractions.hemmende.filter(h =>
+      (h.supplement_a && h.supplement_a.id === supp.id) || (h.supplement_b && h.supplement_b.id === supp.id)
+    );
+    const foerdernd = suppInteractions.foerdernde.filter(f =>
+      (f.supplement_a && f.supplement_a.id === supp.id) || (f.supplement_b && f.supplement_b.id === supp.id)
+    );
+
+    if (hemmend.length) {
+      annotated.hemmendLabels = hemmend.map(h => {
+        const otherWirkstoff = (h.supplement_a && h.supplement_a.id === supp.id) ? h.wirkstoff_b : h.wirkstoff_a;
+        const abstandH = h.abstand_h || (h.abstand_minuten ? h.abstand_minuten / 60 : 0);
+        const text = abstandH > 0
+          ? 'Mind. ' + abstandH + 'h Abstand zu ' + (otherWirkstoff ? otherWirkstoff.name : '?')
+          : 'Nicht zusammen mit ' + (otherWirkstoff ? otherWirkstoff.name : '?');
+        return { text, schweregrad: h.schweregrad || h.staerke };
+      });
+    }
+    if (foerdernd.length) {
+      annotated.foerderndLabels = foerdernd.map(f => {
+        const otherWirkstoff = (f.supplement_a && f.supplement_a.id === supp.id) ? f.wirkstoff_b : f.wirkstoff_a;
+        return { text: 'Zusammen mit ' + (otherWirkstoff ? otherWirkstoff.name : '?') + ' einnehmen', schweregrad: f.schweregrad || f.staerke };
+      });
+    }
+
+    return annotated;
+  });
+}
+
+// ===============================
+// AMPEL OVERRIDE / DISCLAIMER
+// ===============================
+function saveAmpelOverride(supplementId, ampel, medGruppeName) {
+  const overrides = JSON.parse(localStorage.getItem('suppTreeAmpelOverrides') || '{}');
+  overrides[supplementId] = {
+    ampel: ampel,
+    medGruppe: medGruppeName,
+    timestamp: new Date().toISOString(),
+    overridden: true
+  };
+  localStorage.setItem('suppTreeAmpelOverrides', JSON.stringify(overrides));
+
+  // Sync to Supabase if available
+  if (supabase && currentUser) {
+    supabase.from('my_supplements')
+      .update({
+        ampel_status: ampel,
+        ampel_overridden: true,
+        ampel_disclaimer_ts: new Date().toISOString()
+      })
+      .eq('user_id', currentUser.id)
+      .eq('supplement_id', supplementId)
+      .then(() => console.log('Ampel override synced'))
+      .catch(e => console.warn('Ampel sync failed:', e));
+  }
+}
+
+function getAmpelOverrides() {
+  return JSON.parse(localStorage.getItem('suppTreeAmpelOverrides') || '{}');
+}
+
+function removeAmpelOverride(supplementId) {
+  const overrides = JSON.parse(localStorage.getItem('suppTreeAmpelOverrides') || '{}');
+  delete overrides[supplementId];
+  localStorage.setItem('suppTreeAmpelOverrides', JSON.stringify(overrides));
+}
+
+// ===============================
+// AMPEL SHEET HANDLERS
+// ===============================
+function showAmpelGelbSheet(konflikt) {
+  const sheet = document.getElementById('ampelGelbSheet');
+  if (!sheet) return;
+
+  document.getElementById('ampelGelbSuppName').textContent = konflikt.supplementName;
+  document.getElementById('ampelGelbMedGruppe').textContent = konflikt.medGruppeName;
+  document.getElementById('ampelGelbWirkung').textContent = konflikt.wirkung || konflikt.empfehlung || '';
+  document.getElementById('ampelGelbAbstand').textContent = konflikt.abstandInfo || konflikt.empfehlung || '';
+
+  sheet.dataset.suppId = konflikt.supplement.id;
+  sheet.dataset.ampel = 'gelb';
+  sheet.dataset.medGruppe = konflikt.medGruppeName;
+
+  sheet.classList.add('open');
+  document.getElementById('sheetOverlay').classList.add('visible');
+}
+
+function showAmpelRotSheet(konflikt) {
+  const sheet = document.getElementById('ampelRotSheet');
+  if (!sheet) return;
+
+  document.getElementById('ampelRotSuppName').textContent = konflikt.supplementName;
+  document.getElementById('ampelRotMedGruppe').textContent = konflikt.medGruppeName;
+  document.getElementById('ampelRotWirkung').textContent = konflikt.wirkung || konflikt.empfehlung || '';
+  document.getElementById('ampelRotAbstand').textContent = konflikt.abstandInfo || konflikt.empfehlung || '';
+
+  // Build disclaimer text
+  const disclaimerText = DISCLAIMERS.rot_disclaimer
+    ? DISCLAIMERS.rot_disclaimer
+        .replace('{supplement}', konflikt.supplementName)
+        .replace('{medikamentengruppe}', konflikt.medGruppeName)
+    : 'Ich habe die Information zur Kenntnis genommen.';
+  document.getElementById('ampelRotDisclaimerText').textContent = disclaimerText;
+
+  // Reset checkbox
+  const checkbox = document.getElementById('ampelRotCheckbox');
+  if (checkbox) checkbox.checked = false;
+  const confirmBtn = document.getElementById('ampelRotConfirmBtn');
+  if (confirmBtn) confirmBtn.disabled = true;
+
+  sheet.dataset.suppId = konflikt.supplement.id;
+  sheet.dataset.ampel = 'rot';
+  sheet.dataset.medGruppe = konflikt.medGruppeName;
+
+  sheet.classList.add('open');
+  document.getElementById('sheetOverlay').classList.add('visible');
+}
+
+function ampelGelbEinplanen() {
+  const sheet = document.getElementById('ampelGelbSheet');
+  if (!sheet) return;
+
+  const suppId = sheet.dataset.suppId;
+  const medGruppe = sheet.dataset.medGruppe;
+
+  saveAmpelOverride(suppId, 'gelb', medGruppe);
+  closeBottomSheet('ampelGelbSheet');
+
+  // Refresh calendar if visible
+  if (typeof renderCalendarDay === 'function') renderCalendarDay();
+  if (typeof renderAmpelUebersicht === 'function') renderAmpelUebersicht();
+}
+
+function ampelRotEinplanen() {
+  const sheet = document.getElementById('ampelRotSheet');
+  if (!sheet) return;
+
+  const checkbox = document.getElementById('ampelRotCheckbox');
+  if (!checkbox || !checkbox.checked) return;
+
+  const suppId = sheet.dataset.suppId;
+  const medGruppe = sheet.dataset.medGruppe;
+
+  saveAmpelOverride(suppId, 'rot', medGruppe);
+  closeBottomSheet('ampelRotSheet');
+
+  // Refresh calendar if visible
+  if (typeof renderCalendarDay === 'function') renderCalendarDay();
+  if (typeof renderAmpelUebersicht === 'function') renderAmpelUebersicht();
+}
+
+function ampelNichtEinplanen() {
+  closeBottomSheet('ampelRotSheet');
+}
+
+// ===============================
+// AMPEL ÜBERSICHT (für matrixScreen)
+// ===============================
+function renderAmpelUebersicht() {
+  const container = document.getElementById('ampelUebersichtContainer');
+  if (!container) return;
+
+  const supps = (typeof mySupplements !== 'undefined') ? mySupplements : [];
+  const meds = (typeof myMedications !== 'undefined') ? myMedications : [];
+
+  if (!supps.length || !meds.length || !ampelDataLoaded) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">Fuege Supplements und Medikamente hinzu, um Wechselwirkungen zu pruefen.</div>';
+    return;
+  }
+
+  const konflikte = pruefeMedikamentKonflikte(supps, meds);
+  const overrides = getAmpelOverrides();
+
+  if (!konflikte.length) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;display:block;margin-bottom:8px;">✅</span><span style="color:var(--text-muted);font-size:13px;">Keine bekannten Wechselwirkungen zwischen deinen Supplements und Medikamenten.</span></div>';
+    return;
+  }
+
+  // Sort: rot first, then gelb, then gruen
+  const sortOrder = { rot: 0, gelb: 1, gruen: 2 };
+  konflikte.sort((a, b) => (sortOrder[a.ampel] || 2) - (sortOrder[b.ampel] || 2));
+
+  // Store konflikte globally for click handlers
+  window._ampelKonflikte = konflikte;
+
+  let html = '';
+  konflikte.forEach((k, idx) => {
+    const isOverridden = overrides[k.supplement.id];
+    const ampelClass = k.ampel === 'rot' ? 'ampel-rot' : k.ampel === 'gelb' ? 'ampel-gelb' : 'ampel-gruen';
+    const statusLabel = k.ampel === 'rot'
+      ? (isOverridden ? 'Eingeplant (nach Disclaimer)' : 'Gesperrt')
+      : k.ampel === 'gelb'
+        ? (isOverridden ? 'Manuell eingeplant' : 'Pausiert')
+        : 'Eingeplant';
+    const ampelIcon = k.ampel === 'rot' ? '🔴' : k.ampel === 'gelb' ? '🟡' : '🟢';
+    const clickHandler = k.ampel === 'rot' || k.ampel === 'gelb'
+      ? `onclick="handleAmpelKonfliktClick(${idx})"`
+      : '';
+
+    html += `
+      <div class="ampel-uebersicht-item ${ampelClass}" ${clickHandler}>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:20px;">${ampelIcon}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;font-size:14px;">${escapeHtml(k.supplementName)}</div>
+            <div style="font-size:12px;color:var(--text-muted);">+ ${escapeHtml(k.medGruppeName)}</div>
+          </div>
+          <span class="ampel-status-badge ${ampelClass}">${statusLabel}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:6px;">${escapeHtml(k.wirkung || k.empfehlung || '')}</div>
+        ${k.risiko ? '<div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Risiko: ' + escapeHtml(k.risiko) + '</div>' : ''}
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function handleAmpelKonfliktClick(idx) {
+  const k = window._ampelKonflikte && window._ampelKonflikte[idx];
+  if (!k) return;
+  if (k.ampel === 'rot') showAmpelRotSheet(k);
+  else if (k.ampel === 'gelb') showAmpelGelbSheet(k);
+}
+
+// ===============================
+// SUPPLEMENT-INTERAKTIONEN ÜBERSICHT (für matrixScreen)
+// ===============================
+function renderSuppInteraktionenUebersicht() {
+  const container = document.getElementById('suppInteraktionenContainer');
+  if (!container) return;
+
+  const supps = (typeof mySupplements !== 'undefined') ? mySupplements : [];
+
+  if (!supps.length || !ampelDataLoaded) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const interactions = pruefeSupplementInteraktionen(supps);
+
+  if (!interactions.hemmende.length && !interactions.foerdernde.length) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let html = '';
+
+  if (interactions.foerdernde.length) {
+    html += '<div class="supp-interaction-group"><div class="supp-interaction-header" style="color:#16a34a;">Foerdernde Kombinationen</div>';
+    interactions.foerdernde.forEach(f => {
+      const nameA = f.wirkstoff_a ? f.wirkstoff_a.name : (f.supplement_a ? f.supplement_a.name : '?');
+      const nameB = f.wirkstoff_b ? f.wirkstoff_b.name : (f.supplement_b ? f.supplement_b.name : '?');
+      html += `
+        <div class="supp-interaction-item foerdernd">
+          <div style="font-weight:600;font-size:13px;">${escapeHtml(nameA)} + ${escapeHtml(nameB)}</div>
+          <div style="font-size:12px;color:var(--text-muted);">${escapeHtml(f.beschreibung || f.empfehlung || '')}</div>
+          ${f.staerke ? '<div style="font-size:11px;color:#16a34a;margin-top:3px;">Staerke: ' + escapeHtml(f.staerke) + '</div>' : ''}
+        </div>
+      `;
+    });
+    html += '</div>';
+  }
+
+  if (interactions.hemmende.length) {
+    html += '<div class="supp-interaction-group"><div class="supp-interaction-header" style="color:#f59e0b;">Abstand empfohlen</div>';
+    interactions.hemmende.forEach(h => {
+      const nameA = h.wirkstoff_a ? h.wirkstoff_a.name : (h.supplement_a ? h.supplement_a.name : '?');
+      const nameB = h.wirkstoff_b ? h.wirkstoff_b.name : (h.supplement_b ? h.supplement_b.name : '?');
+      const hours = h.abstand_h || (h.abstand_minuten ? h.abstand_minuten / 60 : 0);
+      html += `
+        <div class="supp-interaction-item hemmend">
+          <div style="font-weight:600;font-size:13px;">${escapeHtml(nameA)} + ${escapeHtml(nameB)}</div>
+          <div style="font-size:12px;color:var(--text-muted);">${escapeHtml(h.beschreibung || h.empfehlung || '')}</div>
+          ${hours > 0 ? '<div style="font-size:11px;color:#f59e0b;margin-top:4px;">Mind. ' + hours + 'h Abstand empfohlen</div>' : ''}
+          ${h.staerke ? '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Staerke: ' + escapeHtml(h.staerke) + '</div>' : ''}
+        </div>
+      `;
+    });
+    html += '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+// ===============================
+// AMPEL UI TOGGLE FUNCTIONS
+// ===============================
+function toggleAmpelUebersicht() {
+  const container = document.getElementById('ampelUebersichtContainer');
+  const toggle = document.getElementById('ampelToggle');
+  if (!container) return;
+  const isOpen = container.style.display !== 'none';
+  container.style.display = isOpen ? 'none' : 'block';
+  if (toggle) toggle.classList.toggle('open', !isOpen);
+  if (!isOpen) renderAmpelUebersicht();
+}
+
+function toggleSuppInteraktionen() {
+  const container = document.getElementById('suppInteraktionenContainer');
+  const toggle = document.getElementById('suppIntToggle');
+  if (!container) return;
+  const isOpen = container.style.display !== 'none';
+  container.style.display = isOpen ? 'none' : 'block';
+  if (toggle) toggle.classList.toggle('open', !isOpen);
+  if (!isOpen) renderSuppInteraktionenUebersicht();
+}
+
+// ===============================
+// MEDIKAMENT AUTOSUGGEST — Feld 1: Medikamenten-Name
+// ===============================
+function setMedSheetScroll(locked) {
+  const content = document.querySelector('#addMedSheet .sheet-content');
+  if (content) content.style.overflowY = locked ? 'hidden' : '';
+}
+
+function onMedNameInput(value) {
+  const dropdown = document.getElementById('medNameDropdown');
+  if (!dropdown) return;
+
+  if (!value || value.length < 2) {
+    dropdown.style.display = 'none';
+    setMedSheetScroll(false);
+    return;
+  }
+
+  // Search medication names
+  const medResults = searchMedikamente(value);
+  if (!medResults.length) {
+    dropdown.style.display = 'none';
+    setMedSheetScroll(false);
+    return;
+  }
+
+  dropdown.innerHTML = medResults.slice(0, 5).map(m =>
+    `<div class="med-autosuggest-item" onclick="selectMedFromName('${escapeHtml(m.name)}', '${escapeHtml(m.gruppe_id)}', '${escapeHtml(m.gruppe_name)}', '${escapeHtml(m.form)}')">
+      <span class="med-suggest-name">${escapeHtml(m.name)}</span>
+      <span class="med-suggest-match">${escapeHtml(m.gruppe_name)}</span>
+    </div>`
+  ).join('');
+  dropdown.style.display = 'block';
+  setMedSheetScroll(true);
+}
+
+// ===============================
+// MEDIKAMENT AUTOSUGGEST — Feld 2: Medikamentengruppe
+// ===============================
+function onMedGruppeInput(value) {
+  const dropdown = document.getElementById('medGruppeDropdown');
+  if (!dropdown) return;
+
+  if (!value || value.length < 2) {
+    dropdown.style.display = 'none';
+    setMedSheetScroll(false);
+    return;
+  }
+
+  const grpResults = searchMedGruppen(value);
+  if (!grpResults.length) {
+    dropdown.style.display = 'none';
+    setMedSheetScroll(false);
+    return;
+  }
+
+  dropdown.innerHTML = grpResults.slice(0, 5).map(g =>
+    `<div class="med-autosuggest-item" onclick="selectGruppeFromSearch('${escapeHtml(g.id)}', '${escapeHtml(g.name)}')">
+      <span class="med-suggest-name">${escapeHtml(g.name)}</span>
+      <span class="med-suggest-match">${g.anzahl_medikamente || g.medikamente.length} Medikamente</span>
+    </div>`
+  ).join('');
+  dropdown.style.display = 'block';
+  setMedSheetScroll(true);
+}
+
+// ===============================
+// SELECTION HANDLERS
+// ===============================
+
+// User selected a medication from the Name-field dropdown
+function selectMedFromName(name, gruppeId, gruppeName, form) {
+  // Fill name field
+  const nameInput = document.getElementById('medName');
+  if (nameInput) nameInput.value = name;
+
+  // Close name dropdown
+  const nameDropdown = document.getElementById('medNameDropdown');
+  if (nameDropdown) nameDropdown.style.display = 'none';
+  setMedSheetScroll(false);
+
+  // Auto-fill gruppe
+  setMedGruppeSelection(gruppeId, gruppeName);
+
+  // Auto-fill form
+  setMedFormSelection(form);
+}
+
+// User selected a group from the Gruppe-field dropdown
+function selectGruppeFromSearch(gruppeId, gruppeName) {
+  // Close gruppe dropdown
+  const grpDropdown = document.getElementById('medGruppeDropdown');
+  if (grpDropdown) grpDropdown.style.display = 'none';
+  setMedSheetScroll(false);
+
+  // Set gruppe
+  setMedGruppeSelection(gruppeId, gruppeName);
+
+  // Show medications of this group in the Name-field dropdown so user can pick one
+  const meds = getMedikamenteByGruppe(gruppeId);
+  if (meds.length) {
+    const nameDropdown = document.getElementById('medNameDropdown');
+    if (nameDropdown) {
+      let html = '<div class="med-suggest-section">' + escapeHtml(gruppeName) + ' (' + meds.length + ')</div>';
+      html += meds.map(m =>
+        `<div class="med-autosuggest-item" onclick="selectMedFromName('${escapeHtml(m.name)}', '${escapeHtml(gruppeId)}', '${escapeHtml(gruppeName)}', '${escapeHtml(m.form)}')">
+          <div class="med-suggest-name">${escapeHtml(m.name)}</div>
+          <div class="med-suggest-match">${escapeHtml(m.form)}</div>
+        </div>`
+      ).join('');
+      nameDropdown.innerHTML = html;
+      nameDropdown.style.display = 'block';
+
+      // Focus the name input so user can pick or type further
+      const nameInput = document.getElementById('medName');
+      if (nameInput) nameInput.focus();
+    }
+  }
+}
+
+// Set the Gruppe display (shared by both paths)
+function setMedGruppeSelection(gruppeId, gruppeName) {
+  const gruppeIdField = document.getElementById('medGruppeId');
+  const gruppeNameField = document.getElementById('medGruppeName');
+  const gruppeSearch = document.getElementById('medGruppeSearch');
+  const displayBox = document.getElementById('medGruppeDisplayBox');
+  const displayText = document.getElementById('medGruppeDisplayText');
+
+  if (gruppeIdField) gruppeIdField.value = gruppeId;
+  if (gruppeNameField) gruppeNameField.value = gruppeName;
+
+  if (gruppeName && displayBox && displayText) {
+    displayText.textContent = gruppeName;
+    displayBox.style.display = 'flex';
+    if (gruppeSearch) gruppeSearch.style.display = 'none';
+  }
+}
+
+// Set the Form display (auto-filled from DB)
+function setMedFormSelection(form) {
+  if (!form) return;
+
+  const autoFormField = document.getElementById('medAutoForm');
+  const formDisplayBox = document.getElementById('medFormDisplayBox');
+  const formDisplayText = document.getElementById('medFormDisplayText');
+  const formSelector = document.getElementById('medFormSelector');
+
+  if (autoFormField) autoFormField.value = form;
+  if (formDisplayBox && formDisplayText) {
+    formDisplayText.textContent = form;
+    formDisplayBox.style.display = 'flex';
+  }
+  if (formSelector) formSelector.style.display = 'none';
+
+  // Set internal form value
+  const formMap = {
+    'Tablette': 'tablet', 'Kapsel': 'capsule', 'Tropfen': 'drops',
+    'Pulver': 'other', 'Spritze': 'injection', 'Spray': 'spray',
+    'Salbe': 'cream', 'Sirup': 'liquid', 'Pflaster': 'other'
+  };
+  const formValue = formMap[form] || 'tablet';
+  if (typeof setMedForm === 'function') setMedForm(formValue);
+}
+
+// Clear the Gruppe selection (X button)
+function clearMedGruppe() {
+  const gruppeIdField = document.getElementById('medGruppeId');
+  const gruppeNameField = document.getElementById('medGruppeName');
+  const gruppeSearch = document.getElementById('medGruppeSearch');
+  const displayBox = document.getElementById('medGruppeDisplayBox');
+
+  if (gruppeIdField) gruppeIdField.value = '';
+  if (gruppeNameField) gruppeNameField.value = '';
+  if (displayBox) displayBox.style.display = 'none';
+  if (gruppeSearch) {
+    gruppeSearch.style.display = '';
+    gruppeSearch.value = '';
+  }
+
+  // Also reset form to manual selector
+  const autoFormField = document.getElementById('medAutoForm');
+  const formDisplayBox = document.getElementById('medFormDisplayBox');
+  const formSelector = document.getElementById('medFormSelector');
+  if (autoFormField) autoFormField.value = '';
+  if (formDisplayBox) formDisplayBox.style.display = 'none';
+  if (formSelector) formSelector.style.display = '';
+}
+
 function initMatrix() {
   matrixItems = [];
   selectedSupplements = new Set();
@@ -9594,6 +10645,12 @@ function initMatrix() {
   renderMatrixItems();
   renderSavedSearches();
   document.getElementById('matrixResults').style.display = 'none';
+
+  // Load Ampel data and render overviews if data is ready
+  if (ampelDataLoaded) {
+    renderAmpelUebersicht();
+    renderSuppInteraktionenUebersicht();
+  }
 }
 
 function renderMatrixItems() {
@@ -10515,34 +11572,69 @@ function renderMedications() {
 }
 
 function openAddMedication() {
+  editingMedIndex = -1; // Reset edit mode
+
   document.getElementById('medName').value = '';
-  document.getElementById('medActiveIngredient').value = '';
+  const aiField = document.getElementById('medActiveIngredient');
+  if (aiField) aiField.value = '';
   document.getElementById('medDuration').value = '';
   document.getElementById('medDurationType').value = 'days';
   document.getElementById('medDoseAmount').value = '1';
   document.getElementById('medInstruction').value = 'any';
   document.getElementById('medCustomNote').value = '';
-  
+
+  // Reset gruppe & form auto-detection
+  const gruppeIdField = document.getElementById('medGruppeId');
+  if (gruppeIdField) gruppeIdField.value = '';
+  const gruppeNameField = document.getElementById('medGruppeName');
+  if (gruppeNameField) gruppeNameField.value = '';
+  const autoFormField = document.getElementById('medAutoForm');
+  if (autoFormField) autoFormField.value = '';
+
+  // Reset gruppe search field
+  const gruppeSearch = document.getElementById('medGruppeSearch');
+  if (gruppeSearch) { gruppeSearch.value = ''; gruppeSearch.style.display = ''; }
+
+  // Hide gruppe display box
+  const gruppeDisplayBox = document.getElementById('medGruppeDisplayBox');
+  if (gruppeDisplayBox) gruppeDisplayBox.style.display = 'none';
+
+  // Show form selector, hide auto-display
+  const formSelector = document.getElementById('medFormSelector');
+  if (formSelector) formSelector.style.display = '';
+  const formDisplayBox = document.getElementById('medFormDisplayBox');
+  if (formDisplayBox) formDisplayBox.style.display = 'none';
+
+  // Hide both autosuggest dropdowns
+  const nameDropdown = document.getElementById('medNameDropdown');
+  if (nameDropdown) nameDropdown.style.display = 'none';
+  const grpDropdown = document.getElementById('medGruppeDropdown');
+  if (grpDropdown) grpDropdown.style.display = 'none';
+
   selectedMedForm = 'tablet';
-  
+
   // Reset form type buttons
   document.querySelectorAll('.form-type-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.form === 'tablet');
   });
-  
+
   // Update dose unit display
   updateDoseUnitDisplay('tablet');
-  
+
   // Hide custom note section
   const customSection = document.getElementById('customNoteSection');
   if (customSection) customSection.style.display = 'none';
-  
+
   document.getElementById('medTimeMorning').checked = true;
   document.getElementById('medTimeNoon').checked = false;
   document.getElementById('medTimeEvening').checked = false;
   document.getElementById('medTimeNight').checked = false;
   document.getElementById('medRoburConsider').checked = true;
-  
+
+  // Reset button text
+  const saveBtn = document.querySelector('.save-med-btn');
+  if (saveBtn) saveBtn.textContent = '💊 Medikament speichern';
+
   document.getElementById('addMedOverlay').classList.add('visible');
   document.getElementById('addMedSheet').classList.add('visible');
 }
@@ -10550,6 +11642,7 @@ function openAddMedication() {
 function closeAddMedication() {
   document.getElementById('addMedOverlay').classList.remove('visible');
   document.getElementById('addMedSheet').classList.remove('visible');
+  setMedSheetScroll(false);
 }
 
 function setMedForm(form) {
@@ -10627,10 +11720,16 @@ function saveMedication() {
   const instruction = document.getElementById('medInstruction').value;
   const customNote = document.getElementById('medCustomNote').value.trim();
   
-  const newMed = {
-    id: 'med_' + Date.now(),
+  // Auto-detect medication group for Ampel system
+  const gruppeIdField = document.getElementById('medGruppeId');
+  const gruppeNameField = document.getElementById('medGruppeName');
+  const gruppe_id = (gruppeIdField && gruppeIdField.value) ? gruppeIdField.value : null;
+  const gruppe_name = (gruppeNameField && gruppeNameField.value) ? gruppeNameField.value : null;
+  const autoGruppe = !gruppe_id ? findMedikamentGruppe(name) : null;
+
+  const medData = {
     name: name,
-    activeIngredient: document.getElementById('medActiveIngredient').value.trim() || name,
+    activeIngredient: (document.getElementById('medActiveIngredient') && document.getElementById('medActiveIngredient').value.trim()) || name,
     formType: selectedMedForm,
     doseAmount: doseAmount,
     doseUnit: medDoseUnits[selectedMedForm]?.unit || 'Einheit(en)',
@@ -10639,31 +11738,140 @@ function saveMedication() {
     customNote: instruction === 'custom' ? customNote : '',
     duration: duration,
     durationType: duration ? durationType : 'ongoing',
-    startDate: new Date().toISOString(),
-    roburConsider: document.getElementById('medRoburConsider').checked
+    roburConsider: document.getElementById('medRoburConsider').checked,
+    gruppe_id: gruppe_id || (autoGruppe ? autoGruppe.id : null),
+    gruppe_name: gruppe_name || (autoGruppe ? autoGruppe.name : null)
   };
-  
-  myMedications.push(newMed);
+
+  let isEdit = editingMedIndex >= 0;
+  let savedMed;
+
+  if (isEdit && myMedications[editingMedIndex]) {
+    // Update existing medication
+    savedMed = { ...myMedications[editingMedIndex], ...medData };
+    myMedications[editingMedIndex] = savedMed;
+  } else {
+    // Add new medication
+    savedMed = { id: 'med_' + Date.now(), startDate: new Date().toISOString(), ...medData };
+    myMedications.push(savedMed);
+  }
+
   saveMedications();
-  
+  editingMedIndex = -1;
+
   // Update scheduled intakes if Robur should consider this
-  if (newMed.roburConsider) {
+  if (savedMed.roburConsider) {
     updateAllScheduledIntakes();
   }
-  
+
+  // Check for Ampel conflicts after adding/editing medication
+  if (ampelDataLoaded && savedMed.gruppe_id) {
+    const konflikte = pruefeMedikamentKonflikte(mySupplements || [], [savedMed]);
+    if (konflikte.length > 0) {
+      const rotKonflikte = konflikte.filter(k => k.ampel === 'rot');
+      const gelbKonflikte = konflikte.filter(k => k.ampel === 'gelb');
+
+      setTimeout(() => {
+        if (rotKonflikte.length > 0) {
+          showAmpelRotSheet(rotKonflikte[0]);
+        } else if (gelbKonflikte.length > 0) {
+          showAmpelGelbSheet(gelbKonflikte[0]);
+        }
+      }, 500);
+    }
+  }
+
   closeAddMedication();
   renderMedications();
-  
+
   // Build confirmation message
   const unitInfo = medDoseUnits[selectedMedForm];
   const shortUnit = unitInfo.unit.replace('(n)', '').replace('(en)', '');
   const doseText = `${doseAmount} ${doseAmount === 1 ? shortUnit : unitInfo.unit}`;
-  
-  showToast(`${name}: ${doseText}, ${times.length}x täglich hinzugefügt`);
+
+  showToast(`${name}: ${doseText}, ${times.length}x täglich ${isEdit ? 'aktualisiert' : 'hinzugefügt'}`);
 }
 
+let editingMedIndex = -1; // -1 = neues Medikament, >= 0 = bearbeiten
+
 function editMedication(idx) {
-  showToast('Bearbeiten wird implementiert...');
+  const med = myMedications[idx];
+  if (!med) return;
+
+  editingMedIndex = idx;
+
+  // Fill form fields with existing data
+  document.getElementById('medName').value = med.name || '';
+  const aiField = document.getElementById('medActiveIngredient');
+  if (aiField) aiField.value = med.activeIngredient || '';
+  document.getElementById('medDoseAmount').value = med.doseAmount || 1;
+  document.getElementById('medDuration').value = med.duration || '';
+  document.getElementById('medDurationType').value = med.durationType || 'days';
+  document.getElementById('medInstruction').value = med.instruction || 'any';
+  document.getElementById('medCustomNote').value = med.customNote || '';
+
+  // Set form type
+  selectedMedForm = med.formType || 'tablet';
+  document.querySelectorAll('.form-type-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.form === selectedMedForm);
+  });
+  updateDoseUnitDisplay(selectedMedForm);
+
+  // Custom note section
+  const customSection = document.getElementById('customNoteSection');
+  if (customSection) customSection.style.display = med.instruction === 'custom' ? 'block' : 'none';
+
+  // Set times
+  document.getElementById('medTimeMorning').checked = (med.times || []).includes('morning');
+  document.getElementById('medTimeNoon').checked = (med.times || []).includes('noon');
+  document.getElementById('medTimeEvening').checked = (med.times || []).includes('evening');
+  document.getElementById('medTimeNight').checked = (med.times || []).includes('night');
+  document.getElementById('medRoburConsider').checked = med.roburConsider !== false;
+
+  // Set gruppe_id and gruppe_name if available
+  const gruppeIdField = document.getElementById('medGruppeId');
+  if (gruppeIdField) gruppeIdField.value = med.gruppe_id || '';
+  const gruppeNameField = document.getElementById('medGruppeName');
+  if (gruppeNameField) gruppeNameField.value = med.gruppe_name || '';
+
+  // Hide both autosuggest dropdowns
+  const nameDropdown = document.getElementById('medNameDropdown');
+  if (nameDropdown) nameDropdown.style.display = 'none';
+  const grpDropdown = document.getElementById('medGruppeDropdown');
+  if (grpDropdown) grpDropdown.style.display = 'none';
+
+  // Show gruppe display if group known
+  const gruppeSearch = document.getElementById('medGruppeSearch');
+  const gruppeDisplayBox = document.getElementById('medGruppeDisplayBox');
+  const gruppeDisplayText = document.getElementById('medGruppeDisplayText');
+  if (med.gruppe_id || med.gruppe_name) {
+    const gruppeName = med.gruppe_name || (function() {
+      const grp = MEDIKAMENTE_DB.gruppen.find(g => g.id === med.gruppe_id) || MED_GRUPPEN.find(g => g.id === med.gruppe_id);
+      return grp ? grp.name : '';
+    })();
+    if (gruppeDisplayBox && gruppeDisplayText && gruppeName) {
+      gruppeDisplayText.textContent = gruppeName;
+      gruppeDisplayBox.style.display = 'flex';
+      if (gruppeSearch) gruppeSearch.style.display = 'none';
+    }
+  } else {
+    if (gruppeDisplayBox) gruppeDisplayBox.style.display = 'none';
+    if (gruppeSearch) { gruppeSearch.style.display = ''; gruppeSearch.value = ''; }
+  }
+
+  // Show form selector (manual), hide auto-display
+  const formSelector = document.getElementById('medFormSelector');
+  if (formSelector) formSelector.style.display = '';
+  const formDisplayBox = document.getElementById('medFormDisplayBox');
+  if (formDisplayBox) formDisplayBox.style.display = 'none';
+
+  // Change button text to "Aktualisieren"
+  const saveBtn = document.querySelector('.save-med-btn');
+  if (saveBtn) saveBtn.textContent = '💊 Medikament aktualisieren';
+
+  // Open sheet
+  document.getElementById('addMedOverlay').classList.add('visible');
+  document.getElementById('addMedSheet').classList.add('visible');
 }
 
 function deleteMedication(idx) {
@@ -18771,7 +19979,18 @@ function renderDayPlanner() {
   
   // Nach Timestamp sortieren
   allItems.sort((a, b) => a.timestamp - b.timestamp);
-  
+
+  // Ampel-Overlay anwenden (additiv — nur Labels und Klassen hinzufügen)
+  if (ampelDataLoaded) {
+    const overlayedItems = applyInteractionOverlay(allItems.filter(i => i.type === 'supplement'));
+    overlayedItems.forEach(oi => {
+      const idx = allItems.findIndex(a => a.uniqueId === oi.uniqueId);
+      if (idx >= 0) {
+        allItems[idx] = { ...allItems[idx], ...oi };
+      }
+    });
+  }
+
   // Aufteilen in Vergangenheit (2-24h her) und Aktuell (letzte 2h + nächste 24h)
   const pastItems = allItems.filter(item => item.itemDate >= pastStart && item.itemDate < pastEnd);
   const currentItems = allItems.filter(item => item.itemDate >= currentStart && item.itemDate <= currentEnd);
@@ -19123,8 +20342,11 @@ function renderTimelineItem(item, idx, completed, hideReason = false) {
   
   const trainingStyle = isTrainingEntry ? 'background:#dbeafe;border:1.5px solid #93c5fd;border-radius:7px;cursor:pointer;' : '';
 
+  // Ampel classes
+  const ampelClass = item.ampel === 'gelb' ? 'ampel-gelb' : item.ampel === 'rot' ? (item.ampelOverridden ? 'ampel-rot' : 'ampel-rot intake-blocked') : (item.foerderndLabels && item.foerderndLabels.length ? 'foerdernd' : '');
+
   return `
-    <div class="timeline-item ${typeClass} ${isDone && !isCaffeineStop && !isInfoEntry && !isMeal ? 'done' : ''}"
+    <div class="timeline-item ${typeClass} ${ampelClass} ${isDone && !isCaffeineStop && !isInfoEntry && !isMeal ? 'done' : ''}"
          ${contentClickHandler}
          style="${trainingStyle}"
          data-id="${checkId}"
@@ -19139,6 +20361,12 @@ function renderTimelineItem(item, idx, completed, hideReason = false) {
         ${item.entryNote && !isTrainingEntry ? `<span class="item-detail" style="font-size:10px;color:var(--text-muted)">${item.entryNote}</span>` : ''}
         ${mealBadge}
         ${showReason ? `<span class="item-reason">${item.reason}</span>` : ''}
+        ${item.ampel === 'gelb' && !item.ampelOverridden ? `<span class="ampel-label gelb">&#9888;&#65039; Wechselwirkung — manuell einplanen</span>` : ''}
+        ${item.ampel === 'gelb' && item.ampelOverridden ? `<span class="ampel-label gelb">&#9888;&#65039; Manuell eingeplant</span>` : ''}
+        ${item.ampel === 'rot' && !item.ampelOverridden ? `<span class="ampel-label rot">&#128308; Gesperrt — Wechselwirkung</span>` : ''}
+        ${item.ampel === 'rot' && item.ampelOverridden ? `<span class="ampel-label rot">&#128308; Nach Disclaimer eingeplant</span>` : ''}
+        ${(item.foerderndLabels || []).map(f => `<span class="interaction-hint" style="color:#16a34a;">&#10003; ${f.text}</span>`).join('')}
+        ${(item.hemmendLabels || []).map(h => `<span class="interaction-hint" style="color:#f59e0b;">&#9888; ${h.text}</span>`).join('')}
       </div>
       ${isTrainingEntry ? `<span style="color:#3b82f6;font-size:16px;margin-left:auto">›</span>` : ''}
       ${isNote ? `<button class="item-delete" onclick="event.stopPropagation(); deleteNote(${item.noteIndex})">🗑️</button>` : ''}
@@ -20056,6 +21284,41 @@ function initHomePage() {
   checkLowStock();
 }
 
+// Persönliche Home-Sektionen verstecken + Teaser-Karte zeigen
+function hidePersonalHomeSections() {
+  var el = document.getElementById('homePersonalSections');
+  if (el) el.style.display = 'none';
+
+  // Teaser-Karte anzeigen
+  var teaser = document.getElementById('homeLoginTeaser');
+  if (!teaser) return;
+  teaser.style.display = '';
+  teaser.innerHTML =
+    '<div style="background:white;border-radius:16px;padding:20px;margin:0 16px 12px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">' +
+        '<div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#E8F5E9,#f0fdf4);display:flex;align-items:center;justify-content:center;font-size:22px">📋</div>' +
+        '<div><div style="font-size:15px;font-weight:700;color:#1a1a1a">Dein Tagesplaner</div><div style="font-size:12px;color:#9ca3af">Supplements, Termine & mehr</div></div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8f9fa;border-radius:8px">' +
+          '<span style="font-size:16px">💊</span><span style="font-size:13px;color:#6b7280">Supplement-Einnahmen tracken</span></div>' +
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8f9fa;border-radius:8px">' +
+          '<span style="font-size:16px">📅</span><span style="font-size:13px;color:#6b7280">7-Tage Vorschau & Schichtplaner</span></div>' +
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8f9fa;border-radius:8px">' +
+          '<span style="font-size:16px">🩸</span><span style="font-size:13px;color:#6b7280">Bluttest-Ergebnisse & Empfehlungen</span></div>' +
+      '</div>' +
+      '<button onclick="showCustomerAuth();setCustomerAuthMode(\'register\')" style="width:100%;padding:13px;background:linear-gradient(135deg,#1a5a3a,#00A67E);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">Kostenlos registrieren</button>' +
+      '<button onclick="showCustomerAuth();setCustomerAuthMode(\'login\')" style="width:100%;padding:11px;background:none;color:#00A67E;border:none;font-size:13px;font-weight:600;cursor:pointer">Bereits ein Konto? Anmelden</button>' +
+    '</div>';
+}
+
+function showPersonalHomeSections() {
+  var el = document.getElementById('homePersonalSections');
+  if (el) el.style.display = '';
+  var teaser = document.getElementById('homeLoginTeaser');
+  if (teaser) teaser.style.display = 'none';
+}
+
 function updateWeekPreviewBadge() {
   const badge = document.getElementById('weekPreviewBadge');
   if (!badge) return;
@@ -20089,9 +21352,15 @@ function updateHomeGreeting() {
   
   if (greetingEl) greetingEl.textContent = greeting;
   
-  // Get user name from profile if available
-  const userName = localStorage.getItem('supptree_userName') || 'Willkommen!';
-  if (nameEl) nameEl.textContent = userName + ' 👋';
+  // Name nur anzeigen wenn eingeloggt
+  if (nameEl) {
+    if (currentUser) {
+      var name = userProfile?.name || userProfile?.display_name || currentUser?.user_metadata?.name || currentUser?.email?.split('@')[0] || '';
+      nameEl.textContent = name ? name + '! 👋' : '👋';
+    } else {
+      nameEl.textContent = 'Willkommen! 👋';
+    }
+  }
 }
 
 // Update home streak display
@@ -25145,6 +26414,18 @@ function switchScreen(screenId) {
   if (screenId === 'profileScreen') {
     screenId = 'menuScreen';
   }
+
+  // Persönliche Screens: Login-Hinweis einblenden wenn nicht eingeloggt
+  if (!currentUser && (screenId === 'meinScreen' || screenId === 'menuScreen')) {
+    showMeinLoginHint(screenId);
+  } else {
+    hideMeinLoginHint();
+  }
+
+  // Einkauf-Screen: Abo-Sektion vergrauen wenn nicht eingeloggt
+  if (screenId === 'einkaufScreen') {
+    setTimeout(function() { toggleEinkaufAboLock(); }, 50);
+  }
   
   // Get current active screen before switching
   const currentScreen = document.querySelector('.screen.active');
@@ -28961,10 +30242,10 @@ function setDefaultPayment(index) {
 // MEIN PROFIL
 // ================================
 
-function openMyProfile() {
+async function openMyProfile() {
   document.getElementById('myProfileOverlay').classList.add('visible');
   document.getElementById('myProfileSheet').classList.add('visible');
-  loadMyProfile();
+  await loadMyProfile();
   lockBody();
 }
 
@@ -28974,10 +30255,50 @@ function closeMyProfile() {
   unlockBody();
 }
 
-function loadMyProfile() {
+async function loadMyProfile() {
   const saved = localStorage.getItem('suppTreeProfile');
   const profile = saved ? JSON.parse(saved) : {};
-  
+
+  // Supabase-Profil laden falls nicht vorhanden
+  if (!userProfile && currentUser && supabase) {
+    try { await loadUserProfile(); } catch(e) { console.warn('Profile load:', e); }
+  }
+
+  // Supabase personal_data hat Priorität über leere localStorage-Felder
+  if (userProfile && userProfile.personal_data) {
+    var pd = userProfile.personal_data;
+    if (!profile.firstName && pd.firstName) profile.firstName = pd.firstName;
+    if (!profile.lastName && pd.lastName) profile.lastName = pd.lastName;
+    if (!profile.anrede && pd.anrede) profile.anrede = pd.anrede;
+    if (!profile.titel && pd.titel) profile.titel = pd.titel;
+    if (!profile.birthdate && pd.birthdate) profile.birthdate = pd.birthdate;
+    if (!profile.gender && pd.gender) profile.gender = pd.gender;
+    if (!profile.height && pd.height) profile.height = pd.height;
+    if (!profile.weight && pd.weight) profile.weight = pd.weight;
+    if (!profile.phone && pd.phone) profile.phone = pd.phone;
+  }
+  // Name aus profiles.name splitten falls immer noch leer
+  if (!profile.firstName && userProfile && userProfile.name) {
+    var parts = userProfile.name.trim().split(/\s+/);
+    profile.firstName = parts[0] || '';
+    profile.lastName = parts.slice(1).join(' ') || '';
+  }
+  // Letzter Fallback: Name aus Auth user_metadata
+  if (!profile.firstName && currentUser) {
+    var metaName = (currentUser.user_metadata && currentUser.user_metadata.name) || '';
+    if (metaName) {
+      var parts2 = metaName.trim().split(/\s+/);
+      profile.firstName = parts2[0] || '';
+      profile.lastName = parts2.slice(1).join(' ') || '';
+    }
+  }
+  // E-Mail aus Auth
+  if (!profile.email && currentUser && currentUser.email) {
+    profile.email = currentUser.email;
+  }
+
+  document.getElementById('profileAnrede').value = profile.anrede || '';
+  document.getElementById('profileTitel').value = profile.titel || '';
   document.getElementById('profileFirstName').value = profile.firstName || '';
   document.getElementById('profileLastName').value = profile.lastName || '';
   document.getElementById('profileBirthdate').value = profile.birthdate || '';
@@ -29200,6 +30521,8 @@ function saveMyProfile() {
   const avatarImage = document.getElementById('profileAvatarImage');
   
   const profile = {
+    anrede: document.getElementById('profileAnrede').value,
+    titel: document.getElementById('profileTitel').value,
     firstName: document.getElementById('profileFirstName').value.trim(),
     lastName: document.getElementById('profileLastName').value.trim(),
     birthdate: document.getElementById('profileBirthdate').value,
@@ -29211,9 +30534,15 @@ function saveMyProfile() {
     avatar: avatarImage.style.display !== 'none' ? 'photo' : avatarEmoji.textContent,
     hasPhoto: avatarImage.style.display !== 'none'
   };
-  
+
   localStorage.setItem('suppTreeProfile', JSON.stringify(profile));
-  
+
+  // Supabase-Profil synchronisieren
+  if (currentUser && supabase) {
+    var fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ');
+    updateProfile({ name: fullName, personal_data: { anrede: profile.anrede, titel: profile.titel, firstName: profile.firstName, lastName: profile.lastName, birthdate: profile.birthdate, gender: profile.gender, height: profile.height, weight: profile.weight, phone: profile.phone } }).catch(function(e) { console.warn('Profile sync:', e); });
+  }
+
   // Update greeting name if set
   if (profile.firstName) {
     const greetingName = document.getElementById('homeGreetingName');
@@ -29221,9 +30550,9 @@ function saveMyProfile() {
       greetingName.textContent = profile.firstName + '! 👋';
     }
   }
-  
+
   closeMyProfile();
-  showToast('✅ Profil gespeichert');
+  if (!currentUser || !supabase) showToast('✅ Profil gespeichert');
 }
 
 function confirmDeleteAccount() {
@@ -32707,6 +34036,11 @@ function confirmLogout() {
       } else {
         showToast('👋 Auf Wiedersehen!');
       }
+      // Session komplett aufräumen
+      currentUser = null;
+      userProfile = null;
+      localStorage.removeItem('suppTreeAppMode');
+      updateUIForLoggedOutUser();
       setTimeout(() => {
         switchScreen('homeScreen');
         showCustomerAuth();
@@ -32743,20 +34077,34 @@ async function handleLogin() {
 }
 
 async function handleRegister() {
-  const nameInput = document.getElementById('registerName');
+  const anredeInput = document.getElementById('registerAnrede');
+  const titelInput = document.getElementById('registerTitel');
+  const firstNameInput = document.getElementById('registerFirstName');
+  const lastNameInput = document.getElementById('registerLastName');
   const emailInput = document.getElementById('registerEmail');
   const passwordInput = document.getElementById('registerPassword');
   const passwordConfirmInput = document.getElementById('registerPasswordConfirm');
-  
-  const name = nameInput.value.trim();
+
+  const anrede = anredeInput ? anredeInput.value : '';
+  const titel = titelInput ? titelInput.value : '';
+  const firstName = firstNameInput ? firstNameInput.value.trim() : '';
+  const lastName = lastNameInput ? lastNameInput.value.trim() : '';
   const email = emailInput.value.trim();
   const password = passwordInput.value;
   const passwordConfirm = passwordConfirmInput.value;
-  
+
   let hasError = false;
-  
-  if (!name) {
-    nameInput.classList.add('input-error');
+
+  if (!anrede && anredeInput) {
+    anredeInput.classList.add('input-error');
+    hasError = true;
+  }
+  if (!firstName && firstNameInput) {
+    firstNameInput.classList.add('input-error');
+    hasError = true;
+  }
+  if (!lastName && lastNameInput) {
+    lastNameInput.classList.add('input-error');
     hasError = true;
   }
   if (!email) {
@@ -32771,23 +34119,25 @@ async function handleRegister() {
     passwordConfirmInput.classList.add('input-error');
     hasError = true;
   }
-  
+
   if (hasError) {
     showToast('❌ Bitte alle Pflichtfelder ausfüllen');
     return;
   }
-  
+
   if (password.length < 8) {
     showToast('❌ Passwort muss mindestens 8 Zeichen haben');
     return;
   }
-  
+
   if (password !== passwordConfirm) {
     showToast('❌ Passwörter stimmen nicht überein');
     return;
   }
-  
-  const result = await signUp(email, password, name);
+
+  const name = [firstName, lastName].filter(Boolean).join(' ');
+  const userData = { anrede, titel, firstName, lastName };
+  const result = await signUp(email, password, name, userData);
   if (result.success) {
     // Wechsel zu Login nach erfolgreicher Registrierung
     setAuthMode('login');
@@ -34113,6 +35463,9 @@ let checkoutState = {
 };
 
 function startCheckout() {
+  // Login erforderlich für Checkout
+  if (!requireLogin('🔐 Bitte melde dich an, um zu bestellen')) return;
+
   // Calculate cart totals
   let subtotal = 0;
   let itemCount = 0;
@@ -34874,6 +36227,9 @@ function coShowWiderruf() {
 }
 
 async function placeOrder() {
+  // Login erforderlich
+  if (!requireLogin('🔐 Bitte melde dich an, um zu bestellen')) return;
+
   // Legal compliance check
   if (!checkoutState.agbAccepted || !checkoutState.widerrufAccepted) {
     showToast('Bitte akzeptiere die AGB und Widerrufsbelehrung');
@@ -35908,43 +37264,57 @@ async function initApp() {
     console.log('Supabase nicht verfügbar:', e);
   }
 
-  // Auth prüfen — Overlay anzeigen wenn nicht eingeloggt
+  // Auth prüfen — wenn eingeloggt: Profil laden. Sonst: Marktplatz frei browsebar
   if (supabase) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        showCustomerAuth();
-      } else {
+      if (session) {
         currentUser = session.user;
         await loadUserProfile();
         await loadUserDataFromSupabase();
         startCustomerRealtime();
         updateUIForLoggedInUser();
+      } else {
+        updateUIForLoggedOutUser();
       }
     } catch(e) {
       console.warn('Auth-Check fehlgeschlagen:', e);
-      showCustomerAuth();
+      updateUIForLoggedOutUser();
     }
   }
+
+  // QR-Ref-Parameter (?ref=SELLER_NR) speichern für Provision-Zuordnung
+  try {
+    var refParam = new URLSearchParams(window.location.search).get('ref');
+    if (refParam) {
+      localStorage.setItem('suppTreePartnerRef', refParam);
+      localStorage.setItem('suppTreePartnerRefDate', new Date().toISOString());
+      console.log('🔗 Partner-Ref gespeichert:', refParam);
+    }
+  } catch(e) {}
   
   // Hero Banner initialisieren
   initHeroBanner();
   
-  // Core data loading (await wenn eingeloggt, sonst sync)
-  if (supabase && currentUser) {
-    await ensureSupplementsLoaded();
-  } else {
-    ensureSupplementsLoaded();
+  // Warenkorb & Favoriten immer laden (auch für Gäste)
+  loadCart();
+  loadFavorites();
+
+  // Persönliche Daten nur laden wenn eingeloggt
+  if (currentUser) {
+    if (supabase) {
+      await ensureSupplementsLoaded();
+    } else {
+      ensureSupplementsLoaded();
+    }
+    loadPointsData();
+    loadQuizData();
+    loadSubscriptions();
+    syncAbosToSupplements();
+    loadPendingOrders();
+    initAutoReplenItems();
+    try { updateDailyStock(); } catch(e) {}
   }
-  loadPointsData();
-  loadQuizData();
-  loadSubscriptions(); // Lade gespeicherte Abos
-  syncAbosToSupplements(); // Sync aktive Abos zu mySupplements
-  loadFavorites(); // Lade gespeicherte Favoriten
-  loadCart(); // Lade gespeicherten Warenkorb
-  loadPendingOrders(); // Lade offene Bestellungen
-  initAutoReplenItems();
-  try { updateDailyStock(); } catch(e) {} // Vorrats-Berechnung
   
   // Load shift data for caffeine warning
   if (typeof loadShiftConfig === 'function') loadShiftConfig();
@@ -35957,6 +37327,13 @@ async function initApp() {
   const savedMeds = localStorage.getItem('suppTreeMedications');
   if (savedMeds) {
     myMedications = JSON.parse(savedMeds);
+  }
+
+  // Load Ampelsystem interaction data (JSON files)
+  try {
+    await loadInteractionData();
+  } catch(e) {
+    console.warn('Ampelsystem: Daten-Laden fehlgeschlagen', e);
   }
   
   // Load health profile data
@@ -35990,12 +37367,19 @@ async function initApp() {
   // Delayed inits (need DOM to be ready)
   setTimeout(() => {
     initSymptomChecker();
-    initHomePage();
     initKnowledgeHub();
-    updateSTPlusStats();
-    renderRecentTraining();
-    initWeek7Preview(); // Neue 7-Tage Vorschau
-    try { renderHomeNewEmpfehlungen(); } catch(e) {}
+    if (currentUser) {
+      initHomePage();
+      initWeek7Preview();
+      updateSTPlusStats();
+      renderRecentTraining();
+      try { renderHomeNewEmpfehlungen(); } catch(e) {}
+      showPersonalHomeSections();
+    } else {
+      updateHomeGreeting();
+      // Teaser-Karte statt persönlicher Sektionen
+      hidePersonalHomeSections();
+    }
   }, 100);
   
   // Event listeners setup
@@ -36928,6 +38312,23 @@ function getItemsForDay(dateStr, shift) {
     });
   });
   
+  // === MEDIKAMENTE in Tagesansicht einbinden ===
+  try {
+    const medsForDay = getMedicationsForDate(dateStr);
+    medsForDay.forEach(med => {
+      items.push({
+        name: med.label ? med.label.split(' (')[0] : med.name || 'Medikament',
+        time: med.time,
+        icon: med.icon || '💊',
+        type: 'medication',
+        dose: med.instruction ? (instructionLabels[med.instruction] || '') : '',
+        medId: med.id || null
+      });
+    });
+  } catch(e) {
+    console.warn('Medikamente fuer Tag laden fehlgeschlagen:', e);
+  }
+
   // === TRAININGS-TIMING: Supplements auf Trainingstagen zeitlich anpassen ===
   // Prüfe ob an diesem Tag ein Training stattfindet
   const trainingEntry = items.find(it => it.type === 'custom' && it.entryId && it.entryId.startsWith('plan_'));

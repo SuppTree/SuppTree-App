@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SuppTree — Einladung</title>
+<meta name="description" content="Du wurdest eingeladen, personalisierte Supplement-Empfehlungen zu entdecken.">
+<meta property="og:title" content="SuppTree — Einladung">
+<meta property="og:description" content="Personalisierte Supplement-Empfehlungen von deinem Gesundheitspartner.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../www/assets/icon.png">
+<link rel="icon" href="../../www/assets/icon.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --green-dark:#1a5a3a;
+  --green-primary:#2E7D32;
+  --green-medium:#43A047;
+  --green-accent:#00A67E;
+  --green-light:#E8F5E9;
+  --cream:#FAF9F6;
+  --white:#FFFFFF;
+  --text-dark:#111827;
+  --text-body:#374151;
+  --text-muted:#6b7280;
+  --border:#e5e7eb;
+  --shadow:0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg:0 12px 40px rgba(0,0,0,0.1);
+  --r:8px;
+  --r-lg:16px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:var(--text-body);
+  background:var(--cream);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ========== NAVBAR ========== */
+.navbar{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(0,0,0,0.06);
+  height:60px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 24px;
+  flex-shrink:0;
+}
+.navbar-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.navbar-logo{width:34px;height:34px;border-radius:8px}
+.navbar-name{font-size:20px;font-weight:800;color:var(--green-dark);letter-spacing:-0.5px}
+
+/* ========== HERO ========== */
+.hero{
+  padding:48px 24px 40px;
+  background:linear-gradient(165deg,#0d3320 0%,#1a5a3a 30%,#2E7D32 60%,#43A047 100%);
+  text-align:center;color:white;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:60px;
+  background:linear-gradient(to bottom,transparent,var(--cream));
+}
+.hero-content{position:relative;z-index:1;max-width:480px;margin:0 auto}
+.hero-logo{
+  width:80px;height:80px;
+  border-radius:20px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+  margin-bottom:24px;
+  border:3px solid rgba(255,255,255,0.2);
+}
+.hero-invite{
+  font-size:14px;font-weight:600;
+  opacity:0.8;
+  margin-bottom:6px;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+}
+.hero-partner{
+  font-size:clamp(24px,5vw,32px);
+  font-weight:800;
+  line-height:1.2;
+  margin-bottom:16px;
+  letter-spacing:-0.5px;
+}
+.hero-desc{
+  font-size:16px;
+  opacity:0.88;
+  line-height:1.6;
+  max-width:360px;
+  margin:0 auto;
+}
+
+/* ========== MAIN CARD ========== */
+.main{
+  flex:1;
+  padding:32px 20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.card{
+  background:var(--white);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow-lg);
+  padding:32px 24px;
+  max-width:420px;
+  width:100%;
+  margin-top:-24px;
+  position:relative;
+  z-index:2;
+}
+.card-section{margin-bottom:24px}
+.card-section:last-child{margin-bottom:0}
+
+/* ========== BUTTONS ========== */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;
+  padding:14px 20px;
+  border-radius:var(--r);
+  font-size:15px;font-weight:600;
+  text-decoration:none;
+  cursor:pointer;
+  border:none;
+  transition:all 0.2s;
+  margin-bottom:10px;
+}
+.btn:last-child{margin-bottom:0}
+.btn-primary{
+  background:var(--green-accent);
+  color:white;
+  box-shadow:0 2px 12px rgba(0,167,126,0.3);
+}
+.btn-primary:hover{
+  background:var(--green-dark);
+  transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(0,167,126,0.35);
+}
+.btn-store{
+  background:var(--text-dark);
+  color:white;
+}
+.btn-store:hover{
+  background:#000;
+  transform:translateY(-1px);
+}
+.btn-store.disabled{
+  background:#d1d5db;
+  color:#9ca3af;
+  cursor:default;
+  box-shadow:none;
+  pointer-events:none;
+}
+.btn-store-icon{font-size:20px}
+.btn-store-text{text-align:left;line-height:1.2}
+.btn-store-text small{display:block;font-size:11px;font-weight:400;opacity:0.7}
+.btn-store-text span{display:block;font-size:15px;font-weight:700}
+
+.divider{
+  display:flex;align-items:center;gap:12px;
+  margin:16px 0;
+  color:var(--text-muted);
+  font-size:13px;
+}
+.divider::before,.divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+
+/* ========== BENEFITS ========== */
+.benefits{
+  max-width:420px;
+  width:100%;
+  margin-top:28px;
+  padding:0 4px;
+}
+.benefits-title{
+  font-size:14px;font-weight:700;
+  color:var(--text-dark);
+  margin-bottom:14px;
+  letter-spacing:0.3px;
+  text-transform:uppercase;
+}
+.benefit{
+  display:flex;align-items:flex-start;gap:12px;
+  margin-bottom:14px;
+}
+.benefit-icon{
+  width:32px;height:32px;
+  border-radius:8px;
+  background:var(--green-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  flex-shrink:0;
+}
+.benefit-text{font-size:14px;line-height:1.5;color:var(--text-body)}
+.benefit-text strong{color:var(--text-dark);font-weight:600}
+
+/* ========== FOOTER ========== */
+.footer{
+  text-align:center;
+  padding:24px;
+  font-size:12px;
+  color:var(--text-muted);
+  flex-shrink:0;
+}
+.footer a{color:var(--green-accent);text-decoration:none;font-weight:500}
+.footer a:hover{text-decoration:underline}
+
+/* ========== ERROR STATE ========== */
+.error-state{
+  text-align:center;
+  padding:48px 24px;
+}
+.error-icon{font-size:48px;margin-bottom:16px}
+.error-title{font-size:20px;font-weight:700;color:var(--text-dark);margin-bottom:8px}
+.error-desc{font-size:15px;color:var(--text-muted);margin-bottom:24px;line-height:1.6}
+
+/* ========== BADGE ========== */
+.badge-coming{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#fef3c7;color:#92400e;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:11px;font-weight:600;
+  margin-left:8px;
+}
+
+/* ========== RESPONSIVE ========== */
+@media(min-width:640px){
+  .hero{padding:64px 32px 56px}
+  .hero-logo{width:96px;height:96px}
+  .main{padding:40px 32px}
+  .card{padding:40px 32px}
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="../../website/" class="navbar-brand">
+    <img src="../../www/assets/icon.png" alt="SuppTree" class="navbar-logo">
+    <span class="navbar-name">SuppTree</span>
+  </a>
+</nav>
+
+<!-- Content (filled by JS) -->
+<div id="pageContent"></div>
+
+<!-- Footer -->
+<div class="footer">
+  &copy; 2026 SuppTree &middot;
+  <a href="../../website/">supptree.de</a> &middot;
+  <a href="../../website/#datenschutz">Datenschutz</a>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ─── Config ───────────────────────────────────────────────
+  var STORE_LINKS = {
+    ios: '',      // App Store URL — leer = "Bald verfügbar"
+    android: ''   // Play Store URL — leer = "Bald verfügbar"
+  };
+  var COOKIE_DAYS = 30;
+  var WEB_APP_URL = '../../www/index.html';
+
+  // ─── Partner-Code extrahieren ─────────────────────────────
+  function getPartnerCode() {
+    // 1. Pfad: /r/dr-eichkorn
+    var path = window.location.pathname;
+    var segments = path.split('/r/');
+    if (segments.length > 1) {
+      var code = segments[segments.length - 1].replace(/\/+$/, '').replace(/[^a-z0-9\-]/gi, '');
+      if (code && !code.match(/\.(html|htm|php|asp)$/i) && code !== 'indexhtml') return code;
+    }
+    // 2. Query: ?p=dr-eichkorn
+    var params = new URLSearchParams(window.location.search);
+    var p = params.get('p');
+    if (p) return p.replace(/[^a-z0-9\-]/gi, '');
+    return null;
+  }
+
+  // ─── Partner-Code Typ erkennen ──────────────────────────────
+  // Neues Format: 49-01-00001 (Land-Typ-Laufend)
+  // Altes Format: SP-20007, DE-10001
+  // Rein numerisch: 748291
+  // Name: dr-eichkorn (kein System-Code)
+  function isSystemCode(code) {
+    if (!code) return false;
+    // Land-Typ-Laufend (z.B. 49-01-00001) oder rein numerisch
+    return /^\d{1,3}-\d{1,3}-\d+$/.test(code) || /^\d+$/.test(code) || /^[A-Z]{1,4}-/.test(code);
+  }
+
+  // ─── Partner-Name formatieren ─────────────────────────────
+  function formatPartnerName(code) {
+    if (!code) return 'Dein Gesundheitspartner';
+    if (isSystemCode(code)) return 'Dein Gesundheitspartner';
+    return code.split('-').map(function(w) {
+      if (!w) return '';
+      if (w === 'dr') return 'Dr.';
+      if (w === 'med') return 'med.';
+      if (w === 'prof') return 'Prof.';
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).filter(Boolean).join(' ');
+  }
+
+  // ─── Geräte-Erkennung ────────────────────────────────────
+  function detectDevice() {
+    var ua = navigator.userAgent || '';
+    if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return 'ios';
+    if (/android/i.test(ua)) return 'android';
+    return 'desktop';
+  }
+
+  // ─── Partner-Code speichern ───────────────────────────────
+  function savePartnerCode(code) {
+    if (!code) return;
+    // 1. Cookie (30 Tage)
+    try {
+      var expires = new Date();
+      expires.setTime(expires.getTime() + COOKIE_DAYS * 24 * 60 * 60 * 1000);
+      document.cookie = 'supptree_ref=' + encodeURIComponent(code) +
+        ';expires=' + expires.toUTCString() +
+        ';path=/;SameSite=Lax';
+    } catch(e) {}
+    // 2. localStorage
+    try {
+      localStorage.setItem('supptree_ref', code);
+    } catch(e) {}
+  }
+
+  // ─── Web-App URL bauen ────────────────────────────────────
+  function getWebAppURL(code) {
+    var url = WEB_APP_URL;
+    if (code) url += '?ref=' + encodeURIComponent(code);
+    return url;
+  }
+
+  // ─── Seite rendern ────────────────────────────────────────
+  function render() {
+    var code = getPartnerCode();
+    var container = document.getElementById('pageContent');
+
+    // Kein Partner-Code → Fehlerseite
+    if (!code) {
+      container.innerHTML =
+        '<div class="main">' +
+          '<div class="card">' +
+            '<div class="error-state">' +
+              '<div class="error-icon">🔗</div>' +
+              '<div class="error-title">Ungültiger Link</div>' +
+              '<div class="error-desc">Dieser Einladungslink scheint unvollständig zu sein. Bitte scanne den QR-Code erneut oder frage deinen Gesundheitspartner nach einem neuen Link.</div>' +
+              '<a href="../../website/" class="btn btn-primary">Zur SuppTree Startseite</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      return;
+    }
+
+    // Partner-Code speichern
+    savePartnerCode(code);
+
+    // OG-Tags dynamisch aktualisieren
+    var partnerName = formatPartnerName(code);
+    var numeric = isSystemCode(code);
+    document.title = numeric ? 'SuppTree — Einladung' : ('SuppTree — Einladung von ' + partnerName);
+
+    var device = detectDevice();
+    var webURL = getWebAppURL(code);
+
+    // Hero
+    var heroInvite = numeric
+      ? 'Du wurdest eingeladen von'
+      : 'Du wurdest eingeladen von';
+    var heroPartner = numeric
+      ? 'Deinem Gesundheitspartner'
+      : escapeHtml(partnerName);
+
+    var html =
+      '<div class="hero">' +
+        '<div class="hero-content">' +
+          '<img src="../../www/assets/icon.png" alt="SuppTree" class="hero-logo">' +
+          '<div class="hero-invite">' + heroInvite + '</div>' +
+          '<div class="hero-partner">' + heroPartner + '</div>' +
+          '<div class="hero-desc">Entdecke personalisierte Supplement-Empfehlungen — individuell auf dich abgestimmt.</div>' +
+        '</div>' +
+      '</div>';
+
+    // Card mit Buttons
+    html += '<div class="main"><div class="card">';
+
+    // Store-Buttons (geräteabhängig priorisiert)
+    var storeButtons = '';
+
+    if (device === 'ios' || device === 'desktop') {
+      if (STORE_LINKS.ios) {
+        storeButtons +=
+          '<a href="' + STORE_LINKS.ios + '" class="btn btn-store" target="_blank" rel="noopener">' +
+            '<span class="btn-store-icon"></span>' +
+            '<span class="btn-store-text"><small>Laden im</small><span>App Store</span></span>' +
+          '</a>';
+      } else {
+        storeButtons +=
+          '<div class="btn btn-store disabled">' +
+            '<span class="btn-store-icon"></span>' +
+            '<span class="btn-store-text"><small>Bald verfügbar im</small><span>App Store</span></span>' +
+          '</div>';
+      }
+    }
+
+    if (device === 'android' || device === 'desktop') {
+      if (STORE_LINKS.android) {
+        storeButtons +=
+          '<a href="' + STORE_LINKS.android + '" class="btn btn-store" target="_blank" rel="noopener">' +
+            '<span class="btn-store-icon">▶️</span>' +
+            '<span class="btn-store-text"><small>Jetzt bei</small><span>Google Play</span></span>' +
+          '</a>';
+      } else {
+        storeButtons +=
+          '<div class="btn btn-store disabled">' +
+            '<span class="btn-store-icon">▶️</span>' +
+            '<span class="btn-store-text"><small>Bald verfügbar bei</small><span>Google Play</span></span>' +
+          '</div>';
+      }
+    }
+
+    html += '<div class="card-section">' + storeButtons + '</div>';
+
+    // Divider + Web-App Button
+    html +=
+      '<div class="divider">oder</div>' +
+      '<div class="card-section">' +
+        '<a href="' + escapeHtml(webURL) + '" class="btn btn-primary">' +
+          '🌐 Weiter zur Web-App' +
+        '</a>' +
+      '</div>';
+
+    html += '</div>'; // card
+
+    // Benefits
+    html +=
+      '<div class="benefits">' +
+        '<div class="benefits-title">Deine Vorteile</div>' +
+        '<div class="benefit">' +
+          '<div class="benefit-icon">🎯</div>' +
+          '<div class="benefit-text"><strong>Persönliche Empfehlungen</strong><br>Supplements, abgestimmt auf deine Bedürfnisse</div>' +
+        '</div>' +
+        '<div class="benefit">' +
+          '<div class="benefit-icon">🤝</div>' +
+          '<div class="benefit-text"><strong>Direkte Verbindung</strong><br>Verknüpft mit deinem Gesundheitspartner</div>' +
+        '</div>' +
+        '<div class="benefit">' +
+          '<div class="benefit-icon">💚</div>' +
+          '<div class="benefit-text"><strong>Kostenlos nutzen</strong><br>Die SuppTree App ist komplett kostenlos</div>' +
+        '</div>' +
+      '</div>';
+
+    html += '</div>'; // main
+
+    container.innerHTML = html;
+  }
+
+  // ─── Hilfsfunktion ────────────────────────────────────────
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ─── Start ────────────────────────────────────────────────
+  render();
+
+})();
+</script>
+</body>
+</html>

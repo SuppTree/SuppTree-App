@@ -1,0 +1,6505 @@
+[
+  {
+    "id": "grp_0001",
+    "name": "5-ASA / Mesalazin",
+    "suchbegriffe": [
+      "5-ASA / Mesalazin",
+      "Mesalazin",
+      "Sulfasalazin"
+    ]
+  },
+  {
+    "id": "grp_0002",
+    "name": "5-Alpha-Reduktase-Hemmer (theoretisch)",
+    "suchbegriffe": [
+      "5-Alpha-Reduktase-Hemmer (theoretisch)",
+      "Dutasterid",
+      "Finasterid"
+    ]
+  },
+  {
+    "id": "grp_0003",
+    "name": "5alpha-Reduktase-Hemmer",
+    "suchbegriffe": [
+      "5alpha-Reduktase-Hemmer",
+      "Dutasterid",
+      "Finasterid"
+    ]
+  },
+  {
+    "id": "grp_0004",
+    "name": "5α-Reduktase-Inhibitoren",
+    "suchbegriffe": [
+      "5α-Reduktase-Inhibitoren",
+      "Dutasterid",
+      "Finasterid"
+    ]
+  },
+  {
+    "id": "grp_0005",
+    "name": "5α-Reduktasehemmer",
+    "suchbegriffe": [
+      "5α-Reduktasehemmer",
+      "Dutasterid",
+      "Finasterid"
+    ]
+  },
+  {
+    "id": "grp_0006",
+    "name": "ACE-Hemmer",
+    "suchbegriffe": [
+      "ACE-Hemmer",
+      "Benazepril",
+      "Candesartan",
+      "Captopril",
+      "Enalapril",
+      "Lisinopril"
+    ]
+  },
+  {
+    "id": "grp_0007",
+    "name": "ACE-Hemmer / ARBs",
+    "suchbegriffe": [
+      "ACE-Hemmer / ARBs",
+      "Candesartan",
+      "Irbesartan",
+      "Lisinopril",
+      "Losartan",
+      "Ramipril"
+    ]
+  },
+  {
+    "id": "grp_0008",
+    "name": "ADHS-Medikamente",
+    "suchbegriffe": [
+      "ADHS-Medikamente",
+      "Atomoxetin",
+      "Lisdexamfetamin",
+      "Ritalin"
+    ]
+  },
+  {
+    "id": "grp_0009",
+    "name": "ALLE Medikamente",
+    "suchbegriffe": [
+      "ALLE Medikamente",
+      "Jedes Medikament"
+    ]
+  },
+  {
+    "id": "grp_0010",
+    "name": "ASS (niedrig dosiert)",
+    "suchbegriffe": [
+      "ASS (niedrig dosiert)",
+      "Aspirin 75"
+    ]
+  },
+  {
+    "id": "grp_0011",
+    "name": "ASS + Clopidogrel",
+    "suchbegriffe": [
+      "ASS + Clopidogrel",
+      "Aspirin",
+      "Plavix"
+    ]
+  },
+  {
+    "id": "grp_0012",
+    "name": "AT1-Rezeptorblocker (Sartane)",
+    "suchbegriffe": [
+      "AT1-Rezeptorblocker (Sartane)",
+      "Irbesartan",
+      "Losartan",
+      "ueber CYP2C9 aktiviert"
+    ]
+  },
+  {
+    "id": "grp_0013",
+    "name": "Acarbose",
+    "suchbegriffe": [
+      "Acarbose",
+      "Glucobay",
+      "Glucobay®"
+    ]
+  },
+  {
+    "id": "grp_0014",
+    "name": "Acetylcholinesterase-Hemmer",
+    "suchbegriffe": [
+      "Acetylcholinesterase-Hemmer",
+      "Aricept",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  },
+  {
+    "id": "grp_0015",
+    "name": "Acetylcholinesterase-Inhibitoren",
+    "suchbegriffe": [
+      "Acetylcholinesterase-Inhibitoren",
+      "Donepezil",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  },
+  {
+    "id": "grp_0016",
+    "name": "Acetylcystein (NAC)",
+    "suchbegriffe": [
+      "Acetylcystein (NAC)",
+      "ACC®",
+      "Fluimucil®"
+    ]
+  },
+  {
+    "id": "grp_0017",
+    "name": "Adenosin",
+    "suchbegriffe": [
+      "Adenosin",
+      "Adenocard",
+      "Adenoscan",
+      "Regadenoson"
+    ]
+  },
+  {
+    "id": "grp_0018",
+    "name": "Adenosin (Antiarrhythmikum)",
+    "suchbegriffe": [
+      "Adenosin (Antiarrhythmikum)",
+      "Adenocard",
+      "Regadenoson"
+    ]
+  },
+  {
+    "id": "grp_0019",
+    "name": "Adenosin/Dipyridamol",
+    "suchbegriffe": [
+      "Adenosin/Dipyridamol",
+      "diagnostisch bei Stress-Tests"
+    ]
+  },
+  {
+    "id": "grp_0020",
+    "name": "Adsorbentien",
+    "suchbegriffe": [
+      "Adsorbentien",
+      "Aktivkohle",
+      "Kohletabletten"
+    ]
+  },
+  {
+    "id": "grp_0021",
+    "name": "Aktivkohle",
+    "suchbegriffe": [
+      "Aktivkohle",
+      "Aktivkohle",
+      "Carbo medicinalis"
+    ]
+  },
+  {
+    "id": "grp_0022",
+    "name": "Albendazol (Antiparasitikum)",
+    "suchbegriffe": [
+      "Albendazol (Antiparasitikum)",
+      "Albendazol",
+      "Eskazole"
+    ]
+  },
+  {
+    "id": "grp_0023",
+    "name": "Alkohol",
+    "suchbegriffe": [
+      "Alkohol",
+      "Bier",
+      "Ethanol",
+      "Spirituosen",
+      "Wein"
+    ]
+  },
+  {
+    "id": "grp_0024",
+    "name": "Alkohol (chronisch)",
+    "suchbegriffe": [
+      "Alkohol (chronisch)",
+      "Chronischer Alkoholkonsum"
+    ]
+  },
+  {
+    "id": "grp_0025",
+    "name": "Alkoholhaltige Mundspülungen",
+    "suchbegriffe": [
+      "Alkoholhaltige Mundspülungen",
+      "Listerine",
+      "andere alkoholhaltige Produkte"
+    ]
+  },
+  {
+    "id": "grp_0026",
+    "name": "Alle",
+    "suchbegriffe": [
+      "Alle",
+      "Keine signifikanten bekannt",
+      "Keine spezifischen bekannt",
+      "Keine spezifischen dokumentiert"
+    ]
+  },
+  {
+    "id": "grp_0027",
+    "name": "Alle Medikamente",
+    "suchbegriffe": [
+      "Alle Medikamente",
+      "Jegliche Humanmedikation",
+      "Keine bekannten Interaktionen"
+    ]
+  },
+  {
+    "id": "grp_0028",
+    "name": "Alle Medikamente (allgemein)",
+    "suchbegriffe": [
+      "Alle Medikamente (allgemein)",
+      "Diverse"
+    ]
+  },
+  {
+    "id": "grp_0029",
+    "name": "Alle oralen Medikamente",
+    "suchbegriffe": [
+      "Alle oralen Medikamente",
+      "Antibiotika",
+      "Schilddruesenhormone"
+    ]
+  },
+  {
+    "id": "grp_0030",
+    "name": "Allgemein",
+    "suchbegriffe": [
+      "Allgemein",
+      "Diverse",
+      "Keine spezifischen",
+      "Verschiedene"
+    ]
+  },
+  {
+    "id": "grp_0031",
+    "name": "Allopurinol",
+    "suchbegriffe": [
+      "Allopurinol",
+      "Allopurinol",
+      "Febuxostat"
+    ]
+  },
+  {
+    "id": "grp_0032",
+    "name": "Allopurinol (Xanthinoxidase-Hemmer)",
+    "suchbegriffe": [
+      "Allopurinol (Xanthinoxidase-Hemmer)",
+      "Allopurinol",
+      "Febuxostat"
+    ]
+  },
+  {
+    "id": "grp_0033",
+    "name": "Alpha-Blocker",
+    "suchbegriffe": [
+      "Alpha-Blocker",
+      "Alfuzosin",
+      "Doxazosin",
+      "Tamsulosin"
+    ]
+  },
+  {
+    "id": "grp_0034",
+    "name": "Alpha-Blocker (bei BPH)",
+    "suchbegriffe": [
+      "Alpha-Blocker (bei BPH)",
+      "Alfuzosin",
+      "Doxazosin",
+      "Tamsulosin"
+    ]
+  },
+  {
+    "id": "grp_0035",
+    "name": "Alpha-Gal-relevante Medikamente",
+    "suchbegriffe": [
+      "Alpha-Gal-relevante Medikamente",
+      "Schwein"
+    ]
+  },
+  {
+    "id": "grp_0036",
+    "name": "Aluminiumhaltige Antacida",
+    "suchbegriffe": [
+      "Aluminiumhaltige Antacida",
+      "Maaloxan",
+      "Phosphalugel"
+    ]
+  },
+  {
+    "id": "grp_0037",
+    "name": "Ambroxol (Mukolytikum)",
+    "suchbegriffe": [
+      "Ambroxol (Mukolytikum)",
+      "Mucosolvan®"
+    ]
+  },
+  {
+    "id": "grp_0038",
+    "name": "Aminopenicilline",
+    "suchbegriffe": [
+      "Aminopenicilline",
+      "Amoxicillin",
+      "Ampicillin"
+    ]
+  },
+  {
+    "id": "grp_0039",
+    "name": "Amiodaron",
+    "suchbegriffe": [
+      "Amiodaron",
+      "Amiodaron",
+      "Cordarex"
+    ]
+  },
+  {
+    "id": "grp_0040",
+    "name": "Ampakine/Nootropika",
+    "suchbegriffe": [
+      "Ampakine/Nootropika",
+      "Aniracetam",
+      "CX717"
+    ]
+  },
+  {
+    "id": "grp_0041",
+    "name": "Amphetamine",
+    "suchbegriffe": [
+      "Amphetamine",
+      "Amphetamin",
+      "Lisdexamfetamin",
+      "Methylphenidat"
+    ]
+  },
+  {
+    "id": "grp_0042",
+    "name": "Andere AChE-Hemmer",
+    "suchbegriffe": [
+      "Andere AChE-Hemmer",
+      "Aricept",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  },
+  {
+    "id": "grp_0043",
+    "name": "Andere Laxanzien",
+    "suchbegriffe": [
+      "Andere Laxanzien",
+      "Bisacodyl",
+      "Lactulose",
+      "Macrogol",
+      "Natriumpicosulfat",
+      "PEG"
+    ]
+  },
+  {
+    "id": "grp_0044",
+    "name": "Andere Stimulanzien",
+    "suchbegriffe": [
+      "Andere Stimulanzien",
+      "Amphetamin",
+      "Methylphenidat",
+      "Modafinil"
+    ]
+  },
+  {
+    "id": "grp_0045",
+    "name": "Antazida",
+    "suchbegriffe": [
+      "Antazida",
+      "Al-haltig",
+      "Aluminium",
+      "Aluminiumhydroxid",
+      "Antazida",
+      "Calciumcarbonat"
+    ]
+  },
+  {
+    "id": "grp_0046",
+    "name": "Anthracycline",
+    "suchbegriffe": [
+      "Anthracycline",
+      "Doxorubicin"
+    ]
+  },
+  {
+    "id": "grp_0047",
+    "name": "Antiandrogene",
+    "suchbegriffe": [
+      "Antiandrogene",
+      "Cyproteronacetat",
+      "Spironolacton"
+    ]
+  },
+  {
+    "id": "grp_0048",
+    "name": "Antiarrhythmika",
+    "suchbegriffe": [
+      "Antiarrhythmika",
+      "Amiodaron",
+      "Dronedaron",
+      "Flecainid",
+      "Propafenon",
+      "Sotalol"
+    ]
+  },
+  {
+    "id": "grp_0049",
+    "name": "Antibiotika",
+    "suchbegriffe": [
+      "Antibiotika",
+      "Aminoglykoside",
+      "Amoxicillin",
+      "Ampicillin",
+      "Azithromycin",
+      "Breitspektrum-Antibiotika"
+    ]
+  },
+  {
+    "id": "grp_0050",
+    "name": "Antibiotika (Aminoglykoside)",
+    "suchbegriffe": [
+      "Antibiotika (Aminoglykoside)",
+      "Amikacin",
+      "Gentamicin",
+      "Kanamycin",
+      "Streptomycin",
+      "Tobramycin"
+    ]
+  },
+  {
+    "id": "grp_0051",
+    "name": "Antibiotika (Fluorchinolone)",
+    "suchbegriffe": [
+      "Antibiotika (Fluorchinolone)",
+      "Ciprofloxacin",
+      "Doxycyclin",
+      "Enoxacin",
+      "Levofloxacin",
+      "Moxifloxacin"
+    ]
+  },
+  {
+    "id": "grp_0052",
+    "name": "Antibiotika (Tetracycline)",
+    "suchbegriffe": [
+      "Antibiotika (Tetracycline)",
+      "Ciprofloxacin",
+      "Demeclocyclin",
+      "Doxycyclin",
+      "Minocyclin",
+      "Tetracyclin"
+    ]
+  },
+  {
+    "id": "grp_0053",
+    "name": "Anticholinergika",
+    "suchbegriffe": [
+      "Anticholinergika",
+      "1. Gen",
+      "Antihistaminika der 1. Generation",
+      "Atropin",
+      "Benztropin",
+      "Biperiden"
+    ]
+  },
+  {
+    "id": "grp_0054",
+    "name": "Antidepressiva",
+    "suchbegriffe": [
+      "Antidepressiva",
+      "Amitriptylin",
+      "Benzodiazepine",
+      "Bupropion",
+      "Citalopram",
+      "Clomipramin"
+    ]
+  },
+  {
+    "id": "grp_0055",
+    "name": "Antidepressiva (MAO-Hemmer)",
+    "suchbegriffe": [
+      "Antidepressiva (MAO-Hemmer)",
+      "Harmalin",
+      "Harmin",
+      "Isocarboxazid",
+      "Jatrosom",
+      "Jatrosom®"
+    ]
+  },
+  {
+    "id": "grp_0056",
+    "name": "Antidepressiva (SNRI)",
+    "suchbegriffe": [
+      "Antidepressiva (SNRI)",
+      "Duloxetin",
+      "Effexor",
+      "Milnacipran",
+      "Venlafaxin"
+    ]
+  },
+  {
+    "id": "grp_0057",
+    "name": "Antidepressiva (SSRI)",
+    "suchbegriffe": [
+      "Antidepressiva (SSRI)",
+      "Citalopram",
+      "Duloxetin",
+      "Escitalopram",
+      "Fevarin®",
+      "Fluoxetin"
+    ]
+  },
+  {
+    "id": "grp_0058",
+    "name": "Antidepressiva (Trizyklische)",
+    "suchbegriffe": [
+      "Antidepressiva (Trizyklische)",
+      "Amitriptylin",
+      "Clomipramin",
+      "Imipramin",
+      "Nortriptylin"
+    ]
+  },
+  {
+    "id": "grp_0059",
+    "name": "Antidiabetika",
+    "suchbegriffe": [
+      "Antidiabetika",
+      "Acarbose",
+      "DPP-4-Hemmer",
+      "Empagliflozin",
+      "GLP-1-Agonisten",
+      "Glibenclamid"
+    ]
+  },
+  {
+    "id": "grp_0060",
+    "name": "Antidiabetika (Insulin)",
+    "suchbegriffe": [
+      "Antidiabetika (Insulin)",
+      "Humaninsulin",
+      "Insulin glargin",
+      "Insulin lispro",
+      "aspart",
+      "lispro"
+    ]
+  },
+  {
+    "id": "grp_0061",
+    "name": "Antidiabetika (Metformin)",
+    "suchbegriffe": [
+      "Antidiabetika (Metformin)",
+      "Antidiabetikum",
+      "Biguanid",
+      "Diabetesmedikament",
+      "Glucophage",
+      "Glucophage®"
+    ]
+  },
+  {
+    "id": "grp_0062",
+    "name": "Antidiabetika (Sulfonylharnstoffe)",
+    "suchbegriffe": [
+      "Antidiabetika (Sulfonylharnstoffe)",
+      "Glibenclamid",
+      "Gliclazid",
+      "Glimepirid",
+      "Glipizid"
+    ]
+  },
+  {
+    "id": "grp_0063",
+    "name": "Antiepileptika",
+    "suchbegriffe": [
+      "Antiepileptika",
+      "Carbamazepin",
+      "Chlorpromazin",
+      "Clobazam",
+      "Clonazepam",
+      "Depakine"
+    ]
+  },
+  {
+    "id": "grp_0064",
+    "name": "Antihistaminika",
+    "suchbegriffe": [
+      "Antihistaminika",
+      "Cetirizin",
+      "Diphenhydramin",
+      "Loratadin",
+      "Telfast®"
+    ]
+  },
+  {
+    "id": "grp_0065",
+    "name": "Antihistaminika (Mastzellstabilisatoren)",
+    "suchbegriffe": [
+      "Antihistaminika (Mastzellstabilisatoren)",
+      "Cromoglicinsäure",
+      "Ketotifen"
+    ]
+  },
+  {
+    "id": "grp_0066",
+    "name": "Antihistaminika (bei Histaminintoleranz)",
+    "suchbegriffe": [
+      "Antihistaminika (bei Histaminintoleranz)",
+      "Cetirizin",
+      "Fexofenadin",
+      "Loratadin"
+    ]
+  },
+  {
+    "id": "grp_0067",
+    "name": "Antihistaminika (sedierend)",
+    "suchbegriffe": [
+      "Antihistaminika (sedierend)",
+      "Diphenhydramin",
+      "Doxylamin"
+    ]
+  },
+  {
+    "id": "grp_0068",
+    "name": "Antihistaminika/Adrenalin",
+    "suchbegriffe": [
+      "Antihistaminika/Adrenalin",
+      "Adrenalin-Autoinjektor",
+      "Cetirizin",
+      "Loratadin"
+    ]
+  },
+  {
+    "id": "grp_0069",
+    "name": "Antihypertensiva",
+    "suchbegriffe": [
+      "Antihypertensiva",
+      "ACE-Hemmer",
+      "ARBs",
+      "AT1-Blocker",
+      "Alpha-Blocker",
+      "Amlodipin"
+    ]
+  },
+  {
+    "id": "grp_0070",
+    "name": "Antihypertensiva (CYP-metabolisiert)",
+    "suchbegriffe": [
+      "Antihypertensiva (CYP-metabolisiert)",
+      "Amlodipin",
+      "Felodipin",
+      "Losartan",
+      "Nifedipin"
+    ]
+  },
+  {
+    "id": "grp_0071",
+    "name": "Antihypertensiva (alle Klassen)",
+    "suchbegriffe": [
+      "Antihypertensiva (alle Klassen)",
+      "ACE-Hemmer",
+      "Betablocker",
+      "Calciumantagonisten",
+      "Diuretika",
+      "Sartane"
+    ]
+  },
+  {
+    "id": "grp_0072",
+    "name": "Antihypertensiva (andere)",
+    "suchbegriffe": [
+      "Antihypertensiva (andere)",
+      "Amlodipin",
+      "Betablocker",
+      "Calciumantagonisten",
+      "Clonidin",
+      "Diltiazem"
+    ]
+  },
+  {
+    "id": "grp_0073",
+    "name": "Antikoagulantien",
+    "suchbegriffe": [
+      "Antikoagulantien",
+      "ASS",
+      "Acenocoumarol",
+      "Apixaban",
+      "Aspirin",
+      "Clopidogrel"
+    ]
+  },
+  {
+    "id": "grp_0074",
+    "name": "Antikoagulantien & Thrombozytenaggregationshemmer",
+    "suchbegriffe": [
+      "Antikoagulantien & Thrombozytenaggregationshemmer",
+      "ASS",
+      "Clopidogrel",
+      "DOAKs",
+      "Heparine",
+      "Prasugrel"
+    ]
+  },
+  {
+    "id": "grp_0075",
+    "name": "Antikoagulantien (Cumarine)",
+    "suchbegriffe": [
+      "Antikoagulantien (Cumarine)",
+      "Coumadin",
+      "Marcumar",
+      "Phenprocoumon"
+    ]
+  },
+  {
+    "id": "grp_0076",
+    "name": "Antikoagulantien (VKA)",
+    "suchbegriffe": [
+      "Antikoagulantien (VKA)",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0077",
+    "name": "Antikoagulantien (Warfarin)",
+    "suchbegriffe": [
+      "Antikoagulantien (Warfarin)",
+      "Coumadin",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0078",
+    "name": "Antikoagulantien (theoretisch)",
+    "suchbegriffe": [
+      "Antikoagulantien (theoretisch)",
+      "NOAKs",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0079",
+    "name": "Antikoagulantien / Thrombozytenaggregationshemmer",
+    "suchbegriffe": [
+      "Antikoagulantien / Thrombozytenaggregationshemmer",
+      "ASS",
+      "Aspirin",
+      "Clopidogrel",
+      "Heparin",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0080",
+    "name": "Antikoagulantien/Thrombozytenaggregationshemmer",
+    "suchbegriffe": [
+      "Antikoagulantien/Thrombozytenaggregationshemmer",
+      "ASS",
+      "Apixaban",
+      "Aspirin",
+      "Clopidogrel",
+      "DOAKs"
+    ]
+  },
+  {
+    "id": "grp_0081",
+    "name": "Antikoagulantien/Thrombozytenhemmer",
+    "suchbegriffe": [
+      "Antikoagulantien/Thrombozytenhemmer",
+      "ASS",
+      "Clopidogrel",
+      "DOAKs",
+      "Heparin",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0082",
+    "name": "Antikoagulanzien (Blutverdünner)",
+    "suchbegriffe": [
+      "Antikoagulanzien (Blutverdünner)",
+      "ASS",
+      "Acenocoumarol",
+      "Apixaban",
+      "Aspirin",
+      "Clopidogrel"
+    ]
+  },
+  {
+    "id": "grp_0083",
+    "name": "Antimetabolite",
+    "suchbegriffe": [
+      "Antimetabolite",
+      "5-FU",
+      "Capecitabin"
+    ]
+  },
+  {
+    "id": "grp_0084",
+    "name": "Antimetaboliten",
+    "suchbegriffe": [
+      "Antimetaboliten",
+      "5-FU"
+    ]
+  },
+  {
+    "id": "grp_0085",
+    "name": "Antimetaboliten (Potenzierung)",
+    "suchbegriffe": [
+      "Antimetaboliten (Potenzierung)",
+      "5-FU",
+      "Capecitabin"
+    ]
+  },
+  {
+    "id": "grp_0086",
+    "name": "Antimykotika",
+    "suchbegriffe": [
+      "Antimykotika",
+      "Amphotericin B",
+      "Caspofungin",
+      "Clotrimazol",
+      "Fluconazol",
+      "Itraconazol"
+    ]
+  },
+  {
+    "id": "grp_0087",
+    "name": "Antimykotika (Amphotericin B)",
+    "suchbegriffe": [
+      "Antimykotika (Amphotericin B)",
+      "konventionell",
+      "liposomal"
+    ]
+  },
+  {
+    "id": "grp_0088",
+    "name": "Antimykotika (Azole)",
+    "suchbegriffe": [
+      "Antimykotika (Azole)",
+      "Fluconazol",
+      "Itraconazol",
+      "Ketoconazol",
+      "Voriconazol"
+    ]
+  },
+  {
+    "id": "grp_0089",
+    "name": "Antimykotika (Echinocandine)",
+    "suchbegriffe": [
+      "Antimykotika (Echinocandine)",
+      "Anidulafungin",
+      "Caspofungin",
+      "Micafungin"
+    ]
+  },
+  {
+    "id": "grp_0090",
+    "name": "Antiparkinson-Mittel",
+    "suchbegriffe": [
+      "Antiparkinson-Mittel",
+      "Benserazid",
+      "Levodopa",
+      "Sinemet"
+    ]
+  },
+  {
+    "id": "grp_0091",
+    "name": "Antiparkinsonmittel",
+    "suchbegriffe": [
+      "Antiparkinsonmittel",
+      "ohne Carbidopa"
+    ]
+  },
+  {
+    "id": "grp_0092",
+    "name": "Antiprotozoika",
+    "suchbegriffe": [
+      "Antiprotozoika",
+      "Daraprim"
+    ]
+  },
+  {
+    "id": "grp_0093",
+    "name": "Antipsychotika",
+    "suchbegriffe": [
+      "Antipsychotika",
+      "Aripiprazol",
+      "Chlorpromazin",
+      "Clozapin",
+      "Haloperidol",
+      "NICHT Clozapin"
+    ]
+  },
+  {
+    "id": "grp_0094",
+    "name": "Antiretrovirale Medikamente (HIV)",
+    "suchbegriffe": [
+      "Antiretrovirale Medikamente (HIV)",
+      "3TC",
+      "Efavirenz",
+      "Epivir",
+      "Indinavir",
+      "NNRTIs"
+    ]
+  },
+  {
+    "id": "grp_0095",
+    "name": "Antiretrovirale Therapie",
+    "suchbegriffe": [
+      "Antiretrovirale Therapie",
+      "Darunavir",
+      "Ritonavir",
+      "andere Proteaseinhibitoren"
+    ]
+  },
+  {
+    "id": "grp_0096",
+    "name": "Antitussiva",
+    "suchbegriffe": [
+      "Antitussiva",
+      "Codein",
+      "Dextromethorphan",
+      "Noscapin"
+    ]
+  },
+  {
+    "id": "grp_0097",
+    "name": "Antitussiva (Hustenstiller)",
+    "suchbegriffe": [
+      "Antitussiva (Hustenstiller)",
+      "Codein",
+      "Dextromethorphan",
+      "Noscapin"
+    ]
+  },
+  {
+    "id": "grp_0098",
+    "name": "Antivirale Medikamente",
+    "suchbegriffe": [
+      "Antivirale Medikamente",
+      "HSV"
+    ]
+  },
+  {
+    "id": "grp_0099",
+    "name": "Antiöstrogene",
+    "suchbegriffe": [
+      "Antiöstrogene",
+      "Anastrozol",
+      "Letrozol",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0100",
+    "name": "Antiöstrogene (Aromatasehemmer)",
+    "suchbegriffe": [
+      "Antiöstrogene (Aromatasehemmer)",
+      "Anastrozol",
+      "Exemestan",
+      "Letrozol"
+    ]
+  },
+  {
+    "id": "grp_0101",
+    "name": "Antiöstrogene (Tamoxifen, AI)",
+    "suchbegriffe": [
+      "Antiöstrogene (Tamoxifen, AI)",
+      "Anastrozol",
+      "Letrozol",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0102",
+    "name": "Antiöstrogene / Aromatasehemmer",
+    "suchbegriffe": [
+      "Antiöstrogene / Aromatasehemmer",
+      "Anastrozol",
+      "Exemestan",
+      "Letrozol",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0103",
+    "name": "Antiöstrogene / SERMs",
+    "suchbegriffe": [
+      "Antiöstrogene / SERMs",
+      "Raloxifen",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0104",
+    "name": "Anästhetika",
+    "suchbegriffe": [
+      "Anästhetika",
+      "Allgemeinanästhetika"
+    ]
+  },
+  {
+    "id": "grp_0105",
+    "name": "Aromatase-Hemmer",
+    "suchbegriffe": [
+      "Aromatase-Hemmer",
+      "Anastrozol",
+      "Exemestan",
+      "Letrozol"
+    ]
+  },
+  {
+    "id": "grp_0106",
+    "name": "Aromatase-Inhibitoren",
+    "suchbegriffe": [
+      "Aromatase-Inhibitoren",
+      "Anastrozol",
+      "Letrozol"
+    ]
+  },
+  {
+    "id": "grp_0107",
+    "name": "Aromatase-Inhibitoren (Brustkrebs)",
+    "suchbegriffe": [
+      "Aromatase-Inhibitoren (Brustkrebs)",
+      "Anastrozol",
+      "Exemestan",
+      "Letrozol"
+    ]
+  },
+  {
+    "id": "grp_0108",
+    "name": "Aromatasehemmer",
+    "suchbegriffe": [
+      "Aromatasehemmer",
+      "Anastrozol",
+      "Arimidex",
+      "Exemestan",
+      "Letrozol"
+    ]
+  },
+  {
+    "id": "grp_0109",
+    "name": "Autophagie-modulierende Medikamente",
+    "suchbegriffe": [
+      "Autophagie-modulierende Medikamente",
+      "Chloroquin",
+      "Hydroxychloroquin",
+      "Rapamycin",
+      "Sirolimus"
+    ]
+  },
+  {
+    "id": "grp_0110",
+    "name": "Azol-Antimykotika",
+    "suchbegriffe": [
+      "Azol-Antimykotika",
+      "Itraconazol",
+      "Ketoconazol"
+    ]
+  },
+  {
+    "id": "grp_0111",
+    "name": "BTK-Inhibitoren",
+    "suchbegriffe": [
+      "BTK-Inhibitoren",
+      "Acalabrutinib",
+      "Imbruvica",
+      "Zanubrutinib"
+    ]
+  },
+  {
+    "id": "grp_0112",
+    "name": "Baclofen",
+    "suchbegriffe": [
+      "Baclofen",
+      "Lioresal"
+    ]
+  },
+  {
+    "id": "grp_0113",
+    "name": "Barbiturate",
+    "suchbegriffe": [
+      "Barbiturate",
+      "Pentobarbital",
+      "Phenobarbital",
+      "Secobarbital",
+      "Thiopental"
+    ]
+  },
+  {
+    "id": "grp_0114",
+    "name": "Betablocker",
+    "suchbegriffe": [
+      "Betablocker",
+      "Atenolol",
+      "Bisoprolol",
+      "Carvedilol",
+      "Corgard",
+      "Diltiazem"
+    ]
+  },
+  {
+    "id": "grp_0115",
+    "name": "Biguanide",
+    "suchbegriffe": [
+      "Biguanide",
+      "Glucophage",
+      "Metformin"
+    ]
+  },
+  {
+    "id": "grp_0116",
+    "name": "Biologika (TNF-Blocker)",
+    "suchbegriffe": [
+      "Biologika (TNF-Blocker)",
+      "Adalimumab",
+      "Etanercept",
+      "Infliximab"
+    ]
+  },
+  {
+    "id": "grp_0117",
+    "name": "Biologika (TNF-α-Blocker)",
+    "suchbegriffe": [
+      "Biologika (TNF-α-Blocker)",
+      "Adalimumab",
+      "Etanercept",
+      "Infliximab"
+    ]
+  },
+  {
+    "id": "grp_0118",
+    "name": "Bisphosphonate",
+    "suchbegriffe": [
+      "Bisphosphonate",
+      "Alendronat",
+      "Alendronsäure",
+      "Fosamax",
+      "Ibandronat",
+      "Ibandronsäure"
+    ]
+  },
+  {
+    "id": "grp_0119",
+    "name": "Blutdrucksenker",
+    "suchbegriffe": [
+      "Blutdrucksenker",
+      "ACE-Hemmer",
+      "ARB",
+      "Betablocker",
+      "Calciumantagonisten",
+      "Diuretika"
+    ]
+  },
+  {
+    "id": "grp_0120",
+    "name": "Bortezomib",
+    "suchbegriffe": [
+      "Bortezomib",
+      "Velcade"
+    ]
+  },
+  {
+    "id": "grp_0121",
+    "name": "CYP-Induktoren",
+    "suchbegriffe": [
+      "CYP-Induktoren",
+      "Carbamazepin",
+      "Phenytoin",
+      "Rifampicin"
+    ]
+  },
+  {
+    "id": "grp_0122",
+    "name": "CYP-Substrate",
+    "suchbegriffe": [
+      "CYP-Substrate",
+      "CYP1A2",
+      "CYP2E1",
+      "CYP3A-Substrate",
+      "Diverse"
+    ]
+  },
+  {
+    "id": "grp_0123",
+    "name": "CYP-Substrate (allgemein)",
+    "suchbegriffe": [
+      "CYP-Substrate (allgemein)",
+      "CYP2C9",
+      "CYP2D6-Substrate",
+      "Verschiedene CYP3A4"
+    ]
+  },
+  {
+    "id": "grp_0124",
+    "name": "CYP-Substrate allgemein",
+    "suchbegriffe": [
+      "CYP-Substrate allgemein",
+      "2C19",
+      "2C9",
+      "2D6",
+      "3A4-Substrate"
+    ]
+  },
+  {
+    "id": "grp_0125",
+    "name": "CYP-metabolisierte Medikamente",
+    "suchbegriffe": [
+      "CYP-metabolisierte Medikamente",
+      "Diverse"
+    ]
+  },
+  {
+    "id": "grp_0126",
+    "name": "CYP1A2-Inhibitoren",
+    "suchbegriffe": [
+      "CYP1A2-Inhibitoren",
+      "Cimetidin",
+      "Ciprofloxacin",
+      "Erythromycin",
+      "Fluvoxamin"
+    ]
+  },
+  {
+    "id": "grp_0127",
+    "name": "CYP1A2-Substrate",
+    "suchbegriffe": [
+      "CYP1A2-Substrate",
+      "Clozapin",
+      "Coffein",
+      "Duloxetin",
+      "Fluvoxamin",
+      "Koffein"
+    ]
+  },
+  {
+    "id": "grp_0128",
+    "name": "CYP2A6-Substrate",
+    "suchbegriffe": [
+      "CYP2A6-Substrate",
+      "Coumarin-7-Hydroxylase-Substrate",
+      "Nikotin"
+    ]
+  },
+  {
+    "id": "grp_0129",
+    "name": "CYP2B-Substrate",
+    "suchbegriffe": [
+      "CYP2B-Substrate",
+      "Cyclophosphamid",
+      "Efavirenz"
+    ]
+  },
+  {
+    "id": "grp_0130",
+    "name": "CYP2B6-Substrate",
+    "suchbegriffe": [
+      "CYP2B6-Substrate",
+      "Bupropion",
+      "Cyclophosphamid",
+      "Efavirenz"
+    ]
+  },
+  {
+    "id": "grp_0131",
+    "name": "CYP2B6/CYP3A4-Substrate",
+    "suchbegriffe": [
+      "CYP2B6/CYP3A4-Substrate",
+      "Diverse Medikamente"
+    ]
+  },
+  {
+    "id": "grp_0132",
+    "name": "CYP2C19-Substrate",
+    "suchbegriffe": [
+      "CYP2C19-Substrate",
+      "Citalopram",
+      "Clopidogrel",
+      "Diazepam",
+      "Escitalopram",
+      "Omeprazol"
+    ]
+  },
+  {
+    "id": "grp_0133",
+    "name": "CYP2C8-Substrate",
+    "suchbegriffe": [
+      "CYP2C8-Substrate",
+      "Paclitaxel",
+      "Repaglinid",
+      "Rosiglitazon"
+    ]
+  },
+  {
+    "id": "grp_0134",
+    "name": "CYP2C8/2C9/3A4",
+    "suchbegriffe": [
+      "CYP2C8/2C9/3A4",
+      "Verschiedene"
+    ]
+  },
+  {
+    "id": "grp_0135",
+    "name": "CYP2C9-Substrate",
+    "suchbegriffe": [
+      "CYP2C9-Substrate",
+      "Celecoxib",
+      "Diclofenac",
+      "Fluvastatin",
+      "Glibenclamid",
+      "Glimepirid"
+    ]
+  },
+  {
+    "id": "grp_0136",
+    "name": "CYP2C9-metabolisierte Medikamente",
+    "suchbegriffe": [
+      "CYP2C9-metabolisierte Medikamente",
+      "Glipizid"
+    ]
+  },
+  {
+    "id": "grp_0137",
+    "name": "CYP2D6-Substrate",
+    "suchbegriffe": [
+      "CYP2D6-Substrate",
+      "Antidepressiva",
+      "Antipsychotika",
+      "Betablocker",
+      "Carvedilol",
+      "Codein"
+    ]
+  },
+  {
+    "id": "grp_0138",
+    "name": "CYP2E1-Substrate",
+    "suchbegriffe": [
+      "CYP2E1-Substrate",
+      "Enfluran",
+      "Ethanol",
+      "Hepatotoxizität",
+      "Isofluran",
+      "bei Überdosis"
+    ]
+  },
+  {
+    "id": "grp_0139",
+    "name": "CYP3A4-Induktoren",
+    "suchbegriffe": [
+      "CYP3A4-Induktoren",
+      "Carbamazepin",
+      "Johanniskraut",
+      "Phenobarbital",
+      "Phenytoin",
+      "Rifampicin"
+    ]
+  },
+  {
+    "id": "grp_0140",
+    "name": "CYP3A4-Inhibitoren",
+    "suchbegriffe": [
+      "CYP3A4-Inhibitoren",
+      "Clarithromycin",
+      "Erythromycin",
+      "Grapefruit",
+      "Grapefruitsaft",
+      "HIV-Protease-Inhibitoren"
+    ]
+  },
+  {
+    "id": "grp_0141",
+    "name": "CYP3A4-Substrate",
+    "suchbegriffe": [
+      "CYP3A4-Substrate",
+      ">50% des Marktes",
+      "Amlodipin",
+      "Atorvastatin",
+      "Benzodiazepine",
+      "Buspiron"
+    ]
+  },
+  {
+    "id": "grp_0142",
+    "name": "CYP3A4-Substrate (>50% aller Arzneimittel)",
+    "suchbegriffe": [
+      "CYP3A4-Substrate (>50% aller Arzneimittel)",
+      "Benzodiazepine",
+      "Calciumkanalblocker",
+      "HIV-Proteaseinhibitoren",
+      "Makrolid-Antibiotika",
+      "viele andere"
+    ]
+  },
+  {
+    "id": "grp_0143",
+    "name": "CYP3A4-Substrate (allgemein)",
+    "suchbegriffe": [
+      "CYP3A4-Substrate (allgemein)",
+      "Benzodiazepine",
+      "Calciumantagonisten",
+      "Immunsuppressiva",
+      "Simvastatin"
+    ]
+  },
+  {
+    "id": "grp_0144",
+    "name": "CYP3A4-metabolisierte Medikamente",
+    "suchbegriffe": [
+      "CYP3A4-metabolisierte Medikamente",
+      "~50%!"
+    ]
+  },
+  {
+    "id": "grp_0145",
+    "name": "CYP3A4/5-Substrate",
+    "suchbegriffe": [
+      "CYP3A4/5-Substrate",
+      "Atorvastatin",
+      "Ciclosporin",
+      "Midazolam",
+      "Simvastatin"
+    ]
+  },
+  {
+    "id": "grp_0146",
+    "name": "CYP3A4/CYP2D6-Substrate",
+    "suchbegriffe": [
+      "CYP3A4/CYP2D6-Substrate",
+      "CYP3A4",
+      "Midazolam",
+      "diverse"
+    ]
+  },
+  {
+    "id": "grp_0147",
+    "name": "CYP450-Inhibitoren",
+    "suchbegriffe": [
+      "CYP450-Inhibitoren",
+      "Erythromycin",
+      "Grapefruitsaft",
+      "Ketoconazol"
+    ]
+  },
+  {
+    "id": "grp_0148",
+    "name": "CYP450-Substrate",
+    "suchbegriffe": [
+      "CYP450-Substrate",
+      "Antimykotika",
+      "CYP1A2",
+      "CYP2C19",
+      "CYP2C9",
+      "CYP2D6"
+    ]
+  },
+  {
+    "id": "grp_0149",
+    "name": "CYP450-Substrate (alle)",
+    "suchbegriffe": [
+      "CYP450-Substrate (alle)",
+      "Viele Medikamente"
+    ]
+  },
+  {
+    "id": "grp_0150",
+    "name": "Ca-Kanalblocker",
+    "suchbegriffe": [
+      "Ca-Kanalblocker",
+      "Amlodipin",
+      "Diltiazem",
+      "Verapamil"
+    ]
+  },
+  {
+    "id": "grp_0151",
+    "name": "Calcineurin-Inhibitoren",
+    "suchbegriffe": [
+      "Calcineurin-Inhibitoren",
+      "Advagraf",
+      "Ciclosporin",
+      "Cyclosporin",
+      "Prograf",
+      "Tacrolimus"
+    ]
+  },
+  {
+    "id": "grp_0152",
+    "name": "Calcitonin",
+    "suchbegriffe": [
+      "Calcitonin",
+      "Miacalcic"
+    ]
+  },
+  {
+    "id": "grp_0153",
+    "name": "Calcium-Präparate",
+    "suchbegriffe": [
+      "Calcium-Präparate",
+      "Calciumcarbonat",
+      "Calciumcitrat"
+    ]
+  },
+  {
+    "id": "grp_0154",
+    "name": "Calcium-Supplemente gleichzeitig",
+    "suchbegriffe": [
+      "Calcium-Supplemente gleichzeitig",
+      "Calciumcarbonat",
+      "Calciumcitrat"
+    ]
+  },
+  {
+    "id": "grp_0155",
+    "name": "Calciumantagonisten",
+    "suchbegriffe": [
+      "Calciumantagonisten",
+      "Amlodipin",
+      "Diltiazem",
+      "Isoptin",
+      "Verapamil"
+    ]
+  },
+  {
+    "id": "grp_0156",
+    "name": "Calciumkanalblocker",
+    "suchbegriffe": [
+      "Calciumkanalblocker",
+      "Amlodipin",
+      "Atorvastatin",
+      "Diltiazem",
+      "Felodipin",
+      "Nifedipin"
+    ]
+  },
+  {
+    "id": "grp_0157",
+    "name": "Carbamazepin",
+    "suchbegriffe": [
+      "Carbamazepin",
+      "Tegretol",
+      "Timonil"
+    ]
+  },
+  {
+    "id": "grp_0158",
+    "name": "Carbidopa/Levodopa",
+    "suchbegriffe": [
+      "Carbidopa/Levodopa",
+      "Madopar",
+      "Sinemet",
+      "Stalevo"
+    ]
+  },
+  {
+    "id": "grp_0159",
+    "name": "Ceftriaxon IV",
+    "suchbegriffe": [
+      "Ceftriaxon IV",
+      "Rocephin"
+    ]
+  },
+  {
+    "id": "grp_0160",
+    "name": "Cephalosporine (Neugeborene)",
+    "suchbegriffe": [
+      "Cephalosporine (Neugeborene)",
+      "Rocephin"
+    ]
+  },
+  {
+    "id": "grp_0161",
+    "name": "Chelatbildner",
+    "suchbegriffe": [
+      "Chelatbildner",
+      "D-Penicillamin",
+      "DMPS",
+      "DMSA",
+      "Penicillamin"
+    ]
+  },
+  {
+    "id": "grp_0162",
+    "name": "Chelatbildner (Wilson-Therapie)",
+    "suchbegriffe": [
+      "Chelatbildner (Wilson-Therapie)",
+      "Metalcaptase",
+      "Trientin"
+    ]
+  },
+  {
+    "id": "grp_0163",
+    "name": "Chelatbildner - Penicillamin",
+    "suchbegriffe": [
+      "Chelatbildner - Penicillamin",
+      "Cuprimine",
+      "Metalcaptase",
+      "Trientin"
+    ]
+  },
+  {
+    "id": "grp_0164",
+    "name": "Chloramphenicol",
+    "suchbegriffe": [
+      "Chloramphenicol",
+      "Chloramphenicol"
+    ]
+  },
+  {
+    "id": "grp_0165",
+    "name": "Chloramphenicol (Antibiotikum)",
+    "suchbegriffe": [
+      "Chloramphenicol (Antibiotikum)",
+      "Chloramphenicol"
+    ]
+  },
+  {
+    "id": "grp_0166",
+    "name": "Chloroquin / Hydroxychloroquin",
+    "suchbegriffe": [
+      "Chloroquin / Hydroxychloroquin",
+      "Chloroquin",
+      "Hydroxychloroquin"
+    ]
+  },
+  {
+    "id": "grp_0167",
+    "name": "Cholagoga/Choleretika",
+    "suchbegriffe": [
+      "Cholagoga/Choleretika",
+      "Ursodeoxycholsäure"
+    ]
+  },
+  {
+    "id": "grp_0168",
+    "name": "Cholestyramin",
+    "suchbegriffe": [
+      "Cholestyramin",
+      "Colestyramin",
+      "Quantalan"
+    ]
+  },
+  {
+    "id": "grp_0169",
+    "name": "Cholestyramin/Colestipol",
+    "suchbegriffe": [
+      "Cholestyramin/Colestipol",
+      "Colestid",
+      "Quantalan"
+    ]
+  },
+  {
+    "id": "grp_0170",
+    "name": "Cholinergika",
+    "suchbegriffe": [
+      "Cholinergika",
+      "Bethanechol",
+      "Carbachol",
+      "Neostigmin",
+      "Pilocarpin"
+    ]
+  },
+  {
+    "id": "grp_0171",
+    "name": "Cholinergika (Alzheimer-Medikamente)",
+    "suchbegriffe": [
+      "Cholinergika (Alzheimer-Medikamente)",
+      "Aricept",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  },
+  {
+    "id": "grp_0172",
+    "name": "Cholinesterase-Hemmer",
+    "suchbegriffe": [
+      "Cholinesterase-Hemmer",
+      "Donepezil",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  },
+  {
+    "id": "grp_0173",
+    "name": "Cholinesterasehemmer",
+    "suchbegriffe": [
+      "Cholinesterasehemmer",
+      "Donepezil",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  },
+  {
+    "id": "grp_0174",
+    "name": "Cholinesterasehemmer (Alzheimer)",
+    "suchbegriffe": [
+      "Cholinesterasehemmer (Alzheimer)",
+      "Aricept",
+      "Donepezil",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  },
+  {
+    "id": "grp_0175",
+    "name": "Chondroprotektiva",
+    "suchbegriffe": [
+      "Chondroprotektiva",
+      "i.a"
+    ]
+  },
+  {
+    "id": "grp_0176",
+    "name": "Chronischer Alkoholkonsum",
+    "suchbegriffe": [
+      "Chronischer Alkoholkonsum",
+      "Ethanol"
+    ]
+  },
+  {
+    "id": "grp_0177",
+    "name": "Ciclosporin",
+    "suchbegriffe": [
+      "Ciclosporin",
+      "Ciclosporin",
+      "Neoral",
+      "Sandimmun",
+      "Tacrolimus"
+    ]
+  },
+  {
+    "id": "grp_0178",
+    "name": "Ciclosporin (Immunsuppressivum)",
+    "suchbegriffe": [
+      "Ciclosporin (Immunsuppressivum)",
+      "Neoral",
+      "Sandimmun"
+    ]
+  },
+  {
+    "id": "grp_0179",
+    "name": "Ciclosporin/Tacrolimus",
+    "suchbegriffe": [
+      "Ciclosporin/Tacrolimus",
+      "Sandimmun",
+      "Tacrolimus"
+    ]
+  },
+  {
+    "id": "grp_0180",
+    "name": "Cimetidin (H2-Blocker)",
+    "suchbegriffe": [
+      "Cimetidin (H2-Blocker)",
+      "Tagamet®"
+    ]
+  },
+  {
+    "id": "grp_0181",
+    "name": "Clarithromycin/Amoxicillin (Tripeltherapie)",
+    "suchbegriffe": [
+      "Clarithromycin/Amoxicillin (Tripeltherapie)",
+      "Amoxicillin",
+      "Clarithromycin",
+      "PPI"
+    ]
+  },
+  {
+    "id": "grp_0182",
+    "name": "Clavulansäure (Antibiotikum)",
+    "suchbegriffe": [
+      "Clavulansäure (Antibiotikum)",
+      "Augmentin®"
+    ]
+  },
+  {
+    "id": "grp_0183",
+    "name": "Clindamycin",
+    "suchbegriffe": [
+      "Clindamycin",
+      "Dalacin",
+      "Sobelin"
+    ]
+  },
+  {
+    "id": "grp_0184",
+    "name": "Clomifen (Ovulationsinduktion)",
+    "suchbegriffe": [
+      "Clomifen (Ovulationsinduktion)",
+      "Clomid®"
+    ]
+  },
+  {
+    "id": "grp_0185",
+    "name": "Clomifen (SERM)",
+    "suchbegriffe": [
+      "Clomifen (SERM)",
+      "Clomifen"
+    ]
+  },
+  {
+    "id": "grp_0186",
+    "name": "Clozapin",
+    "suchbegriffe": [
+      "Clozapin",
+      "Clozaril",
+      "Leponex"
+    ]
+  },
+  {
+    "id": "grp_0187",
+    "name": "Colchicin",
+    "suchbegriffe": [
+      "Colchicin",
+      "Colchicin",
+      "Gichtmittel"
+    ]
+  },
+  {
+    "id": "grp_0188",
+    "name": "Colchicin (Gichtmittel)",
+    "suchbegriffe": [
+      "Colchicin (Gichtmittel)",
+      "Colchysat"
+    ]
+  },
+  {
+    "id": "grp_0189",
+    "name": "Corticosteroide",
+    "suchbegriffe": [
+      "Corticosteroide",
+      "Budesonid",
+      "Dexamethason",
+      "Hydrocortison",
+      "Methylprednisolon",
+      "Prednisolon"
+    ]
+  },
+  {
+    "id": "grp_0190",
+    "name": "Cumarin-Antikoagulantien",
+    "suchbegriffe": [
+      "Cumarin-Antikoagulantien",
+      "Acenocoumarol",
+      "Marcumar"
+    ]
+  },
+  {
+    "id": "grp_0191",
+    "name": "Cyclosporin",
+    "suchbegriffe": [
+      "Cyclosporin",
+      "Sandimmun"
+    ]
+  },
+  {
+    "id": "grp_0192",
+    "name": "DMARDs (Basistherapeutika)",
+    "suchbegriffe": [
+      "DMARDs (Basistherapeutika)",
+      "Leflunomid",
+      "Methotrexat",
+      "Sulfasalazin"
+    ]
+  },
+  {
+    "id": "grp_0193",
+    "name": "DOACs (Direkte orale Antikoagulantien)",
+    "suchbegriffe": [
+      "DOACs (Direkte orale Antikoagulantien)",
+      "Apixaban",
+      "Dabigatran",
+      "Edoxaban",
+      "Rivaroxaban"
+    ]
+  },
+  {
+    "id": "grp_0194",
+    "name": "DOACs (Neue orale Antikoagulantien)",
+    "suchbegriffe": [
+      "DOACs (Neue orale Antikoagulantien)",
+      "Apixaban",
+      "Dabigatran",
+      "Edoxaban",
+      "Rivaroxaban"
+    ]
+  },
+  {
+    "id": "grp_0195",
+    "name": "DPP-4-Inhibitoren",
+    "suchbegriffe": [
+      "DPP-4-Inhibitoren",
+      "Linagliptin",
+      "Saxagliptin",
+      "Sitagliptin"
+    ]
+  },
+  {
+    "id": "grp_0196",
+    "name": "DPP-4-Inhibitoren / GLP-1-Agonisten",
+    "suchbegriffe": [
+      "DPP-4-Inhibitoren / GLP-1-Agonisten",
+      "Liraglutid",
+      "Semaglutid",
+      "Sitagliptin",
+      "Vildagliptin"
+    ]
+  },
+  {
+    "id": "grp_0197",
+    "name": "Dextromethorphan (Hustenstiller)",
+    "suchbegriffe": [
+      "Dextromethorphan (Hustenstiller)",
+      "Hustenstiller"
+    ]
+  },
+  {
+    "id": "grp_0198",
+    "name": "Diclofenac",
+    "suchbegriffe": [
+      "Diclofenac",
+      "Voltaren"
+    ]
+  },
+  {
+    "id": "grp_0199",
+    "name": "Diltiazem",
+    "suchbegriffe": [
+      "Diltiazem",
+      "Calciumantagonist"
+    ]
+  },
+  {
+    "id": "grp_0200",
+    "name": "Direkt wirkende Antivirale (DAAs)",
+    "suchbegriffe": [
+      "Direkt wirkende Antivirale (DAAs)",
+      "Elbasvir",
+      "Paritaprevir",
+      "Simeprevir"
+    ]
+  },
+  {
+    "id": "grp_0201",
+    "name": "Direkte orale Antikoagulantien",
+    "suchbegriffe": [
+      "Direkte orale Antikoagulantien",
+      "Apixaban",
+      "Dabigatran",
+      "Edoxaban",
+      "Rivaroxaban"
+    ]
+  },
+  {
+    "id": "grp_0202",
+    "name": "Diuretika",
+    "suchbegriffe": [
+      "Diuretika",
+      "Bumetanid",
+      "Chlortalidon",
+      "Chlorthalidon",
+      "Furosemid",
+      "HCT"
+    ]
+  },
+  {
+    "id": "grp_0203",
+    "name": "Diuretika (Kaliumsparend)",
+    "suchbegriffe": [
+      "Diuretika (Kaliumsparend)",
+      "Amilorid",
+      "Eplerenon",
+      "Spironolacton",
+      "Triamteren"
+    ]
+  },
+  {
+    "id": "grp_0204",
+    "name": "Diuretika (Schleifendiuretika)",
+    "suchbegriffe": [
+      "Diuretika (Schleifendiuretika)",
+      "Bumetanid",
+      "Furosemid",
+      "Lasix",
+      "Torasemid"
+    ]
+  },
+  {
+    "id": "grp_0205",
+    "name": "Diuretika (Thiazide)",
+    "suchbegriffe": [
+      "Diuretika (Thiazide)",
+      "Chlortalidon",
+      "HCT"
+    ]
+  },
+  {
+    "id": "grp_0206",
+    "name": "Dopamin-Agonisten",
+    "suchbegriffe": [
+      "Dopamin-Agonisten",
+      "Bromocriptin",
+      "Cabergolin",
+      "Parlodel",
+      "Pramipexol",
+      "Ropinirol"
+    ]
+  },
+  {
+    "id": "grp_0207",
+    "name": "Dopaminerge Medikamente",
+    "suchbegriffe": [
+      "Dopaminerge Medikamente",
+      "L-Dopa",
+      "Pramipexol",
+      "Ropinirol"
+    ]
+  },
+  {
+    "id": "grp_0208",
+    "name": "Dopaminergika",
+    "suchbegriffe": [
+      "Dopaminergika",
+      "Bromocriptin",
+      "Levodopa",
+      "Pramipexol",
+      "Ropinirol"
+    ]
+  },
+  {
+    "id": "grp_0209",
+    "name": "EPO / Erythropoietin",
+    "suchbegriffe": [
+      "EPO / Erythropoietin",
+      "Darbepoetin",
+      "Epoetin alfa"
+    ]
+  },
+  {
+    "id": "grp_0210",
+    "name": "Eflornithin (DFMO)",
+    "suchbegriffe": [
+      "Eflornithin (DFMO)",
+      "Ornidyl",
+      "Vaniqa"
+    ]
+  },
+  {
+    "id": "grp_0211",
+    "name": "Eisen-Präparate",
+    "suchbegriffe": [
+      "Eisen-Präparate",
+      "Eisen-fumarat",
+      "II",
+      "sulfat"
+    ]
+  },
+  {
+    "id": "grp_0212",
+    "name": "Eisenpraeparate",
+    "suchbegriffe": [
+      "Eisenpraeparate",
+      "Eisenfumarat",
+      "Eisengluconat",
+      "Eisensulfat"
+    ]
+  },
+  {
+    "id": "grp_0213",
+    "name": "Eisenpräparate",
+    "suchbegriffe": [
+      "Eisenpräparate",
+      "Eisen-Hydroxid",
+      "Eisen-Verbindungen",
+      "Eisen-hydroxid",
+      "Eisen-hydroxid-Polymaltose",
+      "Eisenfumarat"
+    ]
+  },
+  {
+    "id": "grp_0214",
+    "name": "Eisenpräparate (theoretisch)",
+    "suchbegriffe": [
+      "Eisenpräparate (theoretisch)",
+      "Eisenfumarat",
+      "Eisengluconat",
+      "Eisensulfat"
+    ]
+  },
+  {
+    "id": "grp_0215",
+    "name": "Eltrombopag",
+    "suchbegriffe": [
+      "Eltrombopag",
+      "Revolade"
+    ]
+  },
+  {
+    "id": "grp_0216",
+    "name": "Ephedrin/Sympathomimetika",
+    "suchbegriffe": [
+      "Ephedrin/Sympathomimetika",
+      "Ephedrin",
+      "Phenylephrin",
+      "Pseudoephedrin"
+    ]
+  },
+  {
+    "id": "grp_0217",
+    "name": "Epirubicin (Blasenkrebs)",
+    "suchbegriffe": [
+      "Epirubicin (Blasenkrebs)",
+      "Epirubicin intravesikal"
+    ]
+  },
+  {
+    "id": "grp_0218",
+    "name": "Ethambutol",
+    "suchbegriffe": [
+      "Ethambutol",
+      "Tuberkulose-Medikament"
+    ]
+  },
+  {
+    "id": "grp_0219",
+    "name": "Ezetimib",
+    "suchbegriffe": [
+      "Ezetimib",
+      "Ezetimib",
+      "Ezetrol",
+      "Inegy"
+    ]
+  },
+  {
+    "id": "grp_0220",
+    "name": "Fertilitätsmedikamente",
+    "suchbegriffe": [
+      "Fertilitätsmedikamente",
+      "Clomifen",
+      "Gonadotropine"
+    ]
+  },
+  {
+    "id": "grp_0221",
+    "name": "Fettabsorptionshemmer/Gallensäurebinder",
+    "suchbegriffe": [
+      "Fettabsorptionshemmer/Gallensäurebinder",
+      "Cholestyramin",
+      "Colestipol",
+      "Orlistat"
+    ]
+  },
+  {
+    "id": "grp_0222",
+    "name": "Fettlösliche Medikamente",
+    "suchbegriffe": [
+      "Fettlösliche Medikamente",
+      "Ciclosporin",
+      "Tacrolimus",
+      "fettlösliche Vitamine"
+    ]
+  },
+  {
+    "id": "grp_0223",
+    "name": "Fettlösliche Vitamine (A, D, E, K)",
+    "suchbegriffe": [
+      "Fettlösliche Vitamine (A, D, E, K)",
+      "Cholecalciferol",
+      "Phytomenadion",
+      "Retinol",
+      "Tocopherol"
+    ]
+  },
+  {
+    "id": "grp_0224",
+    "name": "Fexofenadin",
+    "suchbegriffe": [
+      "Fexofenadin",
+      "Allegra",
+      "Telfast"
+    ]
+  },
+  {
+    "id": "grp_0225",
+    "name": "Fibrate",
+    "suchbegriffe": [
+      "Fibrate",
+      "Bezafibrat",
+      "Fenofibrat",
+      "Gemfibrozil"
+    ]
+  },
+  {
+    "id": "grp_0226",
+    "name": "Fluorochinolone",
+    "suchbegriffe": [
+      "Fluorochinolone",
+      "Ciprobay",
+      "Norfloxacin"
+    ]
+  },
+  {
+    "id": "grp_0227",
+    "name": "Folat-Antagonisten",
+    "suchbegriffe": [
+      "Folat-Antagonisten",
+      "MTX",
+      "Methotrexat"
+    ]
+  },
+  {
+    "id": "grp_0228",
+    "name": "Folat-Antagonisten (Rescue)",
+    "suchbegriffe": [
+      "Folat-Antagonisten (Rescue)",
+      "Hochdosis",
+      "MTX"
+    ]
+  },
+  {
+    "id": "grp_0229",
+    "name": "GABA-B-Agonisten",
+    "suchbegriffe": [
+      "GABA-B-Agonisten",
+      "Baclofen",
+      "Phenibut"
+    ]
+  },
+  {
+    "id": "grp_0230",
+    "name": "GHB (Gamma-Hydroxybuttersäure)",
+    "suchbegriffe": [
+      "GHB (Gamma-Hydroxybuttersäure)",
+      "Vorstufe"
+    ]
+  },
+  {
+    "id": "grp_0231",
+    "name": "Gabapentin/Pregabalin",
+    "suchbegriffe": [
+      "Gabapentin/Pregabalin",
+      "Gabapentin",
+      "Pregabalin"
+    ]
+  },
+  {
+    "id": "grp_0232",
+    "name": "Gabapentinoide",
+    "suchbegriffe": [
+      "Gabapentinoide",
+      "Gabapentin",
+      "Neurontin",
+      "Pregabalin"
+    ]
+  },
+  {
+    "id": "grp_0233",
+    "name": "Gallensaeure-Sequestranten",
+    "suchbegriffe": [
+      "Gallensaeure-Sequestranten",
+      "Colesevelam",
+      "Colestyramin"
+    ]
+  },
+  {
+    "id": "grp_0234",
+    "name": "Gallensaeurebinder",
+    "suchbegriffe": [
+      "Gallensaeurebinder",
+      "Cholestyramin",
+      "Colesevelam",
+      "Colestipol",
+      "Quantalan",
+      "Questran"
+    ]
+  },
+  {
+    "id": "grp_0235",
+    "name": "Gallensäure-Sequestranten",
+    "suchbegriffe": [
+      "Gallensäure-Sequestranten",
+      "Colesevelam",
+      "Colestyramin"
+    ]
+  },
+  {
+    "id": "grp_0236",
+    "name": "Gallensäure-Sequestrants",
+    "suchbegriffe": [
+      "Gallensäure-Sequestrants",
+      "Cholestyramin",
+      "Colesevelam",
+      "Colestipol",
+      "Quantalan"
+    ]
+  },
+  {
+    "id": "grp_0237",
+    "name": "Gallensäure-Sequestratoren",
+    "suchbegriffe": [
+      "Gallensäure-Sequestratoren",
+      "Colesevelam",
+      "Colestipol",
+      "Quantalan"
+    ]
+  },
+  {
+    "id": "grp_0238",
+    "name": "Gallensäurebinder",
+    "suchbegriffe": [
+      "Gallensäurebinder",
+      "Cholestyramin",
+      "Colesevelam",
+      "Colestipol",
+      "Colestyramin",
+      "Quantalan"
+    ]
+  },
+  {
+    "id": "grp_0239",
+    "name": "Gallenwegsmedikamente",
+    "suchbegriffe": [
+      "Gallenwegsmedikamente",
+      "Chenodeoxycholsaeure",
+      "Ursodeoxycholsaeure"
+    ]
+  },
+  {
+    "id": "grp_0240",
+    "name": "Gelatine-haltige Medikamente",
+    "suchbegriffe": [
+      "Gelatine-haltige Medikamente",
+      "Impfstoffe",
+      "Kapseln",
+      "Zäpfchen"
+    ]
+  },
+  {
+    "id": "grp_0241",
+    "name": "Gichtmedikamente",
+    "suchbegriffe": [
+      "Gichtmedikamente",
+      "Allopurinol",
+      "Colchicin",
+      "Febuxostat"
+    ]
+  },
+  {
+    "id": "grp_0242",
+    "name": "Gichtmedikamente (Allopurinol, Febuxostat)",
+    "suchbegriffe": [
+      "Gichtmedikamente (Allopurinol, Febuxostat)",
+      "Allopurinol",
+      "Febuxostat"
+    ]
+  },
+  {
+    "id": "grp_0243",
+    "name": "Glaukom-Medikamente",
+    "suchbegriffe": [
+      "Glaukom-Medikamente",
+      "Cholinergika",
+      "Pilocarpin"
+    ]
+  },
+  {
+    "id": "grp_0244",
+    "name": "Glucarpidase (Voraxaze)",
+    "suchbegriffe": [
+      "Glucarpidase (Voraxaze)",
+      "Glucarpidase"
+    ]
+  },
+  {
+    "id": "grp_0245",
+    "name": "Guaiac-basierte Tests (okkultes Blut)",
+    "suchbegriffe": [
+      "Guaiac-basierte Tests (okkultes Blut)",
+      "Guaiac-Stuhltest",
+      "Hemoccult"
+    ]
+  },
+  {
+    "id": "grp_0246",
+    "name": "H. pylori Triple-Therapie",
+    "suchbegriffe": [
+      "H. pylori Triple-Therapie",
+      "Metronidazol",
+      "PPI + Clarithromycin + Amoxicillin"
+    ]
+  },
+  {
+    "id": "grp_0247",
+    "name": "H. pylori-Eradikationstherapie",
+    "suchbegriffe": [
+      "H. pylori-Eradikationstherapie",
+      "PPI + Clarithromycin + Amoxicillin"
+    ]
+  },
+  {
+    "id": "grp_0248",
+    "name": "H2-Antagonisten",
+    "suchbegriffe": [
+      "H2-Antagonisten",
+      "Famotidin",
+      "Ranitidin"
+    ]
+  },
+  {
+    "id": "grp_0249",
+    "name": "H2-Blocker",
+    "suchbegriffe": [
+      "H2-Blocker",
+      "Cimetidin",
+      "Famotidin",
+      "Ranitidin"
+    ]
+  },
+  {
+    "id": "grp_0250",
+    "name": "H2-Rezeptor-Antagonisten",
+    "suchbegriffe": [
+      "H2-Rezeptor-Antagonisten",
+      "Famotidin",
+      "Ranitidin"
+    ]
+  },
+  {
+    "id": "grp_0251",
+    "name": "H2-Rezeptorantagonisten",
+    "suchbegriffe": [
+      "H2-Rezeptorantagonisten",
+      "Cimetidin",
+      "Famotidin",
+      "Ranitidin"
+    ]
+  },
+  {
+    "id": "grp_0252",
+    "name": "HDAC-Inhibitoren",
+    "suchbegriffe": [
+      "HDAC-Inhibitoren",
+      "Panobinostat",
+      "Vorinostat"
+    ]
+  },
+  {
+    "id": "grp_0253",
+    "name": "HIV-Integrase-Hemmer",
+    "suchbegriffe": [
+      "HIV-Integrase-Hemmer",
+      "Dolutegravir",
+      "Elvitegravir",
+      "Raltegravir"
+    ]
+  },
+  {
+    "id": "grp_0254",
+    "name": "HIV-Protease-Inhibitoren",
+    "suchbegriffe": [
+      "HIV-Protease-Inhibitoren",
+      "Ritonavir",
+      "Saquinavir"
+    ]
+  },
+  {
+    "id": "grp_0255",
+    "name": "HIV-Proteasehemmer",
+    "suchbegriffe": [
+      "HIV-Proteasehemmer",
+      "Atazanavir",
+      "Ritonavir",
+      "Saquinavir"
+    ]
+  },
+  {
+    "id": "grp_0256",
+    "name": "Heparin",
+    "suchbegriffe": [
+      "Heparin",
+      "Dalteparin",
+      "Enoxaparin"
+    ]
+  },
+  {
+    "id": "grp_0257",
+    "name": "Heparine",
+    "suchbegriffe": [
+      "Heparine",
+      "Dalteparin",
+      "Enoxaparin",
+      "Fondaparinux",
+      "UFH"
+    ]
+  },
+  {
+    "id": "grp_0258",
+    "name": "Hepatische Enzephalopathie-Therapie",
+    "suchbegriffe": [
+      "Hepatische Enzephalopathie-Therapie",
+      "Lactulose",
+      "Rifaximin"
+    ]
+  },
+  {
+    "id": "grp_0259",
+    "name": "Hepatotoxische Arzneimittel",
+    "suchbegriffe": [
+      "Hepatotoxische Arzneimittel",
+      "Amiodaron",
+      "Hochdosis",
+      "Isoniazid",
+      "Methotrexat",
+      "Paracetamol"
+    ]
+  },
+  {
+    "id": "grp_0260",
+    "name": "Hepatotoxische Medikamente",
+    "suchbegriffe": [
+      "Hepatotoxische Medikamente",
+      "Amiodaron",
+      "Azole",
+      "Hochdosis",
+      "Isoniazid",
+      "Methotrexat"
+    ]
+  },
+  {
+    "id": "grp_0261",
+    "name": "Herzglykoside",
+    "suchbegriffe": [
+      "Herzglykoside",
+      "Digitoxin",
+      "Digoxin",
+      "Herzglykosid",
+      "Lanicor",
+      "Lanoxin"
+    ]
+  },
+  {
+    "id": "grp_0262",
+    "name": "Herzklappenprothesen / Endokarditis-Risiko",
+    "suchbegriffe": [
+      "Herzklappenprothesen / Endokarditis-Risiko",
+      "Künstliche Herzklappen",
+      "vorgeschädigte Herzklappen"
+    ]
+  },
+  {
+    "id": "grp_0263",
+    "name": "Herzmedikamente",
+    "suchbegriffe": [
+      "Herzmedikamente",
+      "ACE-Hemmer",
+      "Betablocker",
+      "Digoxin"
+    ]
+  },
+  {
+    "id": "grp_0264",
+    "name": "Hormonelle Therapien/Antioeostrogene",
+    "suchbegriffe": [
+      "Hormonelle Therapien/Antioeostrogene",
+      "Aromatasehemmer",
+      "HRT",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0265",
+    "name": "Hormonelle Verhütungsmittel",
+    "suchbegriffe": [
+      "Hormonelle Verhütungsmittel",
+      "Drospirenon",
+      "Ethinylestradiol",
+      "Ethinylestradiol + Gestagen",
+      "Ethinylestradiol + Gestagene",
+      "Etonogestrel-Implantat"
+    ]
+  },
+  {
+    "id": "grp_0266",
+    "name": "Hormonersatztherapie (HRT)",
+    "suchbegriffe": [
+      "Hormonersatztherapie (HRT)",
+      "Estradiol",
+      "Ethinylestradiol",
+      "Gestagene",
+      "Progesteron",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0267",
+    "name": "Hormonpraeparate",
+    "suchbegriffe": [
+      "Hormonpraeparate",
+      "Antibabypille",
+      "HRT",
+      "Kontrazeptiva",
+      "Oestrogene",
+      "Oestrogenpraeparate"
+    ]
+  },
+  {
+    "id": "grp_0268",
+    "name": "Hormonpräparate",
+    "suchbegriffe": [
+      "Hormonpräparate",
+      "Antiöstrogene",
+      "Ethinylestradiol",
+      "Hormonersatztherapie",
+      "Östrogene"
+    ]
+  },
+  {
+    "id": "grp_0269",
+    "name": "Hormontherapie",
+    "suchbegriffe": [
+      "Hormontherapie",
+      "DHEA",
+      "Testosteron"
+    ]
+  },
+  {
+    "id": "grp_0270",
+    "name": "IBS-Medikamente",
+    "suchbegriffe": [
+      "IBS-Medikamente",
+      "Alosetron",
+      "Eluxadolin",
+      "Linaclotid",
+      "Rifaximin"
+    ]
+  },
+  {
+    "id": "grp_0271",
+    "name": "IV-Eisen",
+    "suchbegriffe": [
+      "IV-Eisen",
+      "Eisencarboxymaltose",
+      "Eisengluconat",
+      "Eisensucrose"
+    ]
+  },
+  {
+    "id": "grp_0272",
+    "name": "Immunsuppressiva",
+    "suchbegriffe": [
+      "Immunsuppressiva",
+      "6-MP",
+      "6-Mercaptopurin",
+      ">0",
+      "Adalimumab",
+      "Anti-TNF"
+    ]
+  },
+  {
+    "id": "grp_0273",
+    "name": "Immuntherapie (ICI)",
+    "suchbegriffe": [
+      "Immuntherapie (ICI)",
+      "Atezolizumab",
+      "Ipilimumab",
+      "Nivolumab",
+      "Pembrolizumab"
+    ]
+  },
+  {
+    "id": "grp_0274",
+    "name": "Impfstoffe",
+    "suchbegriffe": [
+      "Impfstoffe",
+      "COVID-19",
+      "Influenza",
+      "Pneumokokken"
+    ]
+  },
+  {
+    "id": "grp_0275",
+    "name": "Impfstoffe (Gelatine-haltig)",
+    "suchbegriffe": [
+      "Impfstoffe (Gelatine-haltig)",
+      "Gelbfieber",
+      "Influenza",
+      "MMR",
+      "Varizellen"
+    ]
+  },
+  {
+    "id": "grp_0276",
+    "name": "Indomethacin (NSAID)",
+    "suchbegriffe": [
+      "Indomethacin (NSAID)",
+      "Indomethacin"
+    ]
+  },
+  {
+    "id": "grp_0277",
+    "name": "Influenza-Impfstoff",
+    "suchbegriffe": [
+      "Influenza-Impfstoff",
+      "Saisonale Grippeimpfung"
+    ]
+  },
+  {
+    "id": "grp_0278",
+    "name": "Interferon-alpha",
+    "suchbegriffe": [
+      "Interferon-alpha",
+      "Interferon alfa-2a",
+      "Interferon alfa-2b",
+      "Peginterferon"
+    ]
+  },
+  {
+    "id": "grp_0279",
+    "name": "Isoniazid",
+    "suchbegriffe": [
+      "Isoniazid",
+      "INH"
+    ]
+  },
+  {
+    "id": "grp_0280",
+    "name": "Isoniazid (INH)",
+    "suchbegriffe": [
+      "Isoniazid (INH)",
+      "Tuberkulose-Therapie"
+    ]
+  },
+  {
+    "id": "grp_0281",
+    "name": "Isoniazid (TB-Therapie)",
+    "suchbegriffe": [
+      "Isoniazid (TB-Therapie)",
+      "INH",
+      "Isoniazid"
+    ]
+  },
+  {
+    "id": "grp_0282",
+    "name": "Isoniazid (Tuberkulostatikum)",
+    "suchbegriffe": [
+      "Isoniazid (Tuberkulostatikum)",
+      "INH"
+    ]
+  },
+  {
+    "id": "grp_0283",
+    "name": "Isotretinoin",
+    "suchbegriffe": [
+      "Isotretinoin",
+      "Accutane",
+      "Roaccutan"
+    ]
+  },
+  {
+    "id": "grp_0284",
+    "name": "Kalzium-Präparate",
+    "suchbegriffe": [
+      "Kalzium-Präparate",
+      "Kalziumcarbonat",
+      "Kalziumcitrat"
+    ]
+  },
+  {
+    "id": "grp_0285",
+    "name": "Kalziumkanalblocker",
+    "suchbegriffe": [
+      "Kalziumkanalblocker",
+      "Amlodipin",
+      "Diltiazem",
+      "Felodipin",
+      "Nifedipin",
+      "Verapamil"
+    ]
+  },
+  {
+    "id": "grp_0286",
+    "name": "Kardiovaskuläre Medikamente",
+    "suchbegriffe": [
+      "Kardiovaskuläre Medikamente",
+      "Antiarrhythmika",
+      "Betablocker",
+      "Ca-Antagonisten"
+    ]
+  },
+  {
+    "id": "grp_0287",
+    "name": "Kationenaustauscher",
+    "suchbegriffe": [
+      "Kationenaustauscher",
+      "Kalziumpolystyrolsulfonat",
+      "Kayexalate"
+    ]
+  },
+  {
+    "id": "grp_0288",
+    "name": "Keine (Eigenreaktion bei IV)",
+    "suchbegriffe": [
+      "Keine (Eigenreaktion bei IV)",
+      "IV-NAC Infusion"
+    ]
+  },
+  {
+    "id": "grp_0289",
+    "name": "Klasse III Antiarrhythmika",
+    "suchbegriffe": [
+      "Klasse III Antiarrhythmika",
+      "Amiodaron",
+      "Sotalol"
+    ]
+  },
+  {
+    "id": "grp_0290",
+    "name": "Koffein (hochdosiert)",
+    "suchbegriffe": [
+      "Koffein (hochdosiert)",
+      "Koffein >"
+    ]
+  },
+  {
+    "id": "grp_0291",
+    "name": "Kontrastmittel (jodhaltig)",
+    "suchbegriffe": [
+      "Kontrastmittel (jodhaltig)",
+      "Iomeprol",
+      "Iopromid"
+    ]
+  },
+  {
+    "id": "grp_0292",
+    "name": "Kupfer-Chelator (Penicillamin, Trientine)",
+    "suchbegriffe": [
+      "Kupfer-Chelator (Penicillamin, Trientine)",
+      "Metalcaptase",
+      "Trientine"
+    ]
+  },
+  {
+    "id": "grp_0293",
+    "name": "Kupfer-Chelatoren",
+    "suchbegriffe": [
+      "Kupfer-Chelatoren",
+      "D-Penicillamin",
+      "Tetrathiomolybdat",
+      "Trientin"
+    ]
+  },
+  {
+    "id": "grp_0294",
+    "name": "Kupfer-Chelatoren (Wilson-Krankheit)",
+    "suchbegriffe": [
+      "Kupfer-Chelatoren (Wilson-Krankheit)",
+      "D-Penicillamin",
+      "TTM",
+      "Tetrathiomolybdat",
+      "Trientin"
+    ]
+  },
+  {
+    "id": "grp_0295",
+    "name": "Kupferchelatoren (bei M. Wilson)",
+    "suchbegriffe": [
+      "Kupferchelatoren (bei M. Wilson)",
+      "Penicillamin",
+      "Trientin"
+    ]
+  },
+  {
+    "id": "grp_0296",
+    "name": "L-Asparaginase (Krebstherapie)",
+    "suchbegriffe": [
+      "L-Asparaginase (Krebstherapie)",
+      "Elspar",
+      "Erwinase",
+      "Oncaspar"
+    ]
+  },
+  {
+    "id": "grp_0297",
+    "name": "L-DOPA / Levodopa",
+    "suchbegriffe": [
+      "L-DOPA / Levodopa",
+      "Madopar",
+      "Nacom",
+      "Stalevo"
+    ]
+  },
+  {
+    "id": "grp_0298",
+    "name": "L-DOPA/Levodopa",
+    "suchbegriffe": [
+      "L-DOPA/Levodopa",
+      "Madopar",
+      "Sinemet",
+      "Stalevo"
+    ]
+  },
+  {
+    "id": "grp_0299",
+    "name": "L-Dopa (Monotherapie)",
+    "suchbegriffe": [
+      "L-Dopa (Monotherapie)",
+      "Benserazid",
+      "ohne Carbidopa"
+    ]
+  },
+  {
+    "id": "grp_0300",
+    "name": "Labordiagnostik",
+    "suchbegriffe": [
+      "Labordiagnostik",
+      "Streptavidin-Biotin-Immunoassays"
+    ]
+  },
+  {
+    "id": "grp_0301",
+    "name": "Lachgas",
+    "suchbegriffe": [
+      "Lachgas",
+      "N2O"
+    ]
+  },
+  {
+    "id": "grp_0302",
+    "name": "Lachgas (Distickstoffmonoxid)",
+    "suchbegriffe": [
+      "Lachgas (Distickstoffmonoxid)",
+      "Anästhesie",
+      "Missbrauch"
+    ]
+  },
+  {
+    "id": "grp_0303",
+    "name": "Lachgas/Distickstoffmonoxid",
+    "suchbegriffe": [
+      "Lachgas/Distickstoffmonoxid",
+      "Anästhesie",
+      "Missbrauch"
+    ]
+  },
+  {
+    "id": "grp_0304",
+    "name": "Lactulose",
+    "suchbegriffe": [
+      "Lactulose",
+      "Bifiteral",
+      "Lactulose-ratiopharm"
+    ]
+  },
+  {
+    "id": "grp_0305",
+    "name": "Laxantien",
+    "suchbegriffe": [
+      "Laxantien",
+      "Bisacodyl",
+      "Lactulose",
+      "Macrogol"
+    ]
+  },
+  {
+    "id": "grp_0306",
+    "name": "Levocetirizin (Antihistaminikum)",
+    "suchbegriffe": [
+      "Levocetirizin (Antihistaminikum)",
+      "Levocetirizin bei allergischer Rhinitis"
+    ]
+  },
+  {
+    "id": "grp_0307",
+    "name": "Levodopa",
+    "suchbegriffe": [
+      "Levodopa",
+      "Carbidopa",
+      "L-DOPA",
+      "Levodopa",
+      "Madopar",
+      "Sinemet"
+    ]
+  },
+  {
+    "id": "grp_0308",
+    "name": "Levodopa (L-DOPA)",
+    "suchbegriffe": [
+      "Levodopa (L-DOPA)",
+      "Levodopa",
+      "Madopar",
+      "Sinemet"
+    ]
+  },
+  {
+    "id": "grp_0309",
+    "name": "Levodopa (Parkinson)",
+    "suchbegriffe": [
+      "Levodopa (Parkinson)",
+      "Benserazid",
+      "Carbidopa",
+      "L-Dopa",
+      "Levodopa",
+      "Madopar"
+    ]
+  },
+  {
+    "id": "grp_0310",
+    "name": "Levodopa (Parkinson-Medikament)",
+    "suchbegriffe": [
+      "Levodopa (Parkinson-Medikament)",
+      "L-DOPA",
+      "Madopar",
+      "Sinemet",
+      "Stalevo"
+    ]
+  },
+  {
+    "id": "grp_0311",
+    "name": "Levodopa (bei Parkinson)",
+    "suchbegriffe": [
+      "Levodopa (bei Parkinson)",
+      "L-DOPA",
+      "Madopar",
+      "Sinemet"
+    ]
+  },
+  {
+    "id": "grp_0312",
+    "name": "Levodopa/Carbidopa",
+    "suchbegriffe": [
+      "Levodopa/Carbidopa",
+      "Duodopa",
+      "Madopar",
+      "Sinemet",
+      "Stalevo"
+    ]
+  },
+  {
+    "id": "grp_0313",
+    "name": "Linezolid",
+    "suchbegriffe": [
+      "Linezolid",
+      "Antibiotikum",
+      "Zyvoxid"
+    ]
+  },
+  {
+    "id": "grp_0314",
+    "name": "Linezolid (Antibiotikum)",
+    "suchbegriffe": [
+      "Linezolid (Antibiotikum)",
+      "Zyvox",
+      "Zyvoxid"
+    ]
+  },
+  {
+    "id": "grp_0315",
+    "name": "Lipasehemmer",
+    "suchbegriffe": [
+      "Lipasehemmer",
+      "Alli",
+      "Orlistat",
+      "Xenical"
+    ]
+  },
+  {
+    "id": "grp_0316",
+    "name": "Lipidsenkende Medikamente",
+    "suchbegriffe": [
+      "Lipidsenkende Medikamente",
+      "Fibrate",
+      "Statine"
+    ]
+  },
+  {
+    "id": "grp_0317",
+    "name": "Lipidsenker",
+    "suchbegriffe": [
+      "Lipidsenker",
+      "CYP3A4-metabolisiert",
+      "Ezetimib",
+      "Fibrate",
+      "Statine"
+    ]
+  },
+  {
+    "id": "grp_0318",
+    "name": "Lipidsenker (Gallensaeurebinder)",
+    "suchbegriffe": [
+      "Lipidsenker (Gallensaeurebinder)",
+      "Cholestyramin",
+      "Colestipol"
+    ]
+  },
+  {
+    "id": "grp_0319",
+    "name": "Lipidsenker (Orlistat)",
+    "suchbegriffe": [
+      "Lipidsenker (Orlistat)",
+      "Alli®",
+      "Xenical®"
+    ]
+  },
+  {
+    "id": "grp_0320",
+    "name": "Lisinopril",
+    "suchbegriffe": [
+      "Lisinopril",
+      "Lisinopril"
+    ]
+  },
+  {
+    "id": "grp_0321",
+    "name": "Lithium",
+    "suchbegriffe": [
+      "Lithium",
+      "Hypnorex",
+      "Lithium",
+      "Lithiumcarbonat",
+      "Lithiumcitrat",
+      "Lithiumorotat"
+    ]
+  },
+  {
+    "id": "grp_0322",
+    "name": "Lovastatin",
+    "suchbegriffe": [
+      "Lovastatin",
+      "Mevinacor"
+    ]
+  },
+  {
+    "id": "grp_0323",
+    "name": "MAO-A-Hemmer (reversibel)",
+    "suchbegriffe": [
+      "MAO-A-Hemmer (reversibel)",
+      "Aurorix"
+    ]
+  },
+  {
+    "id": "grp_0324",
+    "name": "MAO-B-Hemmer",
+    "suchbegriffe": [
+      "MAO-B-Hemmer",
+      "Eldepryl",
+      "Rasagilin",
+      "Selegilin"
+    ]
+  },
+  {
+    "id": "grp_0325",
+    "name": "MAO-Inhibitoren",
+    "suchbegriffe": [
+      "MAO-Inhibitoren",
+      "Moclobemid",
+      "Phenelzin",
+      "Selegilin",
+      "Tranylcypromin"
+    ]
+  },
+  {
+    "id": "grp_0326",
+    "name": "MS-Basistherapeutika",
+    "suchbegriffe": [
+      "MS-Basistherapeutika",
+      "Dimethylfumarat",
+      "Fingolimod",
+      "Glatirameracetat",
+      "Interferon-beta",
+      "Natalizumab"
+    ]
+  },
+  {
+    "id": "grp_0327",
+    "name": "Medizinische Nitrate",
+    "suchbegriffe": [
+      "Medizinische Nitrate",
+      "Isosorbiddinitrat",
+      "Isosorbidmononitrat",
+      "Nitrolingual"
+    ]
+  },
+  {
+    "id": "grp_0328",
+    "name": "Meperidin/Pethidin",
+    "suchbegriffe": [
+      "Meperidin/Pethidin",
+      "Dolantin"
+    ]
+  },
+  {
+    "id": "grp_0329",
+    "name": "Mesalazin (5-ASA)",
+    "suchbegriffe": [
+      "Mesalazin (5-ASA)",
+      "Mesalazin",
+      "Olsalazin",
+      "Sulfasalazin"
+    ]
+  },
+  {
+    "id": "grp_0330",
+    "name": "Mesalazin / 5-ASA",
+    "suchbegriffe": [
+      "Mesalazin / 5-ASA",
+      "Mesalazin",
+      "Sulfasalazin"
+    ]
+  },
+  {
+    "id": "grp_0331",
+    "name": "Metamizol (Analgetikum)",
+    "suchbegriffe": [
+      "Metamizol (Analgetikum)",
+      "Novalgin®"
+    ]
+  },
+  {
+    "id": "grp_0332",
+    "name": "Methotrexat",
+    "suchbegriffe": [
+      "Methotrexat",
+      "MTX",
+      "Methotrexat"
+    ]
+  },
+  {
+    "id": "grp_0333",
+    "name": "Methotrexat (MTX)",
+    "suchbegriffe": [
+      "Methotrexat (MTX)",
+      "Lantarel",
+      "Methotrexat",
+      "Trexall"
+    ]
+  },
+  {
+    "id": "grp_0334",
+    "name": "Methyldopa",
+    "suchbegriffe": [
+      "Methyldopa",
+      "Presinol"
+    ]
+  },
+  {
+    "id": "grp_0335",
+    "name": "Methylenblau",
+    "suchbegriffe": [
+      "Methylenblau",
+      "Antidot",
+      "Diagnostikum"
+    ]
+  },
+  {
+    "id": "grp_0336",
+    "name": "Methylenblau (diagnostisch/therapeutisch)",
+    "suchbegriffe": [
+      "Methylenblau (diagnostisch/therapeutisch)",
+      "Methylthioniniumchlorid"
+    ]
+  },
+  {
+    "id": "grp_0337",
+    "name": "Methylxanthine",
+    "suchbegriffe": [
+      "Methylxanthine",
+      "Aminophyllin",
+      "Theophyllin"
+    ]
+  },
+  {
+    "id": "grp_0338",
+    "name": "Metoclopramid (MCP)",
+    "suchbegriffe": [
+      "Metoclopramid (MCP)",
+      "Gastrosil®",
+      "MCP",
+      "Paspertin",
+      "Paspertin®"
+    ]
+  },
+  {
+    "id": "grp_0339",
+    "name": "Metronidazol",
+    "suchbegriffe": [
+      "Metronidazol",
+      "Metronidazol"
+    ]
+  },
+  {
+    "id": "grp_0340",
+    "name": "Metronidazol (vaginal/oral)",
+    "suchbegriffe": [
+      "Metronidazol (vaginal/oral)",
+      "bei BV"
+    ]
+  },
+  {
+    "id": "grp_0341",
+    "name": "Metronidazol/Disulfiram",
+    "suchbegriffe": [
+      "Metronidazol/Disulfiram",
+      "Disulfiram",
+      "Metronidazol",
+      "Tinidazol"
+    ]
+  },
+  {
+    "id": "grp_0342",
+    "name": "Midazolam",
+    "suchbegriffe": [
+      "Midazolam",
+      "Dormicum",
+      "Triazolam"
+    ]
+  },
+  {
+    "id": "grp_0343",
+    "name": "Mineraloel (Laxativa)",
+    "suchbegriffe": [
+      "Mineraloel (Laxativa)",
+      "Paraffin",
+      "Petrolatum"
+    ]
+  },
+  {
+    "id": "grp_0344",
+    "name": "Mineralstoff-Supplemente",
+    "suchbegriffe": [
+      "Mineralstoff-Supplemente",
+      "Calcium",
+      "Magnesium",
+      "Zink"
+    ]
+  },
+  {
+    "id": "grp_0345",
+    "name": "Mineralstoffe",
+    "suchbegriffe": [
+      "Mineralstoffe",
+      "Eisenfumarat",
+      "Eisengluconat",
+      "Eisensulfat"
+    ]
+  },
+  {
+    "id": "grp_0346",
+    "name": "Mineralöl (Laxans)",
+    "suchbegriffe": [
+      "Mineralöl (Laxans)",
+      "Paraffin"
+    ]
+  },
+  {
+    "id": "grp_0347",
+    "name": "Mineralöl-Laxantien",
+    "suchbegriffe": [
+      "Mineralöl-Laxantien",
+      "Paraffin",
+      "Paraffinum liquidum"
+    ]
+  },
+  {
+    "id": "grp_0348",
+    "name": "Muskelrelaxantien",
+    "suchbegriffe": [
+      "Muskelrelaxantien",
+      "Atracurium",
+      "Baclofen",
+      "Rocuronium",
+      "Succinylcholin",
+      "Tizanidin"
+    ]
+  },
+  {
+    "id": "grp_0349",
+    "name": "Muskelrelaxanzien",
+    "suchbegriffe": [
+      "Muskelrelaxanzien",
+      "Succinylcholin"
+    ]
+  },
+  {
+    "id": "grp_0350",
+    "name": "Myasthenia-gravis-Medikamente",
+    "suchbegriffe": [
+      "Myasthenia-gravis-Medikamente",
+      "Neostigmin",
+      "Pyridostigmin"
+    ]
+  },
+  {
+    "id": "grp_0351",
+    "name": "Mycophenolat",
+    "suchbegriffe": [
+      "Mycophenolat",
+      "CellCept",
+      "Myfortic"
+    ]
+  },
+  {
+    "id": "grp_0352",
+    "name": "NAMPT-Inhibitoren",
+    "suchbegriffe": [
+      "NAMPT-Inhibitoren",
+      "experimentell"
+    ]
+  },
+  {
+    "id": "grp_0353",
+    "name": "NICHT GEFUNDEN",
+    "suchbegriffe": [
+      "NICHT GEFUNDEN",
+      "NICHT GEFUNDEN"
+    ]
+  },
+  {
+    "id": "grp_0354",
+    "name": "NMDA-Antagonisten",
+    "suchbegriffe": [
+      "NMDA-Antagonisten",
+      "Amantadin",
+      "Axura",
+      "Dextromethorphan",
+      "Ebixa",
+      "Ketamin"
+    ]
+  },
+  {
+    "id": "grp_0355",
+    "name": "NMDA-Rezeptor-Modulatoren",
+    "suchbegriffe": [
+      "NMDA-Rezeptor-Modulatoren",
+      "Dextromethorphan",
+      "Ketamin",
+      "Memantin"
+    ]
+  },
+  {
+    "id": "grp_0356",
+    "name": "NSAIDs (Schmerzmittel)",
+    "suchbegriffe": [
+      "NSAIDs (Schmerzmittel)",
+      "ASS",
+      "Acetylsalicylsaeure",
+      "Acetylsalicylsäure",
+      "Aspirin",
+      "Celecoxib"
+    ]
+  },
+  {
+    "id": "grp_0357",
+    "name": "Natriumarme Diät",
+    "suchbegriffe": [
+      "Natriumarme Diät",
+      "Salzrestriktion"
+    ]
+  },
+  {
+    "id": "grp_0358",
+    "name": "Nephrotoxische Medikamente",
+    "suchbegriffe": [
+      "Nephrotoxische Medikamente",
+      "ACE-Hemmer",
+      "Aminoglykoside",
+      "Ciclosporin",
+      "Cisplatin",
+      "Diclofenac"
+    ]
+  },
+  {
+    "id": "grp_0359",
+    "name": "Neuromuskulaere Blocker",
+    "suchbegriffe": [
+      "Neuromuskulaere Blocker",
+      "Pancuronium",
+      "Succinylcholin",
+      "Vecuronium"
+    ]
+  },
+  {
+    "id": "grp_0360",
+    "name": "Nevirapin",
+    "suchbegriffe": [
+      "Nevirapin",
+      "Viramune"
+    ]
+  },
+  {
+    "id": "grp_0361",
+    "name": "Niacin (hochdosiert)",
+    "suchbegriffe": [
+      "Niacin (hochdosiert)",
+      "Nicotinsaeure >1g",
+      "Tag"
+    ]
+  },
+  {
+    "id": "grp_0362",
+    "name": "Nierenfunktions-Diagnostik",
+    "suchbegriffe": [
+      "Nierenfunktions-Diagnostik",
+      "Kreatinin-Bluttest"
+    ]
+  },
+  {
+    "id": "grp_0363",
+    "name": "Nifedipin",
+    "suchbegriffe": [
+      "Nifedipin",
+      "Adalat",
+      "Amlodipin",
+      "Nifedipin",
+      "andere Kalziumantagonisten"
+    ]
+  },
+  {
+    "id": "grp_0364",
+    "name": "Nitrate",
+    "suchbegriffe": [
+      "Nitrate",
+      "Glyceroltrinitrat",
+      "ISDN",
+      "ISMN",
+      "Isosorbiddinitrat",
+      "Isosorbidmononitrat"
+    ]
+  },
+  {
+    "id": "grp_0365",
+    "name": "Nitrate (Nitroglycerin)",
+    "suchbegriffe": [
+      "Nitrate (Nitroglycerin)",
+      "Isosorbiddinitrat",
+      "Isosorbidmononitrat",
+      "Nitroglycerin"
+    ]
+  },
+  {
+    "id": "grp_0366",
+    "name": "Nitrate (Nitroglycerin, ISDN, ISMN)",
+    "suchbegriffe": [
+      "Nitrate (Nitroglycerin, ISDN, ISMN)",
+      "Isosorbitdinitrat",
+      "Isosorbitmonitrat",
+      "Nitroglycerin"
+    ]
+  },
+  {
+    "id": "grp_0367",
+    "name": "Nitroglycerin",
+    "suchbegriffe": [
+      "Nitroglycerin",
+      "Glyceroltrinitrat",
+      "ISDN",
+      "ISMN",
+      "Isosorbiddinitrat",
+      "Nitroglycerin"
+    ]
+  },
+  {
+    "id": "grp_0368",
+    "name": "Nitroglycerin / Nitrate",
+    "suchbegriffe": [
+      "Nitroglycerin / Nitrate",
+      "Isosorbiddinitrat",
+      "Isosorbidmononitrat",
+      "Nitroglycerin"
+    ]
+  },
+  {
+    "id": "grp_0369",
+    "name": "Nitroglycerin/Nitrate",
+    "suchbegriffe": [
+      "Nitroglycerin/Nitrate",
+      "Isosorbiddinitrat",
+      "Isosorbidmononitrat",
+      "Nitroglycerin"
+    ]
+  },
+  {
+    "id": "grp_0370",
+    "name": "Nukleosid-Analoga (Antivirale)",
+    "suchbegriffe": [
+      "Nukleosid-Analoga (Antivirale)",
+      "Aciclovir",
+      "Ganciclovir",
+      "Ribavirin"
+    ]
+  },
+  {
+    "id": "grp_0371",
+    "name": "Nukleosidanaloga (NRTIs)",
+    "suchbegriffe": [
+      "Nukleosidanaloga (NRTIs)",
+      "Lamivudin",
+      "Stavudin",
+      "Zidovudin"
+    ]
+  },
+  {
+    "id": "grp_0372",
+    "name": "OATP-Transporter",
+    "suchbegriffe": [
+      "OATP-Transporter",
+      "Atorvastatin",
+      "Rosuvastatin"
+    ]
+  },
+  {
+    "id": "grp_0373",
+    "name": "OATP1B1-Substrate",
+    "suchbegriffe": [
+      "OATP1B1-Substrate",
+      "Pravastatin",
+      "Repaglinid",
+      "Rosuvastatin"
+    ]
+  },
+  {
+    "id": "grp_0374",
+    "name": "OATP1B1/1B3-Substrate",
+    "suchbegriffe": [
+      "OATP1B1/1B3-Substrate",
+      "Atorvastatin",
+      "Repaglinid",
+      "Rosuvastatin"
+    ]
+  },
+  {
+    "id": "grp_0375",
+    "name": "Oestrogene",
+    "suchbegriffe": [
+      "Oestrogene",
+      "Ethinylestradiol",
+      "konjugierte Oestrogene"
+    ]
+  },
+  {
+    "id": "grp_0376",
+    "name": "Omeprazol",
+    "suchbegriffe": [
+      "Omeprazol",
+      "Esomeprazol",
+      "Omeprazol"
+    ]
+  },
+  {
+    "id": "grp_0377",
+    "name": "Opioid-Analgetika",
+    "suchbegriffe": [
+      "Opioid-Analgetika",
+      "Tapentadol",
+      "Tramal"
+    ]
+  },
+  {
+    "id": "grp_0378",
+    "name": "Opioide",
+    "suchbegriffe": [
+      "Opioide",
+      "Codein",
+      "Fentanyl",
+      "Morphin",
+      "Oxycodon",
+      "Tramadol"
+    ]
+  },
+  {
+    "id": "grp_0379",
+    "name": "Opioide (Analgetika)",
+    "suchbegriffe": [
+      "Opioide (Analgetika)",
+      "Codein",
+      "Morphin",
+      "Pethidin",
+      "Tramadol"
+    ]
+  },
+  {
+    "id": "grp_0380",
+    "name": "Opioide (CYP3A4-metabolisiert)",
+    "suchbegriffe": [
+      "Opioide (CYP3A4-metabolisiert)",
+      "Fentanyl",
+      "Methadon",
+      "Oxycodon"
+    ]
+  },
+  {
+    "id": "grp_0381",
+    "name": "Opioide (UGT2B7-Substrate)",
+    "suchbegriffe": [
+      "Opioide (UGT2B7-Substrate)",
+      "Codein",
+      "Hydromorphon",
+      "Morphin",
+      "Tramadol"
+    ]
+  },
+  {
+    "id": "grp_0382",
+    "name": "Opioide (serotonerge)",
+    "suchbegriffe": [
+      "Opioide (serotonerge)",
+      "Fentanyl",
+      "Meperidin",
+      "Pethidin",
+      "Tramadol"
+    ]
+  },
+  {
+    "id": "grp_0383",
+    "name": "Orale Antikoagulantien",
+    "suchbegriffe": [
+      "Orale Antikoagulantien",
+      "Acenocoumarol",
+      "DOAKs",
+      "Marcumar",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0384",
+    "name": "Orale Eisenpräparate",
+    "suchbegriffe": [
+      "Orale Eisenpräparate",
+      "Eisenfumarat",
+      "Eisengluconat",
+      "Eisensulfat"
+    ]
+  },
+  {
+    "id": "grp_0385",
+    "name": "Orale Medikamente (allgemein)",
+    "suchbegriffe": [
+      "Orale Medikamente (allgemein)",
+      "Diverse"
+    ]
+  },
+  {
+    "id": "grp_0386",
+    "name": "Orale Medikamente allgemein",
+    "suchbegriffe": [
+      "Orale Medikamente allgemein",
+      "Carbamazepin",
+      "Digoxin",
+      "Levothyroxin",
+      "Lithium"
+    ]
+  },
+  {
+    "id": "grp_0387",
+    "name": "Organische Nitrate",
+    "suchbegriffe": [
+      "Organische Nitrate",
+      "ISDN",
+      "ISMN",
+      "Molsidomin",
+      "Nitroglycerin"
+    ]
+  },
+  {
+    "id": "grp_0388",
+    "name": "Orlistat",
+    "suchbegriffe": [
+      "Orlistat",
+      "Alli",
+      "Xenical"
+    ]
+  },
+  {
+    "id": "grp_0389",
+    "name": "Orlistat (Fettblocker)",
+    "suchbegriffe": [
+      "Orlistat (Fettblocker)",
+      "Alli",
+      "Xenical"
+    ]
+  },
+  {
+    "id": "grp_0390",
+    "name": "Orlistat (Lipasehemmer)",
+    "suchbegriffe": [
+      "Orlistat (Lipasehemmer)",
+      "Alli",
+      "Xenical"
+    ]
+  },
+  {
+    "id": "grp_0391",
+    "name": "P-Glykoprotein-Substrate",
+    "suchbegriffe": [
+      "P-Glykoprotein-Substrate",
+      "Ciclosporin",
+      "Dabigatran",
+      "Digoxin",
+      "Doxorubicin",
+      "Fexofenadin"
+    ]
+  },
+  {
+    "id": "grp_0392",
+    "name": "P-gp-Substrate",
+    "suchbegriffe": [
+      "P-gp-Substrate",
+      "Dabigatran",
+      "Digoxin",
+      "Fexofenadin"
+    ]
+  },
+  {
+    "id": "grp_0393",
+    "name": "PDE-5-Hemmer",
+    "suchbegriffe": [
+      "PDE-5-Hemmer",
+      "Sildenafil",
+      "Tadalafil",
+      "Vardenafil",
+      "Viagra"
+    ]
+  },
+  {
+    "id": "grp_0394",
+    "name": "PDE5-Hemmer",
+    "suchbegriffe": [
+      "PDE5-Hemmer",
+      "Avanafil",
+      "Tadalafil",
+      "Vardenafil",
+      "Viagra"
+    ]
+  },
+  {
+    "id": "grp_0395",
+    "name": "PDE5-Hemmer (Sildenafil, Tadalafil, Vardenafil)",
+    "suchbegriffe": [
+      "PDE5-Hemmer (Sildenafil, Tadalafil, Vardenafil)",
+      "Cialis",
+      "Levitra",
+      "Viagra"
+    ]
+  },
+  {
+    "id": "grp_0396",
+    "name": "PDE5-Inhibitoren",
+    "suchbegriffe": [
+      "PDE5-Inhibitoren",
+      "Tadalafil",
+      "Vardenafil",
+      "Viagra"
+    ]
+  },
+  {
+    "id": "grp_0397",
+    "name": "PI3K-Inhibitoren (Krebsmedikamente)",
+    "suchbegriffe": [
+      "PI3K-Inhibitoren (Krebsmedikamente)",
+      "Alpelisib",
+      "Copanlisib",
+      "Idelalisib"
+    ]
+  },
+  {
+    "id": "grp_0398",
+    "name": "PKU-Diät/Medikation",
+    "suchbegriffe": [
+      "PKU-Diät/Medikation",
+      "Kuvan"
+    ]
+  },
+  {
+    "id": "grp_0399",
+    "name": "Paracetamol",
+    "suchbegriffe": [
+      "Paracetamol",
+      "APAP",
+      "Acetaminophen",
+      "Paracetamol"
+    ]
+  },
+  {
+    "id": "grp_0400",
+    "name": "Paracetamol (Acetaminophen)",
+    "suchbegriffe": [
+      "Paracetamol (Acetaminophen)",
+      "Acetaminophen",
+      "Paracetamol",
+      "Tylenol"
+    ]
+  },
+  {
+    "id": "grp_0401",
+    "name": "Paracetamol / Acetaminophen",
+    "suchbegriffe": [
+      "Paracetamol / Acetaminophen",
+      "Ben-u-ron",
+      "Paracetamol",
+      "Tylenol"
+    ]
+  },
+  {
+    "id": "grp_0402",
+    "name": "Parenterale Ernährung (PN)",
+    "suchbegriffe": [
+      "Parenterale Ernährung (PN)",
+      "Aminosäurelösungen",
+      "TPN"
+    ]
+  },
+  {
+    "id": "grp_0403",
+    "name": "Parkinson-Medikamente",
+    "suchbegriffe": [
+      "Parkinson-Medikamente",
+      "Dopaminagonisten",
+      "L-Dopa"
+    ]
+  },
+  {
+    "id": "grp_0404",
+    "name": "Penicillamin",
+    "suchbegriffe": [
+      "Penicillamin",
+      "Cuprimine",
+      "D-Penicillamin",
+      "Depen",
+      "Metalcaptase"
+    ]
+  },
+  {
+    "id": "grp_0405",
+    "name": "Penicillin V",
+    "suchbegriffe": [
+      "Penicillin V",
+      "Penicillin VK",
+      "Phenoxymethylpenicillin"
+    ]
+  },
+  {
+    "id": "grp_0406",
+    "name": "Penicilline",
+    "suchbegriffe": [
+      "Penicilline",
+      "Amoxicillin"
+    ]
+  },
+  {
+    "id": "grp_0407",
+    "name": "Pentobarbital / Anästhetika",
+    "suchbegriffe": [
+      "Pentobarbital / Anästhetika",
+      "Pentobarbital",
+      "Thiopental"
+    ]
+  },
+  {
+    "id": "grp_0408",
+    "name": "Perampanel (Fycompa)",
+    "suchbegriffe": [
+      "Perampanel (Fycompa)",
+      "Perampanel"
+    ]
+  },
+  {
+    "id": "grp_0409",
+    "name": "Pflanzensterole/-stanole",
+    "suchbegriffe": [
+      "Pflanzensterole/-stanole",
+      "Becel pro.activ",
+      "Benecol"
+    ]
+  },
+  {
+    "id": "grp_0410",
+    "name": "Phenothiazine",
+    "suchbegriffe": [
+      "Phenothiazine",
+      "Chlorpromazin",
+      "Fluphenazin",
+      "Promethazin",
+      "Thioridazin"
+    ]
+  },
+  {
+    "id": "grp_0411",
+    "name": "Phenytoin",
+    "suchbegriffe": [
+      "Phenytoin",
+      "Dilantin",
+      "Epanutin",
+      "Phenobarbital",
+      "Phenytoin",
+      "andere Antiepileptika"
+    ]
+  },
+  {
+    "id": "grp_0412",
+    "name": "Phlebotomie (bei Hämochromatose)",
+    "suchbegriffe": [
+      "Phlebotomie (bei Hämochromatose)",
+      "Therapeutischer Aderlass"
+    ]
+  },
+  {
+    "id": "grp_0413",
+    "name": "Phosphat-Laxantien",
+    "suchbegriffe": [
+      "Phosphat-Laxantien",
+      "Fleet Phospho-soda"
+    ]
+  },
+  {
+    "id": "grp_0414",
+    "name": "Phosphatbinder",
+    "suchbegriffe": [
+      "Phosphatbinder",
+      "Calciumacetat",
+      "Calciumcarbonat",
+      "Lanthan",
+      "Lanthancarbonat",
+      "Sevelamer"
+    ]
+  },
+  {
+    "id": "grp_0415",
+    "name": "Phosphatbinder (bei CKD)",
+    "suchbegriffe": [
+      "Phosphatbinder (bei CKD)",
+      "Calciumacetat",
+      "Calciumcarbonat",
+      "Lanthancarbonat",
+      "Sevelamer"
+    ]
+  },
+  {
+    "id": "grp_0416",
+    "name": "Phosphodiesterase-5-Hemmer",
+    "suchbegriffe": [
+      "Phosphodiesterase-5-Hemmer",
+      "Sildenafil",
+      "Tadalafil",
+      "Vardenafil"
+    ]
+  },
+  {
+    "id": "grp_0417",
+    "name": "Photodynamische Therapie",
+    "suchbegriffe": [
+      "Photodynamische Therapie",
+      "Visudyne"
+    ]
+  },
+  {
+    "id": "grp_0418",
+    "name": "Photosensibilisierende Medikamente",
+    "suchbegriffe": [
+      "Photosensibilisierende Medikamente",
+      "Amiodaron",
+      "Fluorchinolone",
+      "Fluorochinolone",
+      "Hydrochlorothiazid",
+      "Johanniskraut"
+    ]
+  },
+  {
+    "id": "grp_0419",
+    "name": "Polare Medikamente (allgemein)",
+    "suchbegriffe": [
+      "Polare Medikamente (allgemein)",
+      "Verschiedene"
+    ]
+  },
+  {
+    "id": "grp_0420",
+    "name": "Polyamin-Oxidase-Hemmer",
+    "suchbegriffe": [
+      "Polyamin-Oxidase-Hemmer",
+      "Aminoguanidin",
+      "MDL 72527"
+    ]
+  },
+  {
+    "id": "grp_0421",
+    "name": "Probenecid",
+    "suchbegriffe": [
+      "Probenecid",
+      "Gichtmittel"
+    ]
+  },
+  {
+    "id": "grp_0422",
+    "name": "Probiotika (Butyrat-Produzenten)",
+    "suchbegriffe": [
+      "Probiotika (Butyrat-Produzenten)",
+      "Clostridium butyricum",
+      "F. prausnitzii"
+    ]
+  },
+  {
+    "id": "grp_0423",
+    "name": "Prokinetika (D2-Antagonisten)",
+    "suchbegriffe": [
+      "Prokinetika (D2-Antagonisten)",
+      "Domperidon",
+      "MCP",
+      "Paspertin"
+    ]
+  },
+  {
+    "id": "grp_0424",
+    "name": "Propranolol",
+    "suchbegriffe": [
+      "Propranolol",
+      "Betablocker",
+      "Dociton",
+      "Inderal"
+    ]
+  },
+  {
+    "id": "grp_0425",
+    "name": "Propranolol (thyreotoxische Krise)",
+    "suchbegriffe": [
+      "Propranolol (thyreotoxische Krise)",
+      "Esmolol",
+      "Propranolol"
+    ]
+  },
+  {
+    "id": "grp_0426",
+    "name": "Prostatakrebstherapie",
+    "suchbegriffe": [
+      "Prostatakrebstherapie",
+      "Antiandrogene",
+      "GnRH-Analoga"
+    ]
+  },
+  {
+    "id": "grp_0427",
+    "name": "Protease-Medikamente",
+    "suchbegriffe": [
+      "Protease-Medikamente",
+      "Kreon",
+      "Pankreatin"
+    ]
+  },
+  {
+    "id": "grp_0428",
+    "name": "Protonenpumpenhemmer (PPI)",
+    "suchbegriffe": [
+      "Protonenpumpenhemmer (PPI)",
+      "Aluminiumhydroxid",
+      "Antazida",
+      "Esomeprazol",
+      "Lansoprazol",
+      "Maalox"
+    ]
+  },
+  {
+    "id": "grp_0429",
+    "name": "Psychiatrische Medikamente",
+    "suchbegriffe": [
+      "Psychiatrische Medikamente",
+      "Antidepressiva",
+      "Antipsychotika",
+      "Lithium",
+      "Stimmungsstabilisatoren",
+      "Stimulanzien"
+    ]
+  },
+  {
+    "id": "grp_0430",
+    "name": "Psychopharmaka",
+    "suchbegriffe": [
+      "Psychopharmaka",
+      "Hypnorex",
+      "Quilonum"
+    ]
+  },
+  {
+    "id": "grp_0431",
+    "name": "Pyrazinamid (TB-Therapie)",
+    "suchbegriffe": [
+      "Pyrazinamid (TB-Therapie)",
+      "PZA",
+      "Pyrazinamid"
+    ]
+  },
+  {
+    "id": "grp_0432",
+    "name": "QT-verlaengernde Medikamente",
+    "suchbegriffe": [
+      "QT-verlaengernde Medikamente",
+      "Amiodaron",
+      "Makrolide",
+      "Sotalol"
+    ]
+  },
+  {
+    "id": "grp_0433",
+    "name": "QT-verlängernde Antiarrhythmika",
+    "suchbegriffe": [
+      "QT-verlängernde Antiarrhythmika",
+      "Amiodaron",
+      "Chinidin",
+      "Flecainid",
+      "Sotalol"
+    ]
+  },
+  {
+    "id": "grp_0434",
+    "name": "QT-verlängernde Medikamente",
+    "suchbegriffe": [
+      "QT-verlängernde Medikamente",
+      "Amiodaron",
+      "Citalopram >",
+      "Clarithromycin",
+      "Erythromycin",
+      "Fluorochinolone"
+    ]
+  },
+  {
+    "id": "grp_0435",
+    "name": "Rapamycin/mTOR-Inhibitoren",
+    "suchbegriffe": [
+      "Rapamycin/mTOR-Inhibitoren",
+      "Everolimus",
+      "Rapamune",
+      "Temsirolimus"
+    ]
+  },
+  {
+    "id": "grp_0436",
+    "name": "Rauchen",
+    "suchbegriffe": [
+      "Rauchen",
+      "Tabakrauch"
+    ]
+  },
+  {
+    "id": "grp_0437",
+    "name": "Retinoide",
+    "suchbegriffe": [
+      "Retinoide",
+      "Accutane",
+      "Acitretin",
+      "Tretinoin"
+    ]
+  },
+  {
+    "id": "grp_0438",
+    "name": "Retinoide (Isotretinoin)",
+    "suchbegriffe": [
+      "Retinoide (Isotretinoin)",
+      "Accutane",
+      "Acitretin",
+      "Adapalene",
+      "Tretinoin"
+    ]
+  },
+  {
+    "id": "grp_0439",
+    "name": "Retinoide (systemisch)",
+    "suchbegriffe": [
+      "Retinoide (systemisch)",
+      "Acitretin",
+      "Bexaroten",
+      "Roaccutan",
+      "Tretinoin oral"
+    ]
+  },
+  {
+    "id": "grp_0440",
+    "name": "Rifampicin + Novobiocin",
+    "suchbegriffe": [
+      "Rifampicin + Novobiocin",
+      "Novobiocin",
+      "Rifampicin"
+    ]
+  },
+  {
+    "id": "grp_0441",
+    "name": "Riluzol (ALS-Medikament)",
+    "suchbegriffe": [
+      "Riluzol (ALS-Medikament)",
+      "Rilutek"
+    ]
+  },
+  {
+    "id": "grp_0442",
+    "name": "Riluzol (ALS-Therapie)",
+    "suchbegriffe": [
+      "Riluzol (ALS-Therapie)",
+      "Rilutek"
+    ]
+  },
+  {
+    "id": "grp_0443",
+    "name": "Röntgenkontrastmittel",
+    "suchbegriffe": [
+      "Röntgenkontrastmittel",
+      "Jodhaltige KM"
+    ]
+  },
+  {
+    "id": "grp_0444",
+    "name": "S-Adenosylmethionin (SAMe)",
+    "suchbegriffe": [
+      "S-Adenosylmethionin (SAMe)",
+      "SAMe"
+    ]
+  },
+  {
+    "id": "grp_0445",
+    "name": "SGLT-2-Hemmer",
+    "suchbegriffe": [
+      "SGLT-2-Hemmer",
+      "Canagliflozin",
+      "Dapagliflozin",
+      "Empagliflozin"
+    ]
+  },
+  {
+    "id": "grp_0446",
+    "name": "SGLT2-Inhibitoren",
+    "suchbegriffe": [
+      "SGLT2-Inhibitoren",
+      "Canagliflozin",
+      "Dapagliflozin",
+      "Empagliflozin"
+    ]
+  },
+  {
+    "id": "grp_0447",
+    "name": "Sacrosidase (Sucraid)",
+    "suchbegriffe": [
+      "Sacrosidase (Sucraid)",
+      "für CSID"
+    ]
+  },
+  {
+    "id": "grp_0448",
+    "name": "Salicylate",
+    "suchbegriffe": [
+      "Salicylate",
+      "ASS"
+    ]
+  },
+  {
+    "id": "grp_0449",
+    "name": "Salicylate (Hochdosis)",
+    "suchbegriffe": [
+      "Salicylate (Hochdosis)",
+      ">3g",
+      "Aspirin",
+      "Tag"
+    ]
+  },
+  {
+    "id": "grp_0450",
+    "name": "Sartane",
+    "suchbegriffe": [
+      "Sartane",
+      "Losartan"
+    ]
+  },
+  {
+    "id": "grp_0451",
+    "name": "Schilddruesenhormone",
+    "suchbegriffe": [
+      "Schilddruesenhormone",
+      "L-Thyroxin",
+      "Levothyroxin",
+      "Liothyronin"
+    ]
+  },
+  {
+    "id": "grp_0452",
+    "name": "Schilddrüsen-Medikamente",
+    "suchbegriffe": [
+      "Schilddrüsen-Medikamente",
+      "Carbimazol",
+      "L-Thyroxin",
+      "Thiamazol"
+    ]
+  },
+  {
+    "id": "grp_0453",
+    "name": "Schilddrüsenhormone",
+    "suchbegriffe": [
+      "Schilddrüsenhormone",
+      "Berlthyrox",
+      "Euthyrox",
+      "L-Thyrox",
+      "L-Thyroxin",
+      "Levothyroxin"
+    ]
+  },
+  {
+    "id": "grp_0454",
+    "name": "Schilddrüsenhormone (theoretisch)",
+    "suchbegriffe": [
+      "Schilddrüsenhormone (theoretisch)",
+      "L-Thyroxin",
+      "Levothyroxin"
+    ]
+  },
+  {
+    "id": "grp_0455",
+    "name": "Schilddrüsenmedikamente",
+    "suchbegriffe": [
+      "Schilddrüsenmedikamente",
+      "Berlthyrox",
+      "Carbimazol",
+      "Eferox",
+      "Eltroxin",
+      "Euthyrox"
+    ]
+  },
+  {
+    "id": "grp_0456",
+    "name": "Schwangerschaftsmedikation",
+    "suchbegriffe": [
+      "Schwangerschaftsmedikation",
+      "Eisensupplemente",
+      "Folsäure",
+      "Vitamine"
+    ]
+  },
+  {
+    "id": "grp_0457",
+    "name": "Schwermetall-Exposition",
+    "suchbegriffe": [
+      "Schwermetall-Exposition",
+      "Berufliche Kupfer",
+      "Nickel-Exposition"
+    ]
+  },
+  {
+    "id": "grp_0458",
+    "name": "Sedativa / Benzodiazepine",
+    "suchbegriffe": [
+      "Sedativa / Benzodiazepine",
+      "Alkohol",
+      "Alprazolam",
+      "Antihistaminika",
+      "Barbiturate",
+      "Benzodiazepine"
+    ]
+  },
+  {
+    "id": "grp_0459",
+    "name": "Selektive Östrogenrezeptor-Modulatoren",
+    "suchbegriffe": [
+      "Selektive Östrogenrezeptor-Modulatoren",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0460",
+    "name": "Sevofluran",
+    "suchbegriffe": [
+      "Sevofluran",
+      "Narkosemittel"
+    ]
+  },
+  {
+    "id": "grp_0461",
+    "name": "Siehe Glycerol (E 422)",
+    "suchbegriffe": [
+      "Siehe Glycerol (E 422)",
+      "ACE-Hemmer",
+      "Diuretika",
+      "Insulin",
+      "Lithium"
+    ]
+  },
+  {
+    "id": "grp_0462",
+    "name": "Simethicon (Sab Simplex)",
+    "suchbegriffe": [
+      "Simethicon (Sab Simplex)",
+      "Dimeticon",
+      "Simethicon"
+    ]
+  },
+  {
+    "id": "grp_0463",
+    "name": "Simvastatin/Atorvastatin",
+    "suchbegriffe": [
+      "Simvastatin/Atorvastatin",
+      "Atorvastatin",
+      "Zocor"
+    ]
+  },
+  {
+    "id": "grp_0464",
+    "name": "Spermizide (Nonoxynol-9)",
+    "suchbegriffe": [
+      "Spermizide (Nonoxynol-9)",
+      "Nonoxynol-9",
+      "Octoxynol"
+    ]
+  },
+  {
+    "id": "grp_0465",
+    "name": "Statine (Cholesterinsenker)",
+    "suchbegriffe": [
+      "Statine (Cholesterinsenker)",
+      "Atorvastatin",
+      "Atorvastatin + Niacin",
+      "Crestor",
+      "Ezetimib",
+      "Fluvastatin"
+    ]
+  },
+  {
+    "id": "grp_0466",
+    "name": "Stimmungsstabilisatoren",
+    "suchbegriffe": [
+      "Stimmungsstabilisatoren",
+      "Quilonum"
+    ]
+  },
+  {
+    "id": "grp_0467",
+    "name": "Stimmungsstabilisierer",
+    "suchbegriffe": [
+      "Stimmungsstabilisierer",
+      "Lithiofor",
+      "Lithium",
+      "Quilonum"
+    ]
+  },
+  {
+    "id": "grp_0468",
+    "name": "Stimulantien/Sympathomimetika",
+    "suchbegriffe": [
+      "Stimulantien/Sympathomimetika",
+      "Amphetamine",
+      "Ephedrin"
+    ]
+  },
+  {
+    "id": "grp_0469",
+    "name": "Stimulanzien",
+    "suchbegriffe": [
+      "Stimulanzien",
+      "Amphetamin",
+      "Amphetamine",
+      "Ephedrin",
+      "Koffein",
+      "Methylphenidat"
+    ]
+  },
+  {
+    "id": "grp_0470",
+    "name": "Stimulanzien (ADHS-Medikation)",
+    "suchbegriffe": [
+      "Stimulanzien (ADHS-Medikation)",
+      "Amphetamine",
+      "Atomoxetin",
+      "Ritalin"
+    ]
+  },
+  {
+    "id": "grp_0471",
+    "name": "Stimulanzien/Sympathomimetika",
+    "suchbegriffe": [
+      "Stimulanzien/Sympathomimetika",
+      "Ephedrin",
+      "Pseudoephedrin",
+      "Synephrin"
+    ]
+  },
+  {
+    "id": "grp_0472",
+    "name": "Stimulierende Laxantien",
+    "suchbegriffe": [
+      "Stimulierende Laxantien",
+      "Dulcolax",
+      "Laxoberal"
+    ]
+  },
+  {
+    "id": "grp_0473",
+    "name": "Streptomycin + Neomycin",
+    "suchbegriffe": [
+      "Streptomycin + Neomycin",
+      "Neomycin",
+      "Streptomycin"
+    ]
+  },
+  {
+    "id": "grp_0474",
+    "name": "Succinylcholin",
+    "suchbegriffe": [
+      "Succinylcholin",
+      "Anectine"
+    ]
+  },
+  {
+    "id": "grp_0475",
+    "name": "Sulfasalazin",
+    "suchbegriffe": [
+      "Sulfasalazin",
+      "Azulfidine",
+      "Salazopyrin"
+    ]
+  },
+  {
+    "id": "grp_0476",
+    "name": "Sulfonamide",
+    "suchbegriffe": [
+      "Sulfonamide",
+      "Sulfasalazin",
+      "Trimethoprim"
+    ]
+  },
+  {
+    "id": "grp_0477",
+    "name": "Sympathomimetika",
+    "suchbegriffe": [
+      "Sympathomimetika",
+      "Amphetamine",
+      "Ephedrin",
+      "Methylphenidat",
+      "Phenylephrin",
+      "Pseudoephedrin"
+    ]
+  },
+  {
+    "id": "grp_0478",
+    "name": "TNF-Inhibitoren/Biologika",
+    "suchbegriffe": [
+      "TNF-Inhibitoren/Biologika",
+      "Adalimumab",
+      "Etanercept",
+      "Infliximab"
+    ]
+  },
+  {
+    "id": "grp_0479",
+    "name": "Tacrolimus",
+    "suchbegriffe": [
+      "Tacrolimus",
+      "Prograf"
+    ]
+  },
+  {
+    "id": "grp_0480",
+    "name": "Tamoxifen",
+    "suchbegriffe": [
+      "Tamoxifen",
+      "Nolvadex",
+      "Nolvadex®",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0481",
+    "name": "Tamoxifen (SERM)",
+    "suchbegriffe": [
+      "Tamoxifen (SERM)",
+      "Tamoxifen",
+      "Toremifen"
+    ]
+  },
+  {
+    "id": "grp_0482",
+    "name": "Tamoxifen / Antiöstrogene",
+    "suchbegriffe": [
+      "Tamoxifen / Antiöstrogene",
+      "Clomifen",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0483",
+    "name": "Testosteron / Androgene",
+    "suchbegriffe": [
+      "Testosteron / Androgene",
+      "Nandrolon",
+      "Testosteron",
+      "andere AAS"
+    ]
+  },
+  {
+    "id": "grp_0484",
+    "name": "Testosteron-Ersatztherapie (TRT)",
+    "suchbegriffe": [
+      "Testosteron-Ersatztherapie (TRT)",
+      "Androgel",
+      "Nebido",
+      "Testogel"
+    ]
+  },
+  {
+    "id": "grp_0485",
+    "name": "Tetrazykline",
+    "suchbegriffe": [
+      "Tetrazykline",
+      "Doxycyclin",
+      "Minocyclin",
+      "Tetracyclin"
+    ]
+  },
+  {
+    "id": "grp_0486",
+    "name": "Theophyllin",
+    "suchbegriffe": [
+      "Theophyllin",
+      "Aminophyllin",
+      "Bronchoretard",
+      "Euphyllin",
+      "Theophyllin"
+    ]
+  },
+  {
+    "id": "grp_0487",
+    "name": "Theophyllin (Arzneimittel)",
+    "suchbegriffe": [
+      "Theophyllin (Arzneimittel)",
+      "Bronchoretard",
+      "Euphyllin"
+    ]
+  },
+  {
+    "id": "grp_0488",
+    "name": "Thienopyridine",
+    "suchbegriffe": [
+      "Thienopyridine",
+      "Clopidogrel",
+      "Prasugrel",
+      "Ticagrelor"
+    ]
+  },
+  {
+    "id": "grp_0489",
+    "name": "Thrombozytenaggregationshemmer",
+    "suchbegriffe": [
+      "Thrombozytenaggregationshemmer",
+      "ASS",
+      "Aspirin",
+      "Clopidogrel",
+      "Plavix",
+      "Prasugrel"
+    ]
+  },
+  {
+    "id": "grp_0490",
+    "name": "Thrombozytenhemmer",
+    "suchbegriffe": [
+      "Thrombozytenhemmer",
+      "ASS",
+      "Clopidogrel",
+      "Prasugrel"
+    ]
+  },
+  {
+    "id": "grp_0491",
+    "name": "Thyreostatika",
+    "suchbegriffe": [
+      "Thyreostatika",
+      "Carbimazol",
+      "Favistan",
+      "PTU",
+      "Propylthiouracil",
+      "Thiamazol"
+    ]
+  },
+  {
+    "id": "grp_0492",
+    "name": "Thyreostatika (präop)",
+    "suchbegriffe": [
+      "Thyreostatika (präop)",
+      "Carbimazol",
+      "Thiamazol"
+    ]
+  },
+  {
+    "id": "grp_0493",
+    "name": "Thyroid-Hormone",
+    "suchbegriffe": [
+      "Thyroid-Hormone",
+      "Levothyroxin"
+    ]
+  },
+  {
+    "id": "grp_0494",
+    "name": "Tokolytika",
+    "suchbegriffe": [
+      "Tokolytika",
+      "Atosiban",
+      "Fenoterol",
+      "Nifedipin"
+    ]
+  },
+  {
+    "id": "grp_0495",
+    "name": "Topische Kortikoide",
+    "suchbegriffe": [
+      "Topische Kortikoide",
+      "Betamethason",
+      "Hydrocortison",
+      "Prednicarbat"
+    ]
+  },
+  {
+    "id": "grp_0496",
+    "name": "Topische Retinoide (verschreibungspflichtig)",
+    "suchbegriffe": [
+      "Topische Retinoide (verschreibungspflichtig)",
+      "025-0",
+      "1%",
+      "Adapalen",
+      "Tazaroten",
+      "Tretinoin 0"
+    ]
+  },
+  {
+    "id": "grp_0497",
+    "name": "Topisches Diclofenac",
+    "suchbegriffe": [
+      "Topisches Diclofenac",
+      "Diclofenac-Gel",
+      "Voltaren Emulgel"
+    ]
+  },
+  {
+    "id": "grp_0498",
+    "name": "Tramadol",
+    "suchbegriffe": [
+      "Tramadol",
+      "Tramadolor",
+      "Tramal",
+      "Ultram"
+    ]
+  },
+  {
+    "id": "grp_0499",
+    "name": "Trimethoprim",
+    "suchbegriffe": [
+      "Trimethoprim",
+      "Bactrim",
+      "Co-trimoxazol",
+      "Cotrim",
+      "Cotrimoxazol",
+      "TMP-SMX"
+    ]
+  },
+  {
+    "id": "grp_0500",
+    "name": "Triptane",
+    "suchbegriffe": [
+      "Triptane",
+      "Eletriptan",
+      "Rizatriptan",
+      "Sumatriptan",
+      "Zolmitriptan"
+    ]
+  },
+  {
+    "id": "grp_0501",
+    "name": "Triptane (Migraene)",
+    "suchbegriffe": [
+      "Triptane (Migraene)",
+      "Eletriptan",
+      "Rizatriptan",
+      "Sumatriptan",
+      "Zolmitriptan"
+    ]
+  },
+  {
+    "id": "grp_0502",
+    "name": "Triptane (Migränemittel)",
+    "suchbegriffe": [
+      "Triptane (Migränemittel)",
+      "Almotriptan",
+      "Eletriptan",
+      "Imigran",
+      "Rizatriptan",
+      "Sumatriptan"
+    ]
+  },
+  {
+    "id": "grp_0503",
+    "name": "Tuberkulostatika",
+    "suchbegriffe": [
+      "Tuberkulostatika",
+      "Isoniazid"
+    ]
+  },
+  {
+    "id": "grp_0504",
+    "name": "Tyramin-reiche Lebensmittel",
+    "suchbegriffe": [
+      "Tyramin-reiche Lebensmittel",
+      "Gereifter Käse",
+      "Rotwein",
+      "Sauerkraut",
+      "fermentierte Lebensmittel"
+    ]
+  },
+  {
+    "id": "grp_0505",
+    "name": "UDCA (Ursodesoxycholsäure)",
+    "suchbegriffe": [
+      "UDCA (Ursodesoxycholsäure)",
+      "Ursochol",
+      "Ursofalk"
+    ]
+  },
+  {
+    "id": "grp_0506",
+    "name": "UGT-Substrate",
+    "suchbegriffe": [
+      "UGT-Substrate",
+      "UGT1A1"
+    ]
+  },
+  {
+    "id": "grp_0507",
+    "name": "UGT1A1-Substrate",
+    "suchbegriffe": [
+      "UGT1A1-Substrate",
+      "Bilirubin",
+      "Irinotecan"
+    ]
+  },
+  {
+    "id": "grp_0508",
+    "name": "Urikosurika/Gichtmittel",
+    "suchbegriffe": [
+      "Urikosurika/Gichtmittel",
+      "Allopurinol",
+      "Febuxostat",
+      "Probenecid"
+    ]
+  },
+  {
+    "id": "grp_0509",
+    "name": "Urin-ansaeuernde Substanzen",
+    "suchbegriffe": [
+      "Urin-ansaeuernde Substanzen",
+      "Ammoniumchlorid",
+      "Methionin",
+      "hohe Vitamin-C-Dosen"
+    ]
+  },
+  {
+    "id": "grp_0510",
+    "name": "Urinalkalisantien",
+    "suchbegriffe": [
+      "Urinalkalisantien",
+      "Carboanhydrasehemmer",
+      "Natriumbicarbonat"
+    ]
+  },
+  {
+    "id": "grp_0511",
+    "name": "Urinansäuernde Medikamente",
+    "suchbegriffe": [
+      "Urinansäuernde Medikamente",
+      "Ammoniumchlorid",
+      "Methionin"
+    ]
+  },
+  {
+    "id": "grp_0512",
+    "name": "Vaginale Antimykotika",
+    "suchbegriffe": [
+      "Vaginale Antimykotika",
+      "Clotrimazol",
+      "Fluconazol vaginal"
+    ]
+  },
+  {
+    "id": "grp_0513",
+    "name": "Vaginales Progesteron",
+    "suchbegriffe": [
+      "Vaginales Progesteron",
+      "Crinone",
+      "Progesteron-Zäpfchen"
+    ]
+  },
+  {
+    "id": "grp_0514",
+    "name": "Vancomycin",
+    "suchbegriffe": [
+      "Vancomycin",
+      "Vancomycin oral",
+      "i.v",
+      "oral"
+    ]
+  },
+  {
+    "id": "grp_0515",
+    "name": "Vancomycin/Metronidazol",
+    "suchbegriffe": [
+      "Vancomycin/Metronidazol",
+      "Fidaxomicin",
+      "Metronidazol",
+      "Vancomycin"
+    ]
+  },
+  {
+    "id": "grp_0516",
+    "name": "Verapamil (Ca-Antagonist)",
+    "suchbegriffe": [
+      "Verapamil (Ca-Antagonist)",
+      "Isoptin®"
+    ]
+  },
+  {
+    "id": "grp_0517",
+    "name": "Vitamin D (hochdosiert)",
+    "suchbegriffe": [
+      "Vitamin D (hochdosiert)",
+      "Calcitriol",
+      "Cholecalciferol"
+    ]
+  },
+  {
+    "id": "grp_0518",
+    "name": "Warfarin",
+    "suchbegriffe": [
+      "Warfarin",
+      "Coumadin",
+      "Marcumar",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0519",
+    "name": "Warfarin / Antikoagulantien",
+    "suchbegriffe": [
+      "Warfarin / Antikoagulantien",
+      "Acenocoumarol",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0520",
+    "name": "Warfarin / VKA",
+    "suchbegriffe": [
+      "Warfarin / VKA",
+      "Acenocoumarol",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0521",
+    "name": "Warfarin/Antikoagulantien",
+    "suchbegriffe": [
+      "Warfarin/Antikoagulantien",
+      "Coumadin",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0522",
+    "name": "ZNS-Depressiva",
+    "suchbegriffe": [
+      "ZNS-Depressiva",
+      "Antihistaminika",
+      "Barbiturate",
+      "Benzodiazepine",
+      "Opioide"
+    ]
+  },
+  {
+    "id": "grp_0523",
+    "name": "ZNS-daempfende Medikamente",
+    "suchbegriffe": [
+      "ZNS-daempfende Medikamente",
+      "Barbiturate",
+      "Diazepam",
+      "Lorazepam",
+      "Z-Substanzen"
+    ]
+  },
+  {
+    "id": "grp_0524",
+    "name": "ZNS-dämpfende Medikamente",
+    "suchbegriffe": [
+      "ZNS-dämpfende Medikamente",
+      "Benzodiazepine",
+      "Opioide",
+      "Z-Substanzen"
+    ]
+  },
+  {
+    "id": "grp_0525",
+    "name": "ZVK / Zentrale Venenkatheter",
+    "suchbegriffe": [
+      "ZVK / Zentrale Venenkatheter",
+      "PICC",
+      "Port-Systeme"
+    ]
+  },
+  {
+    "id": "grp_0526",
+    "name": "Zentrale Anticholinergika",
+    "suchbegriffe": [
+      "Zentrale Anticholinergika",
+      "Benztropin",
+      "Scopolamin",
+      "Trihexyphenidyl"
+    ]
+  },
+  {
+    "id": "grp_0527",
+    "name": "Zink-Hochdosis-Therapie",
+    "suchbegriffe": [
+      "Zink-Hochdosis-Therapie",
+      "therapeutisch"
+    ]
+  },
+  {
+    "id": "grp_0528",
+    "name": "Zink-Präparate",
+    "suchbegriffe": [
+      "Zink-Präparate",
+      "Zinkgluconat",
+      "Zinkoxid",
+      "Zinksulfat"
+    ]
+  },
+  {
+    "id": "grp_0529",
+    "name": "Zink-Präparate (therapeutisch)",
+    "suchbegriffe": [
+      "Zink-Präparate (therapeutisch)",
+      "Wilzin",
+      "bei Wilson"
+    ]
+  },
+  {
+    "id": "grp_0530",
+    "name": "Zink-haltige Präparate",
+    "suchbegriffe": [
+      "Zink-haltige Präparate",
+      "Zink-Supplemente"
+    ]
+  },
+  {
+    "id": "grp_0531",
+    "name": "Zinkpräparate",
+    "suchbegriffe": [
+      "Zinkpräparate",
+      "Zinkcitrat",
+      "Zinkgluconat",
+      "Zinkpicolinat"
+    ]
+  },
+  {
+    "id": "grp_0532",
+    "name": "Zinksupplemente (als Medikament)",
+    "suchbegriffe": [
+      "Zinksupplemente (als Medikament)",
+      "Wilzin",
+      "hochdosiertes Zink"
+    ]
+  },
+  {
+    "id": "grp_0533",
+    "name": "Zytostatika (Chemotherapie)",
+    "suchbegriffe": [
+      "Zytostatika (Chemotherapie)",
+      "5-FU",
+      "5-Fluorouracil",
+      "Alkylanzien",
+      "Antimetabolite",
+      "CMF"
+    ]
+  },
+  {
+    "id": "grp_0534",
+    "name": "mTOR-Inhibitoren",
+    "suchbegriffe": [
+      "mTOR-Inhibitoren",
+      "Afinitor",
+      "Certican",
+      "Everolimus",
+      "Rapamune",
+      "Sirolimus"
+    ]
+  },
+  {
+    "id": "grp_0535",
+    "name": "Östrogen-basierte Therapie",
+    "suchbegriffe": [
+      "Östrogen-basierte Therapie",
+      "HRT",
+      "orale Kontrazeptiva"
+    ]
+  },
+  {
+    "id": "grp_0536",
+    "name": "Östrogen-haltige Medikamente",
+    "suchbegriffe": [
+      "Östrogen-haltige Medikamente",
+      "HRT",
+      "orale Kontrazeptiva",
+      "Östrogene"
+    ]
+  },
+  {
+    "id": "grp_0537",
+    "name": "Östrogene",
+    "suchbegriffe": [
+      "Östrogene",
+      "Estradiol",
+      "Ethinylestradiol"
+    ]
+  },
+  {
+    "id": "grp_0538",
+    "name": "Östrogenmodulatoren (SERMs)",
+    "suchbegriffe": [
+      "Östrogenmodulatoren (SERMs)",
+      "Clomifen",
+      "Raloxifen",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0539",
+    "name": "α-Adrenozeptor-Antagonisten",
+    "suchbegriffe": [
+      "α-Adrenozeptor-Antagonisten",
+      "Doxazosin",
+      "Prazosin",
+      "Tamsulosin"
+    ]
+  },
+  {
+    "id": "grp_0540",
+    "name": "α-Blocker",
+    "suchbegriffe": [
+      "α-Blocker",
+      "Alfuzosin",
+      "Doxazosin",
+      "Tamsulosin"
+    ]
+  },
+  {
+    "id": "grp_0541",
+    "name": "α-Glucosidase-Hemmer",
+    "suchbegriffe": [
+      "α-Glucosidase-Hemmer",
+      "Glucobay",
+      "Glucobay®",
+      "Miglitol",
+      "Voglibose"
+    ]
+  },
+  {
+    "id": "grp_0542",
+    "name": "⚠️ ATORVASTATIN",
+    "suchbegriffe": [
+      "⚠️ ATORVASTATIN",
+      "Sortis"
+    ]
+  },
+  {
+    "id": "grp_0543",
+    "name": "⚠️ Acarbose/Miglitol",
+    "suchbegriffe": [
+      "⚠️ Acarbose/Miglitol",
+      "Glucobay",
+      "Miglitol"
+    ]
+  },
+  {
+    "id": "grp_0544",
+    "name": "⚠️ Alkohol",
+    "suchbegriffe": [
+      "⚠️ Alkohol",
+      "Ethanol"
+    ]
+  },
+  {
+    "id": "grp_0545",
+    "name": "⚠️ Allopurinol, Febuxostat",
+    "suchbegriffe": [
+      "⚠️ Allopurinol, Febuxostat",
+      "Xanthinoxidase-Hemmer"
+    ]
+  },
+  {
+    "id": "grp_0546",
+    "name": "⚠️ Amoxicillin",
+    "suchbegriffe": [
+      "⚠️ Amoxicillin",
+      "Amoxicillin"
+    ]
+  },
+  {
+    "id": "grp_0547",
+    "name": "⚠️ Andere Salicylate",
+    "suchbegriffe": [
+      "⚠️ Andere Salicylate",
+      "ASS",
+      "Diflunisal"
+    ]
+  },
+  {
+    "id": "grp_0548",
+    "name": "⚠️ Antiarrhythmika",
+    "suchbegriffe": [
+      "⚠️ Antiarrhythmika",
+      "Adenocard"
+    ]
+  },
+  {
+    "id": "grp_0549",
+    "name": "⚠️ Anticholinergika",
+    "suchbegriffe": [
+      "⚠️ Anticholinergika",
+      "Biperiden",
+      "Scopolamin",
+      "Trihexyphenidyl"
+    ]
+  },
+  {
+    "id": "grp_0550",
+    "name": "⚠️ Antihypertensiva",
+    "suchbegriffe": [
+      "⚠️ Antihypertensiva",
+      "ACE-Hemmer",
+      "Amlodipin",
+      "Beta-Blocker",
+      "Betablocker",
+      "Calciumantagonisten"
+    ]
+  },
+  {
+    "id": "grp_0551",
+    "name": "⚠️ Antihypertensiva allgemein",
+    "suchbegriffe": [
+      "⚠️ Antihypertensiva allgemein",
+      "ACE-Hemmer",
+      "AT1-Blocker",
+      "Betablocker",
+      "Calciumantagonisten",
+      "Diuretika"
+    ]
+  },
+  {
+    "id": "grp_0552",
+    "name": "⚠️ Antikoagulantien",
+    "suchbegriffe": [
+      "⚠️ Antikoagulantien",
+      "ASS",
+      "Acenocoumarol",
+      "Clopidogrel",
+      "DOAKs",
+      "Heparin"
+    ]
+  },
+  {
+    "id": "grp_0553",
+    "name": "⚠️ Antikoagulantien (theoretisch)",
+    "suchbegriffe": [
+      "⚠️ Antikoagulantien (theoretisch)",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0554",
+    "name": "⚠️ Antikoagulantien/Thrombozytenaggregationshemmer",
+    "suchbegriffe": [
+      "⚠️ Antikoagulantien/Thrombozytenaggregationshemmer",
+      "ASS",
+      "Clopidogrel",
+      "Heparin",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0555",
+    "name": "⚠️ Aromatasehemmer",
+    "suchbegriffe": [
+      "⚠️ Aromatasehemmer",
+      "Anastrozol",
+      "Exemestan",
+      "Letrozol"
+    ]
+  },
+  {
+    "id": "grp_0556",
+    "name": "⚠️ Bronchodilatatoren",
+    "suchbegriffe": [
+      "⚠️ Bronchodilatatoren",
+      "Theophyllin"
+    ]
+  },
+  {
+    "id": "grp_0557",
+    "name": "⚠️ CYP1A2-Substrate",
+    "suchbegriffe": [
+      "⚠️ CYP1A2-Substrate",
+      "Clozapin",
+      "Fluvoxamin",
+      "Koffein",
+      "Theophyllin",
+      "Tizanidin"
+    ]
+  },
+  {
+    "id": "grp_0558",
+    "name": "⚠️ CYP2C8-Substrate",
+    "suchbegriffe": [
+      "⚠️ CYP2C8-Substrate",
+      "Paclitaxel",
+      "Repaglinid",
+      "Rosiglitazon"
+    ]
+  },
+  {
+    "id": "grp_0559",
+    "name": "⚠️ CYP2D6-Substrate",
+    "suchbegriffe": [
+      "⚠️ CYP2D6-Substrate",
+      "Codein",
+      "Metoprolol",
+      "Tamoxifen",
+      "Tramadol",
+      "diverse Antidepressiva"
+    ]
+  },
+  {
+    "id": "grp_0560",
+    "name": "⚠️ CYP3A-Substrate",
+    "suchbegriffe": [
+      "⚠️ CYP3A-Substrate",
+      "Alprazolam",
+      "Atorvastatin",
+      "Ciclosporin",
+      "Midazolam",
+      "Simvastatin"
+    ]
+  },
+  {
+    "id": "grp_0561",
+    "name": "⚠️ CYP3A4-Substrate",
+    "suchbegriffe": [
+      "⚠️ CYP3A4-Substrate",
+      "Atorvastatin",
+      "Benzodiazepine",
+      "Cyclosporin",
+      "Immunsuppressiva",
+      "Kalziumkanalblocker"
+    ]
+  },
+  {
+    "id": "grp_0562",
+    "name": "⚠️ Cisplatin",
+    "suchbegriffe": [
+      "⚠️ Cisplatin",
+      "Carboplatin",
+      "Cisplatin"
+    ]
+  },
+  {
+    "id": "grp_0563",
+    "name": "⚠️ DROGENTESTS (technisch keine Medikamenten-WW)",
+    "suchbegriffe": [
+      "⚠️ DROGENTESTS (technisch keine Medikamenten-WW)",
+      "Cannabinoide"
+    ]
+  },
+  {
+    "id": "grp_0564",
+    "name": "⚠️ Disulfiram (Antabus)",
+    "suchbegriffe": [
+      "⚠️ Disulfiram (Antabus)",
+      "Disulfiram"
+    ]
+  },
+  {
+    "id": "grp_0565",
+    "name": "⚠️ Eisenpräparate",
+    "suchbegriffe": [
+      "⚠️ Eisenpräparate",
+      "Eisen-II-Sulfat",
+      "Eisengluconat",
+      "Ferrosulfat"
+    ]
+  },
+  {
+    "id": "grp_0566",
+    "name": "⚠️ Fettlösliche Medikamente",
+    "suchbegriffe": [
+      "⚠️ Fettlösliche Medikamente",
+      "Vitamin D-Analoga",
+      "fettlösliche Hormone"
+    ]
+  },
+  {
+    "id": "grp_0567",
+    "name": "⚠️ Hepatotoxische Medikamente",
+    "suchbegriffe": [
+      "⚠️ Hepatotoxische Medikamente",
+      "Amiodaron",
+      "Statine",
+      "hoch dosiert"
+    ]
+  },
+  {
+    "id": "grp_0568",
+    "name": "⚠️ Hormontherapie mit Gestagenen",
+    "suchbegriffe": [
+      "⚠️ Hormontherapie mit Gestagenen",
+      "Medroxyprogesteronacetat",
+      "Progesteron-HRT"
+    ]
+  },
+  {
+    "id": "grp_0569",
+    "name": "⚠️ Levodopa",
+    "suchbegriffe": [
+      "⚠️ Levodopa",
+      "L-Dopa",
+      "Madopar",
+      "Sinemet"
+    ]
+  },
+  {
+    "id": "grp_0570",
+    "name": "⚠️ Lovastatin",
+    "suchbegriffe": [
+      "⚠️ Lovastatin",
+      "Lovastatin"
+    ]
+  },
+  {
+    "id": "grp_0571",
+    "name": "⚠️ MODERATE DAO-Hemmer (20-50%)",
+    "suchbegriffe": [
+      "⚠️ MODERATE DAO-Hemmer (20-50%)",
+      "Acetylcystein 29%",
+      "Amitriptylin 33%",
+      "Cimetidin 37-50%",
+      "Isoniazid 47%",
+      "Metamizol 35%"
+    ]
+  },
+  {
+    "id": "grp_0572",
+    "name": "⚠️ Meclofenoxat (Centrophenoxin)",
+    "suchbegriffe": [
+      "⚠️ Meclofenoxat (Centrophenoxin)",
+      "Centrophenoxin",
+      "Meclofenoxat"
+    ]
+  },
+  {
+    "id": "grp_0573",
+    "name": "⚠️ Methotrexat",
+    "suchbegriffe": [
+      "⚠️ Methotrexat",
+      "MTX"
+    ]
+  },
+  {
+    "id": "grp_0574",
+    "name": "⚠️ Methotrexat (MTX)",
+    "suchbegriffe": [
+      "⚠️ Methotrexat (MTX)",
+      "Methotrexat"
+    ]
+  },
+  {
+    "id": "grp_0575",
+    "name": "⚠️ Nephrotoxische Medikamente",
+    "suchbegriffe": [
+      "⚠️ Nephrotoxische Medikamente",
+      "Aminoglykoside",
+      "Ciclosporin",
+      "hoch dosiert"
+    ]
+  },
+  {
+    "id": "grp_0576",
+    "name": "⚠️ OATP-Substrate",
+    "suchbegriffe": [
+      "⚠️ OATP-Substrate",
+      "Methotrexat",
+      "Statine"
+    ]
+  },
+  {
+    "id": "grp_0577",
+    "name": "⚠️ P-Glykoprotein-Substrate",
+    "suchbegriffe": [
+      "⚠️ P-Glykoprotein-Substrate",
+      "Ciclosporin",
+      "Digoxin",
+      "Loperamid",
+      "Vinblastin"
+    ]
+  },
+  {
+    "id": "grp_0578",
+    "name": "⚠️ P-gp-Substrate",
+    "suchbegriffe": [
+      "⚠️ P-gp-Substrate",
+      "Cyclosporin",
+      "Dabigatran",
+      "Digoxin",
+      "Paclitaxel"
+    ]
+  },
+  {
+    "id": "grp_0579",
+    "name": "⚠️ PDE-5-Hemmer",
+    "suchbegriffe": [
+      "⚠️ PDE-5-Hemmer",
+      "Tadalafil",
+      "Vardenafil",
+      "Viagra®"
+    ]
+  },
+  {
+    "id": "grp_0580",
+    "name": "⚠️ PDE5-Hemmer",
+    "suchbegriffe": [
+      "⚠️ PDE5-Hemmer",
+      "Tadalafil",
+      "Vardenafil",
+      "Viagra"
+    ]
+  },
+  {
+    "id": "grp_0581",
+    "name": "⚠️ Photosensibilisierende Medikamente",
+    "suchbegriffe": [
+      "⚠️ Photosensibilisierende Medikamente",
+      "Amiodaron",
+      "Fluorchinolone",
+      "Psoralene",
+      "Tetracycline",
+      "Thiazide"
+    ]
+  },
+  {
+    "id": "grp_0582",
+    "name": "⚠️ Retard-Medikamente (theoretisch)",
+    "suchbegriffe": [
+      "⚠️ Retard-Medikamente (theoretisch)",
+      "Cellulose-basierte Retard-Formulierungen"
+    ]
+  },
+  {
+    "id": "grp_0583",
+    "name": "⚠️ Rosuvastatin",
+    "suchbegriffe": [
+      "⚠️ Rosuvastatin",
+      "Crestor"
+    ]
+  },
+  {
+    "id": "grp_0584",
+    "name": "⚠️ Scopolamin",
+    "suchbegriffe": [
+      "⚠️ Scopolamin",
+      "Scopoderm"
+    ]
+  },
+  {
+    "id": "grp_0585",
+    "name": "⚠️ Sirolimus (Immunsuppressivum)",
+    "suchbegriffe": [
+      "⚠️ Sirolimus (Immunsuppressivum)",
+      "Rapamycin"
+    ]
+  },
+  {
+    "id": "grp_0586",
+    "name": "⚠️ Tacrolimus",
+    "suchbegriffe": [
+      "⚠️ Tacrolimus",
+      "Prograf"
+    ]
+  },
+  {
+    "id": "grp_0587",
+    "name": "⚠️ Testosterontherapie",
+    "suchbegriffe": [
+      "⚠️ Testosterontherapie",
+      "Injektionen",
+      "Pflaster",
+      "Testosteron-Gel"
+    ]
+  },
+  {
+    "id": "grp_0588",
+    "name": "⚠️ Theophyllin",
+    "suchbegriffe": [
+      "⚠️ Theophyllin",
+      "Asthma-Medikament",
+      "Bronchoretard"
+    ]
+  },
+  {
+    "id": "grp_0589",
+    "name": "⚠️ Theophyllin/Aminophyllin",
+    "suchbegriffe": [
+      "⚠️ Theophyllin/Aminophyllin",
+      "Aminophyllin",
+      "Theophyllin"
+    ]
+  },
+  {
+    "id": "grp_0590",
+    "name": "⚠️ Thrombozytenaggregationshemmer",
+    "suchbegriffe": [
+      "⚠️ Thrombozytenaggregationshemmer",
+      "ASS",
+      "Aspirin",
+      "Clopidogrel",
+      "Prasugrel",
+      "niedrig dosiert"
+    ]
+  },
+  {
+    "id": "grp_0591",
+    "name": "⚠️ Warfarin",
+    "suchbegriffe": [
+      "⚠️ Warfarin",
+      "Coumadin",
+      "Marcumar",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0592",
+    "name": "⚠️ Warfarin (bei Kombination mit CoQ10)",
+    "suchbegriffe": [
+      "⚠️ Warfarin (bei Kombination mit CoQ10)",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0593",
+    "name": "⚠️ Warfarin / Antikoagulantien",
+    "suchbegriffe": [
+      "⚠️ Warfarin / Antikoagulantien",
+      "Marcumar",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0594",
+    "name": "⚠️ Warfarin/Antikoagulantien",
+    "suchbegriffe": [
+      "⚠️ Warfarin/Antikoagulantien",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0595",
+    "name": "⚠️ α-Glucosidasehemmer",
+    "suchbegriffe": [
+      "⚠️ α-Glucosidasehemmer",
+      "Glucobay®",
+      "Miglitol"
+    ]
+  },
+  {
+    "id": "grp_0596",
+    "name": "⚠️ α1-Blocker (Prostatatherapie)",
+    "suchbegriffe": [
+      "⚠️ α1-Blocker (Prostatatherapie)",
+      "Alfuzosin",
+      "Doxazosin",
+      "Omnic®",
+      "Terazosin"
+    ]
+  },
+  {
+    "id": "grp_0597",
+    "name": "⚠️⚠️ Anticholinergika",
+    "suchbegriffe": [
+      "⚠️⚠️ Anticholinergika",
+      "Atropin",
+      "Biperiden",
+      "Scopolamin",
+      "Trihexyphenidyl"
+    ]
+  },
+  {
+    "id": "grp_0598",
+    "name": "⚠️⚠️ Antihypertensiva",
+    "suchbegriffe": [
+      "⚠️⚠️ Antihypertensiva",
+      "Clonidin",
+      "Moxonidin",
+      "α-Methyldopa"
+    ]
+  },
+  {
+    "id": "grp_0599",
+    "name": "⚠️⚠️ Antikoagulantien (VKA)",
+    "suchbegriffe": [
+      "⚠️⚠️ Antikoagulantien (VKA)",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0600",
+    "name": "⚠️⚠️ BCRP-Substrate",
+    "suchbegriffe": [
+      "⚠️⚠️ BCRP-Substrate",
+      "Methotrexat",
+      "Mitoxantron",
+      "Rosuvastatin"
+    ]
+  },
+  {
+    "id": "grp_0601",
+    "name": "⚠️⚠️ Bortezomib",
+    "suchbegriffe": [
+      "⚠️⚠️ Bortezomib",
+      "Velcade"
+    ]
+  },
+  {
+    "id": "grp_0602",
+    "name": "⚠️⚠️ CYP1A2-Hemmer",
+    "suchbegriffe": [
+      "⚠️⚠️ CYP1A2-Hemmer",
+      "Cimetidin",
+      "Ciprofloxacin",
+      "Fluvoxamin",
+      "Orale Kontrazeptiva"
+    ]
+  },
+  {
+    "id": "grp_0603",
+    "name": "⚠️⚠️ CYP1A2-Substrate",
+    "suchbegriffe": [
+      "⚠️⚠️ CYP1A2-Substrate",
+      "Clozapin",
+      "Duloxetin",
+      "Koffein",
+      "Melatonin",
+      "Theophyllin"
+    ]
+  },
+  {
+    "id": "grp_0604",
+    "name": "⚠️⚠️ CYP2C19-Substrate",
+    "suchbegriffe": [
+      "⚠️⚠️ CYP2C19-Substrate",
+      "Clopidogrel",
+      "Diazepam",
+      "Omeprazol"
+    ]
+  },
+  {
+    "id": "grp_0605",
+    "name": "⚠️⚠️ CYP2C8-Substrate",
+    "suchbegriffe": [
+      "⚠️⚠️ CYP2C8-Substrate",
+      "Paclitaxel",
+      "Repaglinid"
+    ]
+  },
+  {
+    "id": "grp_0606",
+    "name": "⚠️⚠️ CYP2C9-Substrate",
+    "suchbegriffe": [
+      "⚠️⚠️ CYP2C9-Substrate",
+      "Diclofenac",
+      "Ibuprofen"
+    ]
+  },
+  {
+    "id": "grp_0607",
+    "name": "⚠️⚠️ CYP3A4-Substrate",
+    "suchbegriffe": [
+      "⚠️⚠️ CYP3A4-Substrate",
+      "Atorvastatin",
+      "Ciclosporin",
+      "Immunsuppressiva",
+      "Itraconazol",
+      "Kalziumkanalblocker"
+    ]
+  },
+  {
+    "id": "grp_0608",
+    "name": "⚠️⚠️ Hormonelle Kontrazeption",
+    "suchbegriffe": [
+      "⚠️⚠️ Hormonelle Kontrazeption",
+      "Ethinylestradiol",
+      "Gestagene",
+      "Levonorgestrel"
+    ]
+  },
+  {
+    "id": "grp_0609",
+    "name": "⚠️⚠️ Nitroglycerin/Nitrate",
+    "suchbegriffe": [
+      "⚠️⚠️ Nitroglycerin/Nitrate",
+      "Isosorbiddinitrat",
+      "Isosorbidmononitrat",
+      "Nitroglycerin"
+    ]
+  },
+  {
+    "id": "grp_0610",
+    "name": "⚠️⚠️ P-gp-Substrate",
+    "suchbegriffe": [
+      "⚠️⚠️ P-gp-Substrate",
+      "Cyclosporin",
+      "Dabigatran",
+      "Digoxin",
+      "Paclitaxel",
+      "viele Chemotherapeutika"
+    ]
+  },
+  {
+    "id": "grp_0611",
+    "name": "⚠️⚠️ WARFARIN",
+    "suchbegriffe": [
+      "⚠️⚠️ WARFARIN",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0612",
+    "name": "⚠️⚠️ Warfarin",
+    "suchbegriffe": [
+      "⚠️⚠️ Warfarin",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0613",
+    "name": "⚠️⚠️ Warfarin/VKA",
+    "suchbegriffe": [
+      "⚠️⚠️ Warfarin/VKA",
+      "Acenocoumarol",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0614",
+    "name": "⛔ >322 INTERAKTIONEN!",
+    "suchbegriffe": [
+      "⛔ >322 INTERAKTIONEN!",
+      "Zu viele für vollständige Liste"
+    ]
+  },
+  {
+    "id": "grp_0615",
+    "name": "⛔ AChE-Hemmer",
+    "suchbegriffe": [
+      "⛔ AChE-Hemmer",
+      "Donepezil",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  },
+  {
+    "id": "grp_0616",
+    "name": "⛔ ALKOHOL",
+    "suchbegriffe": [
+      "⛔ ALKOHOL",
+      "Ethanol"
+    ]
+  },
+  {
+    "id": "grp_0617",
+    "name": "⛔ Anticholinergika",
+    "suchbegriffe": [
+      "⛔ Anticholinergika",
+      "Atropin",
+      "Biperiden",
+      "Scopolamin",
+      "Trihexyphenidyl"
+    ]
+  },
+  {
+    "id": "grp_0618",
+    "name": "⛔ Antikoagulantien",
+    "suchbegriffe": [
+      "⛔ Antikoagulantien",
+      "Acenocoumarol",
+      "Heparin",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0619",
+    "name": "⛔ CYP1A2-Substrate",
+    "suchbegriffe": [
+      "⛔ CYP1A2-Substrate",
+      "Clozapin",
+      "Koffein",
+      "Melatonin",
+      "Theophyllin"
+    ]
+  },
+  {
+    "id": "grp_0620",
+    "name": "⛔ CYP2C19-Substrate",
+    "suchbegriffe": [
+      "⛔ CYP2C19-Substrate",
+      "Clopidogrel",
+      "Diazepam",
+      "Escitalopram",
+      "Omeprazol",
+      "Pantoprazol"
+    ]
+  },
+  {
+    "id": "grp_0621",
+    "name": "⛔ CYP2C9-Substrate",
+    "suchbegriffe": [
+      "⛔ CYP2C9-Substrate",
+      "Ibuprofen",
+      "Losartan",
+      "Naproxen",
+      "Phenytoin",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0622",
+    "name": "⛔ CYP3A4-Substrate",
+    "suchbegriffe": [
+      "⛔ CYP3A4-Substrate",
+      "Amlodipin",
+      "Atorvastatin",
+      "Ciclosporin",
+      "Midazolam",
+      "Nifedipin"
+    ]
+  },
+  {
+    "id": "grp_0623",
+    "name": "⛔ Cimetidin, Chinin",
+    "suchbegriffe": [
+      "⛔ Cimetidin, Chinin",
+      "Chinin",
+      "H2-Blocker"
+    ]
+  },
+  {
+    "id": "grp_0624",
+    "name": "⛔ Cyclosporin",
+    "suchbegriffe": [
+      "⛔ Cyclosporin",
+      "Sandimmun®"
+    ]
+  },
+  {
+    "id": "grp_0625",
+    "name": "⛔ FELODIPIN",
+    "suchbegriffe": [
+      "⛔ FELODIPIN",
+      "Plendil"
+    ]
+  },
+  {
+    "id": "grp_0626",
+    "name": "⛔ OPIOIDE",
+    "suchbegriffe": [
+      "⛔ OPIOIDE",
+      "Codein",
+      "Fentanyl",
+      "Morphin",
+      "Oxycodon",
+      "Tramadol"
+    ]
+  },
+  {
+    "id": "grp_0627",
+    "name": "⛔ Schilddrüsenhormone",
+    "suchbegriffe": [
+      "⛔ Schilddrüsenhormone",
+      "L-Thyroxin",
+      "Liothyronin"
+    ]
+  },
+  {
+    "id": "grp_0628",
+    "name": "⛔ Theophyllin",
+    "suchbegriffe": [
+      "⛔ Theophyllin",
+      "Aminophyllin",
+      "Theophyllin"
+    ]
+  },
+  {
+    "id": "grp_0629",
+    "name": "⛔ Thrombozytenaggregationshemmer",
+    "suchbegriffe": [
+      "⛔ Thrombozytenaggregationshemmer",
+      "ASS",
+      "Clopidogrel",
+      "Prasugrel",
+      "Ticagrelor"
+    ]
+  },
+  {
+    "id": "grp_0630",
+    "name": "⛔ Thrombozytenhemmer",
+    "suchbegriffe": [
+      "⛔ Thrombozytenhemmer",
+      "ASS",
+      "Clopidogrel",
+      "Prasugrel"
+    ]
+  },
+  {
+    "id": "grp_0631",
+    "name": "⛔ VERBOTENE SUBSTANZ",
+    "suchbegriffe": [
+      "⛔ VERBOTENE SUBSTANZ",
+      "A - ILLEGAL"
+    ]
+  },
+  {
+    "id": "grp_0632",
+    "name": "⛔⛔ Antiarrhythmika",
+    "suchbegriffe": [
+      "⛔⛔ Antiarrhythmika",
+      "Amiodaron",
+      "Chinidin",
+      "Flecainid",
+      "Sotalol"
+    ]
+  },
+  {
+    "id": "grp_0633",
+    "name": "⛔⛔ Antihypertensiva",
+    "suchbegriffe": [
+      "⛔⛔ Antihypertensiva",
+      "ACE-Hemmer",
+      "AT1-Blocker",
+      "Betablocker",
+      "Calciumantagonisten",
+      "Kalziumantagonisten"
+    ]
+  },
+  {
+    "id": "grp_0634",
+    "name": "⛔⛔ Aromatasehemmer",
+    "suchbegriffe": [
+      "⛔⛔ Aromatasehemmer",
+      "Anastrozol",
+      "Exemestan",
+      "Letrozol"
+    ]
+  },
+  {
+    "id": "grp_0635",
+    "name": "⛔⛔ CICLOSPORIN",
+    "suchbegriffe": [
+      "⛔⛔ CICLOSPORIN",
+      "Sandimmun"
+    ]
+  },
+  {
+    "id": "grp_0636",
+    "name": "⛔⛔ CYP3A4-Substrate",
+    "suchbegriffe": [
+      "⛔⛔ CYP3A4-Substrate",
+      "Amlodipin",
+      "Atorvastatin",
+      "Ciclosporin",
+      "Felodipin",
+      "Midazolam"
+    ]
+  },
+  {
+    "id": "grp_0637",
+    "name": "⛔⛔ Clonidin und zentrale α2-Agonisten",
+    "suchbegriffe": [
+      "⛔⛔ Clonidin und zentrale α2-Agonisten",
+      "Catapresan®",
+      "Guanabenz",
+      "Guanfacin",
+      "Moxonidin"
+    ]
+  },
+  {
+    "id": "grp_0638",
+    "name": "⛔⛔ HIV-Protease-Inhibitoren",
+    "suchbegriffe": [
+      "⛔⛔ HIV-Protease-Inhibitoren",
+      "Atazanavir",
+      "Darunavir",
+      "Ritonavir",
+      "Saquinavir"
+    ]
+  },
+  {
+    "id": "grp_0639",
+    "name": "⛔⛔ Hepatotoxische Medikamente",
+    "suchbegriffe": [
+      "⛔⛔ Hepatotoxische Medikamente",
+      "Isoniazid",
+      "Methotrexat",
+      "Valproat",
+      "hochdosiert"
+    ]
+  },
+  {
+    "id": "grp_0640",
+    "name": "⛔⛔ L-DOPA-Medikamente",
+    "suchbegriffe": [
+      "⛔⛔ L-DOPA-Medikamente",
+      "Duodopa",
+      "Madopar",
+      "Sinemet",
+      "Stalevo"
+    ]
+  },
+  {
+    "id": "grp_0641",
+    "name": "⛔⛔ Levodopa/Carbidopa",
+    "suchbegriffe": [
+      "⛔⛔ Levodopa/Carbidopa",
+      "Madopar",
+      "Sinemet",
+      "Stalevo"
+    ]
+  },
+  {
+    "id": "grp_0642",
+    "name": "⛔⛔ NADOLOL",
+    "suchbegriffe": [
+      "⛔⛔ NADOLOL",
+      "Corgard"
+    ]
+  },
+  {
+    "id": "grp_0643",
+    "name": "⛔⛔ SIMVASTATIN",
+    "suchbegriffe": [
+      "⛔⛔ SIMVASTATIN",
+      "Simvastatin"
+    ]
+  },
+  {
+    "id": "grp_0644",
+    "name": "⛔⛔ STARKE DAO-Hemmer (>90%)",
+    "suchbegriffe": [
+      "⛔⛔ STARKE DAO-Hemmer (>90%)",
+      "92%",
+      "Augmentin®",
+      "Chloroquin 90-99%",
+      "Cycloserin 100%",
+      "Dihydralazin 100%"
+    ]
+  },
+  {
+    "id": "grp_0645",
+    "name": "⛔⛔ Stimulanzien (ADHS)",
+    "suchbegriffe": [
+      "⛔⛔ Stimulanzien (ADHS)",
+      "Amphetamine",
+      "Methylphenidat",
+      "Modafinil",
+      "Ritalin"
+    ]
+  },
+  {
+    "id": "grp_0646",
+    "name": "⛔⛔ TACROLIMUS",
+    "suchbegriffe": [
+      "⛔⛔ TACROLIMUS",
+      "Prograf"
+    ]
+  },
+  {
+    "id": "grp_0647",
+    "name": "⛔⛔ TAMOXIFEN",
+    "suchbegriffe": [
+      "⛔⛔ TAMOXIFEN",
+      "Tamoxifen"
+    ]
+  },
+  {
+    "id": "grp_0648",
+    "name": "⛔⛔ Tamoxifen / SERMs",
+    "suchbegriffe": [
+      "⛔⛔ Tamoxifen / SERMs",
+      "Raloxifen",
+      "Tamoxifen",
+      "Toremifen"
+    ]
+  },
+  {
+    "id": "grp_0649",
+    "name": "⛔⛔ Thrombozytenaggregationshemmer",
+    "suchbegriffe": [
+      "⛔⛔ Thrombozytenaggregationshemmer",
+      "ASS",
+      "Clopidogrel",
+      "Prasugrel",
+      "Ticagrelor"
+    ]
+  },
+  {
+    "id": "grp_0650",
+    "name": "⛔⛔ Warfarin / Antikoagulantien",
+    "suchbegriffe": [
+      "⛔⛔ Warfarin / Antikoagulantien",
+      "Acenocoumarol",
+      "Marcumar",
+      "Phenprocoumon",
+      "Warfarin"
+    ]
+  },
+  {
+    "id": "grp_0651",
+    "name": "⛔⛔ α-Glucosidasehemmer",
+    "suchbegriffe": [
+      "⛔⛔ α-Glucosidasehemmer",
+      "Glucobay®",
+      "Miglitol"
+    ]
+  },
+  {
+    "id": "grp_0652",
+    "name": "⛔⛔⛔ Opioide",
+    "suchbegriffe": [
+      "⛔⛔⛔ Opioide",
+      "Codein",
+      "Fentanyl",
+      "Morphin",
+      "Oxycodon",
+      "Tramadol"
+    ]
+  },
+  {
+    "id": "grp_0653",
+    "name": "⛔⛔⛔ Thrombozytenaggregationshemmer",
+    "suchbegriffe": [
+      "⛔⛔⛔ Thrombozytenaggregationshemmer",
+      "Aspirin",
+      "Clopidogrel",
+      "Prasugrel",
+      "Ticagrelor"
+    ]
+  },
+  {
+    "id": "grp_0654",
+    "name": "⛔⛔⛔ mTOR-Inhibitoren",
+    "suchbegriffe": [
+      "⛔⛔⛔ mTOR-Inhibitoren",
+      "Everolimus",
+      "Rapamycin",
+      "Temsirolimus"
+    ]
+  },
+  {
+    "id": "grp_0655",
+    "name": "✅ Allgemein",
+    "suchbegriffe": [
+      "✅ Allgemein",
+      "Diverse"
+    ]
+  },
+  {
+    "id": "grp_0656",
+    "name": "✅ Moderne H1-Antihistaminika",
+    "suchbegriffe": [
+      "✅ Moderne H1-Antihistaminika",
+      "Cetirizin",
+      "Fexofenadin",
+      "Loratadin"
+    ]
+  },
+  {
+    "id": "grp_0657",
+    "name": "✅ Sucraid® (Sacrosidase)",
+    "suchbegriffe": [
+      "✅ Sucraid® (Sacrosidase)",
+      "Sucraid® Oral Solution"
+    ]
+  },
+  {
+    "id": "grp_0658",
+    "name": "⭐ Acetylcholinesterase-Hemmer",
+    "suchbegriffe": [
+      "⭐ Acetylcholinesterase-Hemmer",
+      "Aricept",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  },
+  {
+    "id": "grp_0659",
+    "name": "⭐ CYP3A4-Substrate",
+    "suchbegriffe": [
+      "⭐ CYP3A4-Substrate",
+      "Immunsuppressiva",
+      "Kalziumkanalblocker",
+      "Statine"
+    ]
+  },
+  {
+    "id": "grp_0660",
+    "name": "⭐ H. pylori Triple-Therapie",
+    "suchbegriffe": [
+      "⭐ H. pylori Triple-Therapie",
+      "Metronidazol",
+      "PPI + Clarithromycin + Amoxicillin"
+    ]
+  },
+  {
+    "id": "grp_0661",
+    "name": "⭐ Levodopa",
+    "suchbegriffe": [
+      "⭐ Levodopa",
+      "Benserazid",
+      "Carbidopa",
+      "Levodopa"
+    ]
+  },
+  {
+    "id": "grp_0662",
+    "name": "⭐⭐⭐ Acetylcholinesterase-Hemmer",
+    "suchbegriffe": [
+      "⭐⭐⭐ Acetylcholinesterase-Hemmer",
+      "Aricept",
+      "Galantamin",
+      "Rivastigmin"
+    ]
+  }
+]

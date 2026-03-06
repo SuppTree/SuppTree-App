@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuppTree &mdash; Bald verf&uuml;gbar</title>
+<meta name="description" content="SuppTree kommt bald. Wir bauen den Marktplatz, der Supplements und Gesundheit verbindet.">
+<link rel="icon" href="website/assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;width:100%}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#060d08;
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ===== MESH GRID ===== */
+.mesh-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(rgba(74,222,128,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(74,222,128,0.03) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black 20%,transparent 70%);
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black 20%,transparent 70%);
+}
+
+/* ===== AURORA BLOBS ===== */
+.aurora{position:fixed;border-radius:50%;pointer-events:none;z-index:1;filter:blur(100px)}
+.aurora-1{
+  width:700px;height:700px;top:-25%;right:-15%;
+  background:conic-gradient(from 180deg,rgba(0,166,126,0.25),rgba(74,222,128,0.1),rgba(34,211,238,0.15),transparent);
+  animation:auroraMove1 16s ease infinite;
+}
+.aurora-2{
+  width:600px;height:600px;bottom:-25%;left:-20%;
+  background:conic-gradient(from 0deg,rgba(34,211,238,0.2),rgba(0,166,126,0.15),transparent,rgba(74,222,128,0.1));
+  animation:auroraMove2 20s ease infinite;
+}
+.aurora-3{
+  width:400px;height:400px;top:30%;left:60%;
+  background:radial-gradient(circle,rgba(74,222,128,0.15) 0%,transparent 70%);
+  animation:auroraMove3 14s ease infinite;
+}
+@keyframes auroraMove1{
+  0%,100%{transform:translate(0,0) rotate(0deg);opacity:0.7}
+  33%{transform:translate(-40px,30px) rotate(60deg);opacity:1}
+  66%{transform:translate(20px,-20px) rotate(120deg);opacity:0.8}
+}
+@keyframes auroraMove2{
+  0%,100%{transform:translate(0,0) rotate(0deg);opacity:0.6}
+  33%{transform:translate(50px,-30px) rotate(-40deg);opacity:1}
+  66%{transform:translate(-30px,40px) rotate(-80deg);opacity:0.7}
+}
+@keyframes auroraMove3{
+  0%,100%{transform:translate(0,0) scale(1);opacity:0.5}
+  50%{transform:translate(-60px,30px) scale(1.3);opacity:0.9}
+}
+
+/* ===== LIGHT RAYS ===== */
+.rays{
+  position:fixed;top:50%;left:50%;
+  width:200vmax;height:200vmax;
+  transform:translate(-50%,-50%);
+  pointer-events:none;z-index:1;
+  background:conic-gradient(
+    from 0deg,
+    transparent 0deg,rgba(74,222,128,0.04) 15deg,transparent 30deg,
+    transparent 60deg,rgba(34,211,238,0.03) 75deg,transparent 90deg,
+    transparent 120deg,rgba(0,166,126,0.04) 135deg,transparent 150deg,
+    transparent 180deg,rgba(74,222,128,0.03) 195deg,transparent 210deg,
+    transparent 240deg,rgba(34,211,238,0.04) 255deg,transparent 270deg,
+    transparent 300deg,rgba(0,166,126,0.03) 315deg,transparent 330deg,
+    transparent 360deg
+  );
+  animation:raysSpin 60s linear infinite;
+}
+@keyframes raysSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* ===== FLOATING PARTICLES ===== */
+.particle{
+  position:fixed;border-radius:50%;pointer-events:none;z-index:2;
+  animation:floatUp linear infinite;opacity:0;
+}
+@keyframes floatUp{
+  0%{transform:translateY(100vh) scale(0);opacity:0}
+  10%{opacity:0.4}
+  90%{opacity:0.2}
+  100%{transform:translateY(-10vh) scale(1);opacity:0}
+}
+
+/* ===== NOISE OVERLAY ===== */
+.noise{
+  position:fixed;inset:0;pointer-events:none;z-index:3;
+  opacity:0.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:128px 128px;
+}
+
+/* ===== CARD ===== */
+.card{
+  position:relative;z-index:10;
+  max-width:480px;width:100%;
+  text-align:center;
+  animation:fadeUp 0.8s ease forwards;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Logo */
+.logo-wrap{
+  margin-bottom:-36px;
+  position:relative;
+  display:inline-block;
+}
+.logo-wrap img{
+  max-width:1160px;width:95%;height:auto;
+}
+.reg-mark{
+  position:absolute;
+  top:18%;right:8%;
+  font-size:clamp(10px,1.8vw,18px);font-weight:700;
+  color:#00A67E;
+  font-family:inherit;
+}
+
+/* Badge */
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:99px;
+  padding:7px 18px;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);
+  margin-bottom:24px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.badge-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#4ade80;
+  box-shadow:0 0 8px #4ade80,0 0 20px rgba(74,222,128,0.3);
+  animation:pulse 2s ease infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.85)}}
+
+/* Headline */
+h1{
+  font-size:clamp(28px,5vw,40px);font-weight:900;
+  color:white;line-height:1.15;
+  margin-bottom:16px;
+  letter-spacing:-0.5px;
+}
+h1 span{
+  background:linear-gradient(135deg,#4ade80,#22d3ee);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* Subtext */
+.sub{
+  font-size:15px;font-weight:500;
+  color:rgba(255,255,255,0.55);
+  line-height:1.7;
+  max-width:360px;margin:0 auto 36px;
+}
+
+/* Divider */
+.divider{
+  width:48px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,#4ade80,#22d3ee);
+  margin:0 auto 36px;
+  opacity:0.5;
+}
+
+/* Contact */
+.contact{
+  font-size:13px;font-weight:600;
+  color:rgba(255,255,255,0.4);
+  margin-bottom:0;
+}
+.contact a{
+  color:rgba(255,255,255,0.6);
+  text-decoration:none;
+  transition:color 0.2s;
+}
+.contact a:hover{color:#4ade80}
+
+/* Footer */
+footer{
+  position:fixed;bottom:20px;left:0;right:0;
+  text-align:center;
+  font-size:12px;font-weight:500;
+  color:rgba(255,255,255,0.15);
+  z-index:10;
+}
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="mesh-bg"></div>
+<div class="aurora aurora-1"></div>
+<div class="aurora aurora-2"></div>
+<div class="aurora aurora-3"></div>
+<div class="rays"></div>
+<div class="noise"></div>
+
+<div class="card">
+
+  <div class="logo-wrap">
+    <img src="website/assets/logo.png" alt="SuppTree"><sup class="reg-mark">&reg;</sup>
+  </div>
+
+  <div class="badge">
+    <span class="badge-dot"></span>
+    In Arbeit
+  </div>
+
+  <h1>Wir bauen etwas<br><span>Besonderes.</span></h1>
+
+  <p class="sub">
+    Unser Marktplatz f&uuml;r Supplements und Gesundheit ist bald verf&uuml;gbar.<br>
+    Geplanter Launch: Q3 2026
+  </p>
+
+  <div class="divider"></div>
+
+  <p class="contact">
+    Fragen? <a href="mailto:info@SuppTree.de">info@SuppTree.de</a>
+  </p>
+
+</div>
+
+<footer>&copy; 2026 SuppTree</footer>
+
+<script>
+// Floating particles
+(function() {
+  var colors = ['rgba(74,222,128,0.5)','rgba(34,211,238,0.4)','rgba(255,255,255,0.2)'];
+  var count = 24;
+  for (var i = 0; i < count; i++) {
+    var el = document.createElement('div');
+    el.className = 'particle';
+    var size = 2 + Math.random() * 4;
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.boxShadow = '0 0 ' + (4 + Math.random() * 6) + 'px ' + el.style.background;
+    el.style.animationDuration = (10 + Math.random() * 18) + 's';
+    el.style.animationDelay = (Math.random() * 12) + 's';
+    document.body.appendChild(el);
+  }
+})();
+</script>
+
+</body>
+</html>

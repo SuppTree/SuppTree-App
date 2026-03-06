@@ -20164,6 +20164,12 @@ input.input-error,
 }
 
 /* Medications Screen */
+#medicationsScreen .app {
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .medications-info-banner {
   display: flex;
   align-items: flex-start;
@@ -20362,6 +20368,8 @@ input.input-error,
   flex-direction: column;
   gap: 16px;
 }
+.med-form .form-group {
+}
 
 .med-form .form-group label {
   display: block;
@@ -20519,6 +20527,371 @@ input.input-error,
   cursor: pointer;
   margin-top: 8px;
 }
+
+/* ===== AMPELSYSTEM CSS ===== */
+
+/* Medikament Autosuggest */
+.med-input-wrap {
+  position: relative;
+}
+
+.med-autosuggest-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 0 0 7px 7px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 100;
+  max-height: 210px;
+  overflow-y: auto;
+}
+.med-suggest-section {
+  padding: 6px 14px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  background: #f9fafb;
+  border-bottom: 1px solid #f3f4f6;
+}
+.med-autosuggest-item {
+  padding: 9px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.med-autosuggest-item:hover, .med-autosuggest-item:active {
+  background: #f0fdf4;
+}
+.med-autosuggest-item.med-suggest-gruppe {
+  background: #f8fafc;
+}
+.med-autosuggest-item.med-suggest-gruppe:hover {
+  background: #e0f2fe;
+}
+.med-autosuggest-item .med-suggest-name {
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 13px;
+}
+.med-autosuggest-item .med-suggest-match {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  flex-shrink: 0;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Gruppe Display Box */
+.med-gruppe-display-box {
+  padding: 10px 14px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--green-dark);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* Form Display Box (auto-filled) */
+.med-form-display-box {
+  padding: 10px 14px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 7px;
+  font-size: 13px;
+  color: #0369a1;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.med-form-auto-label {
+  font-size: 10px;
+  color: #0284c7;
+  background: #e0f2fe;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.med-gruppe-clear-btn {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1;
+}
+.med-gruppe-clear-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Ampel-Übersicht im matrixScreen */
+.ampel-uebersicht-section, .supp-interaktionen-section {
+  margin: 0 16px 12px;
+}
+.ampel-uebersicht-header, .supp-interaktionen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ampel-toggle, .supp-int-toggle {
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+.ampel-toggle.open, .supp-int-toggle.open {
+  transform: rotate(90deg);
+}
+.ampel-uebersicht-item {
+  padding: 14px 16px;
+  background: #fff;
+  border-radius: 7px;
+  margin-top: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.ampel-uebersicht-item:active {
+  transform: scale(0.98);
+}
+.ampel-uebersicht-item.ampel-rot {
+  border-left: 4px solid #ef4444;
+}
+.ampel-uebersicht-item.ampel-gelb {
+  border-left: 4px solid #f59e0b;
+}
+.ampel-uebersicht-item.ampel-gruen {
+  border-left: 4px solid #22c55e;
+}
+.ampel-status-badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ampel-status-badge.ampel-rot {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.ampel-status-badge.ampel-gelb {
+  background: #fffbeb;
+  color: #d97706;
+}
+.ampel-status-badge.ampel-gruen {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+/* Supplement Interaktionen Übersicht */
+.supp-interaction-group {
+  margin-top: 8px;
+}
+.supp-interaction-header {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 0;
+}
+.supp-interaction-item {
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 7px;
+  margin-bottom: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.supp-interaction-item.foerdernd {
+  border-left: 3px solid #22c55e;
+}
+.supp-interaction-item.hemmend {
+  border-left: 3px solid #f59e0b;
+}
+
+/* Ampel Bottom-Sheets */
+.ampel-sheet .sheet-content {
+  padding: 20px 18px 30px;
+}
+.ampel-sheet-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ampel-sheet-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ampel-supp-name, .ampel-med-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-dark);
+}
+.ampel-pair-divider {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+.ampel-sheet-desc {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  padding: 0 8px;
+}
+.ampel-sheet-abstand {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: #f8f9fa;
+  border-radius: 7px;
+}
+.ampel-sheet-arzt {
+  text-align: center;
+  font-size: 13px;
+  color: #d97706;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.ampel-sheet-disclaimer-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 7px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.ampel-disclaimer-text {
+  font-size: 13px;
+  color: #991b1b;
+  line-height: 1.5;
+}
+.ampel-disclaimer-checkbox {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.ampel-disclaimer-checkbox input[type="checkbox"] {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: #dc2626;
+  flex-shrink: 0;
+}
+.ampel-disclaimer-checkbox span {
+  font-size: 13px;
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+.ampel-sheet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ampel-btn-einplanen {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 7px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+}
+.ampel-btn-einplanen.gelb {
+  background: #f59e0b;
+}
+.ampel-btn-einplanen.rot {
+  background: #dc2626;
+}
+.ampel-btn-einplanen:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ampel-btn-secondary {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #fff;
+  color: var(--text-dark);
+}
+
+/* Kalender Ampel-Farbkodierung */
+.intake-item.ampel-gelb {
+  border-left: 3px solid #f59e0b;
+}
+.intake-item.ampel-rot {
+  border-left: 3px solid #ef4444;
+}
+.intake-item.foerdernd {
+  border-left: 3px solid #22c55e;
+}
+.intake-blocked {
+  opacity: 0.6;
+  background: #fef2f2;
+}
+.ampel-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+.ampel-label.gelb {
+  background: #fffbeb;
+  color: #d97706;
+}
+.ampel-label.rot {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.ampel-label.gruen {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+.interaction-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  padding-left: 2px;
+}
+
+/* ===== END AMPELSYSTEM CSS ===== */
 
 /* Knowledge Screen */
 /* ===== KNOWLEDGE SCREEN — Modern Redesign ===== */
@@ -36167,23 +36540,54 @@ input.input-error,
         <button class="ca-link" onclick="setCustomerAuthMode('reset')">Passwort vergessen?</button>
       </div>
 
-      <div class="ca-dev" id="caDevAccess">
-        <div class="ca-dev-label">DEV-ZUGANG (ohne Login)</div>
-        <div class="ca-dev-btns">
-          <button class="ca-dev-btn" style="border-color:#43A047;background:#E8F5E9;color:#2E7D32" onclick="hideCustomerAuth()">🛒 Demo-Modus</button>
-          <button class="ca-dev-btn" style="border-color:#00A67E;background:#E0F2F1;color:#00695C" onclick="localStorage.setItem('suppTreeAppMode','demo');localStorage.setItem('suppTreePartnerType','supplement');window.location.href='../partner/index.html'">🏪 Seller</button>
-          <button class="ca-dev-btn" style="border-color:#3F51B5;background:#E8EAF6;color:#1A237E" onclick="window.location.href='../admin/index.html'">👑 Admin</button>
-        </div>
+      <div id="caBrowseBtn" style="text-align:center;margin-top:12px">
+        <button onclick="hideCustomerAuth()" style="font-size:14px;color:#6b7280;background:none;border:none;cursor:pointer;text-decoration:underline">Erst mal stöbern →</button>
       </div>
+
+      <div style="margin-top:12px;padding-top:14px;border-top:1px solid #e5e7eb;text-align:center">
+        <p style="font-size:13px;color:#6b7280;margin:0 0 6px">Du bist Heilpraktiker, Trainer oder Hersteller?</p>
+        <a href="../partner/index.html?mode=production" onclick="localStorage.removeItem('suppTreePartnerType');localStorage.setItem('suppTreeAppMode','production')" style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#00A67E;text-decoration:none">
+          <span>🏪</span> Zum Partner-Bereich <span style="font-size:16px">›</span>
+        </a>
+      </div>
+
     </div>
 
     <!-- Register Form -->
     <div class="ca-form" id="custRegisterForm">
       <div class="ca-alert error" id="caRegError"></div>
       <div class="ca-alert success" id="caRegSuccess"></div>
-      <div class="ca-form-group">
-        <label>Name</label>
-        <input type="text" id="caRegName" placeholder="Dein Name" autocomplete="name">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div class="ca-form-group" style="flex:1;margin-bottom:0">
+          <label>Anrede</label>
+          <select id="caRegAnrede" style="width:100%;padding:12px 10px;border:2px solid #e5e7eb;border-radius:8px;font-size:14px;background:#fff;font-family:inherit">
+            <option value="">Bitte wählen</option>
+            <option value="Herr">Herr</option>
+            <option value="Frau">Frau</option>
+            <option value="Divers">Divers</option>
+            <option value="Keine Angabe">Keine Angabe</option>
+          </select>
+        </div>
+        <div class="ca-form-group" style="flex:1;margin-bottom:0">
+          <label>Titel <span style="font-weight:400;color:#999">(optional)</span></label>
+          <select id="caRegTitel" style="width:100%;padding:12px 10px;border:2px solid #e5e7eb;border-radius:8px;font-size:14px;background:#fff;font-family:inherit">
+            <option value="">Kein Titel</option>
+            <option value="Dr.">Dr.</option>
+            <option value="Prof.">Prof.</option>
+            <option value="Prof. Dr.">Prof. Dr.</option>
+            <option value="HP">HP</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:0">
+        <div class="ca-form-group" style="flex:1">
+          <label>Vorname</label>
+          <input type="text" id="caRegFirstName" placeholder="Vorname" autocomplete="given-name">
+        </div>
+        <div class="ca-form-group" style="flex:1">
+          <label>Nachname</label>
+          <input type="text" id="caRegLastName" placeholder="Nachname" autocomplete="family-name">
+        </div>
       </div>
       <div class="ca-form-group">
         <label>E-Mail</label>
@@ -36205,6 +36609,12 @@ input.input-error,
       </div>
       <button class="ca-btn" id="caRegBtn" onclick="handleCustomerRegister()">Konto erstellen</button>
       <p class="ca-legal">Mit der Registrierung akzeptierst du unsere <a href="#">AGB</a> und <a href="#">Datenschutzrichtlinie</a>.</p>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center">
+        <p style="font-size:13px;color:#6b7280;margin:0 0 8px">Du bist Heilpraktiker, Trainer oder Hersteller?</p>
+        <a href="../partner/index.html?mode=production" onclick="localStorage.removeItem('suppTreePartnerType');localStorage.setItem('suppTreeAppMode','production')" style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#00A67E;text-decoration:none">
+          <span>🏪</span> Als Partner registrieren <span style="font-size:16px">›</span>
+        </a>
+      </div>
     </div>
 
     <!-- Reset Form -->
@@ -36230,6 +36640,9 @@ input.input-error,
 <!-- Swipe Back Indicator -->
 <div class="swipe-back-indicator" id="swipeBackIndicator"></div>
 
+<!-- Login-Hinweis für persönliche Screens -->
+<div id="meinLoginHint" style="display:none;position:fixed;inset:0;z-index:99;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);align-items:center;justify-content:center;padding-bottom:70px;overflow-y:auto"></div>
+
 <!-- ===============================
      HOME SCREEN (Redesigned)
      =============================== -->
@@ -36251,6 +36664,12 @@ input.input-error,
         </div>
       </div>
     </div>
+
+    <!-- Login-Teaser für Gäste -->
+    <div id="homeLoginTeaser" style="display:none"></div>
+
+    <!-- Persönliche Sektionen (nur wenn eingeloggt) -->
+    <div id="homePersonalSections">
 
     <!-- TODAY'S SHIFT CARD - Tagesübersicht -->
     <div class="home-section">
@@ -36374,6 +36793,8 @@ input.input-error,
         <button class="low-stock-btn">Nachbestellen</button>
       </div>
     </div>
+
+    </div><!-- /homePersonalSections -->
 
     <!-- Robur Quick Access -->
     <div class="home-section">
@@ -37490,7 +37911,7 @@ input.input-error,
     </div>
 
     <!-- Abo-Verwaltung Section -->
-    <div class="abo-management-section">
+    <div class="abo-management-section" id="ekAboSection">
       <div class="abo-management-header">
         <div class="abo-management-title">
           <span class="abo-management-icon">🔄</span>
@@ -39424,6 +39845,28 @@ input.input-error,
     </div>
 
     <div class="matrix-content">
+      <!-- Ampel-Übersicht: Med-Supplement Wechselwirkungen -->
+      <div class="ampel-uebersicht-section" id="ampelUebersichtSection">
+        <div class="ampel-uebersicht-header" onclick="toggleAmpelUebersicht()">
+          <span>🚦 Medikament-Wechselwirkungen</span>
+          <span class="ampel-toggle" id="ampelToggle">›</span>
+        </div>
+        <div id="ampelUebersichtContainer" style="display:none;">
+          <!-- Filled by renderAmpelUebersicht() -->
+        </div>
+      </div>
+
+      <!-- Supplement-Supplement Interaktionen -->
+      <div class="supp-interaktionen-section" id="suppInteraktionenSection">
+        <div class="supp-interaktionen-header" onclick="toggleSuppInteraktionen()">
+          <span>🔗 Supplement-Wechselwirkungen</span>
+          <span class="supp-int-toggle" id="suppIntToggle">›</span>
+        </div>
+        <div id="suppInteraktionenContainer" style="display:none;">
+          <!-- Filled by renderSuppInteraktionenUebersicht() -->
+        </div>
+      </div>
+
       <!-- Saved Searches -->
       <div class="matrix-saved-section" id="savedSearchesSection" style="display: none;">
         <div class="matrix-saved-header">
@@ -39585,8 +40028,13 @@ input.input-error,
         </div>
         
         <button class="save-analysis-btn" onclick="saveCurrentAnalysis()">
-          💾 Analyse speichern
+          &#128190; Analyse speichern
         </button>
+      </div>
+
+      <!-- Globaler Disclaimer -->
+      <div class="medication-disclaimer" style="margin-top:24px;">
+        <p>&#9888;&#65039; SuppTree gibt allgemeine Informationen zu Nahrungsergaenzungsmitteln. Diese ersetzen nicht die Beratung durch Arzt, Apotheker oder medizinische Fachpersonen. Hinweise basieren auf allgemein zugaenglichen Informationen ohne Anspruch auf Vollstaendigkeit. SuppTree ist kein Medizinprodukt.</p>
       </div>
     </div>
   </div>
@@ -39766,7 +40214,8 @@ input.input-error,
     
     <!-- Disclaimer -->
     <div class="medication-disclaimer">
-      <p data-i18n="meds.disclaimer">⚠️ Diese App ersetzt keine ärztliche Beratung. Bei Fragen zu Wechselwirkungen wende dich an deinen Arzt oder Apotheker.</p>
+      <p data-i18n="meds.disclaimer">&#9888;&#65039; Medikamentenangaben werden nur fuer allgemeine Wechselwirkungsinfos verwendet. Keine Empfehlungen zu Einnahme oder Dosierung von Medikamenten.</p>
+      <p style="margin-top:8px;">SuppTree gibt allgemeine Informationen zu Nahrungsergaenzungsmitteln. Diese ersetzen nicht die Beratung durch Arzt, Apotheker oder medizinische Fachpersonen. SuppTree ist kein Medizinprodukt.</p>
     </div>
   </div>
 </div>
@@ -39780,19 +40229,41 @@ input.input-error,
   </div>
   <div class="sheet-content">
     <div class="med-form">
+      <!-- Hidden fields -->
+      <input type="hidden" id="medGruppeId" value="">
+      <input type="hidden" id="medGruppeName" value="">
+      <input type="hidden" id="medAutoForm" value="">
+
+      <!-- 1. Name des Medikaments -->
       <div class="form-group">
         <label>Name des Medikaments <span class="required-star">*</span></label>
-        <input type="text" id="medName" placeholder="z.B. Ibuprofen 400mg" oninput="this.classList.remove('input-error')">
+        <div class="med-input-wrap">
+          <input type="text" id="medName" placeholder="z.B. Ramipril, Ibuprofen, Metformin..." oninput="this.classList.remove('input-error'); onMedNameInput(this.value)" autocomplete="off">
+          <div class="med-autosuggest-dropdown" id="medNameDropdown" style="display:none;"></div>
+        </div>
       </div>
-      
+
+      <!-- 2. Medikamentengruppe -->
       <div class="form-group">
-        <label>Wirkstoff (optional)</label>
-        <input type="text" id="medActiveIngredient" placeholder="z.B. Ibuprofen">
+        <label>Medikamentengruppe</label>
+        <div class="med-input-wrap">
+          <input type="text" id="medGruppeSearch" placeholder="z.B. ACE-Hemmer, Antibiotika, Statine..." oninput="onMedGruppeInput(this.value)" autocomplete="off">
+          <div class="med-autosuggest-dropdown" id="medGruppeDropdown" style="display:none;"></div>
+        </div>
+        <div class="med-gruppe-display-box" id="medGruppeDisplayBox" style="display:none;">
+          <span id="medGruppeDisplayText">-</span>
+          <button class="med-gruppe-clear-btn" onclick="clearMedGruppe()" type="button">&#x2715;</button>
+        </div>
       </div>
-      
+
+      <!-- 3. Darreichungsform -->
       <div class="form-group">
-        <label>Darreichungsform *</label>
-        <div class="form-type-selector">
+        <label>Darreichungsform</label>
+        <div class="med-form-display-box" id="medFormDisplayBox" style="display:none;">
+          <span id="medFormDisplayText">Tablette</span>
+          <span class="med-form-auto-label">automatisch</span>
+        </div>
+        <div class="form-type-selector" id="medFormSelector">
           <button class="form-type-btn active" onclick="setMedForm('tablet')" data-form="tablet">
             <span>💊</span>
             <small>Tablette</small>
@@ -39803,11 +40274,11 @@ input.input-error,
           </button>
           <button class="form-type-btn" onclick="setMedForm('liquid')" data-form="liquid">
             <span>🧪</span>
-            <small>Flüssig</small>
+            <small>Fluessig</small>
           </button>
           <button class="form-type-btn" onclick="setMedForm('drops')" data-form="drops">
             <span>💧</span>
-            <small data-i18n="filter.drops">Tropfen</small>
+            <small>Tropfen</small>
           </button>
           <button class="form-type-btn" onclick="setMedForm('spray')" data-form="spray">
             <span>🌬️</span>
@@ -39903,6 +40374,66 @@ input.input-error,
     <button class="save-med-btn" onclick="saveMedication()">
       💊 Medikament speichern
     </button>
+  </div>
+</div>
+
+<!-- Ampel Gelb Sheet (Wechselwirkung Hinweis) -->
+<div class="overlay" id="ampelGelbOverlay" onclick="closeBottomSheet('ampelGelbSheet')"></div>
+<div class="bottom-sheet ampel-sheet ampel-gelb-sheet" id="ampelGelbSheet">
+  <div class="sheet-header">
+    <h2>Hinweis</h2>
+    <button class="sheet-close" onclick="closeBottomSheet('ampelGelbSheet')">✕</button>
+  </div>
+  <div class="sheet-content">
+    <div class="ampel-sheet-icon ampel-gelb-icon">
+      <span style="font-size:36px;">&#9888;&#65039;</span>
+      <span style="font-size:15px;font-weight:700;color:#d97706;">HINWEIS: Wechselwirkung erkannt</span>
+    </div>
+    <div class="ampel-sheet-pair">
+      <span class="ampel-supp-name" id="ampelGelbSuppName">—</span>
+      <span class="ampel-pair-divider">&amp;</span>
+      <span class="ampel-med-name" id="ampelGelbMedGruppe">—</span>
+    </div>
+    <div class="ampel-sheet-desc" id="ampelGelbWirkung">—</div>
+    <div class="ampel-sheet-abstand" id="ampelGelbAbstand">—</div>
+    <div class="ampel-sheet-arzt">Bitte sprich mit deinem Arzt oder Apotheker.</div>
+    <div class="ampel-sheet-actions">
+      <button class="ampel-btn-einplanen gelb" onclick="ampelGelbEinplanen()">Trotzdem einplanen</button>
+      <button class="ampel-btn-secondary" onclick="closeBottomSheet('ampelGelbSheet')">Schliessen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ampel Rot Sheet (Kritische Wechselwirkung) -->
+<div class="overlay" id="ampelRotOverlay" onclick="closeBottomSheet('ampelRotSheet')"></div>
+<div class="bottom-sheet ampel-sheet ampel-rot-sheet" id="ampelRotSheet">
+  <div class="sheet-header">
+    <h2>Warnung</h2>
+    <button class="sheet-close" onclick="closeBottomSheet('ampelRotSheet')">✕</button>
+  </div>
+  <div class="sheet-content">
+    <div class="ampel-sheet-icon ampel-rot-icon">
+      <span style="font-size:36px;">&#128308;</span>
+      <span style="font-size:15px;font-weight:700;color:#dc2626;">WARNUNG: Kritische Wechselwirkung</span>
+    </div>
+    <div class="ampel-sheet-pair">
+      <span class="ampel-supp-name" id="ampelRotSuppName">—</span>
+      <span class="ampel-pair-divider">&amp;</span>
+      <span class="ampel-med-name" id="ampelRotMedGruppe">—</span>
+    </div>
+    <div class="ampel-sheet-desc" id="ampelRotWirkung">—</div>
+    <div class="ampel-sheet-abstand" id="ampelRotAbstand">—</div>
+    <div class="ampel-sheet-disclaimer-box">
+      <p class="ampel-disclaimer-text" id="ampelRotDisclaimerText">—</p>
+    </div>
+    <label class="ampel-disclaimer-checkbox">
+      <input type="checkbox" id="ampelRotCheckbox" onchange="document.getElementById('ampelRotConfirmBtn').disabled = !this.checked">
+      <span>Ich habe die Information zur Kenntnis genommen und werde Ruecksprache mit meinem Arzt oder Apotheker halten.</span>
+    </label>
+    <div class="ampel-sheet-actions">
+      <button class="ampel-btn-einplanen rot" id="ampelRotConfirmBtn" onclick="ampelRotEinplanen()" disabled>Verstanden — trotzdem einplanen</button>
+      <button class="ampel-btn-secondary" onclick="ampelNichtEinplanen()">Nicht einplanen</button>
+    </div>
   </div>
 </div>
 
@@ -40858,7 +41389,7 @@ input.input-error,
     <div class="mein-header-clean">
       <div class="mein-greeting">
         <span class="greeting-small" id="meinGreetingTime">Guten Tag,</span>
-        <h1 class="greeting-name">Flo! 👋</h1>
+        <h1 class="greeting-name" id="meinGreetingName">👋</h1>
       </div>
       <div class="mein-today-info">
         <span class="today-date" id="meinTodayDate">Donnerstag, 9. Januar</span>
@@ -41368,6 +41899,13 @@ input.input-error,
         </button>
         <button class="logout-btn" id="logoutBtn" onclick="confirmLogout()" style="display: none;">
           <span>🚪</span> Abmelden
+        </button>
+      </div>
+
+      <!-- Partner-Bereich Button (nur für Seller sichtbar) -->
+      <div id="partnerSwitchBtn" style="display:none;padding:0 16px 8px">
+        <button onclick="localStorage.removeItem('suppTreePartnerType');localStorage.setItem('suppTreeAppMode','production');window.location.href='../partner/index.html?mode=production'" style="width:100%;padding:14px 20px;background:linear-gradient(135deg,#1a5a3a,#00A67E);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+          <span>🏪</span> Zum Partner-Bereich
         </button>
       </div>
 
@@ -42783,6 +43321,22 @@ input.input-error,
         <div class="avatar-edit-badge">📷</div>
       </div>
       <div class="profile-name-section">
+        <div style="display:flex;gap:8px;margin-bottom:6px">
+          <select id="profileAnrede" class="profile-name-input" style="flex:1;padding:8px 10px;font-size:14px;border-radius:8px;border:1px solid #e5e7eb;background:#fff">
+            <option value="">Anrede</option>
+            <option value="Herr">Herr</option>
+            <option value="Frau">Frau</option>
+            <option value="Divers">Divers</option>
+            <option value="Keine Angabe">Keine Angabe</option>
+          </select>
+          <select id="profileTitel" class="profile-name-input" style="flex:1;padding:8px 10px;font-size:14px;border-radius:8px;border:1px solid #e5e7eb;background:#fff">
+            <option value="">Titel (optional)</option>
+            <option value="Dr.">Dr.</option>
+            <option value="Prof.">Prof.</option>
+            <option value="Prof. Dr.">Prof. Dr.</option>
+            <option value="HP">HP</option>
+          </select>
+        </div>
         <input type="text" id="profileFirstName" class="profile-name-input" placeholder="Vorname" value="">
         <input type="text" id="profileLastName" class="profile-name-input" placeholder="Nachname" value="">
       </div>
@@ -45885,9 +46439,37 @@ body.sheet-open {
     
     <!-- Register Form -->
     <div id="registerForm" style="display: none;">
-      <div class="auth-form-group">
-        <label>Name <span class="required-star">*</span></label>
-        <input type="text" id="registerName" placeholder="Dein Name" autocomplete="name" oninput="this.classList.remove('input-error')">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div class="auth-form-group" style="flex:1;margin-bottom:0">
+          <label>Anrede <span class="required-star">*</span></label>
+          <select id="registerAnrede" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;background:#fff;font-family:inherit" oninput="this.classList.remove('input-error')">
+            <option value="">Bitte wählen</option>
+            <option value="Herr">Herr</option>
+            <option value="Frau">Frau</option>
+            <option value="Divers">Divers</option>
+            <option value="Keine Angabe">Keine Angabe</option>
+          </select>
+        </div>
+        <div class="auth-form-group" style="flex:1;margin-bottom:0">
+          <label>Titel</label>
+          <select id="registerTitel" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;background:#fff;font-family:inherit">
+            <option value="">Kein Titel</option>
+            <option value="Dr.">Dr.</option>
+            <option value="Prof.">Prof.</option>
+            <option value="Prof. Dr.">Prof. Dr.</option>
+            <option value="HP">HP</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:0">
+        <div class="auth-form-group" style="flex:1">
+          <label>Vorname <span class="required-star">*</span></label>
+          <input type="text" id="registerFirstName" placeholder="Vorname" autocomplete="given-name" oninput="this.classList.remove('input-error')">
+        </div>
+        <div class="auth-form-group" style="flex:1">
+          <label>Nachname <span class="required-star">*</span></label>
+          <input type="text" id="registerLastName" placeholder="Nachname" autocomplete="family-name" oninput="this.classList.remove('input-error')">
+        </div>
       </div>
       <div class="auth-form-group">
         <label>E-Mail <span class="required-star">*</span></label>
@@ -45939,25 +46521,22 @@ body.sheet-open {
   </div>
 </div>
 
-<!-- JavaScript -->
+<!-- JavaScript: SDK zuerst, dann config, dann app -->
+<script src="../shared/supabase-sdk.min.js"></script>
+<script src="../shared/config.js"></script>
 <script src="app.js"></script>
 <script>
-  // Supabase SDK nachladen (blockiert App nicht wenn CDN down)
-  var s = document.createElement('script');
-  s.src = '../shared/supabase-sdk.min.js';
-  s.onload = function() {
-    try { initSupabase(); console.log('✅ Supabase SDK geladen'); } catch(e) {}
-  };
-  document.head.appendChild(s);
+  // Supabase initialisieren (SDK ist jetzt synchron geladen)
+  try { initSupabase(); console.log('✅ Supabase SDK geladen'); } catch(e) { console.warn('Supabase init:', e); }
 
-  // Stripe.js laden
+  // Stripe.js laden (nicht kritisch - asynchron OK)
   var stripeScript = document.createElement('script');
   stripeScript.src = 'https://js.stripe.com/v3/';
   stripeScript.onload = function() { console.log('✅ Stripe SDK geladen'); };
   document.head.appendChild(stripeScript);
 
   // PayPal SDK laden
-  if (SUPPTREE_CONFIG && SUPPTREE_CONFIG.PAYPAL_CLIENT_ID && !SUPPTREE_CONFIG.PAYPAL_CLIENT_ID.includes('HIER')) {
+  if (typeof SUPPTREE_CONFIG !== 'undefined' && SUPPTREE_CONFIG.PAYPAL_CLIENT_ID && !SUPPTREE_CONFIG.PAYPAL_CLIENT_ID.includes('HIER')) {
     var ppScript = document.createElement('script');
     ppScript.src = 'https://www.paypal.com/sdk/js?client-id=' + SUPPTREE_CONFIG.PAYPAL_CLIENT_ID + '&currency=EUR&intent=capture';
     ppScript.onload = function() { console.log('✅ PayPal SDK geladen'); };

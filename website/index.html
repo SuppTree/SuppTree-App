@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SuppTree — Der Supplement-Marktplatz für Gesundheitspartner & Hersteller</title>
-<meta name="description" content="SuppTree verbindet Gesundheitspartner mit Supplement-Herstellern. Provisionen pro Verkauf, 0 Euro monatliche Kosten. Jetzt vorab registrieren!">
-<meta property="og:title" content="SuppTree — Supplement-Marktplatz">
-<meta property="og:description" content="Verdiene Provisionen als Gesundheitspartner. 0 Euro monatlich. Jetzt vorab registrieren.">
-<meta property="og:type" content="website">
+<title>SuppTree — Verdiene an Supplement-Empfehlungen</title>
+<meta name="description" content="SuppTree bringt Gesundheitsexperten, Hersteller und Kunden zusammen. Verdiene Provisionen pro Verkauf — kostenlos.">
 <link rel="icon" href="../www/assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -23,7 +23,6 @@
   --text-body:#374151;
   --text-muted:#6b7280;
   --border:#e5e7eb;
-  --shadow-sm:0 1px 3px rgba(0,0,0,0.05);
   --shadow:0 4px 16px rgba(0,0,0,0.06);
   --shadow-lg:0 12px 40px rgba(0,0,0,0.1);
   --r:8px;
@@ -32,1131 +31,1048 @@
 html{scroll-behavior:smooth}
 body{
   font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  color:var(--text-body);
-  background:var(--cream);
-  line-height:1.65;
-  -webkit-font-smoothing:antialiased;
+  color:var(--text-body);background:var(--cream);
+  line-height:1.65;-webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
 h1,h2,h3,h4{color:var(--text-dark);line-height:1.2}
 
-/* ========== NAVBAR ========== */
-.navbar{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(0,0,0,0.06);
-  height:68px;
-  display:flex;align-items:center;justify-content:center;
+/* ========== RETURN BANNER ========== */
+.return-banner{
+  display:none;position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:12px 20px;text-align:center;
+  background:linear-gradient(135deg,var(--green-dark),var(--green-accent));
+  color:white;font-size:14px;font-weight:600;
+  animation:slideDown 0.4s ease;
 }
-.navbar-inner{
-  max-width:1200px;width:100%;padding:0 32px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.navbar-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.navbar-logo{width:38px;height:38px;border-radius:10px}
-.navbar-name{font-size:22px;font-weight:800;color:var(--green-dark);letter-spacing:-0.5px}
-.navbar-links{display:flex;align-items:center;gap:32px}
-.navbar-link{
-  text-decoration:none;color:var(--text-muted);
-  font-size:14px;font-weight:500;
-  transition:color 0.2s;
-}
-.navbar-link:hover{color:var(--text-dark)}
-.navbar-cta{
-  background:var(--green-accent);color:white;
-  padding:10px 24px;border-radius:var(--r);
-  font-size:14px;font-weight:600;
-  text-decoration:none;
-  transition:all 0.2s;
-  box-shadow:0 2px 8px rgba(0,167,126,0.25);
-}
-.navbar-cta:hover{background:var(--green-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,167,126,0.3)}
+.return-banner a{color:white;text-decoration:underline;margin-left:8px}
+.rb-close{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:white;font-size:20px;cursor:pointer;opacity:0.7}
+.rb-close:hover{opacity:1}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
 
-/* ========== HERO ========== */
-.hero{
-  padding:160px 32px 100px;
-  background:linear-gradient(165deg,#0d3320 0%,#1a5a3a 25%,#2E7D32 50%,#43A047 75%,#6abf69 100%);
-  text-align:center;color:white;
-  position:relative;overflow:hidden;
+/* ========== FUNNEL STEPS ========== */
+.funnel-step{
+  display:none;
+  min-height:100vh;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:24px 20px;
+  position:relative;
 }
-.hero::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,255,255,0.08),transparent);
+.funnel-step.active{display:flex;animation:fadeIn 0.4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes staggerIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ctaGlow{0%,100%{box-shadow:0 4px 20px rgba(0,0,0,0.15)}50%{box-shadow:0 4px 30px rgba(74,222,128,0.35)}}
+@keyframes floatSoft{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes drawCheck{from{stroke-dashoffset:50}to{stroke-dashoffset:0}}
+@keyframes confettiFall{0%{transform:translateY(-10vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+.stagger-item{opacity:0;animation:staggerIn 0.45s ease forwards}
+.stagger-item:nth-child(1){animation-delay:0.04s}
+.stagger-item:nth-child(2){animation-delay:0.08s}
+.stagger-item:nth-child(3){animation-delay:0.12s}
+.stagger-item:nth-child(4){animation-delay:0.16s}
+.stagger-item:nth-child(5){animation-delay:0.2s}
+.stagger-item:nth-child(6){animation-delay:0.24s}
+.stagger-item:nth-child(7){animation-delay:0.28s}
+.stagger-item:nth-child(8){animation-delay:0.32s}
+.stagger-item:nth-child(9){animation-delay:0.36s}
+
+.step-inner{
+  max-width:560px;width:100%;
+  text-align:center;
+}
+
+/* ========== PROGRESS BAR ========== */
+.progress-bar{
+  position:fixed;top:0;left:0;right:0;z-index:90;
+  display:flex;align-items:center;justify-content:center;
+  gap:8px;padding:14px 20px;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.progress-bar.hidden{display:none}
+.progress-center{
+  display:flex;align-items:center;gap:12px;
+}
+.progress-dots{display:flex;gap:6px;align-items:center}
+.progress-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--border);transition:all 0.3s;
+}
+.progress-dot.active{background:var(--green-accent);transform:scale(1.3);box-shadow:0 0 8px rgba(0,166,126,0.3)}
+.progress-dot.done{background:var(--green-accent)}
+.progress-label{
+  font-size:12px;font-weight:600;color:var(--text-muted);
+  white-space:nowrap;
+}
+.progress-line-wrap{
+  width:80px;height:3px;border-radius:2px;
+  background:var(--border);overflow:hidden;
+}
+.progress-line-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--green-accent),#34d399);
+  transition:width 0.4s ease;
+}
+.progress-back{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  background:none;border:none;font-size:13px;font-weight:600;
+  color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:4px;
+  font-family:inherit;padding:4px 8px;border-radius:6px;
+  transition:all 0.2s;
+}
+.progress-back:hover{color:var(--green-accent);background:var(--green-light)}
+
+/* ========== STEP 1: HERO ========== */
+.hero-step{
+  background:linear-gradient(165deg,#0d3320 0%,#1a5a3a 30%,#2E7D32 60%,#1a5a3a 100%);
+  background-size:200% 200%;
+  animation:gradientShift 12s ease infinite;
+  color:white;padding-top:40px;
+  overflow:hidden;position:relative;
+}
+.hero-step::before{
+  content:'';position:absolute;top:-50%;right:-30%;
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(74,222,128,0.08) 0%,transparent 70%);
   pointer-events:none;
 }
-.hero::after{
-  content:'';position:absolute;bottom:-1px;left:0;right:0;height:120px;
-  background:linear-gradient(to bottom,transparent,var(--cream));
+.hero-step::after{
+  content:'';position:absolute;bottom:-40%;left:-20%;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(34,211,238,0.06) 0%,transparent 70%);
+  pointer-events:none;
 }
-.hero-content{position:relative;z-index:1;max-width:780px;margin:0 auto}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,0.12);
-  backdrop-filter:blur(8px);
-  padding:8px 20px;border-radius:999px;
-  font-size:13px;font-weight:600;
-  margin-bottom:28px;
-  border:1px solid rgba(255,255,255,0.18);
+.hero-step h1{
+  font-size:clamp(28px,5vw,44px);font-weight:900;
+  line-height:1.1;margin-bottom:16px;color:white;
 }
-.hero-badge-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-.hero h1{
-  font-size:clamp(32px,5.5vw,58px);
-  font-weight:800;
-  line-height:1.1;
-  margin-bottom:20px;
-  letter-spacing:-1px;
-  color:white;
-}
-.hero h1 span{
-  background:linear-gradient(135deg,#86efac,#4ade80);
+.hero-step h1 span{
+  background:linear-gradient(135deg,#4ade80,#22d3ee);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;
 }
-.hero-sub{
-  font-size:clamp(17px,2.5vw,20px);
-  opacity:0.88;
-  max-width:600px;margin:0 auto 40px;
-  line-height:1.6;
-  font-weight:400;
-}
-.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.btn-hero-primary{
+.hero-badge{
   display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
+  border-radius:99px;padding:6px 16px;
+  font-size:13px;font-weight:600;margin-bottom:24px;
+}
+.hero-badge-dot{
+  width:8px;height:8px;border-radius:50%;background:#4ade80;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.hero-logo{
+  max-width:260px;height:auto;margin-bottom:24px;
+  padding:14px 20px;border-radius:var(--r-lg);
+  background:rgba(255,255,255,0.92);
+}
+.hero-sub{font-size:16px;opacity:0.85;max-width:480px;margin:0 auto 32px;line-height:1.6}
+.hero-features{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  max-width:460px;margin:0 auto 32px;text-align:left;
+}
+.hero-feature{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.13);
+  border-radius:12px;padding:12px 14px;
+  transition:all 0.2s;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.hero-feature:hover{background:rgba(255,255,255,0.14);transform:translateY(-1px)}
+.hero-feature-icon{font-size:22px;line-height:1;min-width:28px;text-align:center}
+.hero-feature-text{font-size:13px;font-weight:600;line-height:1.3}
+
+.btn-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:16px 36px;
   background:white;color:var(--green-dark);
-  padding:16px 32px;border-radius:var(--r);
-  font-size:16px;font-weight:700;
-  text-decoration:none;
-  transition:all 0.25s;
-  box-shadow:0 4px 24px rgba(0,0,0,0.15);
+  border:none;border-radius:var(--r-lg);
+  font-size:17px;font-weight:700;font-family:inherit;
+  cursor:pointer;transition:all 0.2s;
+  animation:ctaGlow 3s ease infinite;
+  position:relative;
 }
-.btn-hero-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.2)}
-.btn-hero-secondary{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,0.12);color:white;
-  padding:16px 32px;border-radius:var(--r);
-  font-size:16px;font-weight:600;
-  text-decoration:none;
-  border:1px solid rgba(255,255,255,0.25);
-  transition:all 0.25s;
-  backdrop-filter:blur(4px);
-}
-.btn-hero-secondary:hover{background:rgba(255,255,255,0.2);transform:translateY(-1px)}
-.hero-metrics{
-  display:flex;justify-content:center;gap:48px;
-  margin-top:56px;position:relative;z-index:1;
-}
-.hero-metric{text-align:center}
-.hero-metric-val{font-size:clamp(24px,3.5vw,36px);font-weight:800;color:white}
-.hero-metric-label{font-size:13px;opacity:0.75;margin-top:4px;font-weight:500}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(74,222,128,0.4)}
 
-/* ========== SECTIONS ========== */
-.section{padding:100px 32px}
-.section-inner{max-width:1200px;margin:0 auto}
-.section-label{
-  display:inline-block;
-  font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--green-accent);margin-bottom:12px;
+.hero-trust{
+  display:flex;justify-content:center;gap:20px;flex-wrap:wrap;
+  margin-top:28px;
 }
-.section-title{
-  font-size:clamp(28px,4vw,42px);
-  font-weight:800;
-  margin-bottom:16px;
-  letter-spacing:-0.5px;
+.hero-trust span{
+  font-size:13px;font-weight:600;opacity:0.75;
+  display:flex;align-items:center;gap:5px;
 }
-.section-title.center{text-align:center}
-.section-sub{
-  font-size:17px;color:var(--text-muted);
-  max-width:640px;line-height:1.7;
+.hero-counter{
+  margin-top:32px;
+  font-size:14px;font-weight:600;opacity:0.7;
+  display:flex;align-items:center;justify-content:center;gap:6px;
 }
-.section-sub.center{text-align:center;margin:0 auto 56px}
-.section-alt{background:var(--white)}
 
-/* ========== TRUST BAR ========== */
-.trust-bar{
-  padding:56px 32px;
-  background:var(--white);
-  border-bottom:1px solid var(--border);
+/* ========== STEP 2: MOTIVATION ========== */
+#step2{
+  background:linear-gradient(180deg,#f0fdf4 0%,var(--cream) 60%);
+  padding-top:80px;
 }
-.trust-inner{
-  max-width:1200px;margin:0 auto;
-  display:flex;align-items:center;justify-content:center;gap:56px;
-  flex-wrap:wrap;
+.motiv-header{margin-bottom:24px;text-align:center}
+.motiv-eyebrow{
+  display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--green-accent);margin-bottom:10px;
+  background:var(--green-light);padding:4px 12px;border-radius:99px;
 }
-.trust-item{
+.motiv-header h2{font-size:clamp(22px,4vw,30px);font-weight:900;margin-bottom:10px}
+.motiv-header p{font-size:15px;color:var(--text-muted);max-width:440px;margin:0 auto}
+.motiv-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  margin-bottom:24px;
+  background:white;border-radius:var(--r-lg);padding:16px 12px;
+  box-shadow:var(--shadow);border:1px solid var(--border);
+}
+.motiv-stat{text-align:center;padding:6px 4px}
+.motiv-stat-num{font-size:22px;font-weight:900;color:var(--green-dark);line-height:1}
+.motiv-stat-label{font-size:10px;color:var(--text-muted);font-weight:600;margin-top:4px;line-height:1.3}
+.motiv-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-bottom:8px;text-align:left;
+}
+.motiv-card{
+  background:white;border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:16px 14px;
+  transition:all 0.2s;
+}
+.motiv-card:hover{border-color:var(--green-accent);box-shadow:0 4px 16px rgba(0,166,126,0.1);transform:translateY(-2px)}
+.motiv-card-icon{font-size:24px;margin-bottom:6px;line-height:1}
+.motiv-card-title{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:4px}
+.motiv-card-desc{font-size:12px;color:var(--text-muted);line-height:1.5}
+.motiv-highlight{
+  background:linear-gradient(135deg,var(--green-dark),var(--green-accent));
+  color:white;border-radius:var(--r-lg);padding:20px 20px;
+  margin-bottom:24px;text-align:left;
+  display:flex;gap:16px;align-items:flex-start;
+}
+.motiv-highlight-icon{font-size:32px;line-height:1;min-width:36px}
+.motiv-highlight-text{font-size:14px;font-weight:600;line-height:1.6;opacity:0.95}
+.motiv-highlight-title{font-size:16px;font-weight:800;margin-bottom:4px}
+
+/* ========== STEP 3: TYPE SELECTION ========== */
+#step3{
+  background:radial-gradient(ellipse at 50% 30%,rgba(232,245,233,0.7) 0%,var(--cream) 60%);
+}
+.type-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  margin:24px 0;text-align:left;
+}
+.type-card{
+  background:var(--white);border:2px solid var(--border);
+  border-radius:var(--r-lg);padding:20px 18px;
+  cursor:pointer;transition:all 0.25s;
+  display:flex;align-items:center;gap:14px;
+}
+.type-card:hover{
+  border-color:var(--green-accent);transform:translateY(-3px);
+  box-shadow:0 8px 24px rgba(0,166,126,0.12);
+}
+.type-card-icon{
+  width:48px;height:48px;min-width:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;line-height:1;
+  background:linear-gradient(135deg,var(--green-light),#dcfce7);
+}
+.type-card-title{font-size:14px;font-weight:700;color:var(--text-dark)}
+.type-card-desc{font-size:11px;color:var(--text-muted);margin-top:2px;line-height:1.4}
+.type-divider{
   display:flex;align-items:center;gap:12px;
-  font-size:15px;font-weight:600;color:var(--text-body);
+  margin:20px 0;color:var(--text-muted);font-size:13px;font-weight:600;
 }
-.trust-icon{
-  width:44px;height:44px;border-radius:12px;
+.type-divider::before,.type-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.type-alt-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+}
+.type-alt-btn{
+  background:var(--white);border:2px solid var(--border);
+  border-radius:var(--r-lg);padding:16px 10px;
+  cursor:pointer;transition:all 0.25s;text-align:center;
+  font-family:inherit;
+}
+.type-alt-btn:hover{border-color:var(--green-accent);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,166,126,0.1)}
+.type-alt-icon{
+  width:40px;height:40px;border-radius:12px;margin:0 auto 6px;
   display:flex;align-items:center;justify-content:center;
   font-size:20px;
+  background:linear-gradient(135deg,#f0f9ff,#e0f2fe);
 }
-.trust-icon.g{background:linear-gradient(135deg,#dcfce7,#bbf7d0)}
-.trust-icon.b{background:linear-gradient(135deg,#dbeafe,#bfdbfe)}
-.trust-icon.o{background:linear-gradient(135deg,#ffedd5,#fed7aa)}
-.trust-icon.p{background:linear-gradient(135deg,#ede9fe,#ddd6fe)}
+.type-alt-label{font-size:12px;font-weight:700;color:var(--text-dark)}
 
-/* ========== FEATURES GRID ========== */
-.features-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:24px;
+/* ========== STEP 4: TYPE BENEFITS ========== */
+#step4{
+  background:radial-gradient(ellipse at 50% 60%,rgba(232,245,233,0.5) 0%,var(--cream) 55%);
 }
-.feature-card{
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:var(--r-lg);
-  padding:36px 28px;
-  transition:all 0.3s;
-  position:relative;
-  overflow:hidden;
+.benefits-card{
+  background:var(--white);border-radius:20px;padding:36px 28px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.06);
+  border:1px solid rgba(0,0,0,0.04);
 }
-.feature-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;
-  height:3px;background:var(--green-accent);
-  transform:scaleX(0);transition:transform 0.3s;
-  transform-origin:left;
-}
-.feature-card:hover{
-  transform:translateY(-4px);
-  box-shadow:var(--shadow-lg);
-  border-color:transparent;
-}
-.feature-card:hover::before{transform:scaleX(1)}
-.feature-icon{
-  width:56px;height:56px;
-  border-radius:14px;
+.benefits-icon{
+  width:80px;height:80px;border-radius:22px;
   display:flex;align-items:center;justify-content:center;
-  font-size:26px;
-  margin-bottom:20px;
+  font-size:40px;margin:0 auto 16px;
+  background:linear-gradient(135deg,var(--green-light),#bbf7d0);
+  animation:floatSoft 4s ease infinite;
 }
-.fi-green{background:linear-gradient(135deg,#dcfce7,#bbf7d0)}
-.fi-blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe)}
-.fi-orange{background:linear-gradient(135deg,#ffedd5,#fed7aa)}
-.fi-purple{background:linear-gradient(135deg,#ede9fe,#ddd6fe)}
-.fi-pink{background:linear-gradient(135deg,#fce7f3,#fbcfe8)}
-.fi-teal{background:linear-gradient(135deg,#ccfbf1,#99f6e4)}
-.feature-card h3{font-size:18px;font-weight:700;margin-bottom:8px}
-.feature-card p{font-size:14px;color:var(--text-muted);line-height:1.65}
-
-/* ========== PARTNER TYPES ========== */
-.partner-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:20px;
-}
-.partner-type-card{
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:var(--r-lg);
-  padding:28px 24px;
-  transition:all 0.3s;
-  cursor:default;
+.benefits-list{
+  text-align:left;margin:24px 0;
   display:flex;flex-direction:column;gap:12px;
 }
-.partner-type-card:hover{
-  transform:translateY(-3px);
-  box-shadow:var(--shadow-lg);
-  border-color:var(--green-accent);
+.benefit-item{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:15px;color:var(--text-dark);font-weight:500;
 }
-.ptc-header{display:flex;align-items:center;gap:14px}
-.ptc-icon{
-  width:48px;height:48px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:24px;flex-shrink:0;
-}
-.ptc-title{font-size:16px;font-weight:700}
-.ptc-desc{font-size:13px;color:var(--text-muted);line-height:1.6}
-.ptc-features{
-  display:flex;flex-wrap:wrap;gap:6px;
-  margin-top:auto;padding-top:8px;
-}
-.ptc-chip{
-  display:inline-block;
-  padding:4px 10px;border-radius:999px;
-  font-size:11px;font-weight:600;
-  background:var(--green-light);color:var(--green-dark);
-}
-
-/* ========== PITCHDECK SECTION ========== */
-.deck-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:20px;
-}
-.deck-grid.wide{grid-template-columns:repeat(4,1fr)}
-.deck-card{
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:var(--r-lg);
-  padding:32px 28px;
-  text-align:center;
-  transition:all 0.3s;
-}
-.deck-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:transparent}
-.deck-icon{
-  width:64px;height:64px;border-radius:16px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:30px;margin:0 auto 16px;
-}
-.deck-card h3{font-size:17px;font-weight:700;margin-bottom:6px}
-.deck-card p{font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
-.deck-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:10px 20px;border-radius:var(--r);
-  font-size:13px;font-weight:600;
-  text-decoration:none;
-  transition:all 0.2s;
-  border:2px solid var(--border);
-  color:var(--text-dark);
-  background:var(--white);
-  cursor:pointer;font-family:inherit;
-}
-.deck-btn:hover{border-color:var(--green-accent);color:var(--green-accent);background:var(--green-light)}
-.deck-btn svg{width:14px;height:14px}
-
-/* ========== TWO-COL LAYOUT ========== */
-.two-col{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:64px;
-  align-items:center;
-}
-.info-block .section-label{margin-bottom:10px}
-.info-block h3{font-size:clamp(24px,3vw,32px);font-weight:800;margin-bottom:12px;letter-spacing:-0.3px}
-.info-block .desc{font-size:16px;color:var(--text-muted);margin-bottom:28px;line-height:1.7}
-.benefit-list{list-style:none;display:flex;flex-direction:column;gap:14px}
-.benefit-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;font-weight:500}
 .benefit-check{
-  width:24px;height:24px;min-width:24px;
-  border-radius:50%;
-  background:var(--green-light);
+  width:24px;height:24px;min-width:24px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green-accent),#34d399);color:white;
   display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:var(--green-primary);
-  margin-top:2px;
+  font-size:12px;font-weight:700;margin-top:1px;
+  box-shadow:0 2px 6px rgba(0,166,126,0.2);
 }
-.info-visual{
-  background:linear-gradient(145deg,var(--green-light),#fff);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:48px 32px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:380px;text-align:center;
-  position:relative;overflow:hidden;
+.steps-mini{
+  display:flex;gap:16px;margin:24px 0;text-align:left;
 }
-.info-visual::before{
-  content:'';position:absolute;top:-30%;right:-30%;
-  width:250px;height:250px;border-radius:50%;
-  background:radial-gradient(circle,rgba(0,166,126,0.08),transparent);
-}
-.iv-icon{font-size:72px;margin-bottom:20px;position:relative}
-.iv-title{font-size:20px;font-weight:700;margin-bottom:8px;position:relative}
-.iv-sub{font-size:14px;color:var(--text-muted);max-width:280px;position:relative}
-.iv-badge{
-  display:inline-block;
-  background:var(--green-accent);color:white;
-  padding:6px 14px;border-radius:999px;
-  font-size:12px;font-weight:700;
-  margin-top:16px;position:relative;
-}
-
-/* ========== STEPS ========== */
-.steps{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:32px;
-  position:relative;
-}
-.steps::before{
-  content:'';position:absolute;
-  top:48px;left:17%;right:17%;
-  height:2px;
-  background:linear-gradient(90deg,var(--green-light),var(--green-accent),var(--green-light));
-}
-.step{text-align:center;position:relative;z-index:1}
-.step-num{
-  width:96px;height:96px;
-  border-radius:50%;
-  background:linear-gradient(145deg,var(--green-dark),var(--green-accent));
+.step-mini{flex:1;display:flex;align-items:flex-start;gap:10px}
+.step-mini-num{
+  width:32px;height:32px;min-width:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green-accent),var(--green-primary));
   color:white;
-  font-size:36px;font-weight:800;
   display:flex;align-items:center;justify-content:center;
-  margin:0 auto 24px;
-  box-shadow:0 8px 24px rgba(0,167,126,0.25);
+  font-size:13px;font-weight:800;
+  box-shadow:0 2px 6px rgba(0,166,126,0.2);
 }
-.step h3{font-size:18px;font-weight:700;margin-bottom:8px}
-.step p{font-size:14px;color:var(--text-muted);max-width:260px;margin:0 auto;line-height:1.6}
-
-/* ========== REGISTRATION ========== */
-.register-section{
-  background:linear-gradient(165deg,#0d3320 0%,#1a5a3a 50%,#2E7D32 100%);
-  padding:100px 32px;
-  position:relative;
+.step-mini-text{font-size:13px;font-weight:600;color:var(--text-dark)}
+.step-mini-desc{font-size:11px;color:var(--text-muted);margin-top:1px}
+.deck-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 20px;border-radius:var(--r);
+  background:var(--green-light);color:var(--green-dark);
+  font-size:13px;font-weight:700;text-decoration:none;
+  transition:all 0.2s;border:1px solid rgba(0,166,126,0.15);
 }
-.register-section::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 60% 40% at 30% 100%,rgba(0,166,126,0.15),transparent);
-}
-.register-wrapper{
-  max-width:1200px;margin:0 auto;
-  display:grid;grid-template-columns:1fr 1fr;gap:64px;
-  align-items:center;position:relative;z-index:1;
-}
-.register-info{color:white}
-.register-info h2{font-size:clamp(28px,4vw,40px);font-weight:800;margin-bottom:16px;color:white;letter-spacing:-0.5px}
-.register-info p{font-size:17px;opacity:0.85;line-height:1.7;margin-bottom:28px}
-.register-perks{list-style:none;display:flex;flex-direction:column;gap:14px}
-.register-perks li{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;color:rgba(255,255,255,0.9)}
-.register-perks li span{
-  width:28px;height:28px;border-radius:50%;
-  background:rgba(255,255,255,0.12);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;flex-shrink:0;
-}
-
-.register-card{
-  background:var(--white);
-  border-radius:20px;
-  padding:40px 36px;
-  box-shadow:0 24px 64px rgba(0,0,0,0.2);
-}
-.register-card h3{font-size:22px;font-weight:800;text-align:center;margin-bottom:4px}
-.register-card .reg-sub{text-align:center;color:var(--text-muted);font-size:14px;margin-bottom:24px}
-.form-group{margin-bottom:16px}
-.form-label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text-dark)}
-.form-input{
-  width:100%;padding:14px 16px;
-  border:2px solid var(--border);border-radius:var(--r);
-  font-size:15px;font-family:inherit;outline:none;
-  transition:border-color 0.2s,box-shadow 0.2s;
-  background:var(--cream);
-}
-.form-input:focus{border-color:var(--green-accent);box-shadow:0 0 0 3px rgba(0,166,126,0.1);background:white}
-
-/* Type Toggle */
-.type-toggle{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:0;
-  background:var(--cream);border-radius:var(--r);padding:4px;
-}
-.type-btn{
-  padding:12px 8px;text-align:center;border-radius:6px;
-  font-size:13px;font-weight:600;cursor:pointer;
-  transition:all 0.2s;color:var(--text-muted);
-  border:none;background:none;font-family:inherit;
-}
-.type-btn.active{background:var(--white);color:var(--green-dark);box-shadow:0 2px 6px rgba(0,0,0,0.08)}
-.type-btn:hover:not(.active){color:var(--text-dark)}
-
-/* Subtype */
-.subtype-group{
-  max-height:0;overflow:hidden;
-  transition:max-height 0.3s ease,opacity 0.3s;opacity:0;
-}
-.subtype-group.show{max-height:120px;opacity:1;margin-bottom:16px}
-.form-select{
-  width:100%;padding:14px 16px;
-  border:2px solid var(--border);border-radius:var(--r);
-  font-size:15px;font-family:inherit;outline:none;
-  background:var(--cream);cursor:pointer;
-  transition:border-color 0.2s;
-  -webkit-appearance:none;appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 16px center;
-}
-.form-select:focus{border-color:var(--green-accent)}
-
-.submit-btn{
-  width:100%;padding:16px;
+.deck-btn:hover{background:#dcfce7;transform:translateY(-1px)}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 32px;
   background:linear-gradient(135deg,var(--green-accent),var(--green-primary));
   color:white;border:none;border-radius:var(--r);
   font-size:16px;font-weight:700;font-family:inherit;
-  cursor:pointer;transition:all 0.2s;
-  box-shadow:0 4px 16px rgba(0,167,126,0.3);
+  cursor:pointer;transition:all 0.2s;width:100%;justify-content:center;
 }
-.submit-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,167,126,0.4)}
-.submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,167,126,0.3)}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none}
 
+/* ========== STEP 5: REGISTRATION ========== */
+#step5{
+  background:radial-gradient(ellipse at 50% 40%,rgba(232,245,233,0.6) 0%,var(--cream) 55%);
+}
+.reg-card{
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-radius:20px;
+  padding:36px 28px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.08);
+  border:1px solid rgba(255,255,255,0.8);
+  text-align:left;
+}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-dark)}
+.form-input,.form-select{
+  width:100%;padding:12px 14px;
+  border:2px solid var(--border);border-radius:var(--r);
+  font-size:14px;font-family:inherit;outline:none;
+  transition:all 0.25s;
+  background:rgba(255,255,255,0.7);
+}
+.form-input:focus,.form-select:focus{
+  border-color:var(--green-accent);
+  box-shadow:0 0 0 3px rgba(0,166,126,0.1);
+  background:white;
+}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
 .form-msg{
-  text-align:center;padding:12px;border-radius:var(--r);
-  font-size:14px;font-weight:600;margin-top:16px;display:none;
+  margin-top:12px;padding:10px;border-radius:var(--r);
+  font-size:13px;font-weight:600;display:none;text-align:center;
 }
-.form-msg.success{display:block;background:#dcfce7;color:#166534}
 .form-msg.error{display:block;background:#fef2f2;color:#991b1b}
+.reg-trust{
+  display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
+  margin-top:20px;
+}
+.reg-trust span{
+  font-size:12px;color:var(--text-body);font-weight:600;
+  padding:8px 14px;border-radius:99px;
+  background:var(--white);border:1px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,0.04);
+}
+.btn-primary .spinner{
+  display:none;width:18px;height:18px;
+  border:2px solid rgba(255,255,255,0.3);
+  border-top-color:white;border-radius:50%;
+  animation:spin 0.6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-primary.loading .spinner{display:inline-block}
+.btn-primary.loading .btn-text{display:none}
 
-.register-success{text-align:center;padding:32px 0}
-.register-success .check-circle{
-  width:80px;height:80px;border-radius:50%;
-  background:linear-gradient(135deg,var(--green-light),#bbf7d0);
-  display:flex;align-items:center;justify-content:center;
-  font-size:40px;margin:0 auto 20px;
+/* ========== STEP 6: CONFIRMATION ========== */
+#step6{
+  background:linear-gradient(165deg,#0d3320 0%,#1a5a3a 40%,#2E7D32 100%);
+  color:white;overflow:hidden;
 }
-.register-success h3{font-size:22px;font-weight:700;margin-bottom:8px}
-.register-success p{font-size:15px;color:var(--text-muted)}
-
-/* ========== FOOTER ========== */
-.footer{
-  background:#111827;
-  color:rgba(255,255,255,0.6);
-  padding:64px 32px 40px;
+#step6 h2,#step6 p{color:white}
+#step6 .btn-primary{background:white;color:var(--green-dark)}
+#step6 .btn-primary:hover{box-shadow:0 8px 24px rgba(255,255,255,0.2)}
+.confirm-check{
+  width:90px;height:90px;margin:0 auto 24px;
 }
-.footer-inner{
-  max-width:1200px;margin:0 auto;
-  display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;
+.confirm-check svg{width:100%;height:100%}
+.confirm-check circle{
+  fill:none;stroke:rgba(255,255,255,0.15);stroke-width:3;
 }
-.footer-brand-block{display:flex;flex-direction:column;gap:12px}
-.footer-brand{display:flex;align-items:center;gap:10px}
-.footer-logo{width:32px;height:32px;border-radius:8px}
-.footer-name{font-size:18px;font-weight:800;color:white}
-.footer-desc{font-size:13px;line-height:1.6;max-width:300px}
-.footer-col h4{font-size:13px;font-weight:700;color:white;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
-.footer-col a{display:block;color:rgba(255,255,255,0.6);text-decoration:none;font-size:14px;margin-bottom:10px;transition:color 0.2s}
-.footer-col a:hover{color:var(--green-accent)}
-.footer-bottom{
-  max-width:1200px;margin:40px auto 0;padding-top:24px;
-  border-top:1px solid rgba(255,255,255,0.08);
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:12px;
+.confirm-check .check-bg{
+  fill:none;stroke:var(--green-accent);stroke-width:3;
+  stroke-dasharray:283;stroke-dashoffset:283;
+  animation:drawCircle 0.8s ease 0.2s forwards;
 }
+.confirm-check .check-mark{
+  fill:none;stroke:white;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:50;stroke-dashoffset:50;
+  animation:drawCheck 0.4s ease 0.8s forwards;
+}
+@keyframes drawCircle{to{stroke-dashoffset:0}}
+.confirm-type-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 16px;border-radius:99px;
+  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.15);
+  font-size:13px;font-weight:600;margin-bottom:16px;
+}
+.confetti-piece{
+  position:fixed;width:10px;height:10px;
+  border-radius:2px;top:-10px;
+  animation:confettiFall linear forwards;
+  pointer-events:none;z-index:200;
+}
+@keyframes scaleIn{from{transform:scale(0)}to{transform:scale(1)}}
 
 /* ========== RESPONSIVE ========== */
-@media(max-width:1024px){
-  .features-grid,.partner-grid,.deck-grid,.deck-grid.wide{grid-template-columns:repeat(2,1fr)}
-  .two-col,.register-wrapper{grid-template-columns:1fr;gap:40px}
-  .register-info{text-align:center}
-  .register-perks{align-items:center}
-  .footer-inner{grid-template-columns:1fr 1fr}
+@media(max-width:600px){
+  .hero-features{gap:8px}
+  .hero-feature{padding:10px 12px}
+  .hero-feature-icon{font-size:18px;min-width:24px}
+  .hero-feature-text{font-size:12px}
+  .type-grid{gap:10px}
+  .type-card{padding:14px;gap:10px}
+  .type-card-icon{width:40px;height:40px;min-width:40px;border-radius:10px;font-size:20px}
+  .type-card-desc{display:none}
+  .steps-mini{flex-direction:column;gap:12px}
+  .form-row{flex-direction:column;gap:0}
+  .hero-trust{gap:12px}
+  .type-alt-grid{grid-template-columns:1fr 1fr 1fr}
+  .progress-label{display:none}
+  .progress-line-wrap{width:50px}
+  .reg-card{padding:24px 20px}
+  .benefits-card{padding:24px 20px}
+  .motiv-stats{grid-template-columns:repeat(2,1fr)}
+  .motiv-grid{grid-template-columns:1fr}
 }
-@media(max-width:768px){
-  .features-grid,.steps,.partner-grid,.deck-grid,.deck-grid.wide{grid-template-columns:1fr;gap:16px}
-  .hero{padding:130px 20px 70px}
-  .hero-metrics{gap:28px;flex-wrap:wrap}
-  .section{padding:64px 20px}
-  .register-section{padding:64px 20px}
-  .register-card{padding:28px 20px}
-  .steps::before{display:none}
-  .navbar-links{display:none}
-  .navbar-inner{padding:0 20px}
-  .trust-inner{gap:28px}
-  .trust-item{font-size:13px}
-  .trust-icon{width:36px;height:36px;font-size:16px}
-  .two-col.reverse .info-visual{order:-1}
-  .footer-inner{grid-template-columns:1fr}
-  .footer-bottom{flex-direction:column;gap:8px;text-align:center}
-  .type-toggle{grid-template-columns:1fr;gap:4px}
-}
-
-/* ========== RETURN BANNER ========== */
-.return-banner{
-  display:none;
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  background:linear-gradient(135deg,var(--green-dark),var(--green-primary));
-  color:white;
-  padding:12px 32px;
-  text-align:center;
-  font-size:14px;font-weight:600;
-  box-shadow:0 2px 12px rgba(0,0,0,0.15);
-  animation:slideDown 0.4s ease;
-}
-@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
-.return-banner a{
-  color:white;text-decoration:underline;
-  font-weight:700;margin-left:8px;
-}
-.return-banner a:hover{opacity:0.85}
-.return-banner .rb-close{
-  position:absolute;right:16px;top:50%;transform:translateY(-50%);
-  background:none;border:none;color:white;font-size:18px;
-  cursor:pointer;opacity:0.7;padding:4px 8px;
-}
-.return-banner .rb-close:hover{opacity:1}
-body.has-banner .navbar{top:44px}
-body.has-banner .hero{padding-top:204px}
-
-/* ========== ANIMATIONS ========== */
-.anim{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
-.anim.vis{opacity:1;transform:translateY(0)}
-.anim-d1{transition-delay:0.12s}
-.anim-d2{transition-delay:0.24s}
-.anim-d3{transition-delay:0.36s}
 </style>
 </head>
 <body>
 
-<!-- ===== RETURN BANNER (für bereits registrierte) ===== -->
+<!-- Return Banner -->
 <div class="return-banner" id="returnBanner">
-  Willkommen zurück! Du bist bereits registriert.
+  Willkommen zur&uuml;ck! Du bist bereits registriert.
   <a href="status.html">Zum Insider-Bereich &#8594;</a>
   <button class="rb-close" onclick="closeReturnBanner()">&times;</button>
 </div>
 
-<!-- ===== NAVBAR ===== -->
-<nav class="navbar">
-  <div class="navbar-inner">
-    <a href="#" class="navbar-brand">
-      <img src="../www/assets/icon.png" alt="SuppTree" class="navbar-logo">
-      <span class="navbar-name">SuppTree</span>
-    </a>
-    <div class="navbar-links">
-      <a href="#partner" class="navbar-link">Partner</a>
-      <a href="#hersteller" class="navbar-link">Hersteller</a>
-      <a href="#pitchdecks" class="navbar-link">Pitchdecks</a>
-      <a href="status.html" class="navbar-link" id="navInsider" style="display:none">Insider-Bereich</a>
-      <a href="#registrieren" class="navbar-cta">Jetzt registrieren</a>
+<!-- Progress Bar -->
+<div class="progress-bar hidden" id="progressBar">
+  <button class="progress-back" id="backBtn" onclick="goBack()">&#8592; Zur&uuml;ck</button>
+  <div class="progress-center">
+    <div class="progress-dots">
+      <div class="progress-dot active" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+      <div class="progress-dot" id="dot4"></div>
     </div>
-  </div>
-</nav>
-
-<!-- ===== HERO ===== -->
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="hero-badge-dot"></span>
-      Bald verfügbar — Vorab-Registrierung geöffnet
+    <div class="progress-line-wrap">
+      <div class="progress-line-fill" id="progressFill" style="width:25%"></div>
     </div>
-    <h1>Der Marktplatz der <span>Supplements</span> und <span>Gesundheit</span> verbindet</h1>
-    <p class="hero-sub">SuppTree bringt Gesundheitsexperten, Hersteller und Kunden auf einer Plattform zusammen. Verdiene Provisionen pro Verkauf — komplett kostenlos.</p>
-    <div class="hero-buttons">
-      <a href="#registrieren" class="btn-hero-primary">Kostenlos vorab registrieren &#8594;</a>
-      <a href="#pitchdecks" class="btn-hero-secondary">&#9655; Pitchdeck ansehen</a>
-    </div>
-    <div class="hero-metrics">
-      <div class="hero-metric">
-        <div class="hero-metric-val">0 &#8364;</div>
-        <div class="hero-metric-label">Monatliche Kosten</div>
-      </div>
-      <div class="hero-metric">
-        <div class="hero-metric-val">bis 20 %</div>
-        <div class="hero-metric-label">Provision pro Verkauf</div>
-      </div>
-      <div class="hero-metric">
-        <div class="hero-metric-val">210 Tage</div>
-        <div class="hero-metric-label">Provisions-Laufzeit</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== TRUST BAR ===== -->
-<div class="trust-bar">
-  <div class="trust-inner">
-    <div class="trust-item"><div class="trust-icon g">&#x1F512;</div> Sichere Zahlungen</div>
-    <div class="trust-item"><div class="trust-icon b">&#x1F4CB;</div> Automatische Rechnungen</div>
-    <div class="trust-item"><div class="trust-icon o">&#x1F4F1;</div> Eigene Partner-App</div>
-    <div class="trust-item"><div class="trust-icon p">&#x1F680;</div> Made in Germany</div>
+    <span class="progress-label" id="progressLabel">Schritt 1 von 4</span>
   </div>
 </div>
 
-<!-- ===== WAS IST SUPPTREE ===== -->
-<section class="section">
-  <div class="section-inner">
-    <div style="text-align:center">
-      <span class="section-label anim">Plattform</span>
-      <h2 class="section-title center anim">Alles was du brauchst — an einem Ort</h2>
-      <p class="section-sub center anim">SuppTree ist mehr als ein Marktplatz. Es ist das Ökosystem, das Gesundheitsexperten und Supplement-Hersteller zusammenbringt.</p>
+<!-- ===== STEP 1: HERO ===== -->
+<div class="funnel-step hero-step active" id="step1">
+  <div class="step-inner">
+    <img src="assets/logo.png" alt="SuppTree" class="hero-logo">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Bald verf&uuml;gbar
     </div>
-    <div class="features-grid">
-      <div class="feature-card anim">
-        <div class="feature-icon fi-green">&#x1F4CA;</div>
-        <h3>Echtzeit-Dashboard</h3>
-        <p>Behalte Umsätze, Provisionen und Kunden-Aktivitäten jederzeit im Blick — live und transparent.</p>
+    <h1>Der Marktplatz der <span>Supplements</span> und <span>Gesundheit</span> verbindet</h1>
+    <p class="hero-sub">Viele Supplement-Marken, ein einzigartiger Kalender und smarte Tools &mdash; auf einer Plattform, komplett kostenlos.</p>
+    <div class="hero-features">
+      <div class="hero-feature">
+        <span class="hero-feature-icon">&#x1F48A;</span>
+        <span class="hero-feature-text">Viele Supplement-Marken auf einem Marktplatz</span>
       </div>
-      <div class="feature-card anim anim-d1">
-        <div class="feature-icon fi-blue">&#x1F4F1;</div>
-        <h3>Partner-App</h3>
-        <p>Deine eigene App für Kunden-Management, Services, Terminbuchungen und Empfehlungen.</p>
+      <div class="hero-feature">
+        <span class="hero-feature-icon">&#x1F4C5;</span>
+        <span class="hero-feature-text">Einzigartiger Kalender f&uuml;r Kundenbindung</span>
       </div>
-      <div class="feature-card anim anim-d2">
-        <div class="feature-icon fi-orange">&#x1F3AF;</div>
-        <h3>QR-Code &amp; Link</h3>
-        <p>Zwei Empfehlungswege: QR-Code in der Praxis (10%) oder persönlicher Link digital (7%).</p>
+      <div class="hero-feature">
+        <span class="hero-feature-icon">&#x1FA7A;</span>
+        <span class="hero-feature-text">Empfehlungen durch echte Experten</span>
       </div>
-      <div class="feature-card anim">
-        <div class="feature-icon fi-purple">&#x1F9EA;</div>
-        <h3>Bluttest-Integration</h3>
-        <p>Bluttests anbieten, Ergebnisse eingeben und passende Supplements auf Basis der Werte empfehlen.</p>
+      <div class="hero-feature">
+        <span class="hero-feature-icon">&#x1F91D;</span>
+        <span class="hero-feature-text">Vertrauen schaffen &mdash; transparent &amp; ehrlich</span>
       </div>
-      <div class="feature-card anim anim-d1">
-        <div class="feature-icon fi-teal">&#x1F957;</div>
-        <h3>Ernährungs- &amp; Trainingspläne</h3>
-        <p>Erstelle individuelle Pläne für deine Kunden — inklusive Rezepte und Supplement-Protokolle.</p>
+      <div class="hero-feature">
+        <span class="hero-feature-icon">&#x1F4B0;</span>
+        <span class="hero-feature-text">0&thinsp;&#8364; monatliche Kosten &mdash; f&uuml;r alle</span>
       </div>
-      <div class="feature-card anim anim-d2">
-        <div class="feature-icon fi-pink">&#x1F4B3;</div>
-        <h3>Automatische Abrechnung</h3>
-        <p>Stripe &amp; PayPal integriert. Rechnungen werden automatisch via Lexoffice erstellt.</p>
+      <div class="hero-feature">
+        <span class="hero-feature-icon">&#x26A1;</span>
+        <span class="hero-feature-text">Alles auf einer Plattform &mdash; sofort startklar</span>
+      </div>
+    </div>
+    <button class="btn-cta" onclick="goStep(2)">Kostenlos Platz sichern &#8594;</button>
+    <div class="hero-trust">
+      <span>&#x2713; Kein Abo</span>
+      <span>&#x2713; Unverbindlich</span>
+      <span>&#x2713; Keine Kreditkarte</span>
+    </div>
+    <div class="hero-counter" id="heroCounter" style="display:none">
+      &#x1F512; Bereits <strong id="heroCount">0</strong> Partner dabei
+    </div>
+  </div>
+</div>
+
+<!-- ===== STEP 2: MOTIVATION ===== -->
+<div class="funnel-step" id="step2">
+  <div class="step-inner" style="max-width:620px">
+
+    <div class="motiv-header stagger-item">
+      <div class="motiv-eyebrow">Dein Vorteil</div>
+      <h2>Warum Tausende Experten auf SuppTree warten</h2>
+      <p>Verdiene passiv mit dem, was du sowieso tust &mdash; Empfehlungen. Komplett kostenlos, ohne Risiko.</p>
+    </div>
+
+    <div class="motiv-highlight stagger-item">
+      <div class="motiv-highlight-icon">&#x1F4A1;</div>
+      <div>
+        <div class="motiv-highlight-title">Das Konzept in einem Satz</div>
+        <div class="motiv-highlight-text">Du empfiehlst Supplements, die du sowieso empfehlen w&uuml;rdest &mdash; und bekommst automatisch Provision, wenn dein Kunde kauft.</div>
+      </div>
+    </div>
+
+    <div class="motiv-stats stagger-item">
+      <div class="motiv-stat">
+        <div class="motiv-stat-num">0&thinsp;&#8364;</div>
+        <div class="motiv-stat-label">Monatliche Kosten</div>
+      </div>
+      <div class="motiv-stat">
+        <div class="motiv-stat-num">10&thinsp;%</div>
+        <div class="motiv-stat-label">Provision per QR</div>
+      </div>
+      <div class="motiv-stat">
+        <div class="motiv-stat-num">210</div>
+        <div class="motiv-stat-label">Tage Laufzeit</div>
+      </div>
+      <div class="motiv-stat">
+        <div class="motiv-stat-num">&#x221E;</div>
+        <div class="motiv-stat-label">Marken zur Wahl</div>
+      </div>
+    </div>
+
+    <div class="motiv-grid">
+      <div class="motiv-card stagger-item">
+        <div class="motiv-card-icon">&#x1F4B0;</div>
+        <div class="motiv-card-title">Provision ohne Extraarbeit</div>
+        <div class="motiv-card-desc">Empfehle was du sowieso empfiehlst &mdash; und verdiene automatisch bei jedem Kauf deiner Kunden. Kein Aufwand.</div>
+      </div>
+      <div class="motiv-card stagger-item">
+        <div class="motiv-card-icon">&#x1F4F1;</div>
+        <div class="motiv-card-title">Eigene Partner-App</div>
+        <div class="motiv-card-desc">Ab Go-Live hast du eine professionelle App &mdash; mit deinen Kunden, deinen Stats und deinem Branding.</div>
+      </div>
+      <div class="motiv-card stagger-item">
+        <div class="motiv-card-icon">&#x1F517;</div>
+        <div class="motiv-card-title">QR + Link = doppelte Reichweite</div>
+        <div class="motiv-card-desc">Kunden vor Ort per QR-Code verbinden und online per Link erreichen &mdash; du verdienst auf beiden Kan&auml;len.</div>
+      </div>
+      <div class="motiv-card stagger-item">
+        <div class="motiv-card-icon">&#x1F4CA;</div>
+        <div class="motiv-card-title">Echtzeit-Dashboard</div>
+        <div class="motiv-card-desc">Jeden Klick, jeden Kauf, jede Provision siehst du sofort in deinem pers&ouml;nlichen Dashboard. Volle Transparenz.</div>
+      </div>
+      <div class="motiv-card stagger-item">
+        <div class="motiv-card-icon">&#x1F3EA;</div>
+        <div class="motiv-card-title">Marktplatz &mdash; freie Markenwahl</div>
+        <div class="motiv-card-desc">Nicht an eine Marke gebunden. W&auml;hle frei aus dem gesamten SuppTree-Marktplatz die besten Produkte f&uuml;r deine Kunden.</div>
+      </div>
+      <div class="motiv-card stagger-item">
+        <div class="motiv-card-icon">&#x1F381;</div>
+        <div class="motiv-card-title">Kein Abo &mdash; kein Risiko</div>
+        <div class="motiv-card-desc">0&thinsp;&#8364; monatlich, kein Vertrag, keine Mindestlaufzeit. Du zahlst nichts &mdash; und bekommst alles sofort.</div>
+      </div>
+    </div>
+
+    <div class="stagger-item" style="margin-top:28px">
+      <button class="btn-primary" onclick="goStep(3)">Jetzt Platz sichern &mdash; Typ ausw&auml;hlen &#8594;</button>
+      <p style="margin-top:12px;font-size:13px;color:var(--text-muted);text-align:center">Unverbindlich &middot; Kostenlos &middot; In 60 Sekunden registriert</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== STEP 3: TYPE SELECTION ===== -->
+<div class="funnel-step" id="step3">
+  <div class="step-inner">
+    <h2 style="font-size:24px;font-weight:800;margin-bottom:8px">Was beschreibt dich am besten?</h2>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:4px">W&auml;hle deinen Bereich &mdash; wir zeigen dir, was SuppTree f&uuml;r dich bereith&auml;lt.</p>
+
+    <div class="type-grid" id="typeGrid">
+      <div class="type-card stagger-item" onclick="selectType('partner','heilpraktiker')">
+        <div class="type-card-icon">&#x1FA7A;</div>
+        <div>
+          <div class="type-card-title">Heilpraktiker/in</div>
+          <div class="type-card-desc">Naturheilkunde, Therapien, Bluttests</div>
+        </div>
+      </div>
+      <div class="type-card stagger-item" onclick="selectType('partner','ernaehrung')">
+        <div class="type-card-icon">&#x1F957;</div>
+        <div>
+          <div class="type-card-title">Ern&auml;hrungsexpert/in</div>
+          <div class="type-card-desc">Ern&auml;hrungspl&auml;ne, Rezepte, Beratung</div>
+        </div>
+      </div>
+      <div class="type-card stagger-item" onclick="selectType('partner','trainer')">
+        <div class="type-card-icon">&#x1F3CB;&#xFE0F;</div>
+        <div>
+          <div class="type-card-title">Trainer/in &amp; Coach</div>
+          <div class="type-card-desc">Trainingspl&auml;ne, Coaching, Termine</div>
+        </div>
+      </div>
+      <div class="type-card stagger-item" onclick="selectType('partner','beauty')">
+        <div class="type-card-icon">&#x2728;</div>
+        <div>
+          <div class="type-card-title">Beauty &amp; Wellness</div>
+          <div class="type-card-desc">Kosmetik, Massage, Wellness</div>
+        </div>
+      </div>
+      <div class="type-card stagger-item" onclick="selectType('partner','hebamme')">
+        <div class="type-card-icon">&#x1F476;</div>
+        <div>
+          <div class="type-card-title">Hebamme &amp; Stillberater/in</div>
+          <div class="type-card-desc">Schwangerschaft, Stillzeit, Beratung</div>
+        </div>
+      </div>
+      <div class="type-card stagger-item" onclick="selectType('partner','creator')">
+        <div class="type-card-icon">&#x1F3AC;</div>
+        <div>
+          <div class="type-card-title">Creator</div>
+          <div class="type-card-desc">Social Media, Link-Empfehlungen</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="type-divider">oder</div>
+
+    <div class="type-alt-grid">
+      <div class="type-alt-btn" onclick="selectType('hersteller','hersteller')">
+        <div class="type-alt-icon">&#x1F3ED;</div>
+        <div class="type-alt-label">Hersteller</div>
+      </div>
+      <div class="type-alt-btn" onclick="selectType('unternehmen','bgm')">
+        <div class="type-alt-icon">&#x1F3E2;</div>
+        <div class="type-alt-label">BGM</div>
+      </div>
+      <div class="type-alt-btn" onclick="selectType('unternehmen','unternehmen')">
+        <div class="type-alt-icon">&#x1F3EA;</div>
+        <div class="type-alt-label">Studio / Verein</div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- ===== PARTNER TYPES ===== -->
-<section class="section section-alt" id="partner">
-  <div class="section-inner">
-    <div style="text-align:center">
-      <span class="section-label anim">Partner werden</span>
-      <h2 class="section-title center anim">Für alle Gesundheitsexperten</h2>
-      <p class="section-sub center anim">Egal ob du in einer Praxis arbeitest, ein Studio betreibst oder online berätst — SuppTree passt sich deinem Bereich an.</p>
-    </div>
-    <div class="partner-grid">
-      <div class="partner-type-card anim">
-        <div class="ptc-header">
-          <div class="ptc-icon fi-blue">&#x1FA7A;</div>
-          <div class="ptc-title">Heilpraktiker/in</div>
-        </div>
-        <div class="ptc-desc">Naturheilkunde, Therapien, Bluttests — empfehle Supplements basierend auf individuellen Laborwerten.</div>
-        <div class="ptc-features">
-          <span class="ptc-chip">Bluttests</span>
-          <span class="ptc-chip">Services</span>
-          <span class="ptc-chip">Ernährungspläne</span>
-        </div>
-      </div>
-      <div class="partner-type-card anim anim-d1">
-        <div class="ptc-header">
-          <div class="ptc-icon fi-green">&#x1F957;</div>
-          <div class="ptc-title">Ernährungsexpert/in</div>
-        </div>
-        <div class="ptc-desc">Ernährungspläne erstellen, Rezepte teilen und passende Supplements für deine Kunden empfehlen.</div>
-        <div class="ptc-features">
-          <span class="ptc-chip">Ernährungspläne</span>
-          <span class="ptc-chip">Rezepte</span>
-          <span class="ptc-chip">Beratung</span>
-        </div>
-      </div>
-      <div class="partner-type-card anim anim-d2">
-        <div class="ptc-header">
-          <div class="ptc-icon fi-orange">&#x1F4AA;</div>
-          <div class="ptc-title">Trainer/in &amp; Coach</div>
-        </div>
-        <div class="ptc-desc">Trainingspläne, Fitness-Coaching und Supplement-Empfehlungen für optimale Ergebnisse.</div>
-        <div class="ptc-features">
-          <span class="ptc-chip">Trainingspläne</span>
-          <span class="ptc-chip">Coaching</span>
-          <span class="ptc-chip">Termine</span>
-        </div>
-      </div>
-      <div class="partner-type-card anim">
-        <div class="ptc-header">
-          <div class="ptc-icon fi-pink">&#x2728;</div>
-          <div class="ptc-title">Beauty &amp; Wellness</div>
-        </div>
-        <div class="ptc-desc">Kosmetik, Massage, Wellness — ergänze dein Angebot mit hochwertigen Nahrungsergänzungsmitteln.</div>
-        <div class="ptc-features">
-          <span class="ptc-chip">Services</span>
-          <span class="ptc-chip">Termine</span>
-          <span class="ptc-chip">Empfehlungen</span>
-        </div>
-      </div>
-      <div class="partner-type-card anim anim-d1">
-        <div class="ptc-header">
-          <div class="ptc-icon" style="background:linear-gradient(135deg,#FFF8E1,#FFE082)">&#x1F476;</div>
-          <div class="ptc-title">Hebamme &amp; Stillberater/in</div>
-        </div>
-        <div class="ptc-desc">Begleite Schwangere und junge Mütter mit passenden Supplements für jede Phase.</div>
-        <div class="ptc-features">
-          <span class="ptc-chip">Beratung</span>
-          <span class="ptc-chip">Bluttests</span>
-          <span class="ptc-chip">Termine</span>
-        </div>
-      </div>
-      <div class="partner-type-card anim anim-d2">
-        <div class="ptc-header">
-          <div class="ptc-icon fi-purple">&#x1F3AC;</div>
-          <div class="ptc-title">Creator</div>
-        </div>
-        <div class="ptc-desc">Nutze deine Reichweite auf Social Media und empfehle Produkte über deinen persönlichen Link.</div>
-        <div class="ptc-features">
-          <span class="ptc-chip">Link-Empfehlungen</span>
-          <span class="ptc-chip">Social Media</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Unternehmen -->
-    <div style="text-align:center;margin-top:64px">
-      <span class="section-label anim">Unternehmen &amp; Einrichtungen</span>
-      <p class="section-sub center anim" style="margin-bottom:32px">Auch für Teams, Studios und Einrichtungen — SuppTree skaliert mit dir.</p>
-    </div>
-    <div class="partner-grid" style="max-width:900px;margin:0 auto;grid-template-columns:repeat(2,1fr)">
-      <div class="partner-type-card anim">
-        <div class="ptc-header">
-          <div class="ptc-icon fi-blue">&#x1F3CB;&#xFE0F;</div>
-          <div class="ptc-title">BGM</div>
-        </div>
-        <div class="ptc-desc">Betriebliches Gesundheitsmanagement — Supplements und Gesundheitsprogramme für deine Mitarbeiter.</div>
-        <div class="ptc-features">
-          <span class="ptc-chip">Firmenprogramme</span>
-          <span class="ptc-chip">Team-Verwaltung</span>
-        </div>
-      </div>
-      <div class="partner-type-card anim anim-d1">
-        <div class="ptc-header">
-          <div class="ptc-icon fi-purple">&#x1F3E2;</div>
-          <div class="ptc-title">Unternehmen</div>
-        </div>
-        <div class="ptc-desc">Fitnessstudios, Salons, Sportvereine, Rehazentren — biete deinen Mitgliedern kuratierte Supplements an.</div>
-        <div class="ptc-features">
-          <span class="ptc-chip">Mitglieder</span>
-          <span class="ptc-chip">Empfehlungen</span>
-        </div>
-      </div>
-    </div>
+<!-- ===== STEP 4: BENEFITS (dynamic content) ===== -->
+<div class="funnel-step" id="step4">
+  <div class="step-inner" id="step4Content">
+    <!-- Filled by JS -->
   </div>
-</section>
+</div>
 
-<!-- ===== FÜR HERSTELLER ===== -->
-<section class="section" id="hersteller">
-  <div class="section-inner">
-    <div class="two-col">
-      <div class="info-block anim">
-        <span class="section-label">Für Hersteller</span>
-        <h3>Dein neuer Vertriebskanal — ohne eigenen Außendienst</h3>
-        <p class="desc">Liste deine Produkte auf SuppTree und lasse sie von tausenden Gesundheitsexperten empfehlen. Du versendest direkt an den Endkunden — wir kümmern uns um den Rest.</p>
-        <ul class="benefit-list">
-          <li><span class="benefit-check">&#x2713;</span> Direktversand an Endkunden (Dropshipping-Modell)</li>
-          <li><span class="benefit-check">&#x2713;</span> Tausende Gesundheitspartner als Vertriebsnetzwerk</li>
-          <li><span class="benefit-check">&#x2713;</span> Kein eigener Außendienst oder Marketingbudget nötig</li>
-          <li><span class="benefit-check">&#x2713;</span> Eigenes Markenprofil mit vollständigem Produktkatalog</li>
-          <li><span class="benefit-check">&#x2713;</span> Transparentes Dashboard mit Echtzeit-Statistiken</li>
-          <li><span class="benefit-check">&#x2713;</span> Automatische Zahlungsabwicklung &amp; Rechnungsstellung</li>
-        </ul>
-      </div>
-      <div class="info-visual anim anim-d1">
-        <div class="iv-icon">&#x1F4E6;</div>
-        <div class="iv-title">Du produzierst &amp; versendest — wir verkaufen</div>
-        <div class="iv-sub">Kunden bestellen über SuppTree, du versendest direkt. Kein Zwischenlager, kein Umweg.</div>
-        <div class="iv-badge">Dropshipping-Modell</div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- ===== STEP 5: REGISTRATION ===== -->
+<div class="funnel-step" id="step5">
+  <div class="step-inner">
+    <h2 style="font-size:24px;font-weight:800;margin-bottom:4px">Fast geschafft!</h2>
+    <p id="regSubtitle" style="color:var(--text-muted);font-size:14px;margin-bottom:20px">Sichere dir jetzt deinen Platz &mdash; kostenlos und unverbindlich.</p>
 
-<!-- ===== SO FUNKTIONIERT'S ===== -->
-<section class="section section-alt">
-  <div class="section-inner">
-    <div style="text-align:center">
-      <span class="section-label anim">Prozess</span>
-      <h2 class="section-title center anim">In drei Schritten starten</h2>
-      <p class="section-sub center anim">Ob Partner oder Hersteller — der Einstieg ist einfach und kostenlos.</p>
-    </div>
-    <div class="steps">
-      <div class="step anim">
-        <div class="step-num">1</div>
-        <h3>Registrieren</h3>
-        <p>Erstelle dein kostenloses Profil und wähle deine Spezialisierung.</p>
-      </div>
-      <div class="step anim anim-d1">
-        <div class="step-num">2</div>
-        <h3>Verbinden</h3>
-        <p>Partner entdecken Produkte. Hersteller erreichen qualifizierte Experten.</p>
-      </div>
-      <div class="step anim anim-d2">
-        <div class="step-num">3</div>
-        <h3>Verdienen</h3>
-        <p>Bei jedem Kauf über eine Empfehlung fließt automatisch die Provision.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== PITCHDECKS ===== -->
-<section class="section" id="pitchdecks">
-  <div class="section-inner">
-    <div style="text-align:center">
-      <span class="section-label anim">Informationen</span>
-      <h2 class="section-title center anim">Pitchdecks zum Download</h2>
-      <p class="section-sub center anim">Erfahre mehr über SuppTree — zugeschnitten auf deine Perspektive.</p>
-    </div>
-    <div class="deck-grid wide">
-      <div class="deck-card anim">
-        <div class="deck-icon fi-blue">&#x1FA7A;</div>
-        <h3>Heilpraktiker/in</h3>
-        <p>Bluttests, Therapien, Supplement-Empfehlungen auf Basis individueller Laborwerte.</p>
-        <a href="decks/pitchdeck-heilpraktiker.pdf" class="deck-btn" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          PDF herunterladen
-        </a>
-      </div>
-      <div class="deck-card anim anim-d1">
-        <div class="deck-icon fi-green">&#x1F957;</div>
-        <h3>Ernährungsexpert/in</h3>
-        <p>Ernährungspläne, Rezepte und passende Supplements für deine Kunden.</p>
-        <a href="decks/pitchdeck-ernaehrung.pdf" class="deck-btn" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          PDF herunterladen
-        </a>
-      </div>
-      <div class="deck-card anim anim-d2">
-        <div class="deck-icon fi-orange">&#x1F4AA;</div>
-        <h3>Trainer/in &amp; Coach</h3>
-        <p>Trainingspläne, Fitness-Coaching und Supplement-Empfehlungen.</p>
-        <a href="decks/pitchdeck-trainer.pdf" class="deck-btn" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          PDF herunterladen
-        </a>
-      </div>
-      <div class="deck-card anim anim-d3">
-        <div class="deck-icon fi-pink">&#x2728;</div>
-        <h3>Beauty &amp; Wellness</h3>
-        <p>Kosmetik, Massage und hochwertige Nahrungsergänzung kombiniert.</p>
-        <a href="decks/pitchdeck-beauty.pdf" class="deck-btn" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          PDF herunterladen
-        </a>
-      </div>
-      <div class="deck-card anim">
-        <div class="deck-icon" style="background:linear-gradient(135deg,#FFF8E1,#FFE082)">&#x1F476;</div>
-        <h3>Hebamme &amp; Stillberater/in</h3>
-        <p>Supplements für Schwangere und junge Mütter in jeder Phase.</p>
-        <a href="decks/pitchdeck-hebamme.pdf" class="deck-btn" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          PDF herunterladen
-        </a>
-      </div>
-      <div class="deck-card anim anim-d1">
-        <div class="deck-icon fi-purple">&#x1F3AC;</div>
-        <h3>Creator</h3>
-        <p>Nutze deine Reichweite und empfehle Supplements über deinen Link.</p>
-        <a href="decks/pitchdeck-creator.pdf" class="deck-btn" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          PDF herunterladen
-        </a>
-      </div>
-      <div class="deck-card anim anim-d2">
-        <div class="deck-icon fi-blue">&#x1F3CB;&#xFE0F;</div>
-        <h3>BGM</h3>
-        <p>Betriebliches Gesundheitsmanagement mit Supplements für dein Team.</p>
-        <a href="decks/pitchdeck-bgm.pdf" class="deck-btn" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          PDF herunterladen
-        </a>
-      </div>
-      <div class="deck-card anim anim-d3">
-        <div class="deck-icon fi-teal">&#x1F3E2;</div>
-        <h3>Unternehmen</h3>
-        <p>Studios, Salons, Vereine — Supplements für deine Mitglieder.</p>
-        <a href="decks/pitchdeck-unternehmen.pdf" class="deck-btn" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          PDF herunterladen
-        </a>
-      </div>
-    </div>
-    <!-- Hersteller Pitchdeck separat -->
-    <div style="max-width:420px;margin:24px auto 0">
-      <div class="deck-card anim" style="border:2px solid var(--green-accent);background:linear-gradient(145deg,var(--green-light),#fff)">
-        <div class="deck-icon" style="background:linear-gradient(135deg,var(--green-accent),var(--green-primary))">
-          <span style="font-size:28px;filter:none">&#x1F4E6;</span>
-        </div>
-        <h3>Für Hersteller</h3>
-        <p>Dropshipping-Modell, Partner-Netzwerk und wie SuppTree deinen Vertrieb übernimmt.</p>
-        <a href="decks/pitchdeck-hersteller.pdf" class="deck-btn" download style="border-color:var(--green-accent);color:var(--green-dark)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          PDF herunterladen
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== REGISTRIERUNG ===== -->
-<section class="register-section" id="registrieren">
-  <div class="register-wrapper">
-    <div class="register-info anim">
-      <h2>Sei von Anfang an dabei</h2>
-      <p>Registriere dich jetzt vorab und sichere dir deinen Platz. Wir informieren dich, sobald SuppTree live geht — du bist dann sofort startklar.</p>
-      <ul class="register-perks">
-        <li><span>&#x2713;</span> Früher Zugang vor dem offiziellen Start</li>
-        <li><span>&#x2713;</span> Persönliches Onboarding &amp; Support</li>
-        <li><span>&#x2713;</span> Kostenlos und unverbindlich</li>
-        <li><span>&#x2713;</span> Kein Abo, keine versteckten Kosten</li>
-      </ul>
-    </div>
-
-    <div class="register-card anim anim-d1">
-      <div id="regForm">
-        <h3>Vorab registrieren</h3>
-        <p class="reg-sub">Kostenlos und unverbindlich</p>
-
+    <div class="reg-card">
+      <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Name</label>
-          <input type="text" id="regName" class="form-input" placeholder="Dein vollständiger Name">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">E-Mail</label>
-          <input type="email" id="regEmail" class="form-input" placeholder="deine@email.de">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Ich bin...</label>
-          <div class="type-toggle">
-            <button class="type-btn active" onclick="setType('partner',this)">Partner / Experte</button>
-            <button class="type-btn" onclick="setType('hersteller',this)">Hersteller</button>
-            <button class="type-btn" onclick="setType('unternehmen',this)">Unternehmen</button>
-          </div>
-        </div>
-
-        <div class="form-group subtype-group show" id="subtypePartner">
-          <label class="form-label">Spezialisierung</label>
-          <select id="regSubtype" class="form-select">
-            <option value="">Bitte wählen...</option>
-            <option value="heilpraktiker">Heilpraktiker/in</option>
-            <option value="ernaehrung">Ernährungsexpert/in</option>
-            <option value="trainer">Trainer/in &amp; Coach</option>
-            <option value="beauty">Beauty &amp; Wellness</option>
-            <option value="hebamme">Hebamme &amp; Stillberater/in</option>
-            <option value="creator">Creator</option>
+          <label class="form-label">Anrede *</label>
+          <select id="regAnrede" class="form-select">
+            <option value="">Bitte w&auml;hlen</option>
+            <option value="Herr">Herr</option>
+            <option value="Frau">Frau</option>
+            <option value="Divers">Divers</option>
+            <option value="Keine Angabe">Keine Angabe</option>
           </select>
         </div>
-
-        <div class="form-group subtype-group" id="subtypeBusiness">
-          <label class="form-label">Art der Einrichtung</label>
-          <select id="regBusinessType" class="form-select">
-            <option value="">Bitte wählen...</option>
-            <option value="bgm">BGM (Betriebliches Gesundheitsmanagement)</option>
-            <option value="unternehmen">Studio / Salon / Verein / Sonstige</option>
+        <div class="form-group">
+          <label class="form-label">Titel <span style="font-weight:400;color:#999">(opt.)</span></label>
+          <select id="regTitel" class="form-select">
+            <option value="">Kein Titel</option>
+            <option value="Dr.">Dr.</option>
+            <option value="Prof.">Prof.</option>
+            <option value="Prof. Dr.">Prof. Dr.</option>
+            <option value="HP">HP</option>
           </select>
         </div>
-
-        <button class="submit-btn" id="regBtn" onclick="submitRegistration()">Jetzt vorab registrieren &#8594;</button>
-
-        <div class="form-msg" id="regMsg"></div>
-
-        <div id="alreadyRegistered" style="display:none;text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-          <span style="font-size:14px;color:var(--text-muted)">Bereits registriert?</span>
-          <a href="status.html" style="font-size:14px;font-weight:600;color:var(--green-accent);text-decoration:none;margin-left:6px">Zum Insider-Bereich &#8594;</a>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Vorname *</label>
+          <input type="text" id="regFirstName" class="form-input" placeholder="Vorname">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nachname *</label>
+          <input type="text" id="regLastName" class="form-input" placeholder="Nachname">
         </div>
       </div>
-
-      <div id="regSuccess" class="register-success" style="display:none">
-        <div class="check-circle">&#x2713;</div>
-        <h3>Willkommen bei SuppTree!</h3>
-        <p>Du bist dabei. Wir melden uns bei dir, sobald es losgeht.</p>
+      <div class="form-group">
+        <label class="form-label">E-Mail *</label>
+        <input type="email" id="regEmail" class="form-input" placeholder="deine@email.de">
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-brand-block">
-      <div class="footer-brand">
-        <img src="../www/assets/icon.png" alt="SuppTree" class="footer-logo">
-        <span class="footer-name">SuppTree</span>
+      <div class="form-group">
+        <label class="form-label">Land</label>
+        <select id="regCountry" class="form-select">
+          <option value="DE">&#x1F1E9;&#x1F1EA; Deutschland</option>
+          <option value="AT">&#x1F1E6;&#x1F1F9; &Ouml;sterreich</option>
+          <option value="CH">&#x1F1E8;&#x1F1ED; Schweiz</option>
+          <option value="NL">&#x1F1F3;&#x1F1F1; Niederlande</option>
+          <option value="LU">&#x1F1F1;&#x1F1FA; Luxemburg</option>
+        </select>
       </div>
-      <p class="footer-desc">Der Supplement-Marktplatz der Gesundheitspartner und Hersteller verbindet — fair, transparent und kostenlos.</p>
+      <button class="btn-primary" id="regBtn" onclick="submitRegistration()"><span class="btn-text">Platz sichern &#8594;</span><span class="spinner"></span></button>
+      <div class="form-msg" id="regMsg"></div>
     </div>
-    <div class="footer-col">
-      <h4>Plattform</h4>
-      <a href="#partner">Für Partner</a>
-      <a href="#hersteller">Für Hersteller</a>
-      <a href="#pitchdecks">Pitchdecks</a>
-      <a href="#registrieren">Registrieren</a>
-    </div>
-    <div class="footer-col">
-      <h4>Kontakt</h4>
-      <a href="mailto:info@supptree.de">info@supptree.de</a>
+    <div class="reg-trust">
+      <span>&#x1F512; Kostenlos</span>
+      <span>&#x2713; Unverbindlich</span>
+      <span>&#x2713; Kein Abo</span>
     </div>
   </div>
-  <div class="footer-bottom">
-    <span>&copy; 2026 SuppTree. Alle Rechte vorbehalten.</span>
-    <span>Made with &#x2764;&#xFE0F; in Germany</span>
+</div>
+
+<!-- ===== STEP 6: CONFIRMATION ===== -->
+<div class="funnel-step" id="step6">
+  <div class="step-inner">
+    <div class="confirm-check">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45"/>
+        <circle class="check-bg" cx="50" cy="50" r="45"/>
+        <polyline class="check-mark" points="30,52 44,66 70,38"/>
+      </svg>
+    </div>
+    <div class="confirm-type-badge" id="confirmBadge" style="display:none"></div>
+    <h2 style="font-size:26px;font-weight:800;margin-bottom:8px">Du bist dabei, <span id="confirmName">!</span></h2>
+    <p style="opacity:0.8;font-size:15px;margin-bottom:24px;line-height:1.6">Im Insider-Bereich kannst du dein Profil schon jetzt vorbereiten &mdash; beim Go-Live bist du sofort startklar.</p>
+    <button class="btn-primary" onclick="window.location.href='status.html'" style="max-width:320px;margin:0 auto">Zum Insider-Bereich &#8594;</button>
+    <p id="confirmCounter" style="margin-top:20px;font-size:14px;font-weight:700;opacity:0.7"></p>
+    <p style="margin-top:12px;font-size:12px;opacity:0.5">Automatische Weiterleitung in <span id="confirmTimer">5</span>s...</p>
   </div>
-</footer>
+</div>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="../shared/config.js"></script>
 <script>
-const SB_URL = SUPPTREE_CONFIG.SUPABASE_URL;
-const SB_KEY = SUPPTREE_CONFIG.SUPABASE_ANON_KEY;
+var SB_URL = SUPPTREE_CONFIG.SUPABASE_URL;
+var SB_KEY = SUPPTREE_CONFIG.SUPABASE_ANON_KEY;
 
-let selectedType = 'partner';
+// ========== STATE ==========
+var funnel = { step: 1, type: '', subtype: '' };
+var waitlistCount = 0;
 
-// ===== TEST-BYPASS: ?test=1 → direkt zur Status-Seite (ENTFERNEN VOR GO-LIVE) =====
-(function testBypass() {
-  const p = new URLSearchParams(window.location.search);
-  if (p.get('test') === '1') {
-    localStorage.setItem('stWaitlistEmail', 'test@supptree.de');
-    localStorage.setItem('stWaitlistName', 'Florian (Test)');
-    localStorage.setItem('stWaitlistType', 'partner');
-    localStorage.setItem('stWaitlistSubtype', 'heilpraktiker');
-    window.location.href = 'status.html';
-    return;
+// ========== TYPE CONTENT ==========
+var TYPE_CONTENT = {
+  heilpraktiker: {
+    icon: '\u{1FA7A}', label: 'Heilpraktiker/in',
+    benefits: [
+      'Bluttests anbieten & Marker-Katalog nutzen',
+      'Supplement-Empfehlungen basierend auf Laborwerten',
+      'Eigene Services & Terminbuchungen',
+      'Automatische Provisionsabrechnung',
+      'Ern\u00e4hrungs- & Trainingspl\u00e4ne erstellen',
+      'Eigene Partner-App f\u00fcr deine Kunden'
+    ],
+    deck: 'decks/pitchdeck-heilpraktiker.pdf'
+  },
+  ernaehrung: {
+    icon: '\u{1F957}', label: 'Ern\u00e4hrungsexpert/in',
+    benefits: [
+      'Individuelle Ern\u00e4hrungspl\u00e4ne erstellen',
+      'Eigene Rezepte mit Kunden teilen',
+      'Passende Supplements empfehlen & verdienen',
+      'Terminbuchungen & Online-Beratung',
+      'Automatische Provisionsabrechnung',
+      'Eigene Partner-App f\u00fcr deine Kunden'
+    ],
+    deck: 'decks/pitchdeck-ernaehrung.pdf'
+  },
+  trainer: {
+    icon: '\u{1F3CB}\uFE0F', label: 'Trainer/in & Coach',
+    benefits: [
+      'Trainingspl\u00e4ne mit dem Plan-Builder erstellen',
+      'Supplement-Empfehlungen f\u00fcr optimale Ergebnisse',
+      'Fitness-Coaching & Terminbuchungen',
+      'QR-Code im Studio & Link f\u00fcr Social Media',
+      'Automatische Provisionsabrechnung',
+      'Eigene Partner-App f\u00fcr deine Kunden'
+    ],
+    deck: 'decks/pitchdeck-trainer.pdf'
+  },
+  beauty: {
+    icon: '\u2728', label: 'Beauty & Wellness',
+    benefits: [
+      'Beauty-Supplements zu Treatments empfehlen',
+      'Services & Pakete als buchbare Angebote',
+      'Terminverwaltung & Kundenbindung',
+      'QR-Code im Salon & Link f\u00fcr Social Media',
+      'Automatische Provisionsabrechnung',
+      'Eigene Partner-App f\u00fcr deine Kunden'
+    ],
+    deck: 'decks/pitchdeck-beauty.pdf'
+  },
+  hebamme: {
+    icon: '\u{1F476}', label: 'Hebamme & Stillberater/in',
+    benefits: [
+      'Schwangerschafts-Supplements phasengenau empfehlen',
+      'Bluttests f\u00fcr N\u00e4hrstoffstatus anbieten',
+      'Individuelle Beratung & Terminbuchungen',
+      'Stillzeit-Supplement-Protokolle erstellen',
+      'Automatische Provisionsabrechnung',
+      'Eigene Partner-App f\u00fcr deine Kunden'
+    ],
+    deck: 'decks/pitchdeck-hebamme.pdf'
+  },
+  creator: {
+    icon: '\u{1F3AC}', label: 'Creator',
+    benefits: [
+      'Pers\u00f6nlicher Empfehlungslink f\u00fcr Social Media',
+      '7% Provision pro Verkauf \u00fcber deinen Link',
+      'Content-Ideen: Unboxings, Reviews, Vorher/Nachher',
+      'Dashboard mit Echtzeit-Statistiken',
+      'Automatische Auszahlung',
+      'Kein eigenes Lager oder Versand n\u00f6tig'
+    ],
+    deck: 'decks/pitchdeck-creator.pdf'
+  },
+  hersteller: {
+    icon: '\u{1F3ED}', label: 'Hersteller',
+    mainType: 'hersteller',
+    benefits: [
+      'Tausende Gesundheitspartner als Vertriebsnetzwerk',
+      'Direktversand an Endkunden (Dropshipping-Modell)',
+      'Kein eigener Au\u00dfendienst oder Marketingbudget n\u00f6tig',
+      'Eigenes Markenprofil mit vollst\u00e4ndigem Produktkatalog',
+      'Transparentes Dashboard mit Echtzeit-Statistiken',
+      'Automatische Zahlungsabwicklung & Rechnungsstellung'
+    ],
+    deck: 'decks/pitchdeck-hersteller.pdf'
+  },
+  bgm: {
+    icon: '\u{1F3E2}', label: 'BGM',
+    mainType: 'unternehmen',
+    benefits: [
+      'Supplements & Gesundheitsprogramme f\u00fcr Mitarbeiter',
+      'Team-Verwaltung & Firmenprogramme',
+      'Zentrale Abrechnung & Bestellmanagement',
+      'Anbindung an Gesundheitspartner im Netzwerk',
+      'Dashboard mit \u00dcbersicht aller Bestellungen',
+      'Kein Abo \u2014 zahle nur bei tats\u00e4chlichen Bestellungen'
+    ],
+    deck: 'decks/pitchdeck-bgm.pdf'
+  },
+  unternehmen: {
+    icon: '\u{1F3EA}', label: 'Studio / Salon / Verein',
+    mainType: 'unternehmen',
+    benefits: [
+      'Kuratierte Supplements f\u00fcr deine Mitglieder anbieten',
+      'Empfehlungen direkt vor Ort oder \u00fcber Link teilen',
+      'Provisionen pro Verkauf \u2014 komplett automatisiert',
+      'Eigenes Profil f\u00fcr dein Unternehmen',
+      'Dashboard mit Echtzeit-Statistiken',
+      'Kein Abo \u2014 0\u20AC monatliche Kosten'
+    ],
+    deck: 'decks/pitchdeck-unternehmen.pdf'
   }
-})();
-// ===== ENDE TEST-BYPASS =====
+};
 
-// Auto-Erkennung: Bereits registriert?
-(function checkReturningUser() {
-  const email = localStorage.getItem('stWaitlistEmail');
-  if (email) {
-    document.getElementById('returnBanner').style.display = 'block';
-    document.body.classList.add('has-banner');
-    document.getElementById('navInsider').style.display = '';
-    document.getElementById('alreadyRegistered').style.display = 'block';
+// ========== NAVIGATION ==========
+function goStep(n) {
+  var current = document.getElementById('step' + funnel.step);
+  var target = document.getElementById('step' + n);
+  if (!current || !target) return;
+
+  current.classList.remove('active');
+  target.classList.remove('active');
+  // Force reflow for animation
+  void target.offsetWidth;
+  target.classList.add('active');
+
+  funnel.step = n;
+  updateProgress();
+  window.scrollTo(0, 0);
+
+  // Update reg subtitle with type label
+  if (n === 5 && funnel.subtype) {
+    var td = TYPE_CONTENT[funnel.subtype];
+    if (td) {
+      document.getElementById('regSubtitle').innerHTML = td.icon + ' <strong>' + td.label + '</strong> &mdash; sichere dir jetzt deinen Platz.';
+    }
   }
-})();
-
-function closeReturnBanner() {
-  document.getElementById('returnBanner').style.display = 'none';
-  document.body.classList.remove('has-banner');
 }
 
-function setType(type, btn) {
-  selectedType = type;
-  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+function goBack() {
+  if (funnel.step === 2) goStep(1);
+  else if (funnel.step === 3) goStep(2);
+  else if (funnel.step === 4) goStep(3);
+  else if (funnel.step === 5) goStep(4);
+}
 
-  const sp = document.getElementById('subtypePartner');
-  const sb = document.getElementById('subtypeBusiness');
-
-  if (type === 'partner') {
-    sp.classList.add('show');
-    sb.classList.remove('show');
-  } else if (type === 'unternehmen') {
-    sp.classList.remove('show');
-    sb.classList.add('show');
+function updateProgress() {
+  var bar = document.getElementById('progressBar');
+  if (funnel.step === 1 || funnel.step === 6) {
+    bar.classList.add('hidden');
   } else {
-    sp.classList.remove('show');
-    sb.classList.remove('show');
+    bar.classList.remove('hidden');
   }
+  // stepIdx: step2=1, step3=2, step4=3, step5=4
+  var stepIdx = funnel.step - 1;
+  for (var i = 1; i <= 4; i++) {
+    var dot = document.getElementById('dot' + i);
+    dot.className = 'progress-dot';
+    if (i < stepIdx) dot.classList.add('done');
+    else if (i === stepIdx) dot.classList.add('active');
+  }
+  var pct = Math.round((stepIdx / 4) * 100);
+  var fill = document.getElementById('progressFill');
+  var label = document.getElementById('progressLabel');
+  if (fill) fill.style.width = pct + '%';
+  if (label) label.textContent = 'Schritt ' + stepIdx + ' von 4';
+}
+
+// ========== TYPE SELECTION ==========
+function selectType(type, subtype) {
+  funnel.type = type;
+  funnel.subtype = subtype;
+  renderBenefits(subtype);
+  goStep(4);
+}
+
+function renderBenefits(key) {
+  var data = TYPE_CONTENT[key];
+  if (!data) return;
+
+  var html = '<div class="benefits-card">'
+    + '<div class="benefits-icon">' + data.icon + '</div>'
+    + '<h2 style="font-size:24px;font-weight:800;margin-bottom:4px">Perfekt f\u00fcr ' + data.label + '</h2>'
+    + '<p style="color:var(--text-muted);font-size:14px;margin-bottom:0">Das erwartet dich bei SuppTree:</p>'
+    + '<div class="benefits-list">';
+
+  data.benefits.forEach(function(b) {
+    html += '<div class="benefit-item stagger-item"><div class="benefit-check">\u2713</div><span>' + b + '</span></div>';
+  });
+  html += '</div>';
+
+  // So funktioniert's
+  html += '<div style="text-align:left;margin:24px 0 0;padding:20px;background:linear-gradient(135deg,var(--green-light),#f0fdf4);border-radius:var(--r-lg);border:1px solid rgba(0,166,126,0.08)">'
+    + '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--green-accent);margin-bottom:12px">So funktioniert\u2019s</div>'
+    + '<div class="steps-mini">'
+    + '<div class="step-mini"><div class="step-mini-num">1</div><div><div class="step-mini-text">Registrieren</div><div class="step-mini-desc">Kostenlos in 30 Sekunden</div></div></div>'
+    + '<div class="step-mini"><div class="step-mini-num">2</div><div><div class="step-mini-text">Verbinden</div><div class="step-mini-desc">Kunden per QR oder Link</div></div></div>'
+    + '<div class="step-mini"><div class="step-mini-num">3</div><div><div class="step-mini-text">Verdienen</div><div class="step-mini-desc">Automatische Provision</div></div></div>'
+    + '</div></div>';
+
+  // Pitchdeck
+  if (data.deck) {
+    html += '<div style="margin-top:16px;text-align:center">'
+      + '<a href="' + data.deck + '" class="deck-btn" download>'
+      + '\u{1F4C4} Pitchdeck herunterladen</a></div>';
+  }
+
+  // CTA
+  html += '<div style="margin-top:24px">'
+    + '<button class="btn-primary" onclick="goStep(5)">Jetzt registrieren \u2192</button></div>'
+    + '</div>'; // close benefits-card
+
+  document.getElementById('step4Content').innerHTML = html;
+}
+
+// ========== REGISTRATION ==========
+function showMsg(text, type) {
+  var msg = document.getElementById('regMsg');
+  msg.textContent = text;
+  msg.className = 'form-msg ' + type;
 }
 
 async function submitRegistration() {
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const btn = document.getElementById('regBtn');
-  const msg = document.getElementById('regMsg');
+  var anrede = document.getElementById('regAnrede').value;
+  var titel = document.getElementById('regTitel').value;
+  var firstName = document.getElementById('regFirstName').value.trim();
+  var lastName = document.getElementById('regLastName').value.trim();
+  var email = document.getElementById('regEmail').value.trim().toLowerCase();
+  var country = document.getElementById('regCountry').value;
+  var type = funnel.type;
+  var subtype = funnel.subtype;
 
-  let subtype = null;
-  if (selectedType === 'partner') {
-    subtype = document.getElementById('regSubtype').value;
-  } else if (selectedType === 'unternehmen') {
-    subtype = document.getElementById('regBusinessType').value;
-  }
+  // Validation
+  if (!anrede) return showMsg('Bitte w\u00e4hle eine Anrede.', 'error');
+  if (!firstName || firstName.length < 2) return showMsg('Bitte gib deinen Vornamen ein.', 'error');
+  if (!lastName || lastName.length < 2) return showMsg('Bitte gib deinen Nachnamen ein.', 'error');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showMsg('Bitte gib eine g\u00fcltige E-Mail-Adresse ein.', 'error');
 
-  msg.className = 'form-msg';
-  msg.style.display = 'none';
-
-  if (!name || name.length < 2) return showMsg('Bitte gib deinen Namen ein.', 'error');
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showMsg('Bitte gib eine gültige E-Mail-Adresse ein.', 'error');
-  if (selectedType === 'partner' && !subtype) return showMsg('Bitte wähle deine Spezialisierung.', 'error');
-  if (selectedType === 'unternehmen' && !subtype) return showMsg('Bitte wähle die Art deiner Einrichtung.', 'error');
-
+  var btn = document.getElementById('regBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px">Wird registriert...</span>';
+  btn.classList.add('loading');
+  document.getElementById('regMsg').style.display = 'none';
+
+  var name = firstName + ' ' + lastName;
+  var body = {
+    name: name,
+    email: email,
+    type: type,
+    partner_subtype: subtype,
+    anrede: anrede,
+    titel: titel || null,
+    first_name: firstName,
+    last_name: lastName,
+    country: country
+  };
 
   try {
-    const body = {
-      name: name,
-      email: email.toLowerCase(),
-      type: selectedType,
-      partner_subtype: subtype
-    };
-
-    const res = await fetch(SB_URL + '/rest/v1/waitlist', {
+    var res = await fetch(SB_URL + '/rest/v1/waitlist', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1168,68 +1084,136 @@ async function submitRegistration() {
     });
 
     if (res.ok) {
-      localStorage.setItem('stWaitlistEmail', email.toLowerCase());
-      localStorage.setItem('stWaitlistName', name);
-      localStorage.setItem('stWaitlistType', selectedType);
-      localStorage.setItem('stWaitlistSubtype', subtype || '');
-      window.location.href = 'status.html';
-      return;
+      storeAndConfirm(email, name, type, subtype, country, firstName);
     } else {
-      const errText = await res.text();
-      if (errText.includes('duplicate') || errText.includes('unique') || res.status === 409) {
-        // Bereits registriert → Daten laden und weiterleiten
+      var errText = '';
+      try { errText = await res.text(); } catch(e) {}
+      if (res.status === 409 || errText.indexOf('duplicate') >= 0) {
+        // Already registered — fetch existing data
         try {
-          const lookup = await fetch(SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email.toLowerCase()) + '&select=name,type,partner_subtype', {
-            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-          });
-          const data = await lookup.json();
-          if (data && data.length > 0) {
-            localStorage.setItem('stWaitlistEmail', email.toLowerCase());
-            localStorage.setItem('stWaitlistName', data[0].name);
-            localStorage.setItem('stWaitlistType', data[0].type);
-            localStorage.setItem('stWaitlistSubtype', data[0].partner_subtype || '');
-            window.location.href = 'status.html';
+          var lookup = await fetch(
+            SB_URL + '/rest/v1/waitlist?email=eq.' + encodeURIComponent(email) + '&select=name,type,partner_subtype,country',
+            { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }
+          );
+          var existing = await lookup.json();
+          if (existing && existing.length > 0) {
+            var e = existing[0];
+            storeAndConfirm(email, e.name || name, e.type || type, e.partner_subtype || subtype, e.country || country, firstName);
             return;
           }
-        } catch(e2) {}
-        showMsg('Diese E-Mail ist bereits registriert.', 'success');
-        setTimeout(function(){ window.location.href = 'status.html'; }, 1500);
-        return;
+        } catch(ex) {}
+        storeAndConfirm(email, name, type, subtype, country, firstName);
       } else {
-        showMsg('Ein Fehler ist aufgetreten. Bitte versuche es später erneut.', 'error');
+        showMsg('Fehler bei der Registrierung. Bitte versuche es erneut.', 'error');
       }
     }
-  } catch (e) {
-    showMsg('Verbindungsfehler. Bitte prüfe deine Internetverbindung.', 'error');
+  } catch(e) {
+    showMsg('Verbindungsfehler. Bitte pr\u00fcfe deine Internetverbindung.', 'error');
   }
 
   btn.disabled = false;
-  btn.innerHTML = 'Jetzt vorab registrieren &#8594;';
+  btn.classList.remove('loading');
 }
 
-function showMsg(text, type) {
-  const msg = document.getElementById('regMsg');
-  msg.textContent = text;
-  msg.className = 'form-msg ' + type;
-  msg.style.display = 'block';
-}
+function storeAndConfirm(email, name, type, subtype, country, firstName) {
+  localStorage.setItem('stWaitlistEmail', email);
+  localStorage.setItem('stWaitlistName', name);
+  localStorage.setItem('stWaitlistType', type);
+  localStorage.setItem('stWaitlistSubtype', subtype || '');
+  localStorage.setItem('stWaitlistCountry', country || 'DE');
 
-// Scroll Animations
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
-}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
-document.querySelectorAll('.anim').forEach(el => obs.observe(el));
-
-// Navbar scroll effect
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-  const nav = document.querySelector('.navbar');
-  if (window.scrollY > 100) {
-    nav.style.boxShadow = '0 2px 16px rgba(0,0,0,0.06)';
-  } else {
-    nav.style.boxShadow = 'none';
+  document.getElementById('confirmName').textContent = firstName + '!';
+  if (waitlistCount > 0) {
+    document.getElementById('confirmCounter').textContent = 'Partner #' + (waitlistCount + 1);
   }
-});
+
+  // Show type badge
+  var td = TYPE_CONTENT[subtype];
+  if (td) {
+    var badge = document.getElementById('confirmBadge');
+    badge.innerHTML = td.icon + ' ' + td.label;
+    badge.style.display = '';
+  }
+
+  goStep(6);
+  launchConfetti();
+
+  // Auto-redirect
+  var sec = 5;
+  var timer = setInterval(function() {
+    sec--;
+    var el = document.getElementById('confirmTimer');
+    if (el) el.textContent = sec;
+    if (sec <= 0) { clearInterval(timer); window.location.href = 'status.html'; }
+  }, 1000);
+}
+
+// ========== CONFETTI ==========
+function launchConfetti() {
+  var colors = ['#4ade80','#22d3ee','#facc15','#fb923c','#a78bfa','#f472b6'];
+  var count = window.innerWidth < 600 ? 12 : 24;
+  for (var i = 0; i < count; i++) {
+    var el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.animationDuration = (2 + Math.random() * 2) + 's';
+    el.style.animationDelay = Math.random() * 1.5 + 's';
+    el.style.width = (6 + Math.random() * 8) + 'px';
+    el.style.height = (6 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    document.body.appendChild(el);
+    setTimeout(function(e) { e.remove(); }.bind(null, el), 5000);
+  }
+}
+
+// ========== LIVE COUNTER ==========
+async function loadWaitlistCount() {
+  try {
+    var res = await fetch(SB_URL + '/rest/v1/waitlist?select=id', {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'count=exact' }
+    });
+    var range = res.headers.get('content-range');
+    if (range) {
+      var total = range.split('/')[1];
+      if (total && total !== '*') {
+        waitlistCount = parseInt(total);
+        if (waitlistCount > 0) {
+          document.getElementById('heroCount').textContent = waitlistCount;
+          document.getElementById('heroCounter').style.display = '';
+        }
+      }
+    }
+  } catch(e) {}
+}
+
+// ========== RETURN BANNER ==========
+function closeReturnBanner() {
+  document.getElementById('returnBanner').style.display = 'none';
+}
+
+// ========== INIT ==========
+(function() {
+  // Test bypass: ?test=1 — ENTFERNEN VOR GO-LIVE
+  var p = new URLSearchParams(window.location.search);
+  if (p.get('test') === '1') {
+    localStorage.setItem('stWaitlistEmail', 'test@supptree.de');
+    localStorage.setItem('stWaitlistName', 'Florian (Test)');
+    localStorage.setItem('stWaitlistType', 'partner');
+    localStorage.setItem('stWaitlistSubtype', 'heilpraktiker');
+    window.location.href = 'status.html';
+    return;
+  }
+
+  // Check returning user
+  var email = localStorage.getItem('stWaitlistEmail');
+  if (email) {
+    document.getElementById('returnBanner').style.display = 'block';
+  }
+
+  // Load live counter
+  loadWaitlistCount();
+})();
 </script>
 
 </body>

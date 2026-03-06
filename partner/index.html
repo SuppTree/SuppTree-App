@@ -263,6 +263,37 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .profile-qual-icon{color:#22c55e}
 .hours-row{display:flex;align-items:center;gap:10px}
 .hours-day{font-size:12px;font-weight:600;min-width:44px}
+.hours-day-block{background:var(--cream);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:8px}
+.hours-day-block.hclosed{opacity:0.5}
+.hours-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.hours-day-name{font-size:13px;font-weight:700;min-width:30px}
+.hours-closed-label{font-size:11px;color:var(--text-muted);margin-right:6px}
+.hours-slots{display:flex;flex-direction:column;gap:6px}
+.hours-slot{display:flex;align-items:center;gap:6px}
+.hours-slot-label{font-size:11px;color:var(--text-muted);min-width:70px}
+.hours-slot input[type="time"]{flex:1;padding:8px 6px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;outline:none;background:var(--white)}
+.hours-slot input[type="time"]:focus{border-color:var(--green-accent)}
+.hours-slot-sep{font-size:12px;color:var(--text-muted)}
+.closure-list{margin-top:12px}
+.closure-card{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--cream);border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px}
+.closure-card-info{flex:1}
+.closure-card-dates{font-size:13px;font-weight:600}
+.closure-card-reason{font-size:11px;color:var(--text-muted);margin-top:2px}
+.closure-card-remove{background:none;border:none;font-size:16px;cursor:pointer;color:#dc2626;padding:4px}
+.closure-add-row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-top:10px}
+.closure-add-row .form-group{margin-bottom:0;flex:1;min-width:100px}
+.closure-add-row .form-label{font-size:11px;margin-bottom:4px}
+.closure-add-row .form-input{padding:8px 10px;font-size:13px}
+.closure-add-btn{padding:8px 14px;background:var(--green-accent);color:white;border:none;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;height:38px;align-self:flex-end}
+.closure-add-btn:active{transform:scale(0.97)}
+.hours-display-day{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+.hours-display-day:last-child{border-bottom:none}
+.hours-display-name{font-weight:600;min-width:28px;font-size:12px}
+.hours-display-times{flex:1;color:var(--text-dark)}
+.hours-display-closed{color:var(--text-muted);font-style:italic}
+.closure-display-card{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fef3c7;border:1px solid #fde68a;border-radius:var(--r);margin-top:6px;font-size:12px}
+.closure-display-icon{font-size:16px}
+.closure-display-text{flex:1}
 .chip-check{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--cream);border:1px solid var(--border);border-radius:16px;font-size:12px;cursor:pointer}
 .chip-check input{margin:0}
 .chip-check:has(input:checked){background:var(--green-light);border-color:var(--green-accent)}
@@ -344,15 +375,31 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .la-kpi-lbl{font-size:10px;color:var(--text-muted);margin-top:2px}
 .la-section{background:var(--white);margin:0 12px 12px;border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
 .la-section-title{font-size:14px;font-weight:700;margin-bottom:14px}
-.la-funnel-row{margin-bottom:16px}
-.la-funnel-label{font-size:12px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.la-funnel-steps{display:flex;flex-direction:column;gap:6px}
-.la-funnel-step{display:flex;align-items:center;gap:10px}
-.la-funnel-bar{height:28px;border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:11px;font-weight:600;color:white;min-width:40px}
-.la-funnel-bar.qr{background:linear-gradient(90deg,var(--green-accent),#059669)}
-.la-funnel-bar.link{background:linear-gradient(90deg,#3b82f6,#1d4ed8)}
-.la-funnel-text{font-size:11px;color:var(--text-muted);white-space:nowrap}
-.la-funnel-pct{font-size:11px;font-weight:700;color:var(--text-dark);min-width:35px}
+.la-funnel-row{background:var(--white);border-radius:10px;border:1px solid var(--border);overflow:hidden;margin-bottom:12px}
+.la-funnel-header{padding:11px 14px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;border-bottom:1px solid var(--border)}
+.la-funnel-header.qr{background:linear-gradient(90deg,#f0fdf4,#dcfce7);color:#166534}
+.la-funnel-header.link{background:linear-gradient(90deg,#eff6ff,#dbeafe);color:#1e3a8a}
+.la-funnel-header-rate{margin-left:auto;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.la-funnel-header.qr .la-funnel-header-rate{background:#bbf7d0;color:#166534}
+.la-funnel-header.link .la-funnel-header-rate{background:#bfdbfe;color:#1e3a8a}
+.la-funnel-body{padding:12px 14px;display:flex;flex-direction:column}
+.la-funnel-step-row{display:flex;align-items:center;gap:10px;padding:5px 0}
+.la-funnel-step-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.la-funnel-step-num.qr{background:#dcfce7;color:#166534}
+.la-funnel-step-num.link{background:#dbeafe;color:#1e3a8a}
+.la-funnel-step-info{flex:1;min-width:0}
+.la-funnel-step-label{font-size:11px;color:var(--text-muted);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.la-funnel-step-track{height:8px;background:#f3f4f6;border-radius:4px;overflow:hidden}
+.la-funnel-step-fill{height:100%;border-radius:4px;transition:width 0.6s ease}
+.la-funnel-step-fill.qr{background:linear-gradient(90deg,var(--green-accent),#059669)}
+.la-funnel-step-fill.link{background:linear-gradient(90deg,#60a5fa,#2563eb)}
+.la-funnel-step-count{font-size:16px;font-weight:700;color:var(--text-dark);min-width:30px;text-align:right;flex-shrink:0}
+.la-funnel-connector{display:flex;align-items:center;gap:7px;padding:1px 0 1px 11px}
+.la-funnel-connector-line{width:1px;height:14px;background:#e5e7eb}
+.la-funnel-drop-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px}
+.la-funnel-drop-badge.good{background:#dcfce7;color:#166534}
+.la-funnel-drop-badge.mid{background:#fef9c3;color:#854d0e}
+.la-funnel-drop-badge.bad{background:#fee2e2;color:#991b1b}
 .la-product-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
 .la-product-item:last-child{border-bottom:none}
 .la-product-rank{width:24px;height:24px;background:var(--cream);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted)}
@@ -1510,13 +1557,13 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .doc-info-banner .info-text{font-size:12px;color:var(--green-dark);line-height:1.5}
 
 /* ── Partner Auth Overlay ── */
-#partnerAuthOverlay{display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#1a5a3a 0%,#00A67E 40%,#f8f9fa 100%);flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;padding-top:60px;overflow-y:auto}
+#partnerAuthOverlay{display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#1a5a3a 0%,#00A67E 40%,#f8f9fa 100%);flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 24px 60px;padding-top:60px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #partnerAuthOverlay.visible{display:flex}
 .pa-logo{text-align:center;margin-bottom:28px}
 .pa-logo-icon{font-size:48px;margin-bottom:8px}
 .pa-logo-text{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px}
 .pa-logo-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px}
-.pa-card{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:0;box-shadow:0 8px 32px rgba(0,0,0,0.15);overflow:hidden}
+.pa-card{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:0;box-shadow:0 8px 32px rgba(0,0,0,0.15);overflow:visible;flex-shrink:0}
 .pa-tabs{display:flex;border-bottom:2px solid #f0f0f0}
 .pa-tab{flex:1;padding:14px;text-align:center;font-size:14px;font-weight:600;background:none;border:none;cursor:pointer;color:#999;transition:all 0.2s;border-bottom:2px solid transparent;margin-bottom:-2px}
 .pa-tab.active{color:var(--green-dark);border-bottom-color:var(--green-accent)}
@@ -1531,8 +1578,8 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .pa-form-row{display:flex;gap:12px}
 .pa-form-row .pa-form-group{flex:1}
 .pa-pw-wrap{position:relative}
-.pa-pw-wrap input{padding-right:44px}
-.pa-pw-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;cursor:pointer;padding:4px}
+.pa-pw-wrap input{padding-right:44px;position:relative;z-index:1}
+.pa-pw-toggle{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;cursor:pointer;z-index:2;width:32px;height:32px;display:flex;align-items:center;justify-content:center;padding:0}
 .pa-btn{width:100%;padding:15px;background:var(--green-accent);border:none;border-radius:var(--r);font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;font-family:inherit}
 .pa-btn:hover{background:var(--green-dark)}
 .pa-btn:active{transform:scale(0.98)}
@@ -1589,10 +1636,28 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
         <button class="pa-link" onclick="setPartnerAuthMode('reset')">Passwort vergessen?</button>
       </div>
 
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center">
+        <a href="../www/index.html" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#f0fdf4;border-radius:8px;color:#1a5a3a;font-size:13px;font-weight:600;text-decoration:none;transition:background 0.2s">
+          <span style="font-size:16px">🛒</span> Du bist Kunde? Zum Marktplatz
+        </a>
+      </div>
+
       <div class="pa-dev" id="paDevAccess">
-        <div class="pa-dev-label">DEV-ZUGANG (ohne Login)</div>
-        <div class="pa-dev-btns">
-          <button class="pa-dev-btn" style="border-color:#00A67E;background:#E0F2F1;color:#00695C" onclick="localStorage.setItem('suppTreeAppMode','demo');localStorage.setItem('suppTreePartnerType','supplement');location.reload()">🏪 Demo-Modus</button>
+        <div class="pa-dev-label">DEMO-ZUGANG (ohne Login)</div>
+        <div style="font-size:11px;color:#6b7280;margin-bottom:8px;text-align:center">Partner / Experten</div>
+        <div class="pa-dev-btns" style="flex-wrap:wrap;gap:6px">
+          <button class="pa-dev-btn" style="border-color:#3b82f6;background:#eff6ff;color:#1e40af" onclick="startDemo('heilpraktiker')">🩺 Heilpraktiker</button>
+          <button class="pa-dev-btn" style="border-color:#22c55e;background:#f0fdf4;color:#166534" onclick="startDemo('ernaehrung')">🥗 Ernährung</button>
+          <button class="pa-dev-btn" style="border-color:#f59e0b;background:#fffbeb;color:#92400e" onclick="startDemo('trainer')">💪 Trainer</button>
+          <button class="pa-dev-btn" style="border-color:#ec4899;background:#fdf2f8;color:#9d174d" onclick="startDemo('beauty')">✨ Beauty</button>
+          <button class="pa-dev-btn" style="border-color:#a855f7;background:#faf5ff;color:#6b21a8" onclick="startDemo('hebamme')">👶 Hebamme</button>
+          <button class="pa-dev-btn" style="border-color:#6366f1;background:#eef2ff;color:#3730a3" onclick="startDemo('creator')">🎬 Creator</button>
+        </div>
+        <div style="font-size:11px;color:#6b7280;margin:8px 0 6px;text-align:center">Hersteller & Unternehmen</div>
+        <div class="pa-dev-btns" style="flex-wrap:wrap;gap:6px">
+          <button class="pa-dev-btn" style="border-color:#16a34a;background:#f0fdf4;color:#166534" onclick="startDemo('supplement')">💊 Hersteller</button>
+          <button class="pa-dev-btn" style="border-color:#0891b2;background:#ecfeff;color:#155e75" onclick="startDemo('bgm')">🏢 BGM</button>
+          <button class="pa-dev-btn" style="border-color:#0d9488;background:#f0fdfa;color:#134e4a" onclick="startDemo('studio')">🏋️ Studio</button>
         </div>
       </div>
     </div>
@@ -1635,6 +1700,11 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
       </div>
       <button class="pa-btn" id="paRegBtn" onclick="handlePartnerRegister()">Partner-Konto erstellen</button>
       <p class="pa-legal">Mit der Registrierung akzeptierst du unsere <a href="#">AGB</a> und <a href="#">Datenschutzrichtlinie</a>.</p>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center">
+        <a href="../www/index.html" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#f0fdf4;border-radius:8px;color:#1a5a3a;font-size:13px;font-weight:600;text-decoration:none;transition:background 0.2s">
+          <span style="font-size:16px">🛒</span> Du bist Kunde? Zum Marktplatz
+        </a>
+      </div>
     </div>
 
     <!-- Reset Form -->
@@ -2688,15 +2758,16 @@ Zertifizierter Ernährungsberater (DGE)
 Orthomolekulare Medizin
 Sportmedizinische Zusatzqualifikation</textarea></div>
       <div class="form-group"><label class="form-label">Standort / Adresse</label><input type="text" class="form-input" id="provLocation" value="Praxis für Naturheilkunde, Maximilianstr. 42, 80539 München"></div>
+      <div class="form-group"><label class="form-label">Land</label><select class="form-input" id="provCountry"><option value="DE">Deutschland</option><option value="AT">Österreich</option><option value="CH">Schweiz</option><option value="NL">Niederlande</option><option value="LU">Luxemburg</option></select></div>
       <div class="form-group"><label class="form-label">Telefon</label><input type="tel" class="form-input" id="provPhone" value="+49 89 123 456 78"></div>
       <div class="form-group"><label class="form-label">Website</label><input type="url" class="form-input" id="provWeb" value="https://praxis-eichkorn.de"></div>
       <div class="form-group">
         <label class="form-label">Öffnungszeiten</label>
-        <div id="provHoursEdit" style="display:flex;flex-direction:column;gap:8px">
-          <div class="hours-row"><span class="hours-day">Mo-Fr</span><input type="text" class="form-input" id="provHrWeek" value="09:00 - 18:00" style="flex:1"></div>
-          <div class="hours-row"><span class="hours-day">Sa</span><input type="text" class="form-input" id="provHrSat" value="10:00 - 14:00" style="flex:1"></div>
-          <div class="hours-row"><span class="hours-day">So</span><input type="text" class="form-input" id="provHrSun" value="Geschlossen" style="flex:1"></div>
-        </div>
+        <div id="provHoursEdit"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Geplante Schließungen / Urlaub</label>
+        <div id="provClosuresEdit"></div>
       </div>
       <div class="form-group">
         <label class="form-label">Angebotene Terminarten</label>
@@ -3292,34 +3363,12 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
       <h1 class="screen-title">Mehr</h1>
     </div>
     
-    <!-- Shop Profile Card -->
-    <div class="mehr-profile" onclick="showScreen('meinShop')">
-      <div class="mehr-profile-avatar">🌿</div>
-      <div class="mehr-profile-info">
-        <div class="mehr-profile-name">NaturVital Supplements</div>
-        <div class="mehr-profile-plan">🌿 Partner · seit Okt 2024</div>
-        <div class="mehr-profile-id">Seller-ID: ST-28491</div>
-      </div>
-      <span style="color:var(--text-muted);font-size:18px">›</span>
+    <!-- Profile Card (dynamisch) -->
+    <div class="mehr-profile" id="mehrProfileCard" onclick="showScreen(hasFeature('markenprofil')?'meinShop':'provider')">
     </div>
-    
-    <!-- Seller Performance -->
-    <div style="margin:0 12px 12px;background:var(--white);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)">
-      <div style="font-size:12px;font-weight:700;color:var(--green-accent);margin-bottom:10px">PERFORMANCE (30 TAGE)</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
-        <div style="background:var(--white);padding:10px;text-align:center">
-          <div style="font-size:18px;font-weight:700">4.8</div>
-          <div style="font-size:10px;color:var(--text-muted)">⭐ Bewertung</div>
-        </div>
-        <div style="background:var(--white);padding:10px;text-align:center">
-          <div style="font-size:18px;font-weight:700">97%</div>
-          <div style="font-size:10px;color:var(--text-muted)">📦 Versandquote</div>
-        </div>
-        <div style="background:var(--white);padding:10px;text-align:center">
-          <div style="font-size:18px;font-weight:700">2.1%</div>
-          <div style="font-size:10px;color:var(--text-muted)">↩️ Retourenquote</div>
-        </div>
-      </div>
+
+    <!-- Performance (dynamisch) -->
+    <div style="margin:0 12px 12px;background:var(--white);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)" id="mehrPerformance">
     </div>
 
     <!-- Quick Actions (dynamisch) -->
@@ -3352,10 +3401,10 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
       <div class="mehr-item" onclick="showScreen('unterlagen')" id="mehrUnterlagenItem"><span class="mehr-item-icon">📄</span><span class="mehr-item-label">Unterlagen & Dokumente</span><span class="mehr-item-badge" id="unterlagenBadge" style="background:#fef3c7;color:#d97706">2/6</span><span class="mehr-item-arrow">›</span></div>
     </div>
 
-    <div class="mehr-section">
+    <div class="mehr-section" id="mehrRechtliches">
       <div class="mehr-section-title">Rechtliches</div>
       <div class="mehr-item" onclick="showScreen('rechtliches')"><span class="mehr-item-icon">📜</span><span class="mehr-item-label">Impressum & AGB</span><span class="mehr-item-arrow">›</span></div>
-      <div class="mehr-item" onclick="showScreen('rechtliches')"><span class="mehr-item-icon">📋</span><span class="mehr-item-label">Widerrufsbelehrung</span><span class="mehr-item-arrow">›</span></div>
+      <div class="mehr-item mehr-produkt-only" onclick="showScreen('rechtliches')"><span class="mehr-item-icon">📋</span><span class="mehr-item-label">Widerrufsbelehrung</span><span class="mehr-item-arrow">›</span></div>
       <div class="mehr-item" onclick="showScreen('rechtliches')"><span class="mehr-item-icon">🔐</span><span class="mehr-item-label">Datenschutzerklärung</span><span class="mehr-item-arrow">›</span></div>
       <div class="mehr-item" onclick="showScreen('compliance')"><span class="mehr-item-icon">✅</span><span class="mehr-item-label">Compliance & Zertifikate</span><span class="mehr-item-badge" style="background:#dcfce7;color:#16a34a">98%</span><span class="mehr-item-arrow">›</span></div>
     </div>
@@ -3366,7 +3415,17 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
       <div class="mehr-item" onclick="showScreen('hilfe')"><span class="mehr-item-icon">📚</span><span class="mehr-item-label">Hilfe-Center & FAQ</span><span class="mehr-item-arrow">›</span></div>
       <div class="mehr-item" onclick="showScreen('feedback')"><span class="mehr-item-icon">💡</span><span class="mehr-item-label">Feedback geben</span><span class="mehr-item-arrow">›</span></div>
     </div>
-    
+
+    <div class="mehr-section" id="mehrAdminSection" style="display:none">
+      <div class="mehr-section-title">Administration</div>
+      <div class="mehr-item" onclick="window.location.href='../admin/index.html'" style="background:linear-gradient(135deg,#E8EAF6,#C5CAE9)"><span class="mehr-item-icon">🛡️</span><span class="mehr-item-label">Admin-Bereich</span><span style="font-size:11px;color:#6b7280">Plattform verwalten</span><span class="mehr-item-arrow">›</span></div>
+    </div>
+
+    <div class="mehr-section">
+      <div class="mehr-section-title">Wechseln</div>
+      <div class="mehr-item" onclick="window.location.href='../www/index.html'" style="background:linear-gradient(135deg,#E8F5E9,#f0fdf4)"><span class="mehr-item-icon">🛒</span><span class="mehr-item-label">Zum Marktplatz</span><span style="font-size:11px;color:#6b7280">Als Kunde einkaufen</span><span class="mehr-item-arrow">›</span></div>
+    </div>
+
     <div style="padding:16px;text-align:center">
       <button class="mehr-logout" onclick="handleLogout()">🚪 Abmelden</button>
       <div style="font-size:11px;color:var(--text-muted);margin-top:12px">SuppTree Seller App v1.0.0<br>© 2025 SuppTree GmbH</div>
@@ -3699,6 +3758,13 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
 
 <!-- Sofort-Fix: Spinner weg + Login zeigen BEVOR CDN lädt -->
 <script>
+function startDemo(type) {
+  try {
+    localStorage.setItem('suppTreeAppMode', 'demo');
+    localStorage.setItem('suppTreePartnerType', type || 'supplement');
+    window.location.href = window.location.pathname;
+  } catch(e) { alert('Fehler: ' + e.message); }
+}
 (function(){
   var p = new URLSearchParams(window.location.search);
   // ?reset=1 → alles zurücksetzen
@@ -3707,23 +3773,42 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
     window.location.href = window.location.pathname;
     return;
   }
-  // ?demo=1 → direkt in Demo-Modus
-  if (p.get('demo') === '1') {
+  // ?demo=1 oder ?demo=typ → direkt in Demo-Modus
+  var demoParam = p.get('demo');
+  if (demoParam) {
     localStorage.setItem('suppTreeAppMode', 'demo');
-    localStorage.setItem('suppTreePartnerType', 'supplement');
+    // ?demo=heilpraktiker, ?demo=trainer, etc. → direkt den Typ setzen
+    var validTypes = ['supplement','heilpraktiker','ernaehrung','trainer','beauty','hebamme','creator','bgm','studio'];
+    var demoType = validTypes.includes(demoParam) ? demoParam : 'supplement';
+    localStorage.setItem('suppTreePartnerType', demoType);
     window.location.href = window.location.pathname;
     return;
   }
+  // ?mode=production → URL-Param setzen
+  if (p.get('mode') === 'production') {
+    localStorage.setItem('suppTreeAppMode', 'production');
+  }
+  var mode = localStorage.getItem('suppTreeAppMode') || 'demo';
+  // Production-Modus: Loading weg + Auth-Overlay sofort zeigen (wird nach Session-Check ggf. ausgeblendet)
+  if (mode === 'production') {
+    document.getElementById('authLoading').classList.add('hidden');
+    var ov = document.getElementById('partnerAuthOverlay');
+    if (ov) { ov.classList.add('visible'); document.body.style.overflow = 'hidden'; }
+    return;
+  }
+  // Demo-Modus: Overlay nur wenn kein PartnerType gesetzt
   document.getElementById('authLoading').classList.add('hidden');
   if (!localStorage.getItem('suppTreePartnerType')) {
-    var ov = document.getElementById('partnerAuthOverlay');
-    if (ov) ov.classList.add('visible');
+    var ov2 = document.getElementById('partnerAuthOverlay');
+    if (ov2) ov2.classList.add('visible');
     var dev = document.getElementById('paDevAccess');
     if (dev) dev.style.display = 'block';
   }
 })();
 </script>
 
+<!-- QR-Code Generator (lokal, kein externer Dienst) -->
+<script src="../shared/qrcode.min.js"></script>
 <!-- Supabase & Auth Scripts -->
 <script src="../shared/supabase-sdk.min.js"></script>
 <script src="../shared/config.js"></script>
@@ -3732,7 +3817,7 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
 
 <script>
 // =============================================
-// PARTNER AUTH OVERLAY - Login/Register/Reset
+// PARTNER AUTH FUNCTIONS (isolierter Block)
 // =============================================
 function showPartnerAuth() {
   var el = document.getElementById('partnerAuthOverlay');
@@ -3787,51 +3872,61 @@ async function handlePartnerLogin() {
   emailEl.classList.remove('pa-error'); pwEl.classList.remove('pa-error');
 
   setPaLoading(btn, true);
-  var result = await loginUser(email, pw);
-  if (result.error) {
-    showPaAlert('paLoginError', result.error);
-    setPaLoading(btn, false);
-    return;
-  }
 
-  // Rolle prüfen
-  var role = await getCurrentUserRole();
-  if (role !== 'seller' && role !== 'admin') {
-    showPaAlert('paLoginError', 'Du benötigst ein Partner-Konto. Registriere dich als Partner.');
-    await logoutUser();
-    setPaLoading(btn, false);
-    return;
-  }
-
-  // Erfolg → App starten
-  localStorage.setItem('suppTreeAppMode', 'production');
-  hidePartnerAuth();
-  document.getElementById('authLoading').classList.add('hidden');
-
-  // Supabase Session + Daten laden
-  _sb = initSupabase();
-  if (_sb) {
-    var { data: { session } } = await _sb.auth.getSession();
-    _currentUser = session?.user || null;
-    if (_currentUser) {
-      setTimeout(updatePartnerModeBadge, 100);
-      try {
-        var { data: profile } = await _sb.from('profiles').select('seller_type').eq('id', _currentUser.id).single();
-        if (profile && profile.seller_type) {
-          partnerType = profile.seller_type;
-          localStorage.setItem('suppTreePartnerType', partnerType);
-          renderBottomNav();
-          renderMehrMenu();
-          await partnerLoadFromSupabase();
-          startPartnerRealtime();
-          renderDashboard();
-        } else {
-          showPartnerOnboarding();
-        }
-      } catch(e) { console.log('Profile load after login:', e); }
+  try {
+    var sb = initSupabase();
+    if (!sb) {
+      showPaAlert('paLoginError', 'Verbindung zum Server fehlgeschlagen. Bitte Seite neu laden.');
+      setPaLoading(btn, false);
+      return;
     }
+
+    var result = await loginUser(email, pw);
+    if (result.error) {
+      showPaAlert('paLoginError', result.error);
+      setPaLoading(btn, false);
+      return;
+    }
+
+    // Rolle prüfen — erst user_metadata, dann profiles-Tabelle
+    var role = null;
+    try {
+      role = await getCurrentUserRole();
+    } catch(roleErr) {
+      console.warn('Rolle konnte nicht geladen werden:', roleErr);
+    }
+
+    // Wenn Rolle 'customer' → automatisch auf 'seller' upgraden
+    if (role === 'customer' || !role) {
+      try {
+        var user = await getCurrentUser();
+        if (user) {
+          // Profil in DB auf seller setzen
+          await sb.from('profiles').update({ role: 'seller' }).eq('id', user.id);
+          // Auch in user_metadata setzen
+          await sb.auth.updateUser({ data: { role: 'seller' } });
+          role = 'seller';
+        }
+      } catch(upgradeErr) {
+        console.warn('Rolle-Upgrade fehlgeschlagen:', upgradeErr);
+      }
+    }
+
+    if (role !== 'seller' && role !== 'admin') {
+      showPaAlert('paLoginError', 'Dein Konto konnte nicht als Partner eingerichtet werden. Bitte registriere dich über "Registrieren".');
+      await logoutUser();
+      setPaLoading(btn, false);
+      return;
+    }
+
+    // Erfolg → Production-Modus setzen + Seite neu laden
+    localStorage.setItem('suppTreeAppMode', 'production');
+    showPaAlert('paLoginSuccess', 'Erfolgreich angemeldet! Wird geladen...');
+    setTimeout(function() { window.location.href = window.location.pathname; }, 1000);
+  } catch(err) {
+    showPaAlert('paLoginError', 'Fehler: ' + (err.message || 'Unbekannter Fehler'));
+    setPaLoading(btn, false);
   }
-  setPaLoading(btn, false);
 }
 
 async function handlePartnerRegister() {
@@ -3908,8 +4003,12 @@ async function handlePartnerReset() {
   setTimeout(function() { setPartnerAuthMode('login'); }, 3000);
 }
 
+
+</script>
+
+<script>
 // =============================================
-// AUTH CHECK - Vor allem anderen ausführen
+// PARTNER APP MAIN (separater Block)
 // =============================================
 (async function() {
   const authLoading = document.getElementById('authLoading');
@@ -3940,14 +4039,19 @@ async function handlePartnerReset() {
       return;
     }
 
-    // Auth OK - Loading ausblenden
+    // Auth OK - Loading + Auth-Overlay ausblenden
     authLoading.classList.add('hidden');
+    hidePartnerAuth();
 
     // User-Daten für Header laden
     const user = await getCurrentUser();
     if (user) {
       updateUserDisplay(user);
     }
+
+    // Partner-Code wird erst nach Onboarding generiert (wenn Typ + Land bekannt)
+    // Für bestehende User (Onboarding schon fertig): Code nachladen
+    if (localStorage.getItem('suppTreePartnerType') && typeof ensurePartnerCode === 'function') ensurePartnerCode();
 
   } catch (error) {
     console.error('Auth-Fehler:', error);
@@ -4000,28 +4104,104 @@ let _currentUser = null;
       const { data: { session } } = await _sb.auth.getSession();
       _currentUser = session?.user || null;
       if(_currentUser) {
+        hidePartnerAuth();
         setTimeout(updatePartnerModeBadge, 100);
         // Load partnerType from Supabase profile
         try {
-          const { data: profile } = await _sb.from('profiles').select('seller_type').eq('id', _currentUser.id).single();
+          const { data: profile } = await _sb.from('profiles').select('seller_type,name,personal_data').eq('id', _currentUser.id).single();
           if (profile && profile.seller_type) {
             partnerType = profile.seller_type;
             localStorage.setItem('suppTreePartnerType', partnerType);
-            renderBottomNav();
-            renderMehrMenu();
-            // Alle Partner-Daten aus Supabase laden → localStorage aktualisieren
-            await partnerLoadFromSupabase();
-            startPartnerRealtime();
           } else {
-            // Kein seller_type → Onboarding zeigen
-            showPartnerOnboarding();
+            // Kein seller_type → Waitlist-Daten prüfen und übernehmen
+            var waitlistImported = false;
+            try {
+              var userEmail = _currentUser.email;
+              if (userEmail) {
+                var wlRes = await _sb.from('waitlist').select('type,partner_subtype,name,job_title,company_name,bio,profile_data,country').eq('email', userEmail.toLowerCase()).single();
+                if (wlRes.data && wlRes.data.type) {
+                  var wl = wlRes.data;
+                  // Waitlist-Typ → Partner-Typ mappen
+                  var typeMap = {
+                    partner: wl.partner_subtype || 'heilpraktiker',
+                    hersteller: 'supplement',
+                    unternehmen: wl.partner_subtype || 'coach'
+                  };
+                  var mappedSubtype = typeMap[wl.type] || wl.partner_subtype || 'supplement';
+                  var sellerType = mappedSubtype;
+
+                  // Land aus Waitlist übernehmen
+                  var wlCountry = wl.country || 'DE';
+
+                  // seller_type + onboarding_completed_at in profiles setzen
+                  await _sb.from('profiles').update({
+                    seller_type: sellerType,
+                    onboarding_completed_at: new Date().toISOString()
+                  }).eq('id', _currentUser.id);
+                  partnerType = sellerType;
+                  localStorage.setItem('suppTreePartnerType', partnerType);
+
+                  // Profil-Daten aus Waitlist übernehmen
+                  var pd = wl.profile_data || {};
+                  var profileUpdate = {};
+                  if (wl.name && (!profile || !profile.name)) profileUpdate.name = wl.name;
+                  if (Object.keys(pd).length > 0) {
+                    var personalData = (profile && profile.personal_data) || {};
+                    if (pd.anrede && !personalData.anrede) personalData.anrede = pd.anrede;
+                    if (pd.title && !personalData.titel) personalData.titel = pd.title;
+                    if (pd.first_name && !personalData.firstName) personalData.firstName = pd.first_name;
+                    if (pd.last_name && !personalData.lastName) personalData.lastName = pd.last_name;
+                    profileUpdate.personal_data = personalData;
+                  }
+                  if (Object.keys(profileUpdate).length > 0) {
+                    await _sb.from('profiles').update(profileUpdate).eq('id', _currentUser.id);
+                  }
+
+                  // Provider-Daten setzen (Name, Firma, Bio, Land, Öffnungszeiten)
+                  if (typeof provider !== 'undefined') {
+                    if (wl.name) provider.name = wl.name;
+                    if (wl.job_title) provider.title = wl.job_title;
+                    if (wl.company_name) provider.company = wl.company_name;
+                    if (wl.bio) provider.bio = wl.bio;
+                    provider.country = wlCountry;
+                    if (pd.location) provider.location = pd.location;
+                    if (pd.phone) provider.phone = pd.phone;
+                    if (pd.website) provider.website = pd.website;
+                    // Öffnungszeiten aus Waitlist (neues Per-Tag-Format)
+                    if (pd.hours_days) {
+                      provider.hours = { days: pd.hours_days, closures: [] };
+                    }
+                    // Terminarten übernehmen
+                    if (pd.appointment_modes && pd.appointment_modes.length > 0) {
+                      provider.modes = pd.appointment_modes;
+                    }
+                  }
+
+                  // Partner-Code generieren (Typ + Land jetzt bekannt)
+                  if (typeof ensurePartnerCode === 'function') ensurePartnerCode();
+
+                  waitlistImported = true;
+                  console.log('Waitlist-Daten übernommen: Typ=' + sellerType + ', Land=' + wlCountry);
+                }
+              }
+            } catch(wlErr) { console.log('Waitlist lookup:', wlErr); }
+
+            if (!waitlistImported) {
+              partnerType = localStorage.getItem('suppTreePartnerType') || 'supplement';
+              localStorage.setItem('suppTreePartnerType', partnerType);
+            }
           }
+          renderBottomNav();
+          renderMehrMenu();
+          renderDashboard();
+          // Daten aus Supabase laden
+          try { await partnerLoadFromSupabase(); } catch(e2) { console.log('Data load:', e2); }
+          try { startPartnerRealtime(); } catch(e3) { console.log('Realtime:', e3); }
         } catch(e) { console.log('Profile load:', e); }
+      } else {
+        // Nicht eingeloggt → Auth-Overlay zeigen
+        showPartnerAuth();
       }
-    }
-    // Nicht eingeloggt → Auth-Overlay (oder Demo-Modus mit localStorage)
-    if (!_currentUser && !localStorage.getItem('suppTreePartnerType')) {
-      setTimeout(function(){ showPartnerAuth(); }, 300);
     }
   } catch(e) { console.log('Partner sync init:', e); }
 })();
@@ -4771,6 +4951,7 @@ function handleBloodTestChange(payload) {
     var existing = _livePartnerBT.find(function(b) { return b.id === bt.id; });
     if (existing) { existing.status = bt.status; renderPartnerBTList(); }
   }
+}
 
 function handleBookingChange(payload) {
   var b = payload.new;
@@ -4851,8 +5032,9 @@ setTimeout(updatePartnerModeBadge, 1500);
 
 // ── PARTNER-TYP ──
 let partnerType = (function(){
+  const validTypes = ['supplement','heilpraktiker','ernaehrung','trainer','beauty','hebamme','creator','bgm','studio','coach'];
   const url = new URLSearchParams(window.location.search).get('partnerType');
-  if (url && ['supplement','heilpraktiker','coach'].includes(url)) {
+  if (url && validTypes.includes(url)) {
     localStorage.setItem('suppTreePartnerType', url);
     return url;
   }
@@ -4864,6 +5046,13 @@ const FEATURE_GATES = {
   supplement:    { produkte:true, services:false, bluttests:false, termine:false, trainingsPlan:false, ernaehrungsPlan:false, rezepte:false, markenprofil:true },
   heilpraktiker: { produkte:false, services:true, bluttests:true, termine:true, trainingsPlan:false, ernaehrungsPlan:true, rezepte:false, markenprofil:false },
   coach:         { produkte:false, services:true, bluttests:false, termine:true, trainingsPlan:true, ernaehrungsPlan:true, rezepte:true, markenprofil:false }
+};
+// Subtype → Feature-Set Mapping (welches Gate-Profil gilt)
+var SUBTYPE_FEATURE_MAP = {
+  supplement:'supplement',
+  heilpraktiker:'heilpraktiker', hebamme:'heilpraktiker',
+  ernaehrung:'coach', trainer:'coach', beauty:'coach', creator:'coach',
+  bgm:'coach', studio:'coach', coach:'coach'
 };
 // Feature-Overrides: Partner kann einzelne Features an/aus schalten
 function getFeatureOverrides() {
@@ -4877,7 +5066,8 @@ function setFeatureOverride(key, enabled) {
 function hasFeature(key) {
   var overrides = getFeatureOverrides();
   if (overrides.hasOwnProperty(key)) return overrides[key];
-  return (FEATURE_GATES[partnerType] || FEATURE_GATES.supplement)[key] !== false;
+  var featureKey = SUBTYPE_FEATURE_MAP[partnerType] || partnerType;
+  return (FEATURE_GATES[featureKey] || FEATURE_GATES.supplement)[key] !== false;
 }
 
 // ── Dynamische Bottom-Navigation ──
@@ -4895,10 +5085,32 @@ function renderBottomNav(){
   tabs.push({id:'mehr',icon:'⚙️',label:'Mehr'});
   nav.innerHTML=tabs.map(t=>`<button class="nav-item${t.id==='dashboard'?' active':''}" onclick="showScreen('${t.id}')"><span class="nav-icon">${t.icon}${t.badge?'<span class="badge" id="'+t.badge+'"></span>':''}</span><span class="nav-label">${t.label}</span></button>`).join('');
 }
-renderBottomNav();
+try{renderBottomNav();}catch(e){console.error('renderBottomNav error:',e);}
 
 // ── Mehr-Screen Feature-Gates ──
 function renderMehrMenu(){
+  // Profile Card
+  var pc=document.getElementById('mehrProfileCard');
+  if(pc){
+    if(hasFeature('markenprofil')){
+      // Hersteller: Shop-Profil
+      pc.innerHTML='<div class="mehr-profile-avatar">'+(brandProfile.logo||'💊')+'</div><div class="mehr-profile-info"><div class="mehr-profile-name">'+(brandProfile.name||provider.name)+'</div><div class="mehr-profile-plan">💊 Hersteller</div></div><span style="color:var(--text-muted);font-size:18px">›</span>';
+    } else {
+      // Partner: Praxis-Profil
+      var typeIcons={heilpraktiker:'🩺',ernaehrung:'🥗',trainer:'💪',beauty:'✨',hebamme:'👶',creator:'🎬',bgm:'🏢',studio:'🏋️',coach:'🎯'};
+      var typeLabels={heilpraktiker:'Heilpraktiker/in',ernaehrung:'Ernährungsexpert/in',trainer:'Trainer & Coach',beauty:'Beauty & Wellness',hebamme:'Hebamme',creator:'Creator',bgm:'BGM',studio:'Studio',coach:'Coach'};
+      pc.innerHTML='<div class="mehr-profile-avatar">'+(typeIcons[partnerType]||'🩺')+'</div><div class="mehr-profile-info"><div class="mehr-profile-name">'+(provider.name||'Mein Profil')+'</div><div class="mehr-profile-plan">'+(typeLabels[partnerType]||partnerType)+'</div>'+(provider.title?'<div class="mehr-profile-id">'+provider.title+'</div>':'')+'</div><span style="color:var(--text-muted);font-size:18px">›</span>';
+    }
+  }
+  // Performance Stats
+  var perf=document.getElementById('mehrPerformance');
+  if(perf){
+    if(hasFeature('produkte')){
+      perf.innerHTML='<div style="font-size:12px;font-weight:700;color:var(--green-accent);margin-bottom:10px">PERFORMANCE (30 TAGE)</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:6px;overflow:hidden"><div style="background:var(--white);padding:10px;text-align:center"><div style="font-size:18px;font-weight:700">4.8</div><div style="font-size:10px;color:var(--text-muted)">⭐ Bewertung</div></div><div style="background:var(--white);padding:10px;text-align:center"><div style="font-size:18px;font-weight:700">97%</div><div style="font-size:10px;color:var(--text-muted)">📦 Versandquote</div></div><div style="background:var(--white);padding:10px;text-align:center"><div style="font-size:18px;font-weight:700">2.1%</div><div style="font-size:10px;color:var(--text-muted)">↩️ Retourenquote</div></div></div>';
+    } else {
+      perf.innerHTML='<div style="font-size:12px;font-weight:700;color:var(--green-accent);margin-bottom:10px">PERFORMANCE (30 TAGE)</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:6px;overflow:hidden"><div style="background:var(--white);padding:10px;text-align:center"><div style="font-size:18px;font-weight:700">4.9</div><div style="font-size:10px;color:var(--text-muted)">⭐ Bewertung</div></div><div style="background:var(--white);padding:10px;text-align:center"><div style="font-size:18px;font-weight:700">47</div><div style="font-size:10px;color:var(--text-muted)">📅 Termine</div></div><div style="background:var(--white);padding:10px;text-align:center"><div style="font-size:18px;font-weight:700">98%</div><div style="font-size:10px;color:var(--text-muted)">😊 Zufriedenheit</div></div></div>';
+    }
+  }
   // Quick Actions
   const qa=document.getElementById('mehrQuickActions');
   if(qa){
@@ -4906,7 +5118,10 @@ function renderMehrMenu(){
     items.push({screen:'kunden',icon:'👥',label:'Kunden'});
     if(hasFeature('services')) items.push({screen:'services',icon:'🩺',label:'Services'});
     if(hasFeature('bluttests')) items.push({screen:'bluttests',icon:'🩸',label:'Bluttests'});
-    items.push({screen:'affiliate',icon:'🤝',label:'Affiliate'});
+    if(hasFeature('ernaehrungsPlan')) items.push({screen:'ernaehrungsPlan',icon:'🥗',label:'Ernährungspläne'});
+    if(hasFeature('trainingsPlan')) items.push({screen:'trainingsPlan',icon:'🏋️',label:'Trainingspläne'});
+    if(hasFeature('rezepte')) items.push({screen:'rezepte',icon:'🍳',label:'Rezepte'});
+    if(hasFeature('produkte')) items.push({screen:'affiliate',icon:'🤝',label:'Affiliate'});
     items.push({screen:'finanzen',icon:'💳',label:'Finanzen'});
     items.push({screen:'statistiken',icon:'📊',label:'Statistiken'});
     qa.innerHTML=items.map(i=>`<div class="mehr-quick-item" onclick="showScreen('${i.screen}')"><span>${i.icon}</span><span>${i.label}</span></div>`).join('');
@@ -4914,9 +5129,20 @@ function renderMehrMenu(){
   // Shop section: nur für Produkt-Partner
   const shopSec=document.getElementById('mehrShopSection');
   if(shopSec) shopSec.style.display=hasFeature('markenprofil')||hasFeature('produkte')?'':'none';
+  // Produkt-only Items ausblenden
+  document.querySelectorAll('.mehr-produkt-only').forEach(function(el){
+    el.style.display=hasFeature('produkte')?'':'none';
+  });
 
   // Module-Toggles (Feature-Overrides)
   renderModuleToggles();
+
+  // Admin-Bereich nur für Admins anzeigen
+  const adminSec=document.getElementById('mehrAdminSection');
+  if(adminSec){
+    const userRole=(_currentUser&&_currentUser.user_metadata&&_currentUser.user_metadata.role)||localStorage.getItem('suppTreeUserRole')||'';
+    adminSec.style.display=(userRole==='admin')?'':'none';
+  }
 }
 
 function renderModuleToggles() {
@@ -4926,7 +5152,8 @@ function renderModuleToggles() {
 
   // Definiere optionale Module pro Typ
   var modules = [];
-  if (partnerType === 'heilpraktiker') {
+  var featureKey = SUBTYPE_FEATURE_MAP[partnerType] || partnerType;
+  if (featureKey === 'heilpraktiker') {
     modules.push({key:'bluttests', icon:'🩸', label:'Bluttests anbieten', desc:'Blutanalysen für Patienten verwalten'});
   }
 
@@ -4962,7 +5189,7 @@ function toggleFeatureModule(key, enabled) {
   if (typeof renderDashboard === 'function') renderDashboard();
   toast(enabled ? 'Modul aktiviert' : 'Modul deaktiviert', enabled ? 'success' : 'info');
 }
-renderMehrMenu();
+// renderMehrMenu wird nach provider/brandProfile-Init aufgerufen (nach Zeile ~5280)
 
 // User-Anzeige aktualisieren
 function updateUserDisplay(user) {
@@ -5063,8 +5290,8 @@ const DEMO_PROVIDERS = {
     qualifications:['GMP-zertifiziert','ISO 22000','Bio-Siegel','Made in Germany'],
     location:'Leopoldstraße 42, 80802 München',
     phone:'+49 89 123 456 78',website:'https://naturvital-supplements.de',
-    hours:{week:'09:00 - 17:00',sat:'Geschlossen',sun:'Geschlossen'},
-    modes:['online'],rating:4.8,reviews:124
+    hours:{days:{mo:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},di:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},mi:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},do:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},fr:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},sa:{closed:false,am:{from:'10:00',to:'14:00'},pm:{from:'',to:''}},so:{closed:true,am:{from:'',to:''},pm:{from:'',to:''}}},closures:[]},
+    modes:['online'],rating:4.8,reviews:124,country:'DE'
   },
   heilpraktiker: {
     name:'Dr. Max Eichkorn',title:'Heilpraktiker · Ernährungsberater',avatar:'👨‍⚕️',
@@ -5072,8 +5299,8 @@ const DEMO_PROVIDERS = {
     qualifications:['Heilpraktiker (seit 2009)','Zertifizierter Ernährungsberater (DGE)','Orthomolekulare Medizin','Sportmedizinische Zusatzqualifikation'],
     location:'Praxis für Naturheilkunde, Maximilianstr. 42, 80539 München',
     phone:'+49 89 123 456 78',website:'https://praxis-eichkorn.de',
-    hours:{week:'09:00 - 18:00',sat:'10:00 - 14:00',sun:'Geschlossen'},
-    modes:['praxis','video','phone'],rating:4.9,reviews:47
+    hours:{days:{mo:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},di:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},mi:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},do:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},fr:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},sa:{closed:false,am:{from:'10:00',to:'14:00'},pm:{from:'',to:''}},so:{closed:true,am:{from:'',to:''},pm:{from:'',to:''}}},closures:[]},
+    modes:['praxis','video','phone'],rating:4.9,reviews:47,country:'DE'
   },
   coach: {
     name:'Lisa Berger',title:'Fitness- & Ernährungscoach',avatar:'💪',
@@ -5081,11 +5308,22 @@ const DEMO_PROVIDERS = {
     qualifications:['Zertifizierte Personal Trainerin (DSHS)','Ernährungsberaterin (IHK)','Functional Training Specialist','Yoga-Lehrerin (RYT 200)'],
     location:'FitSpace Studio, Schillerstr. 15, 80336 München',
     phone:'+49 176 9876 5432',website:'https://lisaberger-coaching.de',
-    hours:{week:'07:00 - 20:00',sat:'09:00 - 16:00',sun:'Geschlossen'},
-    modes:['studio','video','outdoor'],rating:4.9,reviews:63
+    hours:{days:{mo:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},di:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},mi:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},do:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},fr:{closed:false,am:{from:'09:00',to:'12:00'},pm:{from:'14:00',to:'18:00'}},sa:{closed:false,am:{from:'10:00',to:'14:00'},pm:{from:'',to:''}},so:{closed:true,am:{from:'',to:''},pm:{from:'',to:''}}},closures:[]},
+    modes:['studio','video','outdoor'],rating:4.9,reviews:63,country:'DE'
   }
 };
-let provider = JSON.parse(JSON.stringify(DEMO_PROVIDERS[partnerType] || DEMO_PROVIDERS.supplement));
+// Migration: altes hours-Format (week/sat/sun Strings) → neues Format (days + closures)
+function migrateHours(h){
+  if(h&&h.days)return h;
+  var parseRange=function(str){if(!str||str.toLowerCase()==='geschlossen')return null;var p=str.split('-').map(function(s){return s.trim();});return p.length===2?{from:p[0],to:p[1]}:null;};
+  var weekR=parseRange(h&&h.week);var satR=parseRange(h&&h.sat);var sunR=parseRange(h&&h.sun);
+  var makeDay=function(r){return{closed:!r,am:r?{from:r.from,to:r.to}:{from:'',to:''},pm:{from:'',to:''}};};
+  var days={};['mo','di','mi','do','fr'].forEach(function(d){days[d]=makeDay(weekR);});
+  days.sa=makeDay(satR);days.so=makeDay(sunR);
+  return{days:days,closures:[]};
+}
+let provider = JSON.parse(JSON.stringify(DEMO_PROVIDERS[partnerType] || DEMO_PROVIDERS[SUBTYPE_FEATURE_MAP[partnerType]] || DEMO_PROVIDERS.supplement));
+provider.hours=migrateHours(provider.hours);
 
 // BRAND PROFILE DATA
 let brandProfile={
@@ -5125,6 +5363,7 @@ let brandProfile={
     };
   }
 })();
+try{renderMehrMenu();}catch(e){console.error('renderMehrMenu error:',e);}
 
 // SERVICES DATA
 const svcCatIcons={beratung:'💬',bluttest:'🩸',plan:'📋',behandlung:'🏥',coaching:'🎯',paket:'📦'};
@@ -5522,7 +5761,14 @@ const zutatDB=[
 let selZutaten=[];
 const periods=[{id:'today',label:'Heute'},{id:'7d',label:'7 Tage'},{id:'30d',label:'30 Tage'},{id:'90d',label:'90 Tage'},{id:'12m',label:'12 Monate'},{id:'year',label:'Dieses Jahr'},{id:'custom',label:'📅 Eigener'}];
 
-const navParent={stats:'products',promo:'products',compare:'products',detail:'products',wizard:'products',orderDetail:'orders',chat:'termine',services:'mehr',provider:'mehr',affiliate:'mehr',linkAnalytics:'mehr',finanzen:'mehr',kunden:'mehr',kundenDetail:'mehr',meinShop:'mehr',versand:'mehr',kontoSettings:'mehr',benachrichtigungen:'mehr',sicherheit:'mehr',team:'mehr',teamForm:'team',rechtliches:'mehr',compliance:'mehr',unterlagen:'mehr',support:'mehr',hilfe:'mehr',feedback:'mehr',statistiken:'mehr',dashCustomize:'dashboard'};
+const navParent=(function(){
+  var base={stats:'products',promo:'products',compare:'products',detail:'products',wizard:'products',orderDetail:'orders',chat:'termine',provider:'mehr',affiliate:'mehr',linkAnalytics:'mehr',finanzen:'mehr',kundenDetail:'kunden',meinShop:'mehr',versand:'mehr',kontoSettings:'mehr',benachrichtigungen:'mehr',sicherheit:'mehr',team:'mehr',teamForm:'team',rechtliches:'mehr',compliance:'mehr',unterlagen:'mehr',support:'mehr',hilfe:'mehr',feedback:'mehr',statistiken:'mehr',dashCustomize:'dashboard'};
+  // Services: eigener Tab wenn Feature aktiv, sonst → Mehr
+  if(!hasFeature('services')) base.services='mehr';
+  // Kunden: eigener Tab wenn kein Produkte-Tab, sonst → Mehr
+  if(hasFeature('produkte')){ base.kunden='mehr'; base.kundenDetail='mehr'; }
+  return base;
+})();
 
 let prevScreen='dashboard';
 const screenScrollPos={};
@@ -5537,7 +5783,8 @@ function showScreen(id){
   const target=document.getElementById(id+'Screen');
   target.classList.add('active');
   const navId=navParent[id]||id;
-  document.querySelectorAll('.nav-item').forEach((n,i)=>n.classList.toggle('active',['dashboard','termine','products','orders','mehr'][i]===navId));
+  var navBtns=document.querySelectorAll('.nav-item');
+  for(var ni=0;ni<navBtns.length;ni++){var nBtn=navBtns[ni];var noc=nBtn.getAttribute('onclick')||'';var nm=noc.match(/showScreen\('([^']+)'\)/);if(nm){nBtn.classList.toggle('active',nm[1]===navId);}}
   if(id==='dashboard'){renderDashboard();}
   if(id==='dashCustomize'){renderDashCustomize();}
   if(id==='products'){
@@ -8108,6 +8355,8 @@ function updateProviderUI() {
   if (el) el.value = (provider.qualifications || []).join('\n');
   el = document.getElementById('provLocation');
   if (el) el.value = provider.location || '';
+  el = document.getElementById('provCountry');
+  if (el) el.value = provider.country || 'DE';
   el = document.getElementById('provPhone');
   if (el) el.value = provider.phone || '';
   el = document.getElementById('provWeb');
@@ -8144,15 +8393,14 @@ function renderProviderProfile(){
     <div class="profile-section">
       <div class="profile-section-title">Kontakt & Standort</div>
       <div class="profile-row"><div class="profile-row-icon">📍</div><div class="profile-row-content"><div class="profile-row-label">Adresse</div><div class="profile-row-value">${esc(provider.location)}</div></div></div>
+      <div class="profile-row"><div class="profile-row-icon">🌍</div><div class="profile-row-content"><div class="profile-row-label">Land</div><div class="profile-row-value">${esc({DE:'Deutschland',AT:'Österreich',CH:'Schweiz',NL:'Niederlande',LU:'Luxemburg'}[provider.country]||provider.country||'Deutschland')}</div></div></div>
       <div class="profile-row"><div class="profile-row-icon">📞</div><div class="profile-row-content"><div class="profile-row-label">Telefon</div><div class="profile-row-value">${esc(provider.phone)}</div></div></div>
       <div class="profile-row"><div class="profile-row-icon">🌐</div><div class="profile-row-content"><div class="profile-row-label">Website</div><div class="profile-row-value">${esc(provider.website)}</div></div></div>
     </div>
 
     <div class="profile-section">
       <div class="profile-section-title">Öffnungszeiten</div>
-      <div class="profile-row"><div class="profile-row-icon">📅</div><div class="profile-row-content"><div class="profile-row-label">Mo - Fr</div><div class="profile-row-value">${esc(provider.hours.week)}</div></div></div>
-      <div class="profile-row"><div class="profile-row-icon">📅</div><div class="profile-row-content"><div class="profile-row-label">Sa</div><div class="profile-row-value">${esc(provider.hours.sat)}</div></div></div>
-      <div class="profile-row"><div class="profile-row-icon">📅</div><div class="profile-row-content"><div class="profile-row-label">So</div><div class="profile-row-value">${esc(provider.hours.sun)}</div></div></div>
+      ${renderHoursDisplay()}
     </div>
 
     <div class="profile-section">
@@ -8170,11 +8418,12 @@ function openProviderSheet(){
   document.getElementById('provBio').value=provider.bio;
   document.getElementById('provQuals').value=provider.qualifications.join('\n');
   document.getElementById('provLocation').value=provider.location;
+  document.getElementById('provCountry').value=provider.country||'DE';
   document.getElementById('provPhone').value=provider.phone;
   document.getElementById('provWeb').value=provider.website;
-  document.getElementById('provHrWeek').value=provider.hours.week;
-  document.getElementById('provHrSat').value=provider.hours.sat;
-  document.getElementById('provHrSun').value=provider.hours.sun;
+  _hoursBackup=JSON.parse(JSON.stringify(provider.hours));
+  renderHoursEditor();
+  renderClosuresEditor();
   document.getElementById('provTypePraxis').checked=provider.modes.includes('praxis');
   document.getElementById('provTypeVideo').checked=provider.modes.includes('video');
   document.getElementById('provTypePhone').checked=provider.modes.includes('phone');
@@ -8183,9 +8432,196 @@ function openProviderSheet(){
   document.getElementById('providerSheet').classList.add('visible');
 }
 
+var _hoursBackup=null;
 function closeProviderSheet(){
+  if(_hoursBackup){provider.hours=_hoursBackup;_hoursBackup=null;}
   document.getElementById('providerSheetOverlay').classList.remove('visible');
   document.getElementById('providerSheet').classList.remove('visible');
+}
+
+// ── Öffnungszeiten-Editor ──
+var HOURS_DAY_KEYS=['mo','di','mi','do','fr','sa','so'];
+var HOURS_DAY_LABELS={mo:'Mo',di:'Di',mi:'Mi',do:'Do',fr:'Fr',sa:'Sa',so:'So'};
+
+function isDaySplit(d){
+  // Tag ist geteilt wenn pm-Zeiten gesetzt sind
+  return !!(d.pm&&d.pm.from&&d.pm.to);
+}
+
+function renderHoursEditor(){
+  var days=provider.hours.days;
+  var html='';
+  for(var i=0;i<HOURS_DAY_KEYS.length;i++){
+    var key=HOURS_DAY_KEYS[i];
+    var label=HOURS_DAY_LABELS[key];
+    var d=days[key];
+    var split=isDaySplit(d);
+    var cl=d.closed?' hclosed':'';
+    html+='<div class="hours-day-block'+cl+'" id="hdb_'+key+'">'
+      +'<div class="hours-day-header">'
+        +'<span class="hours-day-name">'+label+'</span>'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+          +'<span class="hours-closed-label" id="hlbl_'+key+'">'+(d.closed?'Geschlossen':'Geöffnet')+'</span>'
+          +'<button class="svc-toggle'+(d.closed?'':' on')+'" id="htog_'+key+'" onclick="toggleDayClosed(\''+key+'\')" type="button"></button>'
+        +'</div>'
+      +'</div>'
+      +'<div class="hours-slots" id="hslots_'+key+'" style="'+(d.closed?'display:none':'')+'">'
+        // Ganztägig-Zeile (sichtbar wenn NICHT geteilt)
+        +'<div id="hfull_'+key+'" style="'+(split?'display:none':'')+'">'
+          +'<div class="hours-slot">'
+            +'<span class="hours-slot-label">Ganztägig</span>'
+            +'<input type="time" id="ham_from_'+key+'" value="'+d.am.from+'">'
+            +'<span class="hours-slot-sep">–</span>'
+            +'<input type="time" id="ham_to_'+key+'" value="'+d.am.to+'">'
+          +'</div>'
+        +'</div>'
+        // Geteilt-Zeilen (sichtbar wenn geteilt)
+        +'<div id="hsplit_'+key+'" style="'+(split?'':'display:none')+'">'
+          +'<div class="hours-slot">'
+            +'<span class="hours-slot-label">Vormittags</span>'
+            +'<input type="time" id="hsam_from_'+key+'" value="'+(split?d.am.from:'')+'">'
+            +'<span class="hours-slot-sep">–</span>'
+            +'<input type="time" id="hsam_to_'+key+'" value="'+(split?d.am.to:'')+'">'
+          +'</div>'
+          +'<div class="hours-slot">'
+            +'<span class="hours-slot-label">Nachmittags</span>'
+            +'<input type="time" id="hpm_from_'+key+'" value="'+d.pm.from+'">'
+            +'<span class="hours-slot-sep">–</span>'
+            +'<input type="time" id="hpm_to_'+key+'" value="'+d.pm.to+'">'
+          +'</div>'
+        +'</div>'
+        // Umschalt-Button
+        +'<div style="text-align:right;margin-top:4px">'
+          +'<button type="button" onclick="toggleDaySplit(\''+key+'\')" id="hspbtn_'+key+'" style="background:none;border:none;font-size:11px;color:var(--green-accent);cursor:pointer;font-weight:600;padding:2px 0">'+(split?'← Ganztägig':'Vormittags / Nachmittags →')+'</button>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }
+  document.getElementById('provHoursEdit').innerHTML=html;
+}
+
+function toggleDaySplit(key){
+  var fullDiv=document.getElementById('hfull_'+key);
+  var splitDiv=document.getElementById('hsplit_'+key);
+  var btn=document.getElementById('hspbtn_'+key);
+  var isSplit=splitDiv.style.display!=='none';
+  if(isSplit){
+    // Switch to ganztägig: kopiere split-vm Werte in ganztägig
+    var samFrom=document.getElementById('hsam_from_'+key).value;
+    var pmTo=document.getElementById('hpm_to_'+key).value;
+    if(samFrom)document.getElementById('ham_from_'+key).value=samFrom;
+    if(pmTo)document.getElementById('ham_to_'+key).value=pmTo;
+    // pm-Felder leeren
+    document.getElementById('hpm_from_'+key).value='';
+    document.getElementById('hpm_to_'+key).value='';
+    fullDiv.style.display='';
+    splitDiv.style.display='none';
+    btn.textContent='Vormittags / Nachmittags →';
+  } else {
+    // Switch to split: verteile ganztägig auf vm/nm
+    var amFrom=document.getElementById('ham_from_'+key).value;
+    var amTo=document.getElementById('ham_to_'+key).value;
+    document.getElementById('hsam_from_'+key).value=amFrom;
+    document.getElementById('hsam_to_'+key).value='12:00';
+    document.getElementById('hpm_from_'+key).value='13:00';
+    document.getElementById('hpm_to_'+key).value=amTo;
+    fullDiv.style.display='none';
+    splitDiv.style.display='';
+    btn.textContent='← Ganztägig';
+  }
+}
+
+function toggleDayClosed(key){
+  var d=provider.hours.days[key];
+  d.closed=!d.closed;
+  var block=document.getElementById('hdb_'+key);
+  var toggle=document.getElementById('htog_'+key);
+  var slots=document.getElementById('hslots_'+key);
+  var lbl=document.getElementById('hlbl_'+key);
+  if(d.closed){block.classList.add('hclosed');toggle.classList.remove('on');slots.style.display='none';lbl.textContent='Geschlossen';}
+  else{block.classList.remove('hclosed');toggle.classList.add('on');slots.style.display='';lbl.textContent='Geöffnet';}
+}
+
+// ── Schließungen / Urlaub ──
+function formatClosureDate(dateStr){
+  var d=new Date(dateStr+'T00:00:00');
+  return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+function renderClosuresEditor(){
+  var closures=provider.hours.closures||[];
+  var sorted=closures.slice().sort(function(a,b){return a.from.localeCompare(b.from);});
+  var html='';
+  if(sorted.length===0){
+    html+='<div style="font-size:12px;color:var(--text-muted);padding:8px 0">Keine geplanten Schließungen</div>';
+  }
+  for(var i=0;i<sorted.length;i++){
+    var c=sorted[i];
+    html+='<div class="closure-card">'
+      +'<div class="closure-card-info">'
+        +'<div class="closure-card-dates">📅 '+formatClosureDate(c.from)+' – '+formatClosureDate(c.to)+'</div>'
+        +(c.reason?'<div class="closure-card-reason">'+esc(c.reason)+'</div>':'')
+      +'</div>'
+      +'<button class="closure-card-remove" onclick="removeClosure('+i+')" title="Entfernen">✕</button>'
+    +'</div>';
+  }
+  html+='<div class="closure-add-row">'
+    +'<div class="form-group"><label class="form-label">Von</label><input type="date" class="form-input" id="closureFrom"></div>'
+    +'<div class="form-group"><label class="form-label">Bis</label><input type="date" class="form-input" id="closureTo"></div>'
+    +'<div class="form-group" style="flex:2"><label class="form-label">Grund (optional)</label><input type="text" class="form-input" id="closureReason" placeholder="z.B. Osterferien, Fortbildung"></div>'
+    +'<button class="closure-add-btn" onclick="addClosure()" type="button">+ Hinzufügen</button>'
+  +'</div>';
+  document.getElementById('provClosuresEdit').innerHTML=html;
+}
+
+function addClosure(){
+  var from=document.getElementById('closureFrom').value;
+  var to=document.getElementById('closureTo').value;
+  var reason=document.getElementById('closureReason').value.trim();
+  if(!from||!to){toast('Bitte Von- und Bis-Datum angeben','error');return;}
+  if(from>to){toast('Das Von-Datum muss vor dem Bis-Datum liegen','error');return;}
+  if(!provider.hours.closures)provider.hours.closures=[];
+  provider.hours.closures.push({from:from,to:to,reason:reason});
+  renderClosuresEditor();
+  toast('Schließung hinzugefügt','success');
+}
+
+function removeClosure(idx){
+  provider.hours.closures.splice(idx,1);
+  renderClosuresEditor();
+  toast('Schließung entfernt','info');
+}
+
+// ── Hours Display (Profilansicht) ──
+function renderHoursDisplay(){
+  var h=provider.hours;
+  if(!h||!h.days){
+    return '<div class="profile-row"><div class="profile-row-icon">📅</div><div class="profile-row-content"><div class="profile-row-label">Mo - Fr</div><div class="profile-row-value">'+esc(h&&h.week||'–')+'</div></div></div>'
+      +'<div class="profile-row"><div class="profile-row-icon">📅</div><div class="profile-row-content"><div class="profile-row-label">Sa</div><div class="profile-row-value">'+esc(h&&h.sat||'–')+'</div></div></div>'
+      +'<div class="profile-row"><div class="profile-row-icon">📅</div><div class="profile-row-content"><div class="profile-row-label">So</div><div class="profile-row-value">'+esc(h&&h.sun||'–')+'</div></div></div>';
+  }
+  var html='<div style="padding:4px 0">';
+  for(var i=0;i<HOURS_DAY_KEYS.length;i++){
+    var key=HOURS_DAY_KEYS[i];
+    var d=h.days[key];
+    if(d.closed){
+      html+='<div class="hours-display-day"><span class="hours-display-name">'+HOURS_DAY_LABELS[key]+'</span><span class="hours-display-closed">Geschlossen</span></div>';
+    } else {
+      var slots=[];
+      if(d.am.from&&d.am.to) slots.push(d.am.from+' – '+d.am.to);
+      if(d.pm.from&&d.pm.to) slots.push(d.pm.from+' – '+d.pm.to);
+      var display=slots.length>0?slots.join(', '):'–';
+      html+='<div class="hours-display-day"><span class="hours-display-name">'+HOURS_DAY_LABELS[key]+'</span><span class="hours-display-times">'+display+'</span></div>';
+    }
+  }
+  html+='</div>';
+  var today=new Date().toISOString().slice(0,10);
+  var closures=(h.closures||[]).filter(function(c){return c.to>=today;}).sort(function(a,b){return a.from.localeCompare(b.from);});
+  for(var j=0;j<closures.length;j++){
+    var c=closures[j];
+    html+='<div class="closure-display-card"><span class="closure-display-icon">🏖️</span><span class="closure-display-text"><strong>'+formatClosureDate(c.from)+' – '+formatClosureDate(c.to)+'</strong>'+(c.reason?' · '+esc(c.reason):'')+'</span></div>';
+  }
+  return html;
 }
 
 function saveProviderProfile(){
@@ -8194,15 +8630,40 @@ function saveProviderProfile(){
   provider.bio=document.getElementById('provBio').value.trim();
   provider.qualifications=document.getElementById('provQuals').value.trim().split('\n').filter(l=>l.trim());
   provider.location=document.getElementById('provLocation').value.trim();
+  var newCountry=document.getElementById('provCountry').value;
+  // Bei Länderwechsel: Partner-Code zurücksetzen → neuer Code aus neuem Nummernkreis
+  if(newCountry!==provider.country){
+    localStorage.removeItem('suppTreePartnerCode');
+    provider.country=newCountry;
+  }
   provider.phone=document.getElementById('provPhone').value.trim();
   provider.website=document.getElementById('provWeb').value.trim();
-  provider.hours={week:document.getElementById('provHrWeek').value,sat:document.getElementById('provHrSat').value,sun:document.getElementById('provHrSun').value};
+  var days={};
+  HOURS_DAY_KEYS.forEach(function(key){
+    var splitDiv=document.getElementById('hsplit_'+key);
+    var isSplit=splitDiv&&splitDiv.style.display!=='none';
+    if(isSplit){
+      days[key]={
+        closed:provider.hours.days[key].closed,
+        am:{from:document.getElementById('hsam_from_'+key).value,to:document.getElementById('hsam_to_'+key).value},
+        pm:{from:document.getElementById('hpm_from_'+key).value,to:document.getElementById('hpm_to_'+key).value}
+      };
+    } else {
+      days[key]={
+        closed:provider.hours.days[key].closed,
+        am:{from:document.getElementById('ham_from_'+key).value,to:document.getElementById('ham_to_'+key).value},
+        pm:{from:'',to:''}
+      };
+    }
+  });
+  provider.hours={days:days,closures:provider.hours.closures||[]};
   const modes=[];
   if(document.getElementById('provTypePraxis').checked)modes.push('praxis');
   if(document.getElementById('provTypeVideo').checked)modes.push('video');
   if(document.getElementById('provTypePhone').checked)modes.push('phone');
   if(document.getElementById('provTypeHome').checked)modes.push('home');
   provider.modes=modes;
+  _hoursBackup=null;
   closeProviderSheet();
   renderProviderProfile();
   toast('✓ Profil gespeichert','success');
@@ -10357,49 +10818,245 @@ function restoreKundenNotiz(idx){
   renderKundenDetail();
 }
 
+// ── Mapping: Onboarding-Typ → Typenkennzahl ──
+// Alle granularen partnerTypes werden auf die 4 Typenkennzahlen gemappt
+// (Kunden haben keine Partner-Codes — nur Nummernkreise KD-49-xxxxx)
+var PARTNER_TYPE_TO_CODE = {
+  // Alle Partner/Experten → partner (01)
+  heilpraktiker:'partner', ernaehrung:'partner', trainer:'partner',
+  beauty:'partner', hebamme:'partner', creator:'partner', coach:'partner',
+  // Hersteller / Supplement-Marken (02)
+  supplement:'hersteller',
+  // Unternehmen (03)
+  klinik:'unternehmen', studio:'unternehmen', sonstiges_u:'unternehmen',
+  // BGM (04)
+  bgm:'bgm'
+};
+
+function getCodeTyp(){
+  // partnerType (z.B. "heilpraktiker") → Typenkennzahl-Key (z.B. "partner")
+  return PARTNER_TYPE_TO_CODE[partnerType] || 'partner';
+}
+
+// ── QR-Code Generator mit SuppTree-Logo ──
+function getPartnerCode(){
+  // Production: bereits zugewiesener Code (Supabase user_metadata)
+  if(_currentUser&&_currentUser.user_metadata&&_currentUser.user_metadata.partner_code) return _currentUser.user_metadata.partner_code;
+  // Bereits lokal gespeicherter Code
+  var stored=localStorage.getItem('suppTreePartnerCode');
+  if(stored) return stored;
+  // Code aus Admin-Nummernkreis generieren (localStorage)
+  return generatePartnerCodeFromLocal();
+}
+function generatePartnerCodeFromLocal(){
+  var cc=(provider&&provider.country)||'DE';
+  var typ=getCodeTyp();
+  var code;
+  try{
+    var adminSettings=JSON.parse(localStorage.getItem('suppTreeAdminSettings'));
+    if(adminSettings&&adminSettings.partnerCodes){
+      var pc=adminSettings.partnerCodes;
+      var land=pc.laender&&pc.laender[cc];
+      var tObj=pc.typen&&pc.typen[typ];
+      if(land&&tObj){
+        var comboKey=land.nr+'-'+tObj.nr;
+        if(!pc.laufend) pc.laufend={};
+        if(!pc.laufend[comboKey]) pc.laufend[comboKey]={next:25001};
+        var entry=pc.laufend[comboKey];
+        var nr=String(entry.next).padStart(pc.pad||5,'0');
+        code=land.nr+'-'+tObj.nr+'-'+nr;
+        entry.next++;
+        localStorage.setItem('suppTreeAdminSettings',JSON.stringify(adminSettings));
+      }
+    }
+  }catch(e){}
+  if(!code) code='49-02-'+String(1+Math.floor(Math.random()*99999)).padStart(5,'0');
+  localStorage.setItem('suppTreePartnerCode',code);
+  return code;
+}
+// Async: Partner-Code über Supabase generieren (Production)
+async function generatePartnerCodeFromSupabase(){
+  try{
+    var sb=typeof initSupabase==='function'?initSupabase():null;
+    if(!sb) return null;
+    // partner_codes aus Supabase lesen
+    var res=await sb.from('admin_settings').select('value').eq('key','partner_codes').single();
+    if(res.error||!res.data) return null;
+    var pc=res.data.value;
+    var cc=(provider&&provider.country)||'DE';
+    var typ=getCodeTyp();
+    var land=pc.laender&&pc.laender[cc];
+    var tObj=pc.typen&&pc.typen[typ];
+    if(!land||!tObj) return null;
+    var comboKey=land.nr+'-'+tObj.nr;
+    if(!pc.laufend) pc.laufend={};
+    if(!pc.laufend[comboKey]) pc.laufend[comboKey]={next:25001};
+    var entry=pc.laufend[comboKey];
+    var nr=String(entry.next).padStart(pc.pad||5,'0');
+    var code=land.nr+'-'+tObj.nr+'-'+nr;
+    entry.next++;
+    // Laufende Nummer in Supabase hochzählen
+    await sb.from('admin_settings').update({value:pc}).eq('key','partner_codes');
+    // Lokal speichern
+    localStorage.setItem('suppTreePartnerCode',code);
+    return code;
+  }catch(e){console.warn('Supabase partner code error:',e);return null;}
+}
+// Partner-Code sicherstellen (nach Onboarding aufrufen, wenn Typ+Land bekannt)
+async function ensurePartnerCode(){
+  if(localStorage.getItem('suppTreePartnerCode')) return;
+  if(!_currentUser) return;
+  if(_currentUser.user_metadata&&_currentUser.user_metadata.partner_code) return;
+  var code=await generatePartnerCodeFromSupabase();
+  if(!code) code=generatePartnerCodeFromLocal();
+  if(code) console.log('Partner-Code generiert:',code,'(Typ:',getCodeTyp(),', Land:',(provider&&provider.country)||'DE',')');
+}
+function getPartnerURL(){
+  return 'https://supptree.de/r/'+getPartnerCode();
+}
+
+var _qrLogoCache=null;
+function loadQRLogo(){
+  return new Promise(function(resolve){
+    if(_qrLogoCache){resolve(_qrLogoCache);return;}
+    var img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=function(){_qrLogoCache=img;resolve(img);};
+    img.onerror=function(){resolve(null);};
+    img.src='../www/assets/icon.png';
+  });
+}
+
+function generateQRCanvas(url,size,logoImg){
+  var canvas=document.createElement('canvas');
+  canvas.width=size;canvas.height=size;
+  var ctx=canvas.getContext('2d');
+  // QR-Code berechnen (Level H = 30% Fehlerkorrektur)
+  var qr=qrcode(0,'H');
+  qr.addData(url);
+  qr.make();
+  var modules=qr.getModuleCount();
+  var padding=Math.floor(size*0.06);
+  var cellSize=(size-padding*2)/modules;
+  // Weißer Hintergrund mit abgerundeten Ecken
+  ctx.fillStyle='#ffffff';
+  var r=Math.floor(size*0.04);
+  ctx.beginPath();
+  ctx.moveTo(r,0);ctx.lineTo(size-r,0);ctx.quadraticCurveTo(size,0,size,r);
+  ctx.lineTo(size,size-r);ctx.quadraticCurveTo(size,size,size-r,size);
+  ctx.lineTo(r,size);ctx.quadraticCurveTo(0,size,0,size-r);
+  ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);
+  ctx.closePath();ctx.fill();
+  // QR-Module zeichnen
+  var logoRadius=Math.floor(size*0.14);
+  var center=size/2;
+  for(var row=0;row<modules;row++){
+    for(var col=0;col<modules;col++){
+      if(!qr.isDark(row,col))continue;
+      var x=padding+col*cellSize;
+      var y=padding+row*cellSize;
+      var cx=x+cellSize/2;
+      var cy=y+cellSize/2;
+      // Logo-Bereich freilassen (Kreis in der Mitte)
+      var dist=Math.sqrt((cx-center)*(cx-center)+(cy-center)*(cy-center));
+      if(dist<logoRadius+cellSize)continue;
+      ctx.fillStyle='#1a1a1a';
+      var cr=Math.max(1,cellSize*0.15);
+      var s=Math.ceil(cellSize);
+      ctx.beginPath();
+      ctx.moveTo(x+cr,y);ctx.lineTo(x+s-cr,y);ctx.quadraticCurveTo(x+s,y,x+s,y+cr);
+      ctx.lineTo(x+s,y+s-cr);ctx.quadraticCurveTo(x+s,y+s,x+s-cr,y+s);
+      ctx.lineTo(x+cr,y+s);ctx.quadraticCurveTo(x,y+s,x,y+s-cr);
+      ctx.lineTo(x,y+cr);ctx.quadraticCurveTo(x,y,x+cr,y);
+      ctx.closePath();ctx.fill();
+    }
+  }
+  // Logo in der Mitte
+  if(logoImg){
+    var logoSize=logoRadius*1.7;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(center,center,logoRadius,0,Math.PI*2);
+    ctx.fillStyle='#ffffff';
+    ctx.fill();
+    ctx.drawImage(logoImg,center-logoSize/2,center-logoSize/2,logoSize,logoSize);
+    ctx.restore();
+  }
+  return canvas;
+}
+
+var _currentQRCanvas=null;
 function showMeinQRCode(){
-  const overlay=document.createElement('div');
+  var partnerURL=getPartnerURL();
+  var partnerCode=getPartnerCode();
+  var overlay=document.createElement('div');
   overlay.className='einladen-overlay';
   overlay.onclick=function(e){if(e.target===overlay)overlay.remove();};
-  // SVG QR-Code Platzhalter (im echten System: dynamisch generiert)
-  const qrSVG=`<svg viewBox="0 0 200 200" width="180" height="180" style="display:block;margin:0 auto">
-    <rect width="200" height="200" fill="white" rx="8"/>
-    <rect x="20" y="20" width="60" height="60" fill="#1a1a1a" rx="4"/><rect x="24" y="24" width="52" height="52" fill="white" rx="2"/><rect x="32" y="32" width="36" height="36" fill="#1a1a1a" rx="2"/>
-    <rect x="120" y="20" width="60" height="60" fill="#1a1a1a" rx="4"/><rect x="124" y="24" width="52" height="52" fill="white" rx="2"/><rect x="132" y="32" width="36" height="36" fill="#1a1a1a" rx="2"/>
-    <rect x="20" y="120" width="60" height="60" fill="#1a1a1a" rx="4"/><rect x="24" y="124" width="52" height="52" fill="white" rx="2"/><rect x="32" y="132" width="36" height="36" fill="#1a1a1a" rx="2"/>
-    <rect x="90" y="90" width="20" height="20" fill="#00A67E" rx="3"/>
-    <rect x="120" y="120" width="12" height="12" fill="#1a1a1a"/><rect x="140" y="120" width="12" height="12" fill="#1a1a1a"/><rect x="160" y="120" width="12" height="12" fill="#1a1a1a"/>
-    <rect x="120" y="140" width="12" height="12" fill="#1a1a1a"/><rect x="160" y="140" width="12" height="12" fill="#1a1a1a"/>
-    <rect x="120" y="160" width="12" height="12" fill="#1a1a1a"/><rect x="140" y="160" width="12" height="12" fill="#1a1a1a"/><rect x="160" y="160" width="12" height="12" fill="#1a1a1a"/>
-    <rect x="90" y="20" width="12" height="12" fill="#1a1a1a"/><rect x="90" y="44" width="12" height="12" fill="#1a1a1a"/><rect x="90" y="56" width="12" height="12" fill="#1a1a1a"/>
-    <rect x="20" y="90" width="12" height="12" fill="#1a1a1a"/><rect x="44" y="90" width="12" height="12" fill="#1a1a1a"/><rect x="56" y="90" width="12" height="12" fill="#1a1a1a"/>
-  </svg>`;
-  overlay.innerHTML=`
-    <div class="einladen-sheet">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <h3 style="margin:0">Mein QR-Code</h3>
-        <button onclick="this.closest('.einladen-overlay').remove()" style="background:none;border:none;font-size:20px;cursor:pointer">✕</button>
-      </div>
-      <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Kunden scannen diesen QR-Code, um sich mit Ihnen zu verknüpfen. Das 30-Tage Cookie-Fenster startet automatisch.</div>
-      <div style="background:#f9fafb;padding:20px;border-radius:var(--r);margin-bottom:16px">
-        ${qrSVG}
-        <div style="text-align:center;margin-top:12px;font-size:12px;font-weight:600;color:var(--green-accent)">supptree.de/p/dr-eichkorn</div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <div style="flex:1;background:#f0fdf4;padding:10px;border-radius:var(--r);text-align:center">
-          <div style="font-size:11px;font-weight:700;color:var(--green-accent)">📱 QR-Scan</div>
-          <div style="font-size:10px;color:var(--text-muted);margin-top:2px">10% Provision</div>
-        </div>
-        <div style="flex:1;background:#eff6ff;padding:10px;border-radius:var(--r);text-align:center">
-          <div style="font-size:11px;font-weight:700;color:#2563eb">🔗 Link</div>
-          <div style="font-size:10px;color:var(--text-muted);margin-top:2px">7% Provision</div>
-        </div>
-      </div>
-      <div style="font-size:11px;color:var(--text-muted);background:#f9fafb;padding:10px;border-radius:var(--r);margin-bottom:12px">💡 <b>Tipp:</b> Drucken Sie den QR-Code aus und platzieren Sie ihn in Ihrer Praxis — z.B. am Empfang, im Wartezimmer oder auf Visitenkarten.</div>
-      <button onclick="navigator.clipboard?.writeText('https://supptree.de/p/dr-eichkorn');toast('📋 Link kopiert!','success')" style="width:100%;padding:12px;background:var(--green-accent);color:white;border:none;border-radius:var(--r);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">📋 Link kopieren</button>
-      <button onclick="toast('🖨️ QR-Code wird vorbereitet...','success');this.closest('.einladen-overlay').remove()" style="width:100%;padding:12px;background:var(--white);color:var(--text-dark);border:1px solid var(--border);border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer">🖨️ QR-Code drucken</button>
-    </div>`;
+  overlay.innerHTML='<div class="einladen-sheet">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'
+      +'<h3 style="margin:0">Mein QR-Code</h3>'
+      +'<button onclick="this.closest(\'.einladen-overlay\').remove()" style="background:none;border:none;font-size:20px;cursor:pointer">✕</button>'
+    +'</div>'
+    +'<div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Kunden scannen diesen QR-Code, um sich mit Ihnen zu verknüpfen. Das 30-Tage Cookie-Fenster startet automatisch.</div>'
+    +'<div id="qrCodeContainer" style="background:#f9fafb;padding:20px;border-radius:var(--r);margin-bottom:16px;text-align:center">'
+      +'<div style="width:220px;height:220px;margin:0 auto;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px">QR-Code wird generiert...</div>'
+    +'</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:12px">'
+      +'<div style="flex:1;background:#f0fdf4;padding:10px;border-radius:var(--r);text-align:center">'
+        +'<div style="font-size:11px;font-weight:700;color:var(--green-accent)">📱 QR-Scan</div>'
+        +'<div style="font-size:10px;color:var(--text-muted);margin-top:2px">10% Provision</div>'
+      +'</div>'
+      +'<div style="flex:1;background:#eff6ff;padding:10px;border-radius:var(--r);text-align:center">'
+        +'<div style="font-size:11px;font-weight:700;color:#2563eb">🔗 Link</div>'
+        +'<div style="font-size:10px;color:var(--text-muted);margin-top:2px">7% Provision</div>'
+      +'</div>'
+    +'</div>'
+    +'<div style="font-size:11px;color:var(--text-muted);background:#f9fafb;padding:10px;border-radius:var(--r);margin-bottom:12px">💡 <b>Tipp:</b> Drucken Sie den QR-Code aus und platzieren Sie ihn in Ihrer Praxis — z.B. am Empfang, im Wartezimmer oder auf Visitenkarten.</div>'
+    +'<button onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+partnerURL+'\');toast(\'📋 Link kopiert!\',\'success\')" style="width:100%;padding:12px;background:var(--green-accent);color:white;border:none;border-radius:var(--r);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">📋 Link kopieren</button>'
+    +'<button onclick="downloadQRCode()" style="width:100%;padding:12px;background:var(--white);color:var(--text-dark);border:1px solid var(--border);border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px">⬇️ QR-Code herunterladen</button>'
+    +'<button onclick="printQRCode()" style="width:100%;padding:12px;background:var(--white);color:var(--text-dark);border:1px solid var(--border);border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer">🖨️ QR-Code drucken</button>'
+  +'</div>';
   document.body.appendChild(overlay);
+  // QR-Code async generieren (Logo muss erst laden)
+  loadQRLogo().then(function(logoImg){
+    var canvas=generateQRCanvas(partnerURL,600,logoImg);
+    _currentQRCanvas=canvas;
+    var container=document.getElementById('qrCodeContainer');
+    if(!container)return;
+    var displayCanvas=generateQRCanvas(partnerURL,220,logoImg);
+    container.innerHTML='';
+    displayCanvas.style.display='block';
+    displayCanvas.style.margin='0 auto';
+    container.appendChild(displayCanvas);
+    var urlLabel=document.createElement('div');
+    urlLabel.style.cssText='text-align:center;margin-top:12px;font-size:12px;font-weight:600;color:var(--green-accent)';
+    urlLabel.textContent='supptree.de/r/'+partnerCode;
+    container.appendChild(urlLabel);
+  });
+}
+
+function downloadQRCode(){
+  if(!_currentQRCanvas){toast('QR-Code wird noch generiert...','info');return;}
+  var link=document.createElement('a');
+  link.download='SuppTree-QR-'+getPartnerCode()+'.png';
+  link.href=_currentQRCanvas.toDataURL('image/png');
+  link.click();
+  toast('QR-Code heruntergeladen!','success');
+}
+
+function printQRCode(){
+  if(!_currentQRCanvas){toast('QR-Code wird noch generiert...','info');return;}
+  var win=window.open('','_blank');
+  if(!win){toast('Popup blockiert — bitte erlauben','error');return;}
+  var code=getPartnerCode();
+  win.document.write('<html><head><title>SuppTree QR-Code</title><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#fff}img{width:400px;height:400px}h2{color:#1a5a3a;margin:20px 0 4px}p{color:#666;font-size:14px;margin:0 0 20px}@media print{button{display:none!important}}</style></head><body>'
+    +'<h2>SuppTree</h2>'
+    +'<p>supptree.de/r/'+code+'</p>'
+    +'<img src="'+_currentQRCanvas.toDataURL('image/png')+'">'
+    +'<p style="margin-top:20px;font-size:12px;color:#999">Scannen Sie diesen QR-Code mit Ihrer Handy-Kamera</p>'
+    +'<button onclick="window.print()" style="margin-top:20px;padding:12px 32px;background:#00A67E;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">Drucken</button>'
+    +'<\/body><\/html>');
+  win.document.close();
 }
 
 // FINANZEN DATA & FUNCTIONS
@@ -11061,7 +11718,6 @@ function renderLAFunnel(clicks){
     const max=Math.max(srcClicks,1);
     let steps;
     if(src==='qr'){
-      // QR: Scan → Empfehlung erhalten → Gekauft → Provision aktiv
       const empfohlen=Math.round(srcClicks*0.85);
       const provAktiv=Math.round(srcConv*0.90);
       steps=[
@@ -11071,7 +11727,6 @@ function renderLAFunnel(clicks){
         {label:'Provision aktiv',val:provAktiv,pct:Math.round((provAktiv/max)*100)}
       ];
     }else{
-      // Link: Klick → Cookie gesetzt (≈ alle) → Erstkauf → Provision aktiv
       const cookieSet=srcClicks;
       const provAktiv=Math.round(srcConv*0.85);
       steps=[
@@ -11083,17 +11738,27 @@ function renderLAFunnel(clicks){
     }
     const cls=src==='qr'?'qr':'link';
     const icon=src==='qr'?'📱':'🔗';
-    const label=src==='qr'?'QR-Code (10%)':'Link (7%)';
+    const title=src==='qr'?'QR-Code · 10% Provision':'Link · 7% Provision';
+    const convRate=srcClicks>0?Math.round((srcConv/srcClicks)*100):0;
+    const stepsHTML=steps.map((s,i)=>{
+      const drop=i>0&&steps[i-1].val>0?Math.round((s.val/steps[i-1].val)*100):100;
+      const dropCls=drop>=70?'good':drop>=40?'mid':'bad';
+      const connector=i>0?`<div class="la-funnel-connector"><div class="la-funnel-connector-line"></div><span class="la-funnel-drop-badge ${dropCls}">${drop}% weiter</span></div>`:'';
+      return`${connector}<div class="la-funnel-step-row">
+        <div class="la-funnel-step-num ${cls}">${i+1}</div>
+        <div class="la-funnel-step-info">
+          <div class="la-funnel-step-label">${s.label}</div>
+          <div class="la-funnel-step-track"><div class="la-funnel-step-fill ${cls}" style="width:${Math.max(s.pct,3)}%"></div></div>
+        </div>
+        <div class="la-funnel-step-count">${s.val}</div>
+      </div>`;
+    }).join('');
     return`<div class="la-funnel-row">
-      <div class="la-funnel-label">${icon} ${label}</div>
-      <div class="la-funnel-steps">${steps.map((s,i)=>{
-        const drop=i>0&&steps[i-1].val>0?Math.round((s.val/steps[i-1].val)*100):100;
-        return`<div class="la-funnel-step">
-          <div class="la-funnel-pct">${i>0?drop+'%':''}</div>
-          <div style="flex:1"><div class="la-funnel-bar ${cls}" style="width:${Math.max(s.pct,8)}%">${s.val}</div></div>
-          <div class="la-funnel-text">${s.label}</div>
-        </div>`;
-      }).join('')}</div>
+      <div class="la-funnel-header ${cls}">
+        <span>${icon}</span><span>${title}</span>
+        <span class="la-funnel-header-rate">${convRate}% Conv.</span>
+      </div>
+      <div class="la-funnel-body">${stepsHTML}</div>
     </div>`;
   }).join('');
   document.getElementById('laFunnel').innerHTML=funnelHTML;
@@ -11387,22 +12052,96 @@ function getGreeting() {
 
 // ═══════ WIDGET SYSTEM ═══════
 
+// ── Welcome-Widget: Onboarding-Schritte für neue Partner ──
+function getWelcomeSteps(){
+  var done={}; try{done=JSON.parse(localStorage.getItem('suppTreeWelcomeSteps')||'{}');}catch(e){}
+  var featureKey=SUBTYPE_FEATURE_MAP[partnerType]||partnerType;
+  var typeLabels={heilpraktiker:'Heilpraktiker/in',ernaehrung:'Ernährungsberater/in',trainer:'Trainer/in',beauty:'Beauty-Expert/in',hebamme:'Hebamme',creator:'Creator',bgm:'BGM-Berater/in',studio:'Studio-Inhaber/in',coach:'Coach',supplement:'Hersteller/in'};
+  var steps=[];
+  if(featureKey==='supplement'){
+    steps=[
+      {key:'profil',icon:'🏪',title:'Markenprofil einrichten',desc:'Logo, Beschreibung & Story deiner Marke',screen:'meinShop'},
+      {key:'produkt',icon:'📦',title:'Erstes Produkt anlegen',desc:'Starte mit deinem Bestseller',screen:'products'},
+      {key:'versand',icon:'🚚',title:'Versand konfigurieren',desc:'Versandoptionen & Retouren festlegen',screen:'versand'},
+      {key:'affiliate',icon:'🔗',title:'Partner-Link teilen',desc:'Empfehlungslink an Partner verteilen',screen:'affiliate'}
+    ];
+  } else if(featureKey==='coach'){
+    steps=[
+      {key:'profil',icon:'👤',title:'Profil vervollständigen',desc:'Name, Qualifikationen & Kontaktdaten',screen:'provider'},
+      {key:'service',icon:'🩺',title:'Ersten Service erstellen',desc:'Dein erstes Angebot für Kunden',screen:'services'},
+      {key:'plan',icon:'🏋️',title:'Trainingsplan erstellen',desc:'Vorlage für deine Kunden anlegen',screen:'trainingsPlan'},
+      {key:'link',icon:'📱',title:'QR-Code & Link teilen',desc:'In Praxis aufstellen oder online teilen',screen:'affiliate'}
+    ];
+  } else {
+    // heilpraktiker und alle Service-Subtypen
+    steps=[
+      {key:'profil',icon:'👤',title:'Profil vervollständigen',desc:'Name, Öffnungszeiten & Qualifikationen',screen:'provider'},
+      {key:'service',icon:'🩺',title:'Ersten Service erstellen',desc:'Dein erstes Angebot für Patienten',screen:'services'},
+      {key:'link',icon:'📱',title:'QR-Code & Link teilen',desc:'In Praxis aufstellen oder online teilen',screen:'affiliate'}
+    ];
+  }
+  var completedCount=0;
+  for(var i=0;i<steps.length;i++){steps[i].done=!!done[steps[i].key];if(steps[i].done)completedCount++;}
+  return{steps:steps,completedCount:completedCount,typeLabel:typeLabels[partnerType]||partnerType,dismissed:!!localStorage.getItem('suppTreeWelcomeDismissed')};
+}
+function markWelcomeStep(key,screen){
+  var done={}; try{done=JSON.parse(localStorage.getItem('suppTreeWelcomeSteps')||'{}');}catch(e){}
+  done[key]=true;
+  localStorage.setItem('suppTreeWelcomeSteps',JSON.stringify(done));
+  showScreen(screen);
+}
+function dismissWelcome(){
+  localStorage.setItem('suppTreeWelcomeDismissed','1');
+  renderDashboard();
+}
+function renderWidget_welcome(cfg={}){
+  var w=getWelcomeSteps();
+  if(w.dismissed&&w.completedCount>=w.steps.length) return '';
+  if(w.dismissed) return '';
+  var pct=Math.round((w.completedCount/w.steps.length)*100);
+  var allDone=w.completedCount>=w.steps.length;
+  var stepsHtml=w.steps.map(function(s){
+    return '<div onclick="markWelcomeStep(\''+s.key+'\',\''+s.screen+'\')" style="display:flex;align-items:center;gap:12px;padding:12px;background:'+(s.done?'#f0fdf4':'var(--white)')+';border-radius:10px;cursor:pointer;border:1.5px solid '+(s.done?'#86efac':'var(--border)')+';transition:all .2s">'
+      +'<div style="width:40px;height:40px;border-radius:50%;background:'+(s.done?'#dcfce7':'#f0f9ff')+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+(s.done?'✅':s.icon)+'</div>'
+      +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:'+(s.done?'#16a34a':'var(--text-dark)')+'">'+s.title+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:1px">'+s.desc+'</div></div>'
+      +'<span style="font-size:14px;color:'+(s.done?'#16a34a':'var(--green-accent)')+'">'+( s.done?'':'›')+'</span>'
+    +'</div>';
+  }).join('');
+  return '<div style="background:linear-gradient(135deg,#166534 0%,#15803d 50%,#22c55e 100%);border-radius:14px;padding:20px;margin-bottom:14px;color:white">'
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">'
+      +'<div style="font-size:11px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Willkommen bei SuppTree</div>'
+      +'<div onclick="dismissWelcome()" style="cursor:pointer;opacity:0.6;font-size:18px;line-height:1;padding:2px 6px" title="Ausblenden">&times;</div>'
+    +'</div>'
+    +'<div style="font-size:18px;font-weight:800;margin-bottom:2px">Hallo, '+provider.name.split(' ')[0]+'! 👋</div>'
+    +'<div style="font-size:12px;opacity:0.85;margin-bottom:14px">Richte dein '+w.typeLabel+'-Konto ein — in wenigen Schritten bist du startklar.</div>'
+    +'<div style="background:rgba(255,255,255,0.2);border-radius:8px;height:6px;margin-bottom:6px;overflow:hidden"><div style="height:100%;background:#fff;border-radius:8px;width:'+pct+'%;transition:width .5s"></div></div>'
+    +'<div style="font-size:11px;opacity:0.75;margin-bottom:14px">'+w.completedCount+' von '+w.steps.length+' erledigt</div>'
+  +'</div>'
+  +'<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">'+stepsHtml+'</div>'
+  +(allDone?'<div style="text-align:center;padding:14px;background:#f0fdf4;border-radius:10px;border:1.5px solid #86efac;margin-bottom:14px"><div style="font-size:20px;margin-bottom:6px">🎉</div><div style="font-size:14px;font-weight:700;color:#16a34a;margin-bottom:4px">Alles eingerichtet!</div><div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Dein Konto ist startklar. Du kannst diesen Bereich jetzt ausblenden.</div><button onclick="dismissWelcome()" style="background:var(--green-accent);color:white;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Verstanden, ausblenden</button></div>':'');
+}
+
 // ── Widget Render Functions (each returns HTML string) ──
 function renderWidget_umsatzHero(cfg={}){
   const colorMap={green:'linear-gradient(135deg,#166534,#15803d,#22c55e)',blue:'linear-gradient(135deg,#1e3a5f,#2563eb,#3b82f6)',purple:'linear-gradient(135deg,#4a1d96,#7c3aed,#a78bfa)',dark:'linear-gradient(135deg,#1f2937,#374151,#4b5563)'};
   const bg=colorMap[cfg.colorScheme]||colorMap.green;
   const showTrend=cfg.showTrend!==false;
   const showSubCards=cfg.showSubCards!==false;
+  var subCardsHtml='';
+  if(showSubCards){
+    var cards=[];
+    if(hasFeature('produkte')) cards.push('<div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashOrders">89</div><div style="font-size:10px;opacity:0.7">Bestellungen</div></div>');
+    if(hasFeature('termine')) cards.push('<div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashTermine">24</div><div style="font-size:10px;opacity:0.7">Termine</div></div>');
+    if(hasFeature('services')) cards.push('<div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashServices">4</div><div style="font-size:10px;opacity:0.7">Services</div></div>');
+    cards.push('<div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashKunden">6</div><div style="font-size:10px;opacity:0.7">Kunden</div></div>');
+    subCardsHtml='<div style="display:flex;gap:12px">'+cards.join('')+'</div>';
+  }
   return`<div onclick="showScreen('finanzen')" style="cursor:pointer;background:${bg};border-radius:12px;padding:18px;margin-bottom:14px;color:white">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:${showSubCards?'14px':'0'}">
       <div><div style="font-size:11px;opacity:0.7;font-weight:600">Umsatz diesen Monat</div><div style="font-size:28px;font-weight:800;margin-top:2px" id="dashUmsatz">€3.847</div></div>
       ${showTrend?'<div style="background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700" id="dashTrend">↑ 18%</div>':''}
     </div>
-    ${showSubCards?`<div style="display:flex;gap:12px">
-      <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashOrders">89</div><div style="font-size:10px;opacity:0.7">Bestellungen</div></div>
-      <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashTermine">24</div><div style="font-size:10px;opacity:0.7">Termine</div></div>
-      <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashKunden">6</div><div style="font-size:10px;opacity:0.7">Kunden</div></div>
-    </div>`:''}
+    ${subCardsHtml}
   </div>`;
 }
 function renderWidget_handlung(cfg={}){
@@ -11412,8 +12151,8 @@ function renderWidget_handlung(cfg={}){
   </div>`;
 }
 function renderWidget_heuteKarten(cfg={}){
-  const showBest=cfg.showBestellungen!==false;
-  const showAnfr=cfg.showAnfragen!==false;
+  const showBest=cfg.showBestellungen!==false&&hasFeature('produkte');
+  const showAnfr=cfg.showAnfragen!==false&&hasFeature('termine');
   if(!showBest&&!showAnfr) return'';
   return`<div style="display:flex;gap:10px;margin-bottom:14px">
     ${showBest?'<div onclick="showScreen(\'orders\')" style="flex:1;background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:12px;cursor:pointer;border-left:3px solid #f59e0b"><div style="font-size:10px;color:var(--text-muted);font-weight:600">Offene Bestellungen</div><div style="font-size:22px;font-weight:800;color:#d97706;margin-top:2px" id="dashOpenOrders">5</div></div>':''}
@@ -11431,9 +12170,9 @@ function renderWidget_umsatzverlauf(cfg={}){
 }
 function renderWidget_kennzahlen(cfg={}){
   const cards=[];
-  if(cfg.showProdukte!==false) cards.push('<div onclick="showScreen(\'products\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:12px;cursor:pointer"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text-muted);font-weight:600">Produkte</span><span style="font-size:16px">📦</span></div><div style="font-size:20px;font-weight:800" id="dashProdCount">5</div><div style="font-size:10px;color:var(--text-muted)" id="dashProdSales">227 verkauft</div></div>');
+  if(cfg.showProdukte!==false&&hasFeature('produkte')) cards.push('<div onclick="showScreen(\'products\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:12px;cursor:pointer"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text-muted);font-weight:600">Produkte</span><span style="font-size:16px">📦</span></div><div style="font-size:20px;font-weight:800" id="dashProdCount">5</div><div style="font-size:10px;color:var(--text-muted)" id="dashProdSales">227 verkauft</div></div>');
   if(cfg.showKunden!==false) cards.push('<div onclick="showScreen(\'kunden\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:12px;cursor:pointer"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text-muted);font-weight:600">Kunden</span><span style="font-size:16px">👥</span></div><div style="font-size:20px;font-weight:800" id="dashKundenCount">6</div><div style="font-size:10px;color:var(--text-muted)" id="dashKundenProv">€542 Provision</div></div>');
-  if(cfg.showServices!==false) cards.push('<div onclick="showScreen(\'services\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:12px;cursor:pointer"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text-muted);font-weight:600">Services</span><span style="font-size:16px">🩺</span></div><div style="font-size:20px;font-weight:800" id="dashSvcCount">4</div><div style="font-size:10px;color:var(--text-muted)" id="dashSvcRevenue">€960 Umsatz</div></div>');
+  if(cfg.showServices!==false&&hasFeature('services')) cards.push('<div onclick="showScreen(\'services\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:12px;cursor:pointer"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text-muted);font-weight:600">Services</span><span style="font-size:16px">🩺</span></div><div style="font-size:20px;font-weight:800" id="dashSvcCount">4</div><div style="font-size:10px;color:var(--text-muted)" id="dashSvcRevenue">€960 Umsatz</div></div>');
   if(cfg.showBewertung!==false) cards.push('<div style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:12px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text-muted);font-weight:600">Bewertung</span><span style="font-size:16px">⭐</span></div><div style="font-size:20px;font-weight:800">4.8</div><div style="font-size:10px;color:#f59e0b">★★★★★ · 47</div></div>');
   if(!cards.length) return'';
   const cols=cards.length>=4?2:(cards.length>=2?2:1);
@@ -11441,10 +12180,10 @@ function renderWidget_kennzahlen(cfg={}){
 }
 function renderWidget_schnellzugriffe(cfg={}){
   const items=[];
-  if(cfg.showAffiliate!==false) items.push('<div onclick="showScreen(\'affiliate\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:10px 6px;text-align:center;cursor:pointer"><div style="font-size:20px;margin-bottom:4px">💰</div><div style="font-size:10px;font-weight:600;color:var(--text-muted)">Affiliate</div></div>');
+  if(cfg.showAffiliate!==false&&hasFeature('produkte')) items.push('<div onclick="showScreen(\'affiliate\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:10px 6px;text-align:center;cursor:pointer"><div style="font-size:20px;margin-bottom:4px">💰</div><div style="font-size:10px;font-weight:600;color:var(--text-muted)">Affiliate</div></div>');
   if(cfg.showAnalytics!==false) items.push('<div onclick="showScreen(\'linkAnalytics\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:10px 6px;text-align:center;cursor:pointer"><div style="font-size:20px;margin-bottom:4px">📊</div><div style="font-size:10px;font-weight:600;color:var(--text-muted)">Analytics</div></div>');
   if(cfg.showMarketing!==false) items.push('<div onclick="showScreen(\'promo\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:10px 6px;text-align:center;cursor:pointer"><div style="font-size:20px;margin-bottom:4px">🎯</div><div style="font-size:10px;font-weight:600;color:var(--text-muted)">Marketing</div></div>');
-  if(cfg.showShop!==false) items.push('<div onclick="showScreen(\'meinShop\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:10px 6px;text-align:center;cursor:pointer"><div style="font-size:20px;margin-bottom:4px">🏪</div><div style="font-size:10px;font-weight:600;color:var(--text-muted)">Mein Shop</div></div>');
+  if(cfg.showShop!==false&&hasFeature('markenprofil')) items.push('<div onclick="showScreen(\'meinShop\')" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:10px 6px;text-align:center;cursor:pointer"><div style="font-size:20px;margin-bottom:4px">🏪</div><div style="font-size:10px;font-weight:600;color:var(--text-muted)">Mein Shop</div></div>');
   if(!items.length) return'';
   const cols=Math.min(items.length,4);
   return`<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:700;margin-bottom:8px">Schnellzugriffe</div>
@@ -11544,6 +12283,19 @@ function renderWidget_serviceUebersicht(cfg={}){
   </div>`;
 }
 
+function buildFinanzQuellen(prodRev,svcRev,affRev){
+  var rows=[];
+  if(hasFeature('services')){
+    rows.push({label:'Services',pct:65,color:'#3b82f6'});
+    rows.push({label:'Provision',pct:28,color:'#00A67E'});
+    rows.push({label:'Sonstiges',pct:7,color:'#8b5cf6'});
+  } else {
+    rows.push({label:'Produkte',pct:prodRev,color:'#00A67E'});
+    rows.push({label:'Services',pct:svcRev,color:'#3b82f6'});
+    rows.push({label:'Affiliate',pct:affRev,color:'#8b5cf6'});
+  }
+  return '<div style="font-size:12px;font-weight:600;margin-bottom:8px">Umsatz nach Quelle</div><div style="display:flex;flex-direction:column;gap:6px">'+rows.map(function(r){return '<div style="display:flex;align-items:center;gap:8px"><div style="width:60px;font-size:11px;color:var(--text-muted)">'+r.label+'</div><div style="flex:1;background:var(--border);border-radius:3px;height:8px"><div style="background:'+r.color+';height:100%;border-radius:3px;width:'+r.pct+'%"></div></div><div style="font-size:11px;font-weight:600;width:30px;text-align:right">'+r.pct+'%</div></div>';}).join('')+'</div>';
+}
 function renderWidget_finanzenUebersicht(cfg={}){
   const showHero=cfg.showHero!==false;
   const showQuellen=cfg.showQuellen!==false;
@@ -11558,12 +12310,7 @@ function renderWidget_finanzenUebersicht(cfg={}){
       <div style="font-size:28px;font-weight:700">&euro;${balanceAmt.toLocaleString('de-DE',{minimumFractionDigits:2})}</div>
       <div style="font-size:11px;opacity:0.7;margin-top:2px">N&auml;chste Auszahlung: ${nextDate}</div>
     </div>`:''}
-    ${showQuellen?`<div style="font-size:12px;font-weight:600;margin-bottom:8px">Umsatz nach Quelle</div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <div style="display:flex;align-items:center;gap:8px"><div style="width:60px;font-size:11px;color:var(--text-muted)">Produkte</div><div style="flex:1;background:var(--border);border-radius:3px;height:8px"><div style="background:#00A67E;height:100%;border-radius:3px;width:${prodRev}%"></div></div><div style="font-size:11px;font-weight:600;width:30px;text-align:right">${prodRev}%</div></div>
-      <div style="display:flex;align-items:center;gap:8px"><div style="width:60px;font-size:11px;color:var(--text-muted)">Services</div><div style="flex:1;background:var(--border);border-radius:3px;height:8px"><div style="background:#3b82f6;height:100%;border-radius:3px;width:${svcRev}%"></div></div><div style="font-size:11px;font-weight:600;width:30px;text-align:right">${svcRev}%</div></div>
-      <div style="display:flex;align-items:center;gap:8px"><div style="width:60px;font-size:11px;color:var(--text-muted)">Affiliate</div><div style="flex:1;background:var(--border);border-radius:3px;height:8px"><div style="background:#8b5cf6;height:100%;border-radius:3px;width:${affRev}%"></div></div><div style="font-size:11px;font-weight:600;width:30px;text-align:right">${affRev}%</div></div>
-    </div>`:''}
+    ${showQuellen?buildFinanzQuellen(prodRev,svcRev,affRev):''}
   </div>`;
 }
 
@@ -11680,6 +12427,7 @@ function renderWidget_anbieterProfil(cfg={}){
 
 // ── Widget Registry ──
 const DASH_WIDGETS=[
+  {id:'welcome',label:'Willkommen',icon:'👋',desc:'Einrichtungs-Assistent für neue Partner',render:renderWidget_welcome,configSchema:[]},
   {id:'umsatzHero',label:'Umsatz-Übersicht',icon:'💰',desc:'Monatsumsatz mit Trend und Kennzahlen',render:renderWidget_umsatzHero,configSchema:[
     {key:'colorScheme',type:'select',label:'Farbschema',options:[{v:'green',l:'Grün'},{v:'blue',l:'Blau'},{v:'purple',l:'Lila'},{v:'dark',l:'Dunkel'}],default:'green'},
     {key:'showTrend',type:'toggle',label:'Trend-Anzeige',default:true},
@@ -11760,9 +12508,9 @@ const DASHBOARD_PRESETS = (function() {
     if (s && s.supplement) return s;
   } catch(e) {}
   return {
-    supplement: ['umsatzHero','handlung','heuteKarten','produkteTop','bestellungenUebersicht','umsatzverlauf','markenprofil','kennzahlen','finanzenUebersicht','schnellzugriffe','kundenUebersicht','affiliateUebersicht','analyticsKpi'],
-    heilpraktiker: ['anbieterProfil','handlung','termine','heuteKarten','serviceUebersicht','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','aktivitaeten','analyticsKpi'],
-    coach: ['anbieterProfil','handlung','termine','serviceUebersicht','heuteKarten','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','affiliateUebersicht','finanzenUebersicht','schnellzugriffe','aktivitaeten']
+    supplement: ['welcome','umsatzHero','handlung','heuteKarten','produkteTop','bestellungenUebersicht','umsatzverlauf','markenprofil','kennzahlen','finanzenUebersicht','schnellzugriffe','kundenUebersicht','affiliateUebersicht','analyticsKpi'],
+    heilpraktiker: ['welcome','anbieterProfil','handlung','termine','heuteKarten','serviceUebersicht','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','finanzenUebersicht','aktivitaeten'],
+    coach: ['welcome','anbieterProfil','handlung','termine','serviceUebersicht','heuteKarten','kundenUebersicht','umsatzHero','kennzahlen','umsatzverlauf','finanzenUebersicht','aktivitaeten']
   };
 })();
 
@@ -11926,7 +12674,8 @@ function getDashWidgetConfig(){
     });
   }
   // No custom config → use preset for partnerType
-  const preset=DASHBOARD_PRESETS[partnerType]||DASHBOARD_PRESETS.supplement;
+  const presetKey=SUBTYPE_FEATURE_MAP[partnerType]||partnerType;
+  const preset=DASHBOARD_PRESETS[presetKey]||DASHBOARD_PRESETS.supplement;
   return admin.map((a,i)=>({
     id:a.id,
     visible:preset.includes(a.id),
@@ -11938,11 +12687,14 @@ function savePartnerDashConfig(cfg){
   partnerSync('partner_dash_config', 'suppTreeDashConfig', cfg, { upsert: true, transform: () => ({ config: cfg }) });
 }
 
+// ── Widget Feature Gates: nur relevante Widgets pro Typ ──
+const WIDGET_FEATURE_GATE={produkteTop:'produkte',bestellungenUebersicht:'produkte',markenprofil:'markenprofil',affiliateUebersicht:'produkte',serviceUebersicht:'services',termine:'termine',anbieterProfil:'services'};
+
 // ── Dashboard Render ──
 function renderDashboard(){
   const container=document.getElementById('dashWidgetContainer');
   if(!container)return;
-  const config=getDashWidgetConfig();
+  const config=getDashWidgetConfig().filter(function(c){var gate=WIDGET_FEATURE_GATE[c.id];return !gate||hasFeature(gate);});
   const adminCfg=getAdminWidgetConfig();
   container.innerHTML=config.filter(c=>c.visible).sort((a,b)=>a.order-b.order).map(c=>{
     const def=DASH_WIDGETS.find(w=>w.id===c.id);
@@ -11979,7 +12731,7 @@ function renderDashboard(){
 let _expandedWidget=null;
 function renderDashCustomize(){
   const admin=getAdminWidgetConfig().filter(a=>a.status==='active');
-  const config=getDashWidgetConfig();
+  const config=getDashWidgetConfig().filter(function(c){if(c.id==='welcome')return false;var gate=WIDGET_FEATURE_GATE[c.id];return !gate||hasFeature(gate);});
   const sorted=[...config].sort((a,b)=>a.order-b.order);
   const container=document.getElementById('dashCustomizeList');
   if(!container)return;
@@ -12123,12 +12875,16 @@ function renderDashBrandCard(){
 
 function renderActionBanner() {
   const items = [];
-  const outOfStock = products.filter(p => p.stock === 0 && p.status !== 'draft');
-  if (outOfStock.length > 0) items.push({ text: outOfStock.length + ' Produkt(e) ausverkauft', action: "showScreen('products')", color: '#dc2626' });
-  const pendingOrders = 5;
-  if (pendingOrders > 0) items.push({ text: pendingOrders + ' offene Bestellungen versenden', action: "showScreen('orders')", color: '#d97706' });
-  const newRequests = 2;
-  if (newRequests > 0) items.push({ text: newRequests + ' neue Terminanfragen', action: "showScreen('termine')", color: '#2563eb' });
+  if(hasFeature('produkte')){
+    const outOfStock = products.filter(p => p.stock === 0 && p.status !== 'draft');
+    if (outOfStock.length > 0) items.push({ text: outOfStock.length + ' Produkt(e) ausverkauft', action: "showScreen('products')", color: '#dc2626' });
+    const pendingOrders = 5;
+    if (pendingOrders > 0) items.push({ text: pendingOrders + ' offene Bestellungen versenden', action: "showScreen('orders')", color: '#d97706' });
+  }
+  if(hasFeature('termine')){
+    const newRequests = 2;
+    if (newRequests > 0) items.push({ text: newRequests + ' neue Terminanfragen', action: "showScreen('termine')", color: '#2563eb' });
+  }
   const banner = document.getElementById('actionBanner');
   if(!banner) return;
   const list = document.getElementById('actionItems');
@@ -12669,7 +13425,7 @@ function toggleAvailability() {
 }
 
 // Init Dashboard beim Laden
-setTimeout(()=>{renderDashboard();}, 100);
+setTimeout(()=>{try{renderDashboard();}catch(e){console.error('renderDashboard error:',e);}}, 100);
 
 // ═══════════════════════════════════════════════════
 // TRAININGSPLAN-BUILDER
@@ -15177,7 +15933,7 @@ function epSaveDraft() {
 // Supplement: 2 Steps | Partner: 4 Steps | Unternehmen: 3 Steps
 var _obStep = 1;
 var _obCategory = null;
-var _obData = { name:'', company:'', bio:'', specialty:'', jobTitle:'' };
+var _obData = { name:'', company:'', bio:'', specialty:'', jobTitle:'', country:'DE' };
 
 // Mapping: Alle Spezialitäten → Backend-Dashboard-Typ
 var OB_TYPE_MAP = {
@@ -15358,9 +16114,24 @@ function renderOnboardingStep() {
         '</div>';
     }
 
+    // Land-Auswahl (wird für Partner-Code benötigt)
+    var selCountry = _obData.country || 'DE';
+    var countryField =
+      '<div>' +
+        '<label style="font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;display:block">Land *</label>' +
+        '<select id="obCountry" onchange="obCheckPersonalFields()" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;box-sizing:border-box;outline:none;transition:border-color .2s;background:#fff;cursor:pointer" onfocus="this.style.borderColor=\'var(--green-accent)\'" onblur="this.style.borderColor=\'var(--border)\'">' +
+          '<option value="DE"'+(selCountry==='DE'?' selected':'')+'>🇩🇪 Deutschland</option>' +
+          '<option value="AT"'+(selCountry==='AT'?' selected':'')+'>🇦🇹 Österreich</option>' +
+          '<option value="CH"'+(selCountry==='CH'?' selected':'')+'>🇨🇭 Schweiz</option>' +
+          '<option value="NL"'+(selCountry==='NL'?' selected':'')+'>🇳🇱 Niederlande</option>' +
+          '<option value="LU"'+(selCountry==='LU'?' selected':'')+'>🇱🇺 Luxemburg</option>' +
+        '</select>' +
+      '</div>';
+
     container.innerHTML =
       (specLabel ? '<div style="text-align:center;margin-bottom:8px"><span style="background:rgba(255,255,255,0.2);color:#fff;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600">'+specLabel+'</span></div>' : '') +
       '<div style="background:#fff;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px">' +
+        countryField +
         '<div>' +
           '<label style="font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;display:block">'+nameLabel+'</label>' +
           '<input id="obName" type="text" value="'+(_obData.name||'')+'" oninput="obCheckPersonalFields()" placeholder="'+namePH+'" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;box-sizing:border-box;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'var(--green-accent)\'" onblur="this.style.borderColor=\'var(--border)\'">' +
@@ -15415,10 +16186,12 @@ function obSavePersonalFields() {
   var c = document.getElementById('obCompany');
   var b = document.getElementById('obBio');
   var j = document.getElementById('obJobTitle');
+  var co = document.getElementById('obCountry');
   if (n) _obData.name = n.value.trim();
   if (c) _obData.company = c.value.trim();
   if (b) _obData.bio = b.value.trim();
   if (j) _obData.jobTitle = j.value.trim();
+  if (co) _obData.country = co.value;
 }
 
 function obBack() {
@@ -15468,8 +16241,9 @@ async function confirmOnboardingType() {
   if (_obStep === 3 && (_obCategory === 'partner' || _obCategory === 'unternehmen')) {
     obSavePersonalFields();
     if (!_obData.name || _obData.name.length < 2) return;
-    var backendType = OB_TYPE_MAP[_obData.specialty] || 'coach';
-    finishOnboarding(backendType);
+    // Originalen Subtype speichern statt gemapptem Typ
+    var sellerType = _obData.specialty || 'coach';
+    finishOnboarding(sellerType);
     return;
   }
 }
@@ -15519,12 +16293,17 @@ async function finishOnboarding(backendType) {
   // Provider mit echten Daten befüllen
   provider = JSON.parse(JSON.stringify(DEMO_PROVIDERS[backendType] || DEMO_PROVIDERS.supplement));
   if (_obData.name) provider.name = _obData.name;
+  // Land aus Onboarding übernehmen
+  provider.country = _obData.country || 'DE';
   // Berufsbezeichnung hat Vorrang → dann Firma → dann Specialty-Label
   if (_obData.jobTitle) provider.title = _obData.jobTitle;
   else if (_obData.company) provider.title = _obData.company;
   else if (specLabel) provider.title = specLabel;
   if (_obData.bio) provider.bio = _obData.bio;
   if (typeof updateProviderUI === 'function') updateProviderUI();
+
+  // Partner-Code generieren (jetzt sind Typ + Land bekannt)
+  if (typeof ensurePartnerCode === 'function') ensurePartnerCode();
 
   // UI aktualisieren
   renderBottomNav();

@@ -331,6 +331,46 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-muted)}
 .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;outline:none}
 .form-group input:focus,.form-group select:focus{border-color:var(--admin-accent)}
+
+/* ===== PARTNER PREVIEW (Kundenansicht) ===== */
+.pp-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9990;display:none;align-items:center;justify-content:center;padding:16px}
+.pp-overlay.visible{display:flex}
+.pp-frame{position:relative;width:100%;max-width:420px;height:90vh;background:#f8f9fa;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);display:flex;flex-direction:column}
+.pp-frame-top{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb;flex-shrink:0}
+.pp-frame-label{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px}
+.pp-frame-close{width:30px;height:30px;border-radius:50%;border:none;background:#f3f4f6;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pp-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pp-hero{background:linear-gradient(135deg,#059669,#34d399);padding:32px 20px;text-align:center;color:#fff}
+.pp-hero-logo{font-size:56px;margin-bottom:8px}
+.pp-hero-name{font-size:22px;font-weight:800}
+.pp-hero-slogan{font-size:13px;opacity:0.9;margin-top:4px}
+.pp-hero-title{font-size:14px;opacity:0.85;margin-top:6px}
+.pp-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 16px;background:#fff;border-bottom:1px solid #e5e7eb}
+.pp-meta-item{text-align:center}
+.pp-meta-val{font-size:13px;font-weight:700;color:#1a1a1a}
+.pp-meta-lbl{font-size:9px;color:#6b7280;text-transform:uppercase}
+.pp-section{padding:16px;border-bottom:1px solid #e5e7eb}
+.pp-section:last-child{border-bottom:none}
+.pp-section-title{font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:8px}
+.pp-text{font-size:13px;line-height:1.6;color:#374151}
+.pp-chips{display:flex;flex-wrap:wrap;gap:6px}
+.pp-chip{font-size:11px;padding:4px 10px;border-radius:6px;font-weight:600}
+.pp-chip.green{background:#dcfce7;color:#166534}
+.pp-chip.blue{background:#dbeafe;color:#1e40af}
+.pp-chip.yellow{background:#fef3c7;color:#92400e}
+.pp-chip.purple{background:#ede9fe;color:#6d28d9}
+.pp-contact{display:flex;flex-direction:column;gap:8px}
+.pp-contact a{display:flex;align-items:center;gap:8px;font-size:13px;color:#059669;text-decoration:none;font-weight:500}
+.pp-quals{display:flex;flex-direction:column;gap:4px}
+.pp-qual{font-size:12px;color:#374151;padding:4px 0;display:flex;align-items:center;gap:6px}
+.pp-hours{display:flex;flex-direction:column;gap:4px}
+.pp-hour-row{display:flex;justify-content:space-between;font-size:12px;color:#374151}
+.pp-modes{display:flex;gap:6px;flex-wrap:wrap}
+.pp-mode{font-size:11px;padding:6px 10px;border-radius:8px;background:#f0fdf4;color:#059669;font-weight:600;border:1px solid #bbf7d0}
+.pp-empty{text-align:center;padding:40px 20px;color:#9ca3af}
+.pp-empty-icon{font-size:48px;margin-bottom:12px}
+.pp-empty-text{font-size:14px;font-weight:600;margin-bottom:4px}
+.pp-empty-sub{font-size:12px}
   </style>
 </head>
 <body>
@@ -553,11 +593,17 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
     </div>
   </div>
   <div class="partner-filters" id="partnerFilterChips">
-    <button class="filter-chip" onclick="togglePartnerFilter('type','supplement',this)">💊 Supplement</button>
+    <button class="filter-chip" onclick="togglePartnerFilter('type','supplement',this)">💊 Hersteller</button>
     <button class="filter-chip" onclick="togglePartnerFilter('type','heilpraktiker',this)">🩺 Heilpraktiker</button>
-    <button class="filter-chip" onclick="togglePartnerFilter('type','coach',this)">🎯 Coach</button>
+    <button class="filter-chip" onclick="togglePartnerFilter('type','ernaehrung',this)">🥗 Ernährung</button>
+    <button class="filter-chip" onclick="togglePartnerFilter('type','trainer',this)">💪 Trainer</button>
+    <button class="filter-chip" onclick="togglePartnerFilter('type','beauty',this)">✨ Beauty</button>
+    <button class="filter-chip" onclick="togglePartnerFilter('type','hebamme',this)">👶 Hebamme</button>
+    <button class="filter-chip" onclick="togglePartnerFilter('type','creator',this)">🎬 Creator</button>
+    <button class="filter-chip" onclick="togglePartnerFilter('type','bgm',this)">🏢 BGM</button>
     <button class="filter-chip" onclick="togglePartnerFilter('verified','true',this)">✅ Verifiziert</button>
     <button class="filter-chip" onclick="togglePartnerFilter('docs','incomplete',this)">📄 Docs offen</button>
+    <button class="filter-chip" id="demoToggleBtn" onclick="toggleDemoPartners()" style="margin-left:auto;background:#fff3cd;color:#856404;border-color:#ffc107">🧪 Demo-Daten</button>
   </div>
   <div id="partnerList" class="partner-grid">
     <!-- Wird von JS generiert -->
@@ -1113,6 +1159,9 @@ function getProductDocSummary(product) {
 // ── DEMO DATEN ──
 const demoSellers = [
   { id: 1, sellerNr: 'SP-20001', name: 'NaturVital GmbH', email: 'info@naturvital.de', type: 'supplement', status: 'pending', products: 0, revenue: 0, joined: '2025-02-18', verified: false, shopName: 'NaturVital Shop',
+    anrede:'Herr', titel:'', firstName:'Thomas', lastName:'Bergmann', company:'NaturVital GmbH', jobTitle:'Geschäftsführer', specialty:'Nahrungsergänzung', phone:'+49 89 123456', website:'https://naturvital.de', location:'München', bio:'Premium Nahrungsergänzungsmittel aus Deutschland. Laborgeprüft, vegan & nachhaltig.',
+    personalData:{anrede:'Herr',titel:'',firstName:'Thomas',lastName:'Bergmann'},
+    brandProfile:{name:'NaturVital',slogan:'Reinheit aus der Natur',founded:2020,location:'München',description:'Premium Nahrungsergänzungsmittel aus Deutschland.',values:['Qualität','Nachhaltigkeit','Transparenz'],certifications:['ISO 9001','GMP'],specialties:['Vitamine','Mineralstoffe']},
     provision:{marge:25, provisionQR:10, provisionLink:7, terminAnteil:0, bluttestProvision:0},
     bereiche:{produkte:true, qr:true, link:true, termine:false, bluttests:false},
     dokumente: [
@@ -1124,6 +1173,8 @@ const demoSellers = [
       {id:'laboranalysen', status:'missing'}
     ]},
   { id: 2, sellerNr: 'SP-20002', name: 'Dr. Sarah Klein', email: 'praxis@kleinheilt.de', type: 'heilpraktiker', status: 'active', products: 3, revenue: 1280, joined: '2025-01-10', verified: true, shopName: 'Praxis Klein',
+    anrede:'Frau', titel:'Dr.', firstName:'Sarah', lastName:'Klein', company:'Praxis Klein', jobTitle:'Heilpraktikerin', specialty:'Orthomolekulare Medizin', phone:'+49 221 987654', website:'https://kleinheilt.de', location:'Köln', bio:'Seit über 15 Jahren begleite ich Menschen auf ihrem Weg zu mehr Gesundheit. Spezialisiert auf orthomolekulare Medizin und Mikronährstofftherapie.',
+    personalData:{anrede:'Frau',titel:'Dr.',firstName:'Sarah',lastName:'Klein'},
     provision:{marge:20, provisionQR:10, provisionLink:7, terminAnteil:90, bluttestProvision:25},
     bereiche:{produkte:true, qr:true, link:true, termine:true, bluttests:true},
     dokumente: [
@@ -1145,7 +1196,9 @@ const demoSellers = [
       {id:'bvl_notifizierung', status:'approved', date:'2024-12-07'},
       {id:'laboranalysen', status:'approved', date:'2024-12-07'}
     ]},
-  { id: 4, sellerNr: 'SP-20004', name: 'Coach Müller', email: 'jan@coachmueller.de', type: 'coach', status: 'pending', products: 0, revenue: 0, joined: '2025-02-15', verified: false, shopName: 'Coaching Müller',
+  { id: 4, sellerNr: 'SP-20004', name: 'Jan Müller', email: 'jan@coachmueller.de', type: 'trainer', status: 'pending', products: 0, revenue: 0, joined: '2025-02-15', verified: false, shopName: 'Coaching Müller',
+    anrede:'Herr', titel:'', firstName:'Jan', lastName:'Müller', company:'', jobTitle:'Fitness- & Ernährungscoach', specialty:'Krafttraining & Ernährung', phone:'+49 176 5551234', website:'https://coachmueller.de', location:'Hamburg', bio:'Ich helfe dir, deine Fitnessziele zu erreichen — mit individuellen Trainingsplänen und Ernährungsberatung.',
+    personalData:{anrede:'Herr',titel:'',firstName:'Jan',lastName:'Müller'},
     provision:{marge:25, provisionQR:8, provisionLink:5, terminAnteil:85, bluttestProvision:0},
     bereiche:{produkte:true, qr:true, link:true, termine:true, bluttests:false},
     dokumente: [
@@ -1155,7 +1208,56 @@ const demoSellers = [
       {id:'handelsregister', status:'missing'},
       {id:'coaching_zertifikat', status:'missing'}
     ]},
-  { id: 5, sellerNr: 'SP-20005', name: 'BioSupps AG', email: 'contact@biosupps.com', type: 'supplement', status: 'active', products: 24, revenue: 15340, joined: '2024-10-20', verified: true, shopName: 'BioSupps Store',
+  { id: 5, sellerNr: 'SP-20005', name: 'Anna Weber', email: 'anna@ernaehrung-weber.de', type: 'ernaehrung', status: 'active', products: 0, revenue: 920, joined: '2025-01-20', verified: true, shopName: 'Ernährung Weber',
+    anrede:'Frau', titel:'', firstName:'Anna', lastName:'Weber', company:'Ernährungsberatung Weber', jobTitle:'Ernährungsberaterin (DGE)', specialty:'Darmgesundheit & Mikronährstoffe', phone:'+49 151 9876543', website:'https://ernaehrung-weber.de', location:'Frankfurt', bio:'Ganzheitliche Ernährungsberatung mit Fokus auf Darmgesundheit. DGE-zertifiziert, Schwerpunkt Mikronährstoffanalyse.',
+    personalData:{anrede:'Frau',titel:'',firstName:'Anna',lastName:'Weber'},
+    provision:{marge:20, provisionQR:10, provisionLink:7, terminAnteil:90, bluttestProvision:0},
+    bereiche:{produkte:false, qr:true, link:true, termine:true, bluttests:false},
+    dokumente: [
+      {id:'gewerbeschein', status:'approved', date:'2025-01-20'},
+      {id:'personalausweis', status:'approved', date:'2025-01-20'},
+      {id:'ust_idnr', status:'approved', date:'2025-01-21'},
+      {id:'handelsregister', status:'missing'},
+      {id:'coaching_zertifikat', status:'approved', date:'2025-01-22'}
+    ]},
+  { id: 6, sellerNr: 'SP-20006', name: 'Lisa Schön', email: 'lisa@beauty-lisa.de', type: 'beauty', status: 'active', products: 0, revenue: 450, joined: '2025-02-01', verified: true, shopName: 'Beauty by Lisa',
+    anrede:'Frau', titel:'', firstName:'Lisa', lastName:'Schön', company:'Beauty Lounge Lisa', jobTitle:'Kosmetikerin & Wellness-Coach', specialty:'Hautpflege & Anti-Aging', phone:'+49 170 4445566', website:'https://beauty-lisa.de', location:'Düsseldorf', bio:'Professionelle Hautberatung und Wellness-Coaching. Spezialisiert auf natürliche Kosmetik und Nahrungsergänzung für schöne Haut.',
+    personalData:{anrede:'Frau',titel:'',firstName:'Lisa',lastName:'Schön'},
+    provision:{marge:20, provisionQR:10, provisionLink:7, terminAnteil:85, bluttestProvision:0},
+    bereiche:{produkte:false, qr:true, link:true, termine:true, bluttests:false},
+    dokumente: [
+      {id:'gewerbeschein', status:'approved', date:'2025-02-01'},
+      {id:'personalausweis', status:'approved', date:'2025-02-01'},
+      {id:'ust_idnr', status:'approved', date:'2025-02-02'},
+      {id:'handelsregister', status:'missing'},
+      {id:'coaching_zertifikat', status:'approved', date:'2025-02-03'}
+    ]},
+  { id: 7, sellerNr: 'SP-20007', name: 'Marie Hoffmann', email: 'marie@hebamme-hoffmann.de', type: 'hebamme', status: 'active', products: 0, revenue: 680, joined: '2025-01-05', verified: true, shopName: 'Hebamme Hoffmann',
+    anrede:'Frau', titel:'', firstName:'Marie', lastName:'Hoffmann', company:'Hebammenpraxis am Park', jobTitle:'Hebamme & Stillberaterin (IBCLC)', specialty:'Schwangerschaft & Stillberatung', phone:'+49 160 7778899', website:'https://hebamme-hoffmann.de', location:'Berlin', bio:'Liebevolle Begleitung durch Schwangerschaft, Geburt und Stillzeit. IBCLC-zertifizierte Stillberaterin mit Fokus auf natürliche Nahrungsergänzung für Mütter.',
+    personalData:{anrede:'Frau',titel:'',firstName:'Marie',lastName:'Hoffmann'},
+    provision:{marge:20, provisionQR:10, provisionLink:7, terminAnteil:90, bluttestProvision:0},
+    bereiche:{produkte:false, qr:true, link:true, termine:true, bluttests:false},
+    dokumente: [
+      {id:'gewerbeschein', status:'approved', date:'2025-01-05'},
+      {id:'personalausweis', status:'approved', date:'2025-01-05'},
+      {id:'ust_idnr', status:'approved', date:'2025-01-06'},
+      {id:'handelsregister', status:'missing'},
+      {id:'heilpraktiker_zulassung', status:'approved', date:'2025-01-06'},
+      {id:'berufshaftpflicht', status:'approved', date:'2025-01-07'}
+    ]},
+  { id: 8, sellerNr: 'SP-20008', name: 'FitCorp Solutions', email: 'info@fitcorp.de', type: 'bgm', status: 'pending', products: 0, revenue: 0, joined: '2025-02-25', verified: false, shopName: 'FitCorp BGM',
+    anrede:'Herr', titel:'', firstName:'Markus', lastName:'Braun', company:'FitCorp Solutions GmbH', jobTitle:'BGM-Berater', specialty:'Betriebliches Gesundheitsmanagement', phone:'+49 89 5554433', website:'https://fitcorp.de', location:'München', bio:'Wir bringen Gesundheit in Ihr Unternehmen. BGM-Konzepte, Firmenfitness und Supplement-Programme für Mitarbeiter.',
+    personalData:{anrede:'Herr',titel:'',firstName:'Markus',lastName:'Braun'},
+    provision:{marge:25, provisionQR:8, provisionLink:5, terminAnteil:80, bluttestProvision:0},
+    bereiche:{produkte:true, qr:true, link:true, termine:true, bluttests:false},
+    dokumente: [
+      {id:'gewerbeschein', status:'pending', date:'2025-02-25'},
+      {id:'personalausweis', status:'pending', date:'2025-02-25'},
+      {id:'ust_idnr', status:'missing'},
+      {id:'handelsregister', status:'missing'},
+      {id:'coaching_zertifikat', status:'missing'}
+    ]},
+  { id: 9, sellerNr: 'SP-20009', name: 'BioSupps AG', email: 'contact@biosupps.com', type: 'supplement', status: 'active', products: 24, revenue: 15340, joined: '2024-10-20', verified: true, shopName: 'BioSupps Store',
     provision:{marge:30, provisionQR:10, provisionLink:7, terminAnteil:0, bluttestProvision:0},
     bereiche:{produkte:true, qr:true, link:true, termine:false, bluttests:false},
     dokumente: [
@@ -1166,7 +1268,7 @@ const demoSellers = [
       {id:'bvl_notifizierung', status:'approved', date:'2024-10-22'},
       {id:'laboranalysen', status:'approved', date:'2024-10-22'}
     ]},
-  { id: 6, sellerNr: 'SP-20006', name: 'HealthFirst', email: 'info@healthfirst.de', type: 'supplement', status: 'active', products: 8, revenue: 3670, joined: '2024-11-14', verified: true, shopName: 'HealthFirst Shop',
+  { id: 10, sellerNr: 'SP-20010', name: 'HealthFirst', email: 'info@healthfirst.de', type: 'supplement', status: 'active', products: 8, revenue: 3670, joined: '2024-11-14', verified: true, shopName: 'HealthFirst Shop',
     provision:{marge:22, provisionQR:10, provisionLink:7, terminAnteil:0, bluttestProvision:0},
     bereiche:{produkte:true, qr:true, link:true, termine:false, bluttests:false},
     dokumente: [
@@ -1694,8 +1796,30 @@ function getPartnerDocProgress(s) {
   return {approved, total, complete: approved === total};
 }
 
+var _showDemoPartners = false;
+function toggleDemoPartners() {
+  _showDemoPartners = !_showDemoPartners;
+  var btn = document.getElementById('demoToggleBtn');
+  if (btn) {
+    btn.style.background = _showDemoPartners ? '#ffc107' : '#fff3cd';
+    btn.style.color = _showDemoPartners ? '#fff' : '#856404';
+    btn.textContent = _showDemoPartners ? '🧪 Demo ausblenden' : '🧪 Demo-Daten';
+  }
+  renderPartners();
+  updatePartnerCounts();
+}
+
+function getPartnerList() {
+  var live = _livePartners || [];
+  if (_showDemoPartners) {
+    // Demo-Seller anfügen, aber IDs nicht kollidieren lassen
+    return live.concat(demoSellers);
+  }
+  return live.length > 0 ? live : demoSellers;
+}
+
 function renderPartners() {
-  let list = _livePartners || demoSellers;
+  let list = getPartnerList();
   if (partnerStatusFilter !== 'all') list = list.filter(s => s.status === partnerStatusFilter);
   if (partnerChipFilters.type) list = list.filter(s => s.type === partnerChipFilters.type);
   if (partnerChipFilters.verified === 'true') list = list.filter(s => s.verified);
@@ -1713,12 +1837,13 @@ function renderPartners() {
     const dpPct = dp.total > 0 ? Math.round((dp.approved / dp.total) * 100) : 0;
     const barClass = dpPct === 100 ? 'full' : dpPct >= 50 ? 'partial' : 'low';
     const partnerProds = (_liveProducts || demoProducts).filter(p => p.seller === s.name);
-    const typeIcon = {supplement:'💊', heilpraktiker:'🩺', coach:'🎯'}[s.type] || '🤝';
+    const typeIcon = getSellerTypeIcon(s.type);
+    const typeColor = getSellerTypeColor(s.type);
 
     return `
-    <div class="partner-card type-${s.type}" onclick="showPartnerDetail(${s.id})">
+    <div class="partner-card" style="border-left-color:${typeColor}" onclick="showPartnerDetail('${s.id}')">
       <div class="partner-card-top">
-        <div class="partner-card-avatar ${s.type}">${esc(s.name.charAt(0))}</div>
+        <div class="partner-card-avatar" style="background:linear-gradient(135deg,${typeColor},${typeColor}dd)">${esc(s.name.charAt(0))}</div>
         <div style="flex:1;min-width:0">
           <div class="partner-card-name">${esc(s.name)}</div>
           <div class="partner-card-meta">
@@ -1754,8 +1879,357 @@ function renderPartners() {
   }).join('');
 }
 
+// ── Partner-Profil: Anzeige-Modus ──
+function buildPartnerProfileView(s) {
+  var pd = s.personalData || {};
+  var isSeller = (s.type !== 'supplement');
+  var rows = '';
+  // Anrede & Titel
+  if (s.anrede) rows += `<div class="detail-row"><span class="detail-label">Anrede</span><span class="detail-value">${esc(s.anrede)}</span></div>`;
+  if (s.titel) rows += `<div class="detail-row"><span class="detail-label">Titel</span><span class="detail-value">${esc(s.titel)}</span></div>`;
+  if (s.firstName || s.lastName) rows += `<div class="detail-row"><span class="detail-label">Vor- / Nachname</span><span class="detail-value">${esc(s.firstName)} ${esc(s.lastName)}</span></div>`;
+  if (s.company) rows += `<div class="detail-row"><span class="detail-label">${isSeller ? 'Praxis / Firma' : 'Firma / Marke'}</span><span class="detail-value">${esc(s.company)}</span></div>`;
+  if (s.jobTitle) rows += `<div class="detail-row"><span class="detail-label">Berufsbezeichnung</span><span class="detail-value">${esc(s.jobTitle)}</span></div>`;
+  if (s.specialty) rows += `<div class="detail-row"><span class="detail-label">Fachgebiet</span><span class="detail-value">${esc(s.specialty)}</span></div>`;
+  if (s.phone) rows += `<div class="detail-row"><span class="detail-label">Telefon</span><span class="detail-value">${esc(s.phone)}</span></div>`;
+  if (s.website) rows += `<div class="detail-row"><span class="detail-label">Website</span><span class="detail-value"><a href="${esc(s.website)}" target="_blank" style="color:var(--admin-accent)">${esc(s.website)}</a></span></div>`;
+  if (s.location) rows += `<div class="detail-row"><span class="detail-label">Standort</span><span class="detail-value">${esc(s.location)}</span></div>`;
+  if (s.bio) rows += `<div style="margin-top:8px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">Über mich / Bio</div><div style="font-size:13px;line-height:1.5;color:var(--text-dark);background:var(--cream);padding:10px;border-radius:8px">${esc(s.bio)}</div></div>`;
+  if (!rows) rows = '<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:13px">Noch keine Profildaten ausgefüllt</div>';
+  return rows;
+}
+
+// ── Partner-Profil: Edit-Formular ──
+function buildPartnerProfileEditForm(s) {
+  var isSeller = (s.type !== 'supplement');
+  var inputStyle = 'width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;outline:none';
+  var labelStyle = 'font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:3px;display:block';
+  var rowStyle = 'margin-bottom:10px';
+  return `
+    <div style="${rowStyle}"><label style="${labelStyle}">Anrede</label>
+      <select id="pe_anrede_${s.id}" style="${inputStyle}">
+        <option value="">-- wählen --</option>
+        <option value="Herr" ${s.anrede==='Herr'?'selected':''}>Herr</option>
+        <option value="Frau" ${s.anrede==='Frau'?'selected':''}>Frau</option>
+        <option value="Divers" ${s.anrede==='Divers'?'selected':''}>Divers</option>
+        <option value="Keine Angabe" ${s.anrede==='Keine Angabe'?'selected':''}>Keine Angabe</option>
+      </select>
+    </div>
+    <div style="${rowStyle}"><label style="${labelStyle}">Titel</label>
+      <select id="pe_titel_${s.id}" style="${inputStyle}">
+        <option value="">Kein Titel</option>
+        <option value="Dr." ${s.titel==='Dr.'?'selected':''}>Dr.</option>
+        <option value="Prof." ${s.titel==='Prof.'?'selected':''}>Prof.</option>
+        <option value="Prof. Dr." ${s.titel==='Prof. Dr.'?'selected':''}>Prof. Dr.</option>
+        <option value="HP" ${s.titel==='HP'?'selected':''}>HP (Heilpraktiker)</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;${rowStyle}">
+      <div><label style="${labelStyle}">Vorname</label><input id="pe_firstName_${s.id}" value="${esc(s.firstName)}" style="${inputStyle}"></div>
+      <div><label style="${labelStyle}">Nachname</label><input id="pe_lastName_${s.id}" value="${esc(s.lastName)}" style="${inputStyle}"></div>
+    </div>
+    <div style="${rowStyle}"><label style="${labelStyle}">${isSeller ? 'Praxis / Firma' : 'Firma / Marke'}</label><input id="pe_company_${s.id}" value="${esc(s.company)}" style="${inputStyle}"></div>
+    <div style="${rowStyle}"><label style="${labelStyle}">Berufsbezeichnung</label><input id="pe_jobTitle_${s.id}" value="${esc(s.jobTitle)}" style="${inputStyle}"></div>
+    <div style="${rowStyle}"><label style="${labelStyle}">Fachgebiet</label><input id="pe_specialty_${s.id}" value="${esc(s.specialty)}" style="${inputStyle}"></div>
+    <div style="${rowStyle}"><label style="${labelStyle}">Telefon</label><input id="pe_phone_${s.id}" value="${esc(s.phone)}" style="${inputStyle}"></div>
+    <div style="${rowStyle}"><label style="${labelStyle}">Website</label><input id="pe_website_${s.id}" value="${esc(s.website)}" style="${inputStyle}"></div>
+    <div style="${rowStyle}"><label style="${labelStyle}">Standort</label><input id="pe_location_${s.id}" value="${esc(s.location)}" style="${inputStyle}"></div>
+    <div style="${rowStyle}"><label style="${labelStyle}">Über mich / Bio</label><textarea id="pe_bio_${s.id}" rows="3" style="${inputStyle};resize:vertical">${esc(s.bio)}</textarea></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="savePartnerProfile('${s.id}')" class="btn btn-primary" style="flex:1">Speichern</button>
+      <button onclick="togglePartnerProfileEdit('${s.id}')" class="btn" style="flex:1;background:var(--cream);color:var(--text-dark);border:1px solid var(--border)">Abbrechen</button>
+    </div>
+  `;
+}
+
+// ── Brand Profile Anzeige ──
+function buildBrandProfileView(s) {
+  var bp = s.brandProfile || {};
+  var rows = '';
+  if (bp.name) rows += `<div class="detail-row"><span class="detail-label">Markenname</span><span class="detail-value">${esc(bp.name)}</span></div>`;
+  if (bp.slogan) rows += `<div class="detail-row"><span class="detail-label">Slogan</span><span class="detail-value" style="font-style:italic">${esc(bp.slogan)}</span></div>`;
+  if (bp.founded) rows += `<div class="detail-row"><span class="detail-label">Gegründet</span><span class="detail-value">${bp.founded}</span></div>`;
+  if (bp.location) rows += `<div class="detail-row"><span class="detail-label">Standort</span><span class="detail-value">${esc(bp.location)}</span></div>`;
+  if (bp.teamSize) rows += `<div class="detail-row"><span class="detail-label">Teamgröße</span><span class="detail-value">${esc(bp.teamSize)}</span></div>`;
+  if (bp.email) rows += `<div class="detail-row"><span class="detail-label">Kontakt E-Mail</span><span class="detail-value">${esc(bp.email)}</span></div>`;
+  if (bp.phone) rows += `<div class="detail-row"><span class="detail-label">Kontakt Telefon</span><span class="detail-value">${esc(bp.phone)}</span></div>`;
+  if (bp.website) rows += `<div class="detail-row"><span class="detail-label">Website</span><span class="detail-value"><a href="${esc(bp.website)}" target="_blank" style="color:var(--admin-accent)">${esc(bp.website)}</a></span></div>`;
+  // Textbereiche
+  if (bp.description) rows += `<div style="margin-top:8px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:3px">Beschreibung</div><div style="font-size:12px;line-height:1.5;background:var(--cream);padding:8px;border-radius:6px">${esc(bp.description)}</div></div>`;
+  if (bp.story) rows += `<div style="margin-top:8px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:3px">Geschichte</div><div style="font-size:12px;line-height:1.5;background:var(--cream);padding:8px;border-radius:6px">${esc(bp.story)}</div></div>`;
+  if (bp.mission) rows += `<div style="margin-top:8px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:3px">Mission</div><div style="font-size:12px;line-height:1.5;background:var(--cream);padding:8px;border-radius:6px">${esc(bp.mission)}</div></div>`;
+  // Chips
+  var chipSec = function(arr, label) {
+    if (!arr || !arr.length) return '';
+    return `<div style="margin-top:8px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">${label}</div><div style="display:flex;gap:4px;flex-wrap:wrap">${arr.map(function(v){return '<span style="font-size:11px;padding:3px 8px;background:var(--admin-light);color:var(--admin-accent);border-radius:5px;font-weight:600">'+esc(v)+'</span>';}).join('')}</div></div>`;
+  };
+  rows += chipSec(bp.values, 'Werte');
+  rows += chipSec(bp.highlights, 'Highlights');
+  rows += chipSec(bp.certifications, 'Zertifizierungen');
+  rows += chipSec(bp.specialties, 'Spezialisierungen');
+  if (!rows) rows = '<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:13px">Kein Shop-Profil vorhanden</div>';
+  return rows;
+}
+
+// ── Toggle Edit-Modus ──
+function togglePartnerProfileEdit(id) {
+  var view = document.getElementById('profView_' + id);
+  var edit = document.getElementById('profEdit_' + id);
+  var btn = document.getElementById('profEditBtn_' + id);
+  if (!view || !edit) return;
+  var isEditing = edit.style.display !== 'none';
+  view.style.display = isEditing ? '' : 'none';
+  edit.style.display = isEditing ? 'none' : '';
+  if (btn) btn.textContent = isEditing ? 'Bearbeiten' : 'Abbrechen';
+}
+
+// ── Partner-Profil speichern ──
+function savePartnerProfile(id) {
+  var s = getPartnerList().find(function(x) { return x.id === id || x.id === parseInt(id); });
+  if (!s) { showToast('Partner nicht gefunden'); return; }
+  var v = function(elId) { var el = document.getElementById(elId); return el ? el.value.trim() : ''; };
+  // Werte lesen
+  s.anrede = v('pe_anrede_' + id);
+  s.titel = v('pe_titel_' + id);
+  s.firstName = v('pe_firstName_' + id);
+  s.lastName = v('pe_lastName_' + id);
+  s.company = v('pe_company_' + id);
+  s.jobTitle = v('pe_jobTitle_' + id);
+  s.specialty = v('pe_specialty_' + id);
+  s.phone = v('pe_phone_' + id);
+  s.website = v('pe_website_' + id);
+  s.location = v('pe_location_' + id);
+  s.bio = v('pe_bio_' + id);
+  // Display-Name aktualisieren
+  var fullName = ((s.titel ? s.titel + ' ' : '') + s.firstName + ' ' + s.lastName).trim();
+  if (fullName) s.name = fullName;
+  s.personalData = { anrede: s.anrede, titel: s.titel, firstName: s.firstName, lastName: s.lastName };
+  // Nach Supabase schreiben
+  persistPartnerProfile(s);
+  // UI aktualisieren
+  togglePartnerProfileEdit(id);
+  document.getElementById('profView_' + id).innerHTML = buildPartnerProfileView(s);
+  showToast('Profil von ' + s.name + ' gespeichert');
+}
+
+// ═══════════════════════════════════════════════
+// PARTNER PREVIEW — Kundenansicht (wie auf dem Marktplatz)
+// ═══════════════════════════════════════════════
+function showPartnerPreview(id) {
+  var s = getPartnerList().find(function(x) { return String(x.id) === String(id); });
+  if (!s) return;
+  var bp = s.brandProfile || {};
+  var stInfo = SELLER_TYPES[s.type] || SELLER_TYPES.coach;
+  var isSeller = (stInfo.category === 'partner' || stInfo.category === 'unternehmen');
+  var html = '';
+
+  if (isSeller) {
+    // ── SELLER / PARTNER Ansicht ──
+    var typeIcon = stInfo.icon;
+    var typeLabel = stInfo.label;
+    var typeColor = stInfo.color;
+    var displayName = s.name || (s.firstName + ' ' + s.lastName);
+    var titleText = s.jobTitle || typeLabel;
+
+    html += `
+      <div class="pp-hero" style="background:linear-gradient(135deg,${typeColor},${typeColor}bb)">
+        <div class="pp-hero-logo">${typeIcon}</div>
+        <div class="pp-hero-name">${esc(displayName)}</div>
+        <div class="pp-hero-title">${esc(titleText)}</div>
+        ${s.location ? '<div class="pp-hero-slogan" style="margin-top:6px">📍 ' + esc(s.location) + '</div>' : ''}
+      </div>
+    `;
+
+    // Meta-Daten
+    html += `<div class="pp-meta">
+      <div class="pp-meta-item"><div class="pp-meta-val">⭐ 4.9</div><div class="pp-meta-lbl">Bewertung</div></div>
+      <div class="pp-meta-item"><div class="pp-meta-val">47</div><div class="pp-meta-lbl">Bewertungen</div></div>
+      <div class="pp-meta-item"><div class="pp-meta-val">✅</div><div class="pp-meta-lbl">Verifiziert</div></div>
+    </div>`;
+
+    // Bio
+    if (s.bio) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Über mich</div>
+        <div class="pp-text">${esc(s.bio)}</div>
+      </div>`;
+    }
+
+    // Fachgebiet / Specialty
+    if (s.specialty) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Fachgebiete</div>
+        <div class="pp-chips"><span class="pp-chip blue">${esc(s.specialty)}</span></div>
+      </div>`;
+    }
+
+    // Firma/Praxis
+    if (s.company) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">${(s.type === 'heilpraktiker' || s.type === 'hebamme') ? 'Praxis' : (s.type === 'bgm') ? 'Unternehmen' : (s.type === 'beauty' || s.type === 'studio') ? 'Studio / Salon' : 'Firma / Einrichtung'}</div>
+        <div class="pp-text" style="font-weight:600">${esc(s.company)}</div>
+        ${s.location ? '<div class="pp-text" style="color:#6b7280;margin-top:2px">📍 ' + esc(s.location) + '</div>' : ''}
+      </div>`;
+    }
+
+    // Kontakt
+    var hasContact = s.phone || s.website || s.email;
+    if (hasContact) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Kontakt</div>
+        <div class="pp-contact">
+          ${s.phone ? '<a href="tel:' + esc(s.phone) + '">📞 ' + esc(s.phone) + '</a>' : ''}
+          ${s.email ? '<a href="mailto:' + esc(s.email) + '">📧 ' + esc(s.email) + '</a>' : ''}
+          ${s.website ? '<a href="' + esc(s.website) + '" target="_blank">🌐 ' + esc(s.website) + '</a>' : ''}
+        </div>
+      </div>`;
+    }
+
+    // Leere Bereiche
+    html += `<div class="pp-section">
+      <div class="pp-section-title">Services & Termine</div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:12px;color:#166534">Termine buchbar über SuppTree</div>
+      </div>
+    </div>`;
+
+  } else {
+    // ── HERSTELLER / SUPPLEMENT Ansicht (Brand Page) ──
+    var brandName = bp.name || s.shopName || s.company || s.name;
+    var brandLogo = bp.logo || '💊';
+
+    html += `
+      <div class="pp-hero">
+        <div class="pp-hero-logo">${esc(brandLogo)}</div>
+        <div class="pp-hero-name">${esc(brandName)}</div>
+        ${bp.slogan ? '<div class="pp-hero-slogan">' + esc(bp.slogan) + '</div>' : ''}
+      </div>
+    `;
+
+    // Meta-Daten
+    html += `<div class="pp-meta">
+      ${bp.founded ? '<div class="pp-meta-item"><div class="pp-meta-val">' + bp.founded + '</div><div class="pp-meta-lbl">Gegründet</div></div>' : '<div class="pp-meta-item"><div class="pp-meta-val">–</div><div class="pp-meta-lbl">Gegründet</div></div>'}
+      ${bp.location || s.location ? '<div class="pp-meta-item"><div class="pp-meta-val">📍</div><div class="pp-meta-lbl">' + esc(bp.location || s.location) + '</div></div>' : '<div class="pp-meta-item"><div class="pp-meta-val">–</div><div class="pp-meta-lbl">Standort</div></div>'}
+      ${bp.teamSize ? '<div class="pp-meta-item"><div class="pp-meta-val">👥</div><div class="pp-meta-lbl">' + esc(bp.teamSize) + '</div></div>' : '<div class="pp-meta-item"><div class="pp-meta-val">–</div><div class="pp-meta-lbl">Team</div></div>'}
+    </div>`;
+
+    // Über die Marke
+    if (bp.description) {
+      var hl = bp.highlights || [];
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Über ${esc(brandName)}</div>
+        <div class="pp-text">${esc(bp.description)}</div>
+        ${hl.length ? '<div class="pp-chips" style="margin-top:8px">' + hl.map(function(h) { return '<span class="pp-chip green">✓ ' + esc(h) + '</span>'; }).join('') + '</div>' : ''}
+      </div>`;
+    }
+
+    // Geschichte
+    if (bp.story) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Unsere Geschichte</div>
+        <div class="pp-text">${esc(bp.story)}</div>
+      </div>`;
+    }
+
+    // Mission
+    if (bp.mission) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Unsere Mission</div>
+        <div class="pp-text">${esc(bp.mission)}</div>
+      </div>`;
+    }
+
+    // Werte
+    if (bp.values && bp.values.length) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Unsere Werte</div>
+        <div class="pp-chips">${bp.values.map(function(v) { return '<span class="pp-chip green">💎 ' + esc(v) + '</span>'; }).join('')}</div>
+      </div>`;
+    }
+
+    // Spezialisierungen
+    if (bp.specialties && bp.specialties.length) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Spezialisierungen</div>
+        <div class="pp-chips">${bp.specialties.map(function(v) { return '<span class="pp-chip blue">🔬 ' + esc(v) + '</span>'; }).join('')}</div>
+      </div>`;
+    }
+
+    // Zertifizierungen
+    if (bp.certifications && bp.certifications.length) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Zertifizierungen</div>
+        <div class="pp-chips">${bp.certifications.map(function(v) { return '<span class="pp-chip yellow">🏆 ' + esc(v) + '</span>'; }).join('')}</div>
+      </div>`;
+    }
+
+    // Kontakt
+    var bpEmail = bp.email || s.email;
+    var bpPhone = bp.phone || s.phone;
+    var bpWeb = bp.website || s.website;
+    if (bpEmail || bpPhone || bpWeb) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Kontakt</div>
+        <div class="pp-contact">
+          ${bpEmail ? '<a href="mailto:' + esc(bpEmail) + '">📧 ' + esc(bpEmail) + '</a>' : ''}
+          ${bpPhone ? '<a href="tel:' + esc(bpPhone) + '">📞 ' + esc(bpPhone) + '</a>' : ''}
+          ${bpWeb ? '<a href="' + esc(bpWeb) + '" target="_blank">🌐 ' + esc(bpWeb) + '</a>' : ''}
+        </div>
+      </div>`;
+    }
+
+    // Social Media
+    if (bp.instagram || bp.facebook || bp.linkedin) {
+      html += `<div class="pp-section">
+        <div class="pp-section-title">Social Media</div>
+        <div class="pp-contact">
+          ${bp.instagram ? '<a href="https://instagram.com/' + esc(bp.instagram) + '" target="_blank">📸 @' + esc(bp.instagram) + '</a>' : ''}
+          ${bp.facebook ? '<a href="' + esc(bp.facebook) + '" target="_blank">👍 Facebook</a>' : ''}
+          ${bp.linkedin ? '<a href="' + esc(bp.linkedin) + '" target="_blank">💼 LinkedIn</a>' : ''}
+        </div>
+      </div>`;
+    }
+
+    // Produkte Platzhalter
+    html += `<div class="pp-section">
+      <div class="pp-section-title">Produkte von ${esc(brandName)}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:#fff;border-radius:8px;padding:16px;text-align:center;border:1px solid #e5e7eb">
+          <div style="font-size:28px;margin-bottom:4px">💊</div>
+          <div style="font-size:11px;color:#6b7280">Produkte werden hier angezeigt</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Profil-Vollständigkeits-Check
+  var missing = [];
+  if (!s.bio) missing.push('Bio / Über mich');
+  if (!s.phone) missing.push('Telefon');
+  if (!s.website) missing.push('Website');
+  if (!isSeller && (!bp.description)) missing.push('Marken-Beschreibung');
+  if (!isSeller && (!bp.values || !bp.values.length)) missing.push('Werte');
+  if (!isSeller && (!bp.certifications || !bp.certifications.length)) missing.push('Zertifizierungen');
+
+  if (missing.length > 0) {
+    html += `<div style="padding:12px 16px;background:#fef3c7;border-top:2px solid #f59e0b">
+      <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:4px">⚠️ Unvollständiges Profil</div>
+      <div style="font-size:11px;color:#92400e">Fehlend: ${missing.join(', ')}</div>
+    </div>`;
+  }
+
+  document.getElementById('partnerPreviewContent').innerHTML = html;
+  document.getElementById('partnerPreviewOverlay').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePartnerPreview() {
+  document.getElementById('partnerPreviewOverlay').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
 function showPartnerDetail(id) {
-  const s = (_livePartners || demoSellers).find(x => x.id === id);
+  const s = getPartnerList().find(x => String(x.id) === String(id));
   if (!s) return;
 
   // Dokumente aufbereiten
@@ -1790,17 +2264,40 @@ function showPartnerDetail(id) {
       ${s.sellerNr ? `<div class="detail-row"><span class="detail-label">Partner-Nr.</span><span class="detail-value" style="font-family:monospace;font-weight:700">${esc(s.sellerNr)}</span></div>` : ''}
       <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value">${esc(s.name)}</span></div>
       <div class="detail-row"><span class="detail-label">E-Mail</span><span class="detail-value">${esc(s.email)}</span></div>
-      <div class="detail-row"><span class="detail-label">Typ</span><span class="detail-value"><select onchange="changePartnerType(${s.id},this.value)" style="font-size:13px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--white);font-weight:600">
-        <option value="supplement" ${s.type==='supplement'?'selected':''}>💊 Supplement-Händler</option>
-        <option value="heilpraktiker" ${s.type==='heilpraktiker'?'selected':''}>🩺 Heilpraktiker</option>
-        <option value="coach" ${s.type==='coach'?'selected':''}>🎯 Coach / Trainer</option>
+      <div class="detail-row"><span class="detail-label">Typ</span><span class="detail-value"><select onchange="changePartnerType('${s.id}',this.value)" style="font-size:13px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--white);font-weight:600">
+        ${Object.entries(SELLER_TYPES).filter(function(e){return e[0]!=='coach';}).map(function(e){return '<option value="'+e[0]+'" '+(s.type===e[0]?'selected':'')+'>'+e[1].icon+' '+e[1].label+'</option>';}).join('')}
       </select></span></div>
       <div class="detail-row"><span class="detail-label">Shop</span><span class="detail-value">${esc(s.shopName)}</span></div>
       <div class="detail-row"><span class="detail-label">Registriert</span><span class="detail-value">${s.joined}</span></div>
       <div class="detail-row"><span class="detail-label">Verifiziert</span><span class="detail-value">${s.verified ? '✅ Ja' : '❌ Nein'}</span></div>
+      <button onclick="showPartnerPreview('${s.id}')" style="width:100%;margin-top:10px;padding:10px;background:linear-gradient(135deg,#059669,#34d399);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        <span style="font-size:16px">👁️</span> Kundenansicht anzeigen
+      </button>
     </div>
 
-    <!-- Card 2: Statistiken -->
+    <!-- Card 2: Profil-Daten -->
+    <div class="detail-card">
+      <div class="detail-card-title" style="display:flex;justify-content:space-between;align-items:center">
+        <span>👤 Profil des Partners</span>
+        <button onclick="togglePartnerProfileEdit('${s.id}')" id="profEditBtn_${s.id}" style="font-size:11px;padding:4px 10px;border:1px solid var(--admin-accent);background:var(--admin-light);color:var(--admin-accent);border-radius:6px;cursor:pointer;font-weight:600">Bearbeiten</button>
+      </div>
+      <div id="profView_${s.id}">
+        ${buildPartnerProfileView(s)}
+      </div>
+      <div id="profEdit_${s.id}" style="display:none">
+        ${buildPartnerProfileEditForm(s)}
+      </div>
+    </div>
+
+    ${s.brandProfile ? `
+    <!-- Card 2b: Brand Profile / Mein Shop -->
+    <div class="detail-card">
+      <div class="detail-card-title">🏪 Shop-Profil / Marke</div>
+      ${buildBrandProfileView(s)}
+    </div>
+    ` : ''}
+
+    <!-- Card 3: Statistiken -->
     <div class="detail-card">
       <div class="detail-card-title">Statistiken</div>
       <div class="detail-row"><span class="detail-label">Produkte</span><span class="detail-value">${partnerProducts.length}</span></div>
@@ -1823,7 +2320,7 @@ function showPartnerDetail(id) {
             <span style="font-size:11px;font-weight:700;color:${on?color:'#9ca3af'}">${icon} ${label}</span>
             <div style="display:flex;align-items:center;gap:6px">
               ${on?'<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:'+borderOn+'30;color:'+color+';font-weight:600">Std: '+stdVal+'%</span>':'<span style="font-size:9px;color:#9ca3af;font-weight:600">Deaktiviert</span>'}
-              <input type="checkbox" id="sp_toggle_${key}_${s.id}" ${on?'checked':''} onchange="toggleSellerBereich(${s.id},\'${key}\')" style="${toggleCSS};${on?toggleChecked:''}">
+              <input type="checkbox" id="sp_toggle_${key}_${s.id}" ${on?'checked':''} onchange="toggleSellerBereich('${s.id}',\'${key}\')" style="${toggleCSS};${on?toggleChecked:''}">
             </div>
           </div>
           ${on?`<div style="display:flex;gap:8px;align-items:center">
@@ -1855,7 +2352,7 @@ function showPartnerDetail(id) {
       ${row('termine','📅','Termin-Anteil (Partner erhält)','#0369a1','#f0f9ff','#f3f4f6','#bae6fd','sp_termin_'+s.id,pv.terminAnteil,100-defaults.terminFee,'vom Buchungspreis')}
       ${row('bluttests','🩸','Bluttest-Provision (Partner erhält)','#6b21a8','#faf5ff','#f3f4f6','#e9d5ff','sp_blut_'+s.id,pv.bluttestProvision,defaults.bluttestPartner,'vom Testwert')}
 
-      <button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="saveSellerProvision(${s.id})">💾 Konditionen speichern</button>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="saveSellerProvision('${s.id}')">💾 Konditionen speichern</button>
     </div>`;
     })()}
 
@@ -1878,8 +2375,8 @@ function showPartnerDetail(id) {
           </div>
           ${d.status === 'pending' ? `
             <div class="doc-actions">
-              <button class="doc-btn approve" onclick="approveDocument(${s.id},'${d.id}')" title="Genehmigen">✅</button>
-              <button class="doc-btn reject" onclick="rejectDocument(${s.id},'${d.id}')" title="Ablehnen">❌</button>
+              <button class="doc-btn approve" onclick="approveDocument('${s.id}','${d.id}')" title="Genehmigen">✅</button>
+              <button class="doc-btn reject" onclick="rejectDocument('${s.id}','${d.id}')" title="Ablehnen">❌</button>
             </div>
           ` : ''}
         </div>
@@ -1898,10 +2395,10 @@ function showPartnerDetail(id) {
     <div class="detail-card">
       <div class="detail-card-title">Aktionen</div>
       <div class="detail-actions">
-        ${s.status === 'pending' ? `<button class="btn btn-success" onclick="changeSellerStatus(${s.id},'active')">✅ Freischalten</button>` : ''}
-        ${s.status === 'active' ? `<button class="btn btn-danger" onclick="changeSellerStatus(${s.id},'blocked')">🚫 Sperren</button>` : ''}
-        ${s.status === 'blocked' ? `<button class="btn btn-success" onclick="changeSellerStatus(${s.id},'active')">🔓 Entsperren</button>` : ''}
-        ${!s.verified ? `<button class="btn btn-primary" onclick="verifySeller(${s.id})">✅ Verifizieren</button>` : ''}
+        ${s.status === 'pending' ? `<button class="btn btn-success" onclick="changeSellerStatus('${s.id}','active')">✅ Freischalten</button>` : ''}
+        ${s.status === 'active' ? `<button class="btn btn-danger" onclick="changeSellerStatus('${s.id}','blocked')">🚫 Sperren</button>` : ''}
+        ${s.status === 'blocked' ? `<button class="btn btn-success" onclick="changeSellerStatus('${s.id}','active')">🔓 Entsperren</button>` : ''}
+        ${!s.verified ? `<button class="btn btn-primary" onclick="verifySeller('${s.id}')">✅ Verifizieren</button>` : ''}
       </div>
     </div>
   `;
@@ -1911,13 +2408,13 @@ function showPartnerDetail(id) {
 
 function updatePartnerCounts(){
   const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-  el('partnerCntAll',(_livePartners || demoSellers).length);
-  el('partnerCntActive',(_livePartners || demoSellers).filter(s=>s.status==='active').length);
-  el('partnerCntPending',(_livePartners || demoSellers).filter(s=>s.status==='pending').length);
-  el('partnerCntBlocked',(_livePartners || demoSellers).filter(s=>s.status==='blocked').length);
+  el('partnerCntAll',getPartnerList().length);
+  el('partnerCntActive',getPartnerList().filter(s=>s.status==='active').length);
+  el('partnerCntPending',getPartnerList().filter(s=>s.status==='pending').length);
+  el('partnerCntBlocked',getPartnerList().filter(s=>s.status==='blocked').length);
 }
 function toggleSellerBereich(id,key){
-  const s=(_livePartners || demoSellers).find(x=>x.id===id);
+  const s=getPartnerList().find(x=>String(x.id)===String(id));
   if(!s) return;
   if(!s.bereiche) s.bereiche={produkte:true,qr:true,link:true,termine:false,bluttests:false};
   s.bereiche[key]=!s.bereiche[key];
@@ -1926,7 +2423,7 @@ function toggleSellerBereich(id,key){
 }
 
 function saveSellerProvision(id){
-  const s=(_livePartners || demoSellers).find(x=>x.id===id);
+  const s=getPartnerList().find(x=>String(x.id)===String(id));
   if(!s) return;
   const br=s.bereiche||{produkte:true,qr:true,link:true,termine:false,bluttests:false};
   const vals={
@@ -1946,7 +2443,7 @@ function saveSellerProvision(id){
 }
 
 function changePartnerType(id, newType) {
-  const s = (_livePartners || demoSellers).find(x => x.id === id);
+  const s = getPartnerList().find(x => String(x.id) === String(id));
   if (!s) return;
   const oldType = s.type;
   s.type = newType;
@@ -1957,7 +2454,7 @@ function changePartnerType(id, newType) {
 }
 
 function changeSellerStatus(id, newStatus) {
-  const s = (_livePartners || demoSellers).find(x => x.id === id);
+  const s = getPartnerList().find(x => String(x.id) === String(id));
   if (!s) return;
   adminConfirm('"' + s.name + '" wirklich auf "' + getStatusLabel(newStatus) + '" setzen?', () => {
     s.status = newStatus;
@@ -1969,7 +2466,7 @@ function changeSellerStatus(id, newStatus) {
 }
 
 function verifySeller(id) {
-  const s = (_livePartners || demoSellers).find(x => x.id === id);
+  const s = getPartnerList().find(x => String(x.id) === String(id));
   if (!s) return;
   adminConfirm('"' + s.name + '" wirklich als verifiziert markieren?', () => {
     s.verified = true;
@@ -1980,7 +2477,7 @@ function verifySeller(id) {
 }
 
 function approveDocument(sellerId, docId) {
-  const s = (_livePartners || demoSellers).find(x => x.id === sellerId);
+  const s = getPartnerList().find(x => String(x.id) === String(sellerId));
   if (!s || !s.dokumente) return;
   const doc = s.dokumente.find(d => d.id === docId);
   if (!doc) return;
@@ -1995,7 +2492,7 @@ function approveDocument(sellerId, docId) {
 }
 
 function rejectDocument(sellerId, docId) {
-  const s = (_livePartners || demoSellers).find(x => x.id === sellerId);
+  const s = getPartnerList().find(x => String(x.id) === String(sellerId));
   if (!s || !s.dokumente) return;
   showRejectModal('Dokument ablehnen', function(reason) {
     const doc = s.dokumente.find(d => d.id === docId);
@@ -2898,7 +3395,7 @@ function showProductDetail(id) {
   const p = (_liveProducts || demoProducts).find(x => x.id === id);
   if (!p) return;
 
-  const seller = (_livePartners || demoSellers).find(s => s.name === p.seller);
+  const seller = getPartnerList().find(s => s.name === p.seller);
   const sellerType = seller ? seller.type : '';
   const isSupp = sellerType === 'supplement';
 
@@ -3262,6 +3759,7 @@ function deleteClassItem(id){
 function deleteCategory(id){deleteClassItem(id);}
 
 // ── EINSTELLUNGEN (Sub-Screen) ──
+var _nummernLand='DE'; // Aktuell gewähltes Land für Nummernkreise-UI
 function getAdminSettings(){
   const defaults={
     provision:{
@@ -3271,11 +3769,36 @@ function getAdminSettings(){
     },
     platformName:'SuppTree',supportEmail:'support@supptree.de',maintenance:'Aus',
     nummern:{
-      kunde:{prefix:'KD-',next:10009,pad:5},
-      partner:{prefix:'SP-',next:20007,pad:5},
-      bestellung:{prefix:'#',next:1048,pad:4},
-      rechnung:{prefix:'RE-{JAHR}-',next:48,pad:4},
-      artikel:{prefix:'ART-',next:30009,pad:5}
+      vorlagen:{
+        kunde:{prefix:'91-{LAND}-',suffix:'',pad:5},
+        bestellung:{prefix:'{LAND}-',suffix:'',pad:4},
+        rechnung:{prefix:'95-{JAHR}-',suffix:'-{LAND}',pad:4},
+        gutschrift:{prefix:'99-{JAHR}-',suffix:'-{LAND}',pad:4}
+      },
+      sequenzen:{
+        DE:{kunde:10001,bestellung:1001,rechnung:1,gutschrift:1},
+        AT:{kunde:10001,bestellung:1001,rechnung:1,gutschrift:1},
+        CH:{kunde:10001,bestellung:1001,rechnung:1,gutschrift:1},
+        NL:{kunde:10001,bestellung:1001,rechnung:1,gutschrift:1},
+        LU:{kunde:10001,bestellung:1001,rechnung:1,gutschrift:1}
+      }
+    },
+    partnerCodes:{
+      laender:{
+        DE:{nr:'49',label:'Deutschland'},
+        AT:{nr:'43',label:'Österreich'},
+        CH:{nr:'41',label:'Schweiz'},
+        NL:{nr:'31',label:'Niederlande'},
+        LU:{nr:'35',label:'Luxemburg'}
+      },
+      typen:{
+        partner:{nr:'01',label:'Partner'},
+        hersteller:{nr:'02',label:'Hersteller'},
+        unternehmen:{nr:'03',label:'Unternehmen'},
+        bgm:{nr:'04',label:'BGM'}
+      },
+      laufend:{},
+      pad:5
     }
   };
   try{
@@ -3286,24 +3809,178 @@ function getAdminSettings(){
       // provision-Objekt sicherstellen
       if(!s.provision) s.provision={...defaults.provision};
       else s.provision={...defaults.provision,...s.provision};
-      if(!s.nummern) s.nummern=defaults.nummern;
+      if(!s.nummern) s.nummern=JSON.parse(JSON.stringify(defaults.nummern));
+      // Migrationen nur einmal ausführen (Version < 2 = alte Daten)
+      if(!s._v || s._v < 2){
+        // Migration: Alte Buchstaben-Präfixe (KD-, RE-) → Zahlen (91-, 95-, 99-)
+        if(s.nummern.vorlagen){
+          var v=s.nummern.vorlagen;
+          if((v.kunde&&v.kunde.prefix&&v.kunde.prefix.indexOf('KD')>=0)||(v.rechnung&&v.rechnung.prefix&&v.rechnung.prefix.indexOf('RE')>=0)){
+            s.nummern.vorlagen=JSON.parse(JSON.stringify(defaults.nummern.vorlagen));
+            if(s.nummern.sequenzen){for(var cc in s.nummern.sequenzen){if(!s.nummern.sequenzen[cc].gutschrift) s.nummern.sequenzen[cc].gutschrift=1;}}
+            if(s.nummern.sequenzen){for(var cc in s.nummern.sequenzen){delete s.nummern.sequenzen[cc].artikel;}}
+          }
+          if(!v.gutschrift){
+            s.nummern.vorlagen.gutschrift=JSON.parse(JSON.stringify(defaults.nummern.vorlagen.gutschrift));
+            if(s.nummern.sequenzen){for(var cc in s.nummern.sequenzen){if(!s.nummern.sequenzen[cc].gutschrift) s.nummern.sequenzen[cc].gutschrift=1;}}
+          }
+        }
+        // Migration: Alle alten Formate → neues Vorlagen+Sequenzen-System
+        if(!s.nummern.vorlagen){
+          var oldN=s.nummern;
+          var seq={};
+          if(oldN.kunde&&oldN.kunde.prefix!==undefined){
+            ['DE','AT','CH','NL','LU'].forEach(function(cc){
+              seq[cc]={};
+              ['kunde','bestellung','rechnung'].forEach(function(k){
+                if(oldN[k]) seq[cc][k]=oldN[k].next||1;
+              });
+            });
+          } else if(oldN.DE&&oldN.DE.kunde){
+            for(var cc in oldN){
+              if(typeof oldN[cc]==='object'&&oldN[cc].kunde){
+                seq[cc]={};
+                ['kunde','bestellung','rechnung'].forEach(function(k){
+                  if(oldN[cc][k]) seq[cc][k]=oldN[cc][k].next||1;
+                });
+              }
+            }
+          }
+          s.nummern=JSON.parse(JSON.stringify(defaults.nummern));
+          if(Object.keys(seq).length) s.nummern.sequenzen=seq;
+        }
+        delete s.partnerNummern;
+        if(!s.partnerCodes) s.partnerCodes=JSON.parse(JSON.stringify(defaults.partnerCodes));
+        else{
+          if(!s.partnerCodes.laender) s.partnerCodes.laender=defaults.partnerCodes.laender;
+          if(!s.partnerCodes.typen) s.partnerCodes.typen=defaults.partnerCodes.typen;
+          // Migration: Alte Typen → neue (partner,hersteller,unternehmen,bgm — ohne kunde)
+          if(s.partnerCodes.typen.heilpraktiker || s.partnerCodes.typen.supplement || s.partnerCodes.typen.coach || s.partnerCodes.typen.kunde){
+            s.partnerCodes.typen=JSON.parse(JSON.stringify(defaults.partnerCodes.typen));
+          }
+          if(!s.partnerCodes.laufend) s.partnerCodes.laufend={};
+          if(!s.partnerCodes.pad) s.partnerCodes.pad=5;
+        }
+        // Version setzen — Migrationen laufen ab jetzt nie wieder
+        s._v=2;
+        localStorage.setItem('suppTreeAdminSettings',JSON.stringify(s));
+      } else {
+        // Bereits migriert — nur fehlende Strukturen ergänzen, aber NICHT überschreiben
+        delete s.partnerNummern;
+        if(!s.partnerCodes) s.partnerCodes=JSON.parse(JSON.stringify(defaults.partnerCodes));
+        else{
+          if(!s.partnerCodes.laufend) s.partnerCodes.laufend={};
+          if(!s.partnerCodes.pad) s.partnerCodes.pad=5;
+        }
+        if(!s.nummern.vorlagen) s.nummern.vorlagen=JSON.parse(JSON.stringify(defaults.nummern.vorlagen));
+        if(!s.nummern.sequenzen) s.nummern.sequenzen=JSON.parse(JSON.stringify(defaults.nummern.sequenzen));
+      }
       return s;
     }
   }catch(e){}
-  return defaults;
+  var d=JSON.parse(JSON.stringify(defaults));
+  d._v=2;
+  return d;
 }
-function getNextNumber(typ) {
+function getNextNumber(typ, countryCode) {
   const s = getAdminSettings();
-  if (!s.nummern) return '';
-  const n = s.nummern[typ];
-  if (!n) return '';
-  let prefix = n.prefix.replace('{JAHR}', new Date().getFullYear());
-  const nr = String(n.next).padStart(n.pad, '0');
-  n.next++;
+  const cc = countryCode || 'DE';
+  if (!s.nummern || !s.nummern.vorlagen || !s.nummern.vorlagen[typ]) return '';
+  const t = s.nummern.vorlagen[typ];
+  if (!s.nummern.sequenzen[cc]) s.nummern.sequenzen[cc] = {};
+  if (!s.nummern.sequenzen[cc][typ]) s.nummern.sequenzen[cc][typ] = 1;
+  const landNr = (s.partnerCodes && s.partnerCodes.laender && s.partnerCodes.laender[cc]) ? s.partnerCodes.laender[cc].nr : cc;
+  const jahr = String(new Date().getFullYear()).slice(-2);
+  const next = s.nummern.sequenzen[cc][typ];
+  const prefix = t.prefix.replace(/\{LAND\}/g, landNr).replace(/\{JAHR\}/g, jahr);
+  const suffix = (t.suffix || '').replace(/\{LAND\}/g, landNr).replace(/\{JAHR\}/g, jahr);
+  const nr = String(next).padStart(t.pad || 4, '0');
+  s.nummern.sequenzen[cc][typ]++;
   saveAdminSettings(s);
-  return prefix + nr;
+  return prefix + nr + suffix;
 }
-function saveAdminSettings(s){localStorage.setItem('suppTreeAdminSettings',JSON.stringify(s));}
+function getNextPartnerCode(countryCode, partnerType) {
+  const s = getAdminSettings();
+  if (!s.partnerCodes) return '';
+  const cc = (countryCode||'DE').toUpperCase();
+  const typ = partnerType||'heilpraktiker';
+  const land = s.partnerCodes.laender[cc];
+  const tObj = s.partnerCodes.typen[typ];
+  if (!land||!tObj) return '';
+  const comboKey = land.nr+'-'+tObj.nr;
+  if (!s.partnerCodes.laufend[comboKey]) s.partnerCodes.laufend[comboKey]={next:25001};
+  const entry = s.partnerCodes.laufend[comboKey];
+  const nr = String(entry.next).padStart(s.partnerCodes.pad||5,'0');
+  entry.next++;
+  saveAdminSettings(s);
+  return land.nr+'-'+tObj.nr+'-'+nr;
+}
+function saveAdminSettings(s){
+  if(!s._v) s._v=2; // Version sicherstellen
+  localStorage.setItem('suppTreeAdminSettings',JSON.stringify(s));
+  // Async Supabase-Sync (fire-and-forget)
+  syncSettingsToSupabase(s);
+}
+async function syncSettingsToSupabase(s){
+  try{
+    const sb=initSupabase();
+    if(!sb) return;
+    // _v Version-Flag in partnerCodes mitschicken für Conflict-Resolution
+    var pc=Object.assign({},s.partnerCodes);
+    pc._v=s._v||2;
+    const updates=[
+      {key:'platform',value:{platformName:s.platformName,supportEmail:s.supportEmail,maintenance:s.maintenance}},
+      {key:'provision',value:s.provision},
+      {key:'nummern',value:s.nummern},
+      {key:'partner_codes',value:pc}
+    ];
+    for(const row of updates){
+      await sb.from('admin_settings').upsert({key:row.key,value:row.value},{onConflict:'key'});
+    }
+  }catch(e){console.warn('Supabase sync fehlgeschlagen:',e);}
+}
+async function loadSettingsFromSupabase(){
+  try{
+    const sb=initSupabase();
+    if(!sb) return null;
+    const{data,error}=await sb.from('admin_settings').select('key,value');
+    if(error||!data||!data.length) return null;
+    const s=getAdminSettings(); // Aktuelle localStorage-Werte als Basis
+    // Supabase-Daten in Map umwandeln
+    var sbMap={};
+    for(var i=0;i<data.length;i++) sbMap[data[i].key]=data[i].value;
+    // Prüfen ob Supabase-Daten aktueller sind als lokale (via _v Versions-Flag)
+    var sbVersion=(sbMap.partner_codes&&sbMap.partner_codes._v)||0;
+    var localVersion=s._v||0;
+    let changed=false;
+    // Platform & Provision: immer mergen (keine Konflikte)
+    if(sbMap.platform){
+      if(sbMap.platform.platformName) s.platformName=sbMap.platform.platformName;
+      if(sbMap.platform.supportEmail) s.supportEmail=sbMap.platform.supportEmail;
+      if(sbMap.platform.maintenance) s.maintenance=sbMap.platform.maintenance;
+      changed=true;
+    }
+    if(sbMap.provision){s.provision={...s.provision,...sbMap.provision};changed=true;}
+    // Nummern & PartnerCodes: NUR übernehmen wenn Supabase-Version >= lokal
+    // (verhindert dass alte SQL-Defaults lokale Änderungen überschreiben)
+    if(sbMap.nummern && sbVersion >= localVersion){
+      if(sbMap.nummern.vorlagen&&sbMap.nummern.sequenzen){
+        s.nummern=sbMap.nummern;
+        changed=true;
+      }
+    }
+    if(sbMap.partner_codes && sbVersion >= localVersion){
+      s.partnerCodes=sbMap.partner_codes;
+      if(!s.partnerCodes.laufend) s.partnerCodes.laufend={};
+      changed=true;
+    }
+    if(changed){
+      localStorage.setItem('suppTreeAdminSettings',JSON.stringify(s));
+      console.log('✅ Admin-Settings aus Supabase geladen');
+    }
+    return s;
+  }catch(e){console.warn('Supabase load fehlgeschlagen:',e);return null;}
+}
 
 function renderSettings(){
   const s=getAdminSettings();
@@ -3410,20 +4087,135 @@ function renderSettings(){
     </div>
     <div class="detail-card">
       <div class="detail-card-title">🔢 Nummernkreise</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Definiere Präfix und nächste Nummer für alle Entitäten. <code>{JAHR}</code> wird automatisch durch das aktuelle Jahr ersetzt.</div>
-      ${['kunde','partner','bestellung','rechnung','artikel'].map(k => {
-        const n = s.nummern ? s.nummern[k] : {prefix:'',next:1,pad:4};
-        const labels = {kunde:'Kundennummer',partner:'Partnernummer',bestellung:'Bestellnummer',rechnung:'Rechnungsnummer',artikel:'Artikelnummer'};
-        const preview = n.prefix.replace('{JAHR}', new Date().getFullYear()) + String(n.next).padStart(n.pad, '0');
-        return `
-        <div style="display:grid;grid-template-columns:1fr 90px 60px 1fr;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
-          <div style="font-size:12px;font-weight:600">${labels[k]}</div>
-          <input type="text" id="nrPrefix_${k}" value="${esc(n.prefix)}" style="font-size:12px;padding:6px 8px;font-family:monospace" placeholder="Präfix">
-          <input type="number" id="nrNext_${k}" value="${n.next}" min="1" style="font-size:12px;padding:6px 8px;font-family:monospace">
-          <div style="font-size:11px;color:var(--text-muted);font-family:monospace">Vorschau: <strong>${esc(preview)}</strong></div>
-        </div>`;
-      }).join('')}
-      <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="saveNummernSettings()">Nummernkreise speichern</button>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">
+        Platzhalter: <code>{LAND}</code> = Länderkennzahl aus Partner-Code-System, <code>{JAHR}</code> = aktuelles Jahr
+      </div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--text-dark)">Vorlagen</div>
+      ${(function(){
+        const v=s.nummern.vorlagen;
+        const labels={kunde:'Kundennr',bestellung:'Bestellnr',rechnung:'Rechnungsnr',gutschrift:'Gutschriftnr'};
+        return ['kunde','bestellung','rechnung','gutschrift'].map(k => {
+          const t=v[k]||{prefix:'',suffix:'',pad:4};
+          return '<div style="display:grid;grid-template-columns:80px 1fr 1fr 50px;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">'
+            +'<div style="font-size:11px;font-weight:600">'+labels[k]+'</div>'
+            +'<input type="text" id="nrVorlage_'+k+'_prefix" value="'+esc(t.prefix)+'" style="font-size:11px;padding:5px 6px;font-family:monospace" placeholder="Präfix" title="Präfix">'
+            +'<input type="text" id="nrVorlage_'+k+'_suffix" value="'+esc(t.suffix)+'" style="font-size:11px;padding:5px 6px;font-family:monospace" placeholder="Suffix (optional)" title="Suffix">'
+            +'<input type="number" id="nrVorlage_'+k+'_pad" value="'+t.pad+'" min="1" max="10" style="font-size:11px;padding:5px 4px;font-family:monospace;text-align:center" title="Stellen">'
+            +'</div>';
+        }).join('');
+      })()}
+      <div style="display:grid;grid-template-columns:80px 1fr 1fr 50px;gap:6px;padding:2px 0;margin-top:-1px">
+        <div></div>
+        <div style="font-size:9px;color:#9ca3af;text-align:center">Präfix</div>
+        <div style="font-size:9px;color:#9ca3af;text-align:center">Suffix</div>
+        <div style="font-size:9px;color:#9ca3af;text-align:center">Stellen</div>
+      </div>
+      <div style="font-size:12px;font-weight:700;margin:18px 0 8px;color:var(--text-dark)">Nächste Nummern pro Land</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        ${(function(){
+          const flags={DE:'🇩🇪',AT:'🇦🇹',CH:'🇨🇭',NL:'🇳🇱',LU:'🇱🇺',FR:'🇫🇷',IT:'🇮🇹',PL:'🇵🇱',BE:'🇧🇪',CZ:'🇨🇿'};
+          return Object.keys(s.partnerCodes.laender).map(cc => {
+            const active=_nummernLand===cc;
+            return '<button onclick="_nummernLand=\''+cc+'\';renderSettings()" style="padding:5px 12px;border-radius:16px;border:2px solid '+(active?'var(--green-dark)':'var(--border)')+';background:'+(active?'var(--green-dark)':'#fff')+';color:'+(active?'#fff':'var(--text-dark)')+';font-size:11px;cursor:pointer;font-weight:600;transition:all .2s;box-shadow:'+(active?'0 2px 6px rgba(26,90,58,0.3)':'none')+'">'+(flags[cc]||'🏳️')+' '+cc+'</button>';
+          }).join('');
+        })()}
+      </div>
+      ${(function(){
+        const cc=_nummernLand;
+        const landNr=(s.partnerCodes.laender[cc]&&s.partnerCodes.laender[cc].nr)||'??';
+        const landLabel=(s.partnerCodes.laender[cc]&&s.partnerCodes.laender[cc].label)||cc;
+        const seq=s.nummern.sequenzen[cc]||{kunde:1,bestellung:1,rechnung:1};
+        const v=s.nummern.vorlagen;
+        const labels={kunde:'Kundennr',bestellung:'Bestellnr',rechnung:'Rechnungsnr',gutschrift:'Gutschriftnr'};
+        const jahr=String(new Date().getFullYear()).slice(-2);
+        return ['kunde','bestellung','rechnung','gutschrift'].map(k => {
+          const t=v[k]||{prefix:'',suffix:'',pad:4};
+          const next=seq[k]||1;
+          const prefix=t.prefix.replace(/\{LAND\}/g,landNr).replace(/\{JAHR\}/g,jahr);
+          const suffix=(t.suffix||'').replace(/\{LAND\}/g,landNr).replace(/\{JAHR\}/g,jahr);
+          const preview=prefix+String(next).padStart(t.pad,'0')+suffix;
+          return '<div style="display:grid;grid-template-columns:80px 70px 1fr;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">'
+            +'<div style="font-size:11px;font-weight:600">'+labels[k]+'</div>'
+            +'<input type="number" id="nrSeq_'+k+'" value="'+next+'" min="1" style="font-size:11px;padding:5px 6px;font-family:monospace">'
+            +'<div style="font-size:12px;font-family:monospace;color:var(--green-dark);font-weight:600">→ '+esc(preview)+'</div>'
+            +'</div>';
+        }).join('')
+        +'<div style="font-size:10px;color:#9ca3af;margin-top:4px">Länderkennzahl für '+esc(landLabel)+': <strong>'+esc(landNr)+'</strong> (aus Partner-Code-System)</div>';
+      })()}
+      <div style="font-size:12px;font-weight:700;margin:18px 0 8px;color:var(--text-dark)">Vorschau alle Länder</div>
+      <div style="background:#f8f9fa;border-radius:8px;padding:10px;overflow-x:auto">
+        <table style="width:100%;font-size:10px;font-family:monospace;border-collapse:collapse">
+          <tr style="color:#6b7280;font-weight:700;text-align:left">
+            <td style="padding:3px 6px">Land</td><td style="padding:3px 6px">Kundennr</td><td style="padding:3px 6px">Bestellnr</td><td style="padding:3px 6px">Rechnungsnr</td><td style="padding:3px 6px">Gutschriftnr</td>
+          </tr>
+          ${(function(){
+            const flags={DE:'🇩🇪',AT:'🇦🇹',CH:'🇨🇭',NL:'🇳🇱',LU:'🇱🇺',FR:'🇫🇷',IT:'🇮🇹',PL:'🇵🇱',BE:'🇧🇪',CZ:'🇨🇿'};
+            const v=s.nummern.vorlagen;
+            const jahr=String(new Date().getFullYear()).slice(-2);
+            return Object.entries(s.partnerCodes.laender).map(([cc,l]) => {
+              const seq=s.nummern.sequenzen[cc]||{kunde:1,bestellung:1,rechnung:1,gutschrift:1};
+              const cols=['kunde','bestellung','rechnung','gutschrift'].map(k => {
+                const t=v[k]||{prefix:'',suffix:'',pad:4};
+                const prefix=t.prefix.replace(/\{LAND\}/g,l.nr).replace(/\{JAHR\}/g,jahr);
+                const suffix=(t.suffix||'').replace(/\{LAND\}/g,l.nr).replace(/\{JAHR\}/g,jahr);
+                return prefix+String(seq[k]||1).padStart(t.pad,'0')+suffix;
+              });
+              return '<tr style="border-top:1px solid #e5e7eb"><td style="padding:4px 6px;font-weight:600">'+(flags[cc]||'')+' '+cc+'</td>'+cols.map(c => '<td style="padding:4px 6px">'+esc(c)+'</td>').join('')+'</tr>';
+            }).join('');
+          })()}
+        </table>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:14px" onclick="saveNummernSettings()">Nummernkreise speichern</button>
+    </div>
+    <div class="detail-card">
+      <div class="detail-card-title">🌍 Partner-Code-System</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Partner-Codes bestehen aus: <strong>Land-Nr — Typ-Nr — Laufende Nr</strong><br>Beispiel: <code style="font-size:12px;background:#E8F5E9;padding:2px 6px;border-radius:4px">49-01-00001</code> = Deutschland, Heilpraktiker, Partner #1</div>
+      <div style="font-size:12px;font-weight:700;margin:16px 0 8px;color:var(--text-dark)">Länderkennzahlen</div>
+      ${(function(){const entries=Object.entries(s.partnerCodes.laender);const flags={DE:'🇩🇪',AT:'🇦🇹',CH:'🇨🇭',NL:'🇳🇱',LU:'🇱🇺',FR:'🇫🇷',IT:'🇮🇹',PL:'🇵🇱',BE:'🇧🇪',CZ:'🇨🇿'};
+        return entries.map(([cc,l],idx) => `
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 28px;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;flex-direction:column;gap:1px">
+            <button onclick="movePartnerCode('laender','${cc}',-1)" style="background:none;border:none;cursor:pointer;font-size:10px;padding:0;color:${idx===0?'#d1d5db':'#6b7280'}" ${idx===0?'disabled':''}>▲</button>
+            <button onclick="movePartnerCode('laender','${cc}',1)" style="background:none;border:none;cursor:pointer;font-size:10px;padding:0;color:${idx===entries.length-1?'#d1d5db':'#6b7280'}" ${idx===entries.length-1?'disabled':''}>▼</button>
+          </div>
+          <div style="font-size:12px">${flags[cc]||'🏳️'} ${esc(l.label)}</div>
+          <input type="text" id="pcLand_${cc}" value="${esc(l.nr)}" style="font-size:12px;padding:5px 8px;font-family:monospace;text-align:center" placeholder="Nr">
+          <button onclick="removePartnerCodeLand('${cc}')" style="background:none;border:none;cursor:pointer;font-size:14px;color:#ef4444;padding:0" title="Entfernen">✕</button>
+        </div>`).join('');})()}
+      <div style="margin-top:6px"><button class="btn" style="font-size:11px;padding:6px 12px;background:var(--green-light);color:var(--green-dark)" onclick="addPartnerCodeLand()">+ Land hinzufügen</button></div>
+      <div style="font-size:12px;font-weight:700;margin:20px 0 8px;color:var(--text-dark)">Typkennzahlen</div>
+      ${(function(){const entries=Object.entries(s.partnerCodes.typen);
+        return entries.map(([key,t],idx) => `
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 28px;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;flex-direction:column;gap:1px">
+            <button onclick="movePartnerCode('typen','${key}',-1)" style="background:none;border:none;cursor:pointer;font-size:10px;padding:0;color:${idx===0?'#d1d5db':'#6b7280'}" ${idx===0?'disabled':''}>▲</button>
+            <button onclick="movePartnerCode('typen','${key}',1)" style="background:none;border:none;cursor:pointer;font-size:10px;padding:0;color:${idx===entries.length-1?'#d1d5db':'#6b7280'}" ${idx===entries.length-1?'disabled':''}>▼</button>
+          </div>
+          <div style="font-size:12px">${esc(t.label)}</div>
+          <input type="text" id="pcTyp_${key}" value="${esc(t.nr)}" style="font-size:12px;padding:5px 8px;font-family:monospace;text-align:center" placeholder="Nr">
+          <button onclick="removePartnerCodeTyp('${key}')" style="background:none;border:none;cursor:pointer;font-size:14px;color:#ef4444;padding:0" title="Entfernen">✕</button>
+        </div>`).join('');})()}
+      <div style="margin-top:6px"><button class="btn" style="font-size:11px;padding:6px 12px;background:var(--green-light);color:var(--green-dark)" onclick="addPartnerCodeTyp()">+ Typ hinzufügen</button></div>
+      <div style="font-size:12px;font-weight:700;margin:20px 0 8px;color:var(--text-dark)">Laufende Nummern (Padding: ${s.partnerCodes.pad} Stellen)</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Nächste Nummer pro Land-Typ-Kombination. Wird automatisch hochgezählt.</div>
+      ${(function(){
+        const rows=[];
+        for(const[cc,l] of Object.entries(s.partnerCodes.laender)){
+          for(const[tk,t] of Object.entries(s.partnerCodes.typen)){
+            const comboKey=l.nr+'-'+t.nr;
+            const entry=s.partnerCodes.laufend[comboKey]||{next:25001};
+            const preview=l.nr+'-'+t.nr+'-'+String(entry.next).padStart(s.partnerCodes.pad,'0');
+            const flags={DE:'🇩🇪',AT:'🇦🇹',CH:'🇨🇭',NL:'🇳🇱',LU:'🇱🇺',FR:'🇫🇷',IT:'🇮🇹',PL:'🇵🇱',BE:'🇧🇪',CZ:'🇨🇿'};
+            rows.push('<div style="display:grid;grid-template-columns:1fr 70px 1fr;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)">'
+              +'<div style="font-size:11px">'+(flags[cc]||'')+' '+esc(l.label)+' · '+esc(t.label)+'</div>'
+              +'<input type="number" id="pcNext_'+comboKey+'" value="'+entry.next+'" min="1" style="font-size:11px;padding:4px 6px;font-family:monospace;text-align:center">'
+              +'<div style="font-size:11px;color:var(--text-muted);font-family:monospace">→ <strong>'+esc(preview)+'</strong></div>'
+              +'</div>');
+          }
+        }
+        return rows.join('');
+      })()}
+      <button class="btn btn-primary" style="width:100%;margin-top:14px" onclick="savePartnerCodeSettings()">Partner-Code-System speichern</button>
     </div>
   `;
 }
@@ -3464,17 +4256,130 @@ function savePlatformSettings(){
 }
 function saveNummernSettings(){
   const s=getAdminSettings();
-  if(!s.nummern) s.nummern={};
-  const keys=['kunde','partner','bestellung','rechnung','artikel'];
-  const defaultPad={kunde:5,partner:5,bestellung:4,rechnung:4,artikel:5};
+  const cc=_nummernLand||'DE';
+  // Vorlagen speichern
+  const keys=['kunde','bestellung','rechnung','gutschrift'];
   for(const k of keys){
-    const prefix=document.getElementById('nrPrefix_'+k).value;
-    const next=parseInt(document.getElementById('nrNext_'+k).value);
-    if(isNaN(next)||next<1){showToast('Nächste Nummer für '+k+' muss mindestens 1 sein');return;}
-    s.nummern[k]={prefix:prefix,next:next,pad:defaultPad[k]};
+    const prefixEl=document.getElementById('nrVorlage_'+k+'_prefix');
+    const suffixEl=document.getElementById('nrVorlage_'+k+'_suffix');
+    const padEl=document.getElementById('nrVorlage_'+k+'_pad');
+    if(prefixEl) s.nummern.vorlagen[k].prefix=prefixEl.value;
+    if(suffixEl) s.nummern.vorlagen[k].suffix=suffixEl.value;
+    if(padEl){const p=parseInt(padEl.value);if(!isNaN(p)&&p>=1&&p<=10) s.nummern.vorlagen[k].pad=p;}
+  }
+  // Sequenzen für aktuelles Land speichern
+  if(!s.nummern.sequenzen[cc]) s.nummern.sequenzen[cc]={};
+  for(const k of keys){
+    const seqEl=document.getElementById('nrSeq_'+k);
+    if(seqEl){
+      const next=parseInt(seqEl.value);
+      if(isNaN(next)||next<1){showToast('Nächste Nummer für '+k+' muss mindestens 1 sein');return;}
+      s.nummern.sequenzen[cc][k]=next;
+    }
   }
   saveAdminSettings(s);
   showToast('✅ Nummernkreise gespeichert');
+  renderSettings();
+}
+function savePartnerCodeSettings(){
+  const s=getAdminSettings();
+  // Länderkennzahlen speichern
+  for(const cc of Object.keys(s.partnerCodes.laender)){
+    const el=document.getElementById('pcLand_'+cc);
+    if(el) s.partnerCodes.laender[cc].nr=el.value.trim();
+  }
+  // Typkennzahlen speichern
+  for(const tk of Object.keys(s.partnerCodes.typen)){
+    const el=document.getElementById('pcTyp_'+tk);
+    if(el) s.partnerCodes.typen[tk].nr=el.value.trim();
+  }
+  // Laufende Nummern speichern
+  for(const[cc,l] of Object.entries(s.partnerCodes.laender)){
+    for(const[tk,t] of Object.entries(s.partnerCodes.typen)){
+      const comboKey=l.nr+'-'+t.nr;
+      const el=document.getElementById('pcNext_'+comboKey);
+      if(el){
+        const next=parseInt(el.value);
+        if(isNaN(next)||next<1){showToast('Ungültige Nummer für '+l.label+'/'+t.label);return;}
+        if(!s.partnerCodes.laufend[comboKey]) s.partnerCodes.laufend[comboKey]={};
+        s.partnerCodes.laufend[comboKey].next=next;
+      }
+    }
+  }
+  saveAdminSettings(s);
+  showToast('✅ Partner-Code-System gespeichert');
+  renderSettings();
+}
+function addPartnerCodeLand(){
+  const cc=prompt('Länderkürzel (z.B. FR, IT, PL):');
+  if(!cc) return;
+  const code=cc.toUpperCase().replace(/[^A-Z]/g,'').substring(0,2);
+  if(code.length!==2){showToast('Bitte 2-stelliges Kürzel');return;}
+  const label=prompt('Land-Name (z.B. Frankreich):');
+  if(!label) return;
+  const nr=prompt('Länderkennzahl (z.B. 33 für Frankreich):');
+  if(!nr) return;
+  const s=getAdminSettings();
+  if(s.partnerCodes.laender[code]){showToast(code+' existiert bereits');return;}
+  s.partnerCodes.laender[code]={nr:nr.trim(),label:label.trim()};
+  saveAdminSettings(s);
+  showToast('✅ '+label+' hinzugefügt');
+  renderSettings();
+}
+function addPartnerCodeTyp(){
+  const key=prompt('Typ-Schlüssel (z.B. physio, apotheke):');
+  if(!key) return;
+  const k=key.toLowerCase().replace(/[^a-z]/g,'');
+  if(!k){showToast('Ungültiger Schlüssel');return;}
+  const label=prompt('Typ-Bezeichnung (z.B. Physiotherapeut):');
+  if(!label) return;
+  const nr=prompt('Typkennzahl (z.B. 05):');
+  if(!nr) return;
+  const s=getAdminSettings();
+  if(s.partnerCodes.typen[k]){showToast(k+' existiert bereits');return;}
+  s.partnerCodes.typen[k]={nr:nr.trim(),label:label.trim()};
+  saveAdminSettings(s);
+  showToast('✅ '+label+' hinzugefügt');
+  renderSettings();
+}
+function removePartnerCodeLand(cc){
+  const s=getAdminSettings();
+  const label=s.partnerCodes.laender[cc]?s.partnerCodes.laender[cc].label:cc;
+  if(!confirm(label+' wirklich entfernen?')) return;
+  delete s.partnerCodes.laender[cc];
+  saveAdminSettings(s);
+  showToast(label+' entfernt');
+  renderSettings();
+}
+function removePartnerCodeTyp(key){
+  const s=getAdminSettings();
+  const label=s.partnerCodes.typen[key]?s.partnerCodes.typen[key].label:key;
+  if(!confirm(label+' wirklich entfernen?')) return;
+  delete s.partnerCodes.typen[key];
+  saveAdminSettings(s);
+  showToast(label+' entfernt');
+  renderSettings();
+}
+function movePartnerCode(section,key,dir){
+  // Zuerst unsaved Inputs speichern
+  savePartnerCodeSettings();
+  const s=getAdminSettings();
+  const obj=s.partnerCodes[section];
+  const keys=Object.keys(obj);
+  const idx=keys.indexOf(key);
+  if(idx<0) return;
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=keys.length) return;
+  // Reihenfolge tauschen durch Neubau des Objekts
+  const swapKey=keys[newIdx];
+  const newObj={};
+  for(let i=0;i<keys.length;i++){
+    if(i===idx) newObj[swapKey]=obj[swapKey];
+    else if(i===newIdx) newObj[key]=obj[key];
+    else newObj[keys[i]]=obj[keys[i]];
+  }
+  s.partnerCodes[section]=newObj;
+  saveAdminSettings(s);
   renderSettings();
 }
 
@@ -3501,11 +4406,11 @@ function renderAffiliatePartners(){
       </div>
     </div>
 
-    ${(_livePartners || demoSellers).map(s=>{
+    ${getPartnerList().map(s=>{
       const pv=s.provision||{marge:25,provisionQR:10,provisionLink:7,terminAnteil:0,bluttestProvision:0};
       const typeLabel=getSellerTypeLabel(s.type);
 
-      return`<div class="detail-card" style="padding:0;overflow:hidden;cursor:pointer" onclick="showPartnerDetail(${s.id})">
+      return`<div class="detail-card" style="padding:0;overflow:hidden;cursor:pointer" onclick="showPartnerDetail('${s.id}')">
         <div style="padding:14px;border-left:4px solid ${s.status==='active'?'#16a34a':s.status==='pending'?'#d97706':'#ef4444'}">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div>
@@ -5287,8 +6192,8 @@ function renderPresetEditor(type) {
   const presets = getWidgetPresets();
   const currentPreset = presets[type] || [];
 
-  const typeLabels = {supplement:'Supplement-Händler', heilpraktiker:'Heilpraktiker', coach:'Coach'};
-  const typeIcons = {supplement:'💊', heilpraktiker:'🩺', coach:'🎯'};
+  const typeLabels = {}; const typeIcons = {};
+  Object.entries(SELLER_TYPES).forEach(function(e){ typeLabels[e[0]]=e[1].label; typeIcons[e[0]]=e[1].icon; });
 
   // Sort: enabled first (in preset order), then disabled
   const enabled = [];
@@ -5661,9 +6566,34 @@ function moveAdminWidget(id, direction) {
 }
 
 // ── HELPER ──
+// Alle Seller-Typen und Subtypes
+var SELLER_TYPES = {
+  heilpraktiker:  { label:'Heilpraktiker/in',             icon:'🩺', category:'partner', color:'#3b82f6' },
+  ernaehrung:     { label:'Ernährungsexpert/in',          icon:'🥗', category:'partner', color:'#22c55e' },
+  trainer:        { label:'Trainer/in & Coach',           icon:'💪', category:'partner', color:'#f59e0b' },
+  beauty:         { label:'Beauty & Wellness',            icon:'✨', category:'partner', color:'#ec4899' },
+  hebamme:        { label:'Hebamme & Stillberater/in',    icon:'👶', category:'partner', color:'#a855f7' },
+  creator:        { label:'Creator',                      icon:'🎬', category:'partner', color:'#6366f1' },
+  supplement:     { label:'Supplement-Hersteller',        icon:'💊', category:'hersteller', color:'#16a34a' },
+  bgm:            { label:'BGM (Betriebl. Gesundheitsm.)',icon:'🏢', category:'unternehmen', color:'#0891b2' },
+  studio:         { label:'Studio / Salon / Verein',      icon:'🏋️', category:'unternehmen', color:'#0d9488' },
+  // Legacy / Fallback
+  coach:          { label:'Coach',                        icon:'🎯', category:'partner', color:'#f59e0b' }
+};
+
 function getSellerTypeLabel(type) {
-  const labels = { supplement: 'Supplement-Händler', heilpraktiker: 'Heilpraktiker', coach: 'Coach' };
-  return labels[type] || type;
+  var t = SELLER_TYPES[type];
+  return t ? t.label : type;
+}
+
+function getSellerTypeIcon(type) {
+  var t = SELLER_TYPES[type];
+  return t ? t.icon : '🤝';
+}
+
+function getSellerTypeColor(type) {
+  var t = SELLER_TYPES[type];
+  return t ? t.color : '#6b7280';
 }
 
 function getStatusLabel(status) {
@@ -6104,6 +7034,9 @@ async function handleLogout() {
       nameEl.innerHTML = displayName + '<span class="header-badge">ADMIN</span>';
     }
 
+    // Admin-Settings aus Supabase laden (überschreibt localStorage mit DB-Werten)
+    if (typeof loadSettingsFromSupabase === 'function') loadSettingsFromSupabase();
+
     // Dashboard Stats laden
     if (typeof loadDashboardStats === 'function') loadDashboardStats();
 
@@ -6260,6 +7193,31 @@ function persistPartner(s, fields) {
     .then(function(res) { if (res.error) console.error('Partner persist error:', res.error); });
 }
 
+// Profil-Daten des Partners nach Supabase schreiben
+function persistPartnerProfile(s) {
+  if (!s || !s.dbId) return;
+  var sb = initSupabase();
+  if (!sb) return;
+  var updates = {
+    personal_data: { anrede: s.anrede || '', titel: s.titel || '', firstName: s.firstName || '', lastName: s.lastName || '' },
+    company_name: s.company || '',
+    job_title: s.jobTitle || '',
+    specialty: s.specialty || '',
+    phone: s.phone || '',
+    website: s.website || '',
+    location: s.location || '',
+    bio: s.bio || ''
+  };
+  // Display name aktualisieren
+  var fullName = ((s.titel ? s.titel + ' ' : '') + s.firstName + ' ' + s.lastName).trim();
+  if (fullName) updates.display_name = fullName;
+  sb.from('profiles').update(updates).eq('id', s.dbId)
+    .then(function(res) {
+      if (res.error) console.error('Partner profile persist error:', res.error);
+      else console.log('Partner profile saved:', s.dbId);
+    });
+}
+
 var _livePartners = null;
 async function loadPartners() {
   var sb = initSupabase();
@@ -6268,7 +7226,16 @@ async function loadPartners() {
     var { data } = await sb.from('profiles').select('*').eq('role', 'seller')
       .order('created_at', { ascending: false });
     if (!data || !data.length) return null;
+    // Brand Profiles laden (separate Tabelle)
+    var brandMap = {};
+    try {
+      var ids = data.map(function(p) { return p.id; });
+      var { data: bpData } = await sb.from('brand_profiles').select('user_id, data').in('user_id', ids);
+      if (bpData) bpData.forEach(function(bp) { brandMap[bp.user_id] = bp.data || {}; });
+    } catch(e) { console.log('Brand profiles load:', e); }
+
     _livePartners = data.map(function(p) {
+      var pd = p.personal_data || {};
       return {
         id: p.id,
         dbId: p.id,
@@ -6291,7 +7258,19 @@ async function loadPartners() {
         registeredAt: p.created_at,
         onboardedAt: p.onboarding_completed_at,
         joined: p.created_at ? new Date(p.created_at).toLocaleDateString('de-DE') : '',
-        docs: []
+        docs: [],
+        // Profildaten
+        personalData: pd,
+        anrede: pd.anrede || '',
+        titel: pd.titel || '',
+        firstName: pd.firstName || '',
+        lastName: pd.lastName || '',
+        phone: p.phone || '',
+        bio: p.bio || '',
+        website: p.website || '',
+        location: p.location || '',
+        // Brand Profile
+        brandProfile: brandMap[p.id] || null
       };
     });
     return _livePartners;
@@ -7250,5 +8229,16 @@ loadWaitlistCount();
 
 console.log('🌳 SuppTree Admin-Dashboard geladen');
 </script>
+
+<!-- Partner Preview Overlay (Kundenansicht) -->
+<div class="pp-overlay" id="partnerPreviewOverlay" onclick="if(event.target===this)closePartnerPreview()">
+  <div class="pp-frame">
+    <div class="pp-frame-top">
+      <span class="pp-frame-label">Kundenansicht — Marktplatz</span>
+      <button class="pp-frame-close" onclick="closePartnerPreview()">✕</button>
+    </div>
+    <div class="pp-scroll" id="partnerPreviewContent"></div>
+  </div>
+</div>
 </body>
 </html>

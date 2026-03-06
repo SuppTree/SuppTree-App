@@ -1,0 +1,386 @@
+[
+  {
+    "code": "DE",
+    "land": "Deutschland",
+    "region": "DACH",
+    "behoerde": "BfR / DGE",
+    "website": "bfr.bund.de / dge.de",
+    "anmerkung": "Höchstmengenempfehlungen"
+  },
+  {
+    "code": "AT",
+    "land": "Österreich",
+    "region": "DACH",
+    "behoerde": "AGES / BMG",
+    "website": "ages.at",
+    "anmerkung": ""
+  },
+  {
+    "code": "CH",
+    "land": "Schweiz",
+    "region": "DACH",
+    "behoerde": "BLV",
+    "website": "blv.admin.ch",
+    "anmerkung": "Nicht EU, eigene Regeln"
+  },
+  {
+    "code": "FR",
+    "land": "Frankreich",
+    "region": "WEST",
+    "behoerde": "ANSES",
+    "website": "anses.fr",
+    "anmerkung": ""
+  },
+  {
+    "code": "BE",
+    "land": "Belgien",
+    "region": "WEST",
+    "behoerde": "SPF Santé / CSS",
+    "website": "health.belgium.be",
+    "anmerkung": ""
+  },
+  {
+    "code": "NL",
+    "land": "Niederlande",
+    "region": "WEST",
+    "behoerde": "RIVM / Voedingscentrum",
+    "website": "rivm.nl",
+    "anmerkung": "Liberalere Obergrenzen"
+  },
+  {
+    "code": "LU",
+    "land": "Luxemburg",
+    "region": "WEST",
+    "behoerde": "Ministère de la Santé",
+    "website": "sante.lu",
+    "anmerkung": "Folgt meist BE/FR"
+  },
+  {
+    "code": "SE",
+    "land": "Schweden",
+    "region": "NORD",
+    "behoerde": "Livsmedelsverket",
+    "website": "livsmedelsverket.se",
+    "anmerkung": ""
+  },
+  {
+    "code": "DK",
+    "land": "Dänemark",
+    "region": "NORD",
+    "behoerde": "Fødevarestyrelsen",
+    "website": "foedevarestyrelsen.dk",
+    "anmerkung": ""
+  },
+  {
+    "code": "FI",
+    "land": "Finnland",
+    "region": "NORD",
+    "behoerde": "Ruokavirasto",
+    "website": "ruokavirasto.fi",
+    "anmerkung": ""
+  },
+  {
+    "code": "NO",
+    "land": "Norwegen",
+    "region": "NORD",
+    "behoerde": "Mattilsynet",
+    "website": "mattilsynet.no",
+    "anmerkung": "Nicht EU, EWR"
+  },
+  {
+    "code": "IS",
+    "land": "Island",
+    "region": "NORD",
+    "behoerde": "MAST",
+    "website": "mast.is",
+    "anmerkung": "Nicht EU, EWR"
+  },
+  {
+    "code": "IT",
+    "land": "Italien",
+    "region": "SÜD",
+    "behoerde": "Ministero della Salute",
+    "website": "salute.gov.it",
+    "anmerkung": ""
+  },
+  {
+    "code": "ES",
+    "land": "Spanien",
+    "region": "SÜD",
+    "behoerde": "AESAN",
+    "website": "aesan.gob.es",
+    "anmerkung": ""
+  },
+  {
+    "code": "PT",
+    "land": "Portugal",
+    "region": "SÜD",
+    "behoerde": "DGAV / ASAE",
+    "website": "dgav.pt",
+    "anmerkung": ""
+  },
+  {
+    "code": "GR",
+    "land": "Griechenland",
+    "region": "SÜD",
+    "behoerde": "EFET / EOF",
+    "website": "efet.gr",
+    "anmerkung": ""
+  },
+  {
+    "code": "MT",
+    "land": "Malta",
+    "region": "SÜD",
+    "behoerde": "MFA",
+    "website": "mfa.gov.mt",
+    "anmerkung": ""
+  },
+  {
+    "code": "CY",
+    "land": "Zypern",
+    "region": "SÜD",
+    "behoerde": "MOH",
+    "website": "moh.gov.cy",
+    "anmerkung": ""
+  },
+  {
+    "code": "PL",
+    "land": "Polen",
+    "region": "OST",
+    "behoerde": "GIS",
+    "website": "gis.gov.pl",
+    "anmerkung": ""
+  },
+  {
+    "code": "CZ",
+    "land": "Tschechien",
+    "region": "OST",
+    "behoerde": "SZPI",
+    "website": "szpi.gov.cz",
+    "anmerkung": ""
+  },
+  {
+    "code": "SK",
+    "land": "Slowakei",
+    "region": "OST",
+    "behoerde": "ŠVPS SR",
+    "website": "svps.sk",
+    "anmerkung": ""
+  },
+  {
+    "code": "HU",
+    "land": "Ungarn",
+    "region": "OST",
+    "behoerde": "NÉBIH",
+    "website": "nebih.gov.hu",
+    "anmerkung": ""
+  },
+  {
+    "code": "RO",
+    "land": "Rumänien",
+    "region": "OST",
+    "behoerde": "ANSVSA",
+    "website": "ansvsa.ro",
+    "anmerkung": ""
+  },
+  {
+    "code": "BG",
+    "land": "Bulgarien",
+    "region": "OST",
+    "behoerde": "BFSA",
+    "website": "bfsa.bg",
+    "anmerkung": ""
+  },
+  {
+    "code": "SI",
+    "land": "Slowenien",
+    "region": "OST",
+    "behoerde": "UVHVVR",
+    "website": "gov.si/drzavni-organi/organi-v-sestavi/uprava-za-varno-hrano",
+    "anmerkung": ""
+  },
+  {
+    "code": "HR",
+    "land": "Kroatien",
+    "region": "OST",
+    "behoerde": "HAH",
+    "website": "hah.hr",
+    "anmerkung": ""
+  },
+  {
+    "code": "EE",
+    "land": "Estland",
+    "region": "BALTIK",
+    "behoerde": "VTA",
+    "website": "vet.agri.ee",
+    "anmerkung": ""
+  },
+  {
+    "code": "LV",
+    "land": "Lettland",
+    "region": "BALTIK",
+    "behoerde": "PVD",
+    "website": "pvd.gov.lv",
+    "anmerkung": ""
+  },
+  {
+    "code": "LT",
+    "land": "Litauen",
+    "region": "BALTIK",
+    "behoerde": "VMVT",
+    "website": "vmvt.lt",
+    "anmerkung": ""
+  },
+  {
+    "code": "IE",
+    "land": "Irland",
+    "region": "ANDERE",
+    "behoerde": "FSAI",
+    "website": "fsai.ie",
+    "anmerkung": ""
+  },
+  {
+    "code": "UK",
+    "land": "Großbritannien",
+    "region": "ANDERE",
+    "behoerde": "FSA",
+    "website": "food.gov.uk",
+    "anmerkung": "Post-Brexit eigene Regeln"
+  },
+  {
+    "code": "EU",
+    "land": "Europäische Union",
+    "region": "-",
+    "behoerde": "EFSA",
+    "website": "efsa.europa.eu",
+    "anmerkung": "EU-weite Obergrenzen"
+  },
+  {
+    "code": "US",
+    "land": "Vereinigte Staaten",
+    "region": "INTERNATIONAL",
+    "behoerde": "FDA",
+    "website": "fda.gov",
+    "anmerkung": "Ferrochel® GRAS; Sideral® als Dietary Supplement"
+  },
+  {
+    "code": "WHO",
+    "land": "Weltgesundheitsorganisation",
+    "region": "INTERNATIONAL",
+    "behoerde": "WHO",
+    "website": "who.int",
+    "anmerkung": "WHO-Leitlinien 2024 erwähnen Sucrosomial Iron!"
+  },
+  {
+    "code": "RU",
+    "land": "Russland",
+    "region": "INTERNATIONAL",
+    "behoerde": "Roszdravnadzor",
+    "website": "-",
+    "anmerkung": "K-Mg-Aspartat als Arzneimittel (Asparkam®) verbreitet"
+  },
+  {
+    "code": "EFSA",
+    "land": "European Food Safety Authority",
+    "region": "EU",
+    "behoerde": "NDA Panel",
+    "website": "efsa.europa.eu",
+    "anmerkung": "Opinion 883 (2008): K-Aspartat bewertet aber NICHT in Anhang II aufgenommen"
+  },
+  {
+    "code": "JP",
+    "land": "Japan",
+    "region": "ANDERE",
+    "behoerde": "MHLW",
+    "website": "https://www.mhlw.go.jp",
+    "anmerkung": "✅ Konjak traditionelles Lebensmittel (>1000 Jahre). Konnyaku."
+  },
+  {
+    "code": "AU",
+    "land": "Australien",
+    "region": "ANDERE",
+    "behoerde": "FSANZ",
+    "website": "https://www.foodstandards.gov.au",
+    "anmerkung": "⚠️ Konjak-Gelee eingeschränkt/verboten."
+  },
+  {
+    "code": "PE",
+    "land": "Peru",
+    "region": "ANDERE",
+    "behoerde": "DIGESA",
+    "website": "-",
+    "anmerkung": "✅ Ursprungsland. Traditionelles Nahrungsmittel. Export-Kontrollen."
+  },
+  {
+    "code": "BR",
+    "land": "Brasilien (Herkunft Catuaba)",
+    "region": "ANDERE",
+    "behoerde": "ANVISA",
+    "website": "anvisa.gov.br",
+    "anmerkung": "Catuaba Herkunftsland"
+  },
+  {
+    "code": "CN",
+    "land": "China",
+    "region": "ANDERE",
+    "behoerde": "CFDA",
+    "website": "-",
+    "anmerkung": "✅ Jiaogulan: Traditionelle Verwendung. Registriert als Functional Food."
+  },
+  {
+    "code": "VN",
+    "land": "Vietnam",
+    "region": "ANDERE",
+    "behoerde": "MOH",
+    "website": "-",
+    "anmerkung": "✅ Jiaogulan: Traditionell als Tee bei Diabetes verwendet."
+  },
+  {
+    "code": "EMA",
+    "land": "Europäische Arzneimittel-Agentur",
+    "region": "-",
+    "behoerde": "EMA",
+    "website": "ema.europa.eu",
+    "anmerkung": "⭐⭐ Cystadane® (Betain anhydrous) - Orphan Drug seit 2007 für Homocystinurie."
+  },
+  {
+    "code": "NZ",
+    "land": "Neuseeland",
+    "region": "ANDERE",
+    "behoerde": "-",
+    "website": "-",
+    "anmerkung": "✓ Herkunft von NZBC (New Zealand Black Currant) - besonders für Sport untersucht"
+  },
+  {
+    "code": "WADA",
+    "land": "World Anti-Doping Agency",
+    "region": "GLOBAL",
+    "behoerde": "WADA",
+    "website": "https://www.wada-ama.org",
+    "anmerkung": "⛔⛔⛔ DHEA + 7-Keto-DHEA: Kategorie S1.1 (AAS) - VERBOTEN in- und außerhalb von Wettkämpfen!"
+  },
+  {
+    "code": "UA",
+    "land": "Ukraine",
+    "region": "NICHT-EU",
+    "behoerde": "-",
+    "website": "-",
+    "anmerkung": "✓ Lagerstätte Sokyrnytsya."
+  },
+  {
+    "code": "TH",
+    "land": "Thailand",
+    "region": "ASIEN",
+    "behoerde": "Thai Traditional Medicine Institute",
+    "website": "-",
+    "anmerkung": "Ursprungsland von Kaempferia parviflora, Standards für PMF-Gehalt"
+  },
+  {
+    "code": "IN",
+    "land": "Indien",
+    "region": "ASIEN",
+    "behoerde": "FSSAI",
+    "website": "-",
+    "anmerkung": "Ursprungsland von Slimvance/Laila Nutraceuticals"
+  }
+]

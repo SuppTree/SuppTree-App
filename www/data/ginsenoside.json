@@ -1,0 +1,156 @@
+[
+  {
+    "id": "rb1",
+    "name": "Ginsenosid Rb1",
+    "typ": "PPD",
+    "cas_nummer": "41753-43-9",
+    "summenformel": "C54H92O23",
+    "mw_g_mol": "1109,29",
+    "pubchem_cid": "9898279",
+    "hauptwirkungen": "Neuroprotektiv, anti-inflammatorisch, kardioprotektiv",
+    "besonderheiten": "⭐ HAUPT-GINSENOSID! 20-30% des Gesamtgehalts. Bindet GABA-A-Rezeptor."
+  },
+  {
+    "id": "rb2",
+    "name": "Ginsenosid Rb2",
+    "typ": "PPD",
+    "cas_nummer": "11021-13-9",
+    "summenformel": "C53H90O22",
+    "mw_g_mol": "1079,27",
+    "pubchem_cid": "6917976",
+    "hauptwirkungen": "Neuroprotektiv, antioxidativ",
+    "besonderheiten": "Zweithäufigstes PPD-Ginsenosid."
+  },
+  {
+    "id": "rc",
+    "name": "Ginsenosid Rc",
+    "typ": "PPD",
+    "cas_nummer": "11021-14-0",
+    "summenformel": "C53H90O22",
+    "mw_g_mol": "1079,27",
+    "pubchem_cid": "12855889",
+    "hauptwirkungen": "GABA-A-Verstärkung, anti-inflammatorisch",
+    "besonderheiten": "EC50 = 53,2 µM für GABA-A-Verstärkung (PMID: 12568354)."
+  },
+  {
+    "id": "rd",
+    "name": "Ginsenosid Rd",
+    "typ": "PPD",
+    "cas_nummer": "52705-93-8",
+    "summenformel": "C48H82O18",
+    "mw_g_mol": "947,15",
+    "pubchem_cid": "11679800",
+    "hauptwirkungen": "Neuroprotektiv, kardioprotektiv",
+    "besonderheiten": "Vorstufe von Compound K (Rd→F2→CK)."
+  },
+  {
+    "id": "re",
+    "name": "Ginsenosid Re",
+    "typ": "PPT",
+    "cas_nummer": "52286-59-6",
+    "summenformel": "C48H82O18",
+    "mw_g_mol": "947,15",
+    "pubchem_cid": "441921",
+    "hauptwirkungen": "Antioxidativ, anti-inflammatorisch",
+    "besonderheiten": "Haupt-PPT-Ginsenosid. Bioverfügbarkeit nur 0,19-0,28%!"
+  },
+  {
+    "id": "rf",
+    "name": "Ginsenosid Rf",
+    "typ": "PPT",
+    "cas_nummer": "52286-58-5",
+    "summenformel": "C42H72O14",
+    "mw_g_mol": "801,01",
+    "pubchem_cid": "441922",
+    "hauptwirkungen": "GABA-A-Modulation",
+    "besonderheiten": "⭐ EINZIGARTIG für P. ginseng! Marker zur Unterscheidung von P. quinquefolius."
+  },
+  {
+    "id": "rg1",
+    "name": "Ginsenosid Rg1",
+    "typ": "PPT",
+    "cas_nummer": "22427-39-0",
+    "summenformel": "C42H72O14",
+    "mw_g_mol": "801,01",
+    "pubchem_cid": "441923",
+    "hauptwirkungen": "ZNS-stimulierend, Neurogenese, AChE-Inhibitor",
+    "besonderheiten": "⭐ \"Stimulierendes\" Profil. Aktiviert Glucocorticoid- und Östrogenrezeptoren."
+  },
+  {
+    "id": "rg2",
+    "name": "Ginsenosid Rg2",
+    "typ": "PPT",
+    "cas_nummer": "52286-74-5",
+    "summenformel": "C42H72O13",
+    "mw_g_mol": "785,01",
+    "pubchem_cid": "21599924",
+    "hauptwirkungen": "Kardioprotektiv, anti-arrhythmisch",
+    "besonderheiten": "Weniger häufig als Rg1."
+  },
+  {
+    "id": "rg3",
+    "name": "Ginsenosid Rg3",
+    "typ": "PPD",
+    "cas_nummer": "14197-60-5",
+    "summenformel": "C42H72O13",
+    "mw_g_mol": "785,01",
+    "pubchem_cid": "9918693",
+    "hauptwirkungen": "⭐ Stark antikanzerogen, aktiviert eNOS",
+    "besonderheiten": "⭐ MARKER FÜR ROTEN GINSENG! Entsteht durch Dämpfen (bis 8,6× bei Schwarzem Ginseng). Shenyi-Kapsel (95% Rg3) in China zugelassen."
+  },
+  {
+    "id": "rh1",
+    "name": "Ginsenosid Rh1",
+    "typ": "PPT",
+    "cas_nummer": "63223-86-9",
+    "summenformel": "C36H62O9",
+    "mw_g_mol": "638,87",
+    "pubchem_cid": "12855920",
+    "hauptwirkungen": "Östrogenrezeptor-Aktivierung",
+    "besonderheiten": "ER-Aktivierung blockiert durch ICI 182,780 (PMID: 12732291)."
+  },
+  {
+    "id": "rh2",
+    "name": "Ginsenosid Rh2",
+    "typ": "PPD",
+    "cas_nummer": "78214-33-2",
+    "summenformel": "C36H62O8",
+    "mw_g_mol": "622,87",
+    "pubchem_cid": "119307",
+    "hauptwirkungen": "Apoptose-Induktion, antikanzerogen",
+    "besonderheiten": "P-gp-Substrat! Daher niedrige Bioverfügbarkeit."
+  },
+  {
+    "id": "ro",
+    "name": "Ginsenosid Ro",
+    "typ": "Oleanane",
+    "cas_nummer": "34367-04-9",
+    "summenformel": "C48H76O19",
+    "mw_g_mol": "957,10",
+    "pubchem_cid": "11815492",
+    "hauptwirkungen": "Anti-inflammatorisch",
+    "besonderheiten": "⚠️ EINZIGES pentazyklisches Ginsenosid (Oleanolsäure-Typ)."
+  },
+  {
+    "id": "f11",
+    "name": "Pseudoginsenosid F11",
+    "typ": "Ocotillol",
+    "cas_nummer": "69884-00-0",
+    "summenformel": "C42H72O14",
+    "mw_g_mol": "801,01",
+    "pubchem_cid": "21633072",
+    "hauptwirkungen": "ZNS-stimulierend, erhöht Glutamat-Freisetzung",
+    "besonderheiten": "⭐ EINZIGARTIG für P. quinquefolius (Amerikanischer Ginseng)! Marker zur Unterscheidung."
+  },
+  {
+    "id": "compound-k",
+    "name": "Compound K",
+    "typ": "PPD-Metabolit",
+    "cas_nummer": "39262-14-1",
+    "summenformel": "C36H62O8",
+    "mw_g_mol": "622,87",
+    "pubchem_cid": "9852086",
+    "hauptwirkungen": "⭐ Höhere Bioverfügbarkeit, neuroprotektiv",
+    "besonderheiten": "⭐⭐ AKTIVER DARM-METABOLIT! Entsteht: Rb1→Rd→F2→CK. Nicht natürlich in Ginseng! Wahrscheinlich Novel Food."
+  }
+]
