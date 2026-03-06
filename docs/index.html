@@ -126,21 +126,17 @@ body{
 
 /* Logo */
 .logo-wrap{
-  margin-bottom:-36px;
+  margin-top:-150px;
+  margin-bottom:-100px;
   position:relative;
-  display:inline-block;
+  display:flex;justify-content:center;
+  overflow:visible;
 }
 .logo-wrap img{
-  max-width:1160px;width:95%;height:auto;
+  width:700px;max-width:90vw;height:auto;
+  flex-shrink:0;
+  margin-left:-220px;
 }
-.reg-mark{
-  position:absolute;
-  top:18%;right:8%;
-  font-size:clamp(10px,1.8vw,18px);font-weight:700;
-  color:#00A67E;
-  font-family:inherit;
-}
-
 /* Badge */
 .badge{
   display:inline-flex;align-items:center;gap:8px;
@@ -267,7 +263,7 @@ footer a:hover{color:rgba(255,255,255,0.5)}
 <div class="card">
 
   <div class="logo-wrap">
-    <img src="assets/logo.png" alt="SuppTree">
+    <img src="assets/logo.svg" alt="SuppTree">
   </div>
 
   <div class="badge">
