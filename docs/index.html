@@ -112,20 +112,32 @@ body{
   background-size:128px 128px;
 }
 
+/* ===== MOUSE GLOW ===== */
+.mouse-glow{
+  position:fixed;
+  width:400px;height:400px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(74,222,128,0.08) 0%,transparent 70%);
+  pointer-events:none;z-index:4;
+  transform:translate(-50%,-50%);
+  transition:opacity 0.3s;
+  opacity:0;
+}
+
 /* ===== MAIN WRAPPER ===== */
 .main-wrap{
   position:relative;z-index:10;
   display:flex;flex-direction:column;align-items:center;
   width:100%;max-width:600px;
-  padding:40px 0 80px;
+  padding:40px 0 60px;
 }
 
-/* ===== CARD with glow border ===== */
+/* ===== CARD with animated rotating border ===== */
 .card{
   position:relative;
   max-width:480px;width:100%;
   text-align:center;
-  padding:0 20px;
+  padding:32px 24px 32px;
   animation:fadeUp 0.8s ease forwards;
 }
 .card::before{
@@ -133,17 +145,17 @@ body{
   position:absolute;
   top:-1px;left:-1px;right:-1px;bottom:-1px;
   border-radius:24px;
-  background:linear-gradient(135deg,rgba(74,222,128,0.3),rgba(34,211,238,0.1),rgba(74,222,128,0.05),rgba(34,211,238,0.3));
+  background:conic-gradient(from var(--border-angle,0deg),rgba(74,222,128,0.4),rgba(34,211,238,0.15),rgba(74,222,128,0.05),rgba(34,211,238,0.15),rgba(74,222,128,0.4));
   z-index:-2;
   opacity:0;
-  animation:glowIn 1.5s ease 0.5s forwards;
+  animation:glowIn 1.5s ease 0.5s forwards,borderSpin 4s linear 2s infinite;
 }
 .card::after{
   content:'';
   position:absolute;
   top:0;left:0;right:0;bottom:0;
   border-radius:24px;
-  background:rgba(6,13,8,0.85);
+  background:rgba(6,13,8,0.88);
   backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
   z-index:-1;
 }
@@ -152,19 +164,25 @@ body{
   from{opacity:0;transform:translateY(20px)}
   to{opacity:1;transform:translateY(0)}
 }
+@property --border-angle{
+  syntax:'<angle>';
+  initial-value:0deg;
+  inherits:false;
+}
+@keyframes borderSpin{
+  to{--border-angle:360deg}
+}
 
-/* Logo */
+/* Logo (above card) */
 .logo-wrap{
-  margin-top:-80px;
-  margin-bottom:-40px;
   position:relative;
   display:flex;justify-content:center;
   overflow:visible;
+  margin-bottom:-60px;
 }
 .logo-wrap img{
-  width:700px;max-width:90vw;height:auto;
+  width:600px;max-width:85vw;height:auto;
   flex-shrink:0;
-  margin-left:0;
   filter:drop-shadow(0 0 40px rgba(74,222,128,0.15));
 }
 
@@ -196,18 +214,29 @@ h1{
   letter-spacing:-0.5px;
   animation:fadeUp 0.8s ease 0.3s both;
 }
-h1 span{
+h1 .typed-word{
   background:linear-gradient(135deg,#4ade80,#22d3ee);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;
+  display:inline-block;
+  min-width:180px;
 }
+h1 .cursor{
+  display:inline-block;
+  width:3px;height:0.85em;
+  background:linear-gradient(135deg,#4ade80,#22d3ee);
+  margin-left:2px;
+  vertical-align:text-bottom;
+  animation:blink 0.8s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
 /* Subtext */
 .sub{
   font-size:15px;font-weight:500;
   color:rgba(255,255,255,0.55);
   line-height:1.7;
-  max-width:360px;margin:0 auto 36px;
+  max-width:360px;margin:0 auto 32px;
   animation:fadeUp 0.8s ease 0.4s both;
 }
 
@@ -215,47 +244,17 @@ h1 span{
 .divider{
   width:48px;height:2px;border-radius:2px;
   background:linear-gradient(90deg,#4ade80,#22d3ee);
-  margin:0 auto 36px;
+  margin:0 auto 28px;
   opacity:0.5;
 }
 
-/* ===== COUNTDOWN ===== */
-.countdown{
-  display:flex;justify-content:center;gap:16px;
-  margin-bottom:40px;
-  animation:fadeUp 0.8s ease 0.5s both;
-}
-.countdown-item{
-  display:flex;flex-direction:column;align-items:center;
-  min-width:64px;
-}
-.countdown-num{
-  font-size:clamp(28px,5vw,36px);font-weight:800;
-  background:linear-gradient(135deg,#4ade80,#22d3ee);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  line-height:1.2;
-}
-.countdown-label{
-  font-size:11px;font-weight:600;
-  color:rgba(255,255,255,0.35);
-  text-transform:uppercase;
-  letter-spacing:1px;
-  margin-top:4px;
-}
-.countdown-sep{
-  font-size:28px;font-weight:300;
-  color:rgba(255,255,255,0.15);
-  align-self:flex-start;
-  padding-top:4px;
-}
 
 /* Contact */
 .contact{
   font-size:13px;font-weight:600;
   color:rgba(255,255,255,0.4);
   margin-bottom:0;
-  padding-bottom:32px;
+  padding-bottom:8px;
   animation:fadeUp 0.8s ease 0.6s both;
 }
 .contact a{
@@ -275,26 +274,44 @@ h1 span{
   animation:fadeUp 0.8s ease 0.7s both;
 }
 .feat{
+  position:relative;
   background:rgba(255,255,255,0.03);
   border:1px solid rgba(255,255,255,0.06);
   border-radius:16px;
-  padding:20px 14px;
+  padding:24px 14px 20px;
   text-align:center;
   transition:border-color 0.3s,background 0.3s,transform 0.3s;
+  overflow:hidden;
+}
+.feat::before{
+  content:'';
+  position:absolute;top:0;left:50%;
+  width:40px;height:1px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,rgba(74,222,128,0.5),transparent);
+  opacity:0;
+  transition:opacity 0.3s;
 }
 .feat:hover{
-  border-color:rgba(74,222,128,0.25);
+  border-color:rgba(74,222,128,0.2);
   background:rgba(74,222,128,0.04);
   transform:translateY(-4px);
 }
+.feat:hover::before{opacity:1}
 .feat-icon{
-  font-size:28px;
-  margin-bottom:10px;
-  display:block;
+  width:44px;height:44px;
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;
+  font-size:20px;
+  line-height:1;
+  background:linear-gradient(135deg,rgba(74,222,128,0.12),rgba(34,211,238,0.08));
+  border:1px solid rgba(74,222,128,0.1);
+  flex-shrink:0;
 }
 .feat-title{
   font-size:12px;font-weight:700;
-  color:rgba(255,255,255,0.8);
+  color:rgba(255,255,255,0.85);
   margin-bottom:4px;
 }
 .feat-desc{
@@ -307,28 +324,30 @@ h1 span{
 @media(max-width:480px){
   .features{grid-template-columns:1fr;gap:10px;max-width:280px;margin:32px auto 0}
   .feat{display:flex;align-items:center;gap:12px;text-align:left;padding:14px 16px}
-  .feat-icon{margin-bottom:0;font-size:24px;flex-shrink:0}
+  .feat-icon{margin:0;flex-shrink:0;width:40px;height:40px}
   .feat-text{flex:1}
-  .countdown{gap:10px}
   .card::before,.card::after{border-radius:18px}
-  .card{padding:0 16px}
+  .card{padding:20px 16px 28px}
+  h1 .typed-word{min-width:auto}
 }
 
 /* Footer */
 footer{
-  position:fixed;bottom:20px;left:0;right:0;
+  position:fixed;bottom:0;left:0;right:0;
   text-align:center;
   font-size:12px;font-weight:500;
-  color:rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.4);
   z-index:10;
+  padding:12px 0;
+  background:linear-gradient(transparent,rgba(6,13,8,0.9) 40%);
 }
 footer a{
-  color:rgba(255,255,255,0.25);
+  color:rgba(255,255,255,0.5);
   text-decoration:none;
   margin:0 8px;
   transition:color 0.2s;
 }
-footer a:hover{color:rgba(255,255,255,0.5)}
+footer a:hover{color:#4ade80}
 
 /* Legal Overlay */
 .legal-overlay{
@@ -375,50 +394,28 @@ footer a:hover{color:rgba(255,255,255,0.5)}
 <div class="aurora aurora-3"></div>
 <div class="rays"></div>
 <div class="noise"></div>
+<div class="mouse-glow" id="mouseGlow"></div>
 
 <div class="main-wrap">
 
-  <div class="card">
+  <div class="logo-wrap">
+    <img src="assets/logo.svg" alt="SuppTree">
+  </div>
 
-    <div class="logo-wrap">
-      <img src="assets/logo.svg" alt="SuppTree">
-    </div>
+  <div class="card">
 
     <div class="badge">
       <span class="badge-dot"></span>
       In Arbeit
     </div>
 
-    <h1>Wir bauen etwas<br><span>Besonderes.</span></h1>
+    <h1>Wir bauen etwas<br><span class="typed-word" id="typedWord"></span><span class="cursor"></span></h1>
 
     <p class="sub">
-      Unser Marktplatz f&uuml;r Supplements und Gesundheit ist bald verf&uuml;gbar.
+      Der erste Marktplatz, der Supplements, Experten und dich zusammenbringt &mdash; <strong style="color:rgba(255,255,255,0.75)">personalisiert, transparent, unabh&auml;ngig.</strong>
     </p>
 
     <div class="divider"></div>
-
-    <!-- Countdown -->
-    <div class="countdown" id="countdown">
-      <div class="countdown-item">
-        <span class="countdown-num" id="cd-days">---</span>
-        <span class="countdown-label">Tage</span>
-      </div>
-      <span class="countdown-sep">:</span>
-      <div class="countdown-item">
-        <span class="countdown-num" id="cd-hours">--</span>
-        <span class="countdown-label">Stunden</span>
-      </div>
-      <span class="countdown-sep">:</span>
-      <div class="countdown-item">
-        <span class="countdown-num" id="cd-mins">--</span>
-        <span class="countdown-label">Minuten</span>
-      </div>
-      <span class="countdown-sep">:</span>
-      <div class="countdown-item">
-        <span class="countdown-num" id="cd-secs">--</span>
-        <span class="countdown-label">Sekunden</span>
-      </div>
-    </div>
 
     <p class="contact">
       Fragen? <a href="mailto:info@SuppTree.de">info@SuppTree.de</a>
@@ -429,21 +426,21 @@ footer a:hover{color:rgba(255,255,255,0.5)}
   <!-- Feature Preview -->
   <div class="features">
     <div class="feat">
-      <span class="feat-icon">&#x1F50D;</span>
+      <div class="feat-icon">&#x1F50D;</div>
       <div class="feat-text">
         <div class="feat-title">Entdecken</div>
         <div class="feat-desc">Supplements finden, vergleichen &amp; verstehen</div>
       </div>
     </div>
     <div class="feat">
-      <span class="feat-icon">&#x1F91D;</span>
+      <div class="feat-icon">&#x1F91D;</div>
       <div class="feat-text">
         <div class="feat-title">Verbinden</div>
         <div class="feat-desc">Partner &amp; Experten an deiner Seite</div>
       </div>
     </div>
     <div class="feat">
-      <span class="feat-icon">&#x1F331;</span>
+      <div class="feat-icon">&#x1F331;</div>
       <div class="feat-text">
         <div class="feat-title">Wachsen</div>
         <div class="feat-desc">Deine Gesundheit, dein Weg, dein Baum</div>
@@ -524,24 +521,48 @@ function closeLegal(){
   document.body.style.overflow='';
 }
 
-// Countdown to July 1, 2026 (Q3 2026)
+// Typewriter effect
 (function(){
-  var target=new Date('2026-07-01T00:00:00').getTime();
-  function update(){
-    var now=Date.now();
-    var diff=target-now;
-    if(diff<0)diff=0;
-    var d=Math.floor(diff/86400000);
-    var h=Math.floor((diff%86400000)/3600000);
-    var m=Math.floor((diff%3600000)/60000);
-    var s=Math.floor((diff%60000)/1000);
-    document.getElementById('cd-days').textContent=d;
-    document.getElementById('cd-hours').textContent=h<10?'0'+h:h;
-    document.getElementById('cd-mins').textContent=m<10?'0'+m:m;
-    document.getElementById('cd-secs').textContent=s<10?'0'+s:s;
+  var words=['Besonderes.','Innovatives.','Gesundes.','Einzigartiges.'];
+  var el=document.getElementById('typedWord');
+  var wordIdx=0,charIdx=0,deleting=false;
+  function type(){
+    var word=words[wordIdx];
+    if(!deleting){
+      el.textContent=word.substring(0,charIdx+1);
+      charIdx++;
+      if(charIdx===word.length){
+        setTimeout(function(){deleting=true;type()},2000);
+        return;
+      }
+      setTimeout(type,80);
+    }else{
+      el.textContent=word.substring(0,charIdx);
+      charIdx--;
+      if(charIdx<0){
+        deleting=false;
+        charIdx=0;
+        wordIdx=(wordIdx+1)%words.length;
+        setTimeout(type,400);
+        return;
+      }
+      setTimeout(type,40);
+    }
   }
-  update();
-  setInterval(update,1000);
+  setTimeout(type,1000);
+})();
+
+// Mouse glow
+(function(){
+  var glow=document.getElementById('mouseGlow');
+  document.addEventListener('mousemove',function(e){
+    glow.style.left=e.clientX+'px';
+    glow.style.top=e.clientY+'px';
+    glow.style.opacity='1';
+  });
+  document.addEventListener('mouseleave',function(){
+    glow.style.opacity='0';
+  });
 })();
 
 // Floating particles
