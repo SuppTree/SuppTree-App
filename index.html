@@ -24,7 +24,7 @@ body{
   display:flex;align-items:center;justify-content:center;
   padding:24px;
   position:relative;
-  overflow:hidden;
+  overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
 
@@ -112,13 +112,42 @@ body{
   background-size:128px 128px;
 }
 
-/* ===== CARD ===== */
-.card{
+/* ===== MAIN WRAPPER ===== */
+.main-wrap{
   position:relative;z-index:10;
+  display:flex;flex-direction:column;align-items:center;
+  width:100%;max-width:600px;
+  padding:40px 0 80px;
+}
+
+/* ===== CARD with glow border ===== */
+.card{
+  position:relative;
   max-width:480px;width:100%;
   text-align:center;
+  padding:0 20px;
   animation:fadeUp 0.8s ease forwards;
 }
+.card::before{
+  content:'';
+  position:absolute;
+  top:-1px;left:-1px;right:-1px;bottom:-1px;
+  border-radius:24px;
+  background:linear-gradient(135deg,rgba(74,222,128,0.3),rgba(34,211,238,0.1),rgba(74,222,128,0.05),rgba(34,211,238,0.3));
+  z-index:-2;
+  opacity:0;
+  animation:glowIn 1.5s ease 0.5s forwards;
+}
+.card::after{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  border-radius:24px;
+  background:rgba(6,13,8,0.85);
+  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  z-index:-1;
+}
+@keyframes glowIn{to{opacity:1}}
 @keyframes fadeUp{
   from{opacity:0;transform:translateY(20px)}
   to{opacity:1;transform:translateY(0)}
@@ -126,8 +155,8 @@ body{
 
 /* Logo */
 .logo-wrap{
-  margin-top:-150px;
-  margin-bottom:-60px;
+  margin-top:-80px;
+  margin-bottom:-40px;
   position:relative;
   display:flex;justify-content:center;
   overflow:visible;
@@ -136,7 +165,9 @@ body{
   width:700px;max-width:90vw;height:auto;
   flex-shrink:0;
   margin-left:0;
+  filter:drop-shadow(0 0 40px rgba(74,222,128,0.15));
 }
+
 /* Badge */
 .badge{
   display:inline-flex;align-items:center;gap:8px;
@@ -147,6 +178,7 @@ body{
   font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);
   margin-bottom:24px;
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  animation:fadeUp 0.8s ease 0.2s both;
 }
 .badge-dot{
   width:8px;height:8px;border-radius:50%;
@@ -162,6 +194,7 @@ h1{
   color:white;line-height:1.15;
   margin-bottom:16px;
   letter-spacing:-0.5px;
+  animation:fadeUp 0.8s ease 0.3s both;
 }
 h1 span{
   background:linear-gradient(135deg,#4ade80,#22d3ee);
@@ -175,6 +208,7 @@ h1 span{
   color:rgba(255,255,255,0.55);
   line-height:1.7;
   max-width:360px;margin:0 auto 36px;
+  animation:fadeUp 0.8s ease 0.4s both;
 }
 
 /* Divider */
@@ -185,11 +219,44 @@ h1 span{
   opacity:0.5;
 }
 
+/* ===== COUNTDOWN ===== */
+.countdown{
+  display:flex;justify-content:center;gap:16px;
+  margin-bottom:40px;
+  animation:fadeUp 0.8s ease 0.5s both;
+}
+.countdown-item{
+  display:flex;flex-direction:column;align-items:center;
+  min-width:64px;
+}
+.countdown-num{
+  font-size:clamp(28px,5vw,36px);font-weight:800;
+  background:linear-gradient(135deg,#4ade80,#22d3ee);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1.2;
+}
+.countdown-label{
+  font-size:11px;font-weight:600;
+  color:rgba(255,255,255,0.35);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-top:4px;
+}
+.countdown-sep{
+  font-size:28px;font-weight:300;
+  color:rgba(255,255,255,0.15);
+  align-self:flex-start;
+  padding-top:4px;
+}
+
 /* Contact */
 .contact{
   font-size:13px;font-weight:600;
   color:rgba(255,255,255,0.4);
   margin-bottom:0;
+  padding-bottom:32px;
+  animation:fadeUp 0.8s ease 0.6s both;
 }
 .contact a{
   color:rgba(255,255,255,0.6);
@@ -197,6 +264,55 @@ h1 span{
   transition:color 0.2s;
 }
 .contact a:hover{color:#4ade80}
+
+/* ===== FEATURE CARDS ===== */
+.features{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  width:100%;max-width:520px;
+  margin-top:32px;
+  animation:fadeUp 0.8s ease 0.7s both;
+}
+.feat{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;
+  padding:20px 14px;
+  text-align:center;
+  transition:border-color 0.3s,background 0.3s,transform 0.3s;
+}
+.feat:hover{
+  border-color:rgba(74,222,128,0.25);
+  background:rgba(74,222,128,0.04);
+  transform:translateY(-4px);
+}
+.feat-icon{
+  font-size:28px;
+  margin-bottom:10px;
+  display:block;
+}
+.feat-title{
+  font-size:12px;font-weight:700;
+  color:rgba(255,255,255,0.8);
+  margin-bottom:4px;
+}
+.feat-desc{
+  font-size:11px;font-weight:500;
+  color:rgba(255,255,255,0.35);
+  line-height:1.4;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:480px){
+  .features{grid-template-columns:1fr;gap:10px;max-width:280px;margin:32px auto 0}
+  .feat{display:flex;align-items:center;gap:12px;text-align:left;padding:14px 16px}
+  .feat-icon{margin-bottom:0;font-size:24px;flex-shrink:0}
+  .feat-text{flex:1}
+  .countdown{gap:10px}
+  .card::before,.card::after{border-radius:18px}
+  .card{padding:0 16px}
+}
 
 /* Footer */
 footer{
@@ -260,29 +376,80 @@ footer a:hover{color:rgba(255,255,255,0.5)}
 <div class="rays"></div>
 <div class="noise"></div>
 
-<div class="card">
+<div class="main-wrap">
 
-  <div class="logo-wrap">
-    <img src="website/assets/logo.svg" alt="SuppTree">
+  <div class="card">
+
+    <div class="logo-wrap">
+      <img src="website/assets/logo.svg" alt="SuppTree">
+    </div>
+
+    <div class="badge">
+      <span class="badge-dot"></span>
+      In Arbeit
+    </div>
+
+    <h1>Wir bauen etwas<br><span>Besonderes.</span></h1>
+
+    <p class="sub">
+      Unser Marktplatz f&uuml;r Supplements und Gesundheit ist bald verf&uuml;gbar.
+    </p>
+
+    <div class="divider"></div>
+
+    <!-- Countdown -->
+    <div class="countdown" id="countdown">
+      <div class="countdown-item">
+        <span class="countdown-num" id="cd-days">---</span>
+        <span class="countdown-label">Tage</span>
+      </div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-item">
+        <span class="countdown-num" id="cd-hours">--</span>
+        <span class="countdown-label">Stunden</span>
+      </div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-item">
+        <span class="countdown-num" id="cd-mins">--</span>
+        <span class="countdown-label">Minuten</span>
+      </div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-item">
+        <span class="countdown-num" id="cd-secs">--</span>
+        <span class="countdown-label">Sekunden</span>
+      </div>
+    </div>
+
+    <p class="contact">
+      Fragen? <a href="mailto:info@SuppTree.de">info@SuppTree.de</a>
+    </p>
+
   </div>
 
-  <div class="badge">
-    <span class="badge-dot"></span>
-    In Arbeit
+  <!-- Feature Preview -->
+  <div class="features">
+    <div class="feat">
+      <span class="feat-icon">&#x1F50D;</span>
+      <div class="feat-text">
+        <div class="feat-title">Entdecken</div>
+        <div class="feat-desc">Supplements finden, vergleichen &amp; verstehen</div>
+      </div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">&#x1F91D;</span>
+      <div class="feat-text">
+        <div class="feat-title">Verbinden</div>
+        <div class="feat-desc">Partner &amp; Experten an deiner Seite</div>
+      </div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">&#x1F331;</span>
+      <div class="feat-text">
+        <div class="feat-title">Wachsen</div>
+        <div class="feat-desc">Deine Gesundheit, dein Weg, dein Baum</div>
+      </div>
+    </div>
   </div>
-
-  <h1>Wir bauen etwas<br><span>Besonderes.</span></h1>
-
-  <p class="sub">
-    Unser Marktplatz f&uuml;r Supplements und Gesundheit ist bald verf&uuml;gbar.<br>
-    Geplanter Launch: Q3 2026
-  </p>
-
-  <div class="divider"></div>
-
-  <p class="contact">
-    Fragen? <a href="mailto:info@SuppTree.de">info@SuppTree.de</a>
-  </p>
 
 </div>
 
@@ -357,21 +524,41 @@ function closeLegal(){
   document.body.style.overflow='';
 }
 
+// Countdown to July 1, 2026 (Q3 2026)
+(function(){
+  var target=new Date('2026-07-01T00:00:00').getTime();
+  function update(){
+    var now=Date.now();
+    var diff=target-now;
+    if(diff<0)diff=0;
+    var d=Math.floor(diff/86400000);
+    var h=Math.floor((diff%86400000)/3600000);
+    var m=Math.floor((diff%3600000)/60000);
+    var s=Math.floor((diff%60000)/1000);
+    document.getElementById('cd-days').textContent=d;
+    document.getElementById('cd-hours').textContent=h<10?'0'+h:h;
+    document.getElementById('cd-mins').textContent=m<10?'0'+m:m;
+    document.getElementById('cd-secs').textContent=s<10?'0'+s:s;
+  }
+  update();
+  setInterval(update,1000);
+})();
+
 // Floating particles
-(function() {
-  var colors = ['rgba(74,222,128,0.5)','rgba(34,211,238,0.4)','rgba(255,255,255,0.2)'];
-  var count = 24;
-  for (var i = 0; i < count; i++) {
-    var el = document.createElement('div');
-    el.className = 'particle';
-    var size = 2 + Math.random() * 4;
-    el.style.width = size + 'px';
-    el.style.height = size + 'px';
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.boxShadow = '0 0 ' + (4 + Math.random() * 6) + 'px ' + el.style.background;
-    el.style.animationDuration = (10 + Math.random() * 18) + 's';
-    el.style.animationDelay = (Math.random() * 12) + 's';
+(function(){
+  var colors=['rgba(74,222,128,0.5)','rgba(34,211,238,0.4)','rgba(255,255,255,0.2)'];
+  var count=24;
+  for(var i=0;i<count;i++){
+    var el=document.createElement('div');
+    el.className='particle';
+    var size=2+Math.random()*4;
+    el.style.width=size+'px';
+    el.style.height=size+'px';
+    el.style.left=Math.random()*100+'vw';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.boxShadow='0 0 '+(4+Math.random()*6)+'px '+el.style.background;
+    el.style.animationDuration=(10+Math.random()*18)+'s';
+    el.style.animationDelay=(Math.random()*12)+'s';
     document.body.appendChild(el);
   }
 })();
