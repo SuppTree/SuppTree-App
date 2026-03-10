@@ -12423,23 +12423,23 @@ function renderShiftAppearanceList() {
           <span class="preview-icon" id="previewIcon_${key}">${icon}</span>
         </div>
         <div class="shift-appearance-info">
-          <input type="text" class="shift-appearance-name-input" 
-                 id="appearanceName_${key}" 
-                 value="${name}" 
+          <input type="text" class="shift-appearance-name-input"
+                 id="appearanceName_${key}"
+                 value="${name}"
                  onchange="updateShiftAppearancePreview('${key}')">
           <div class="shift-appearance-key">${key}</div>
         </div>
         <div class="shift-appearance-colors">
-          <input type="color" class="appearance-color-input" 
-                 id="appearanceBg_${key}" 
-                 value="${bgColor}" 
-                 title="Hintergrund"
-                 onchange="updateShiftAppearancePreview('${key}')">
-          <input type="color" class="appearance-color-input" 
-                 id="appearanceText_${key}" 
-                 value="${textColor}" 
-                 title="Schrift"
-                 onchange="updateShiftAppearancePreview('${key}')">
+          <input type="hidden" id="appearanceBg_${key}" value="${bgColor}">
+          <input type="hidden" id="appearanceText_${key}" value="${textColor}">
+          <div class="color-field" onclick="openColorPicker('${key}', 'bg')">
+            <div class="color-field-swatch" id="swatchBg_${key}" style="background: ${bgColor}"></div>
+            <span class="color-field-label">Hintergrund</span>
+          </div>
+          <div class="color-field" onclick="openColorPicker('${key}', 'text')">
+            <div class="color-field-swatch" id="swatchText_${key}" style="background: ${textColor}"></div>
+            <span class="color-field-label">Schrift</span>
+          </div>
         </div>
       </div>
     `;
@@ -12516,11 +12516,178 @@ function updateShiftAppearancePreview(key) {
   const preview = document.getElementById(`preview_${key}`);
   const bgInput = document.getElementById(`appearanceBg_${key}`);
   const textInput = document.getElementById(`appearanceText_${key}`);
-  
+
   if (preview && bgInput && textInput) {
     preview.style.background = bgInput.value;
     preview.style.color = textInput.value;
   }
+  // Update swatches
+  const swatchBg = document.getElementById(`swatchBg_${key}`);
+  const swatchText = document.getElementById(`swatchText_${key}`);
+  if (swatchBg && bgInput) swatchBg.style.background = bgInput.value;
+  if (swatchText && textInput) swatchText.style.background = textInput.value;
+}
+
+// ===== COLOR PICKER =====
+const _colorPalette = [
+  '#EF4444', '#F97316', '#F59E0B', '#EAB308',
+  '#84CC16', '#22C55E', '#14B8A6', '#06B6D4',
+  '#3B82F6', '#6366F1', '#8B5CF6', '#A855F7',
+  '#EC4899', '#F43F5E', '#78716C', '#1E293B'
+];
+
+let _cpState = { key: null, type: null, baseColor: null, brightness: 50 };
+
+function _getShiftBadgeLabel(key) {
+  return shiftLabels[key] || shiftConfig[key]?.name?.substring(0,1) || key.substring(0,1);
+}
+
+function openColorPicker(shiftKey, colorType) {
+  _cpState.key = shiftKey;
+  _cpState.type = colorType;
+  _cpState.brightness = 50;
+
+  var inputId = colorType === 'bg' ? 'appearanceBg_' + shiftKey : 'appearanceText_' + shiftKey;
+  var currentColor = document.getElementById(inputId)?.value || '#3B82F6';
+  // Check if current color exactly matches a palette color
+  var exactMatch = _colorPalette.find(function(c) { return c.toLowerCase() === currentColor.toLowerCase(); });
+  _cpState.baseColor = exactMatch || currentColor;
+
+  var title = colorType === 'bg' ? 'Hintergrundfarbe' : 'Schriftfarbe';
+  var resultColor = currentColor;
+
+  // Get current bg and text for badge preview
+  var currentBg = document.getElementById('appearanceBg_' + shiftKey)?.value || '#F3F4F6';
+  var currentText = document.getElementById('appearanceText_' + shiftKey)?.value || '#6B7280';
+  var badgeBg = colorType === 'bg' ? resultColor : currentBg;
+  var badgeText = colorType === 'text' ? resultColor : currentText;
+  var badgeLabel = _getShiftBadgeLabel(shiftKey);
+
+  var html = '<div class="color-picker-overlay" onclick="closeColorPicker()"></div>';
+  html += '<div class="color-picker-popup">';
+  html += '<div class="color-picker-title">' + title + '</div>';
+
+  // Badge preview
+  html += '<div class="color-picker-badge-preview">';
+  html += '<span class="cp-badge-label">Vorschau:</span>';
+  html += '<div class="cp-badge" id="cpBadgePreview" style="background:' + badgeBg + ';color:' + badgeText + '">' + badgeLabel.substring(0,1).toUpperCase() + '</div>';
+  html += '</div>';
+
+  html += '<div class="color-picker-palette" id="cpPalette">';
+  _colorPalette.forEach(function(c) {
+    var active = c.toLowerCase() === _cpState.baseColor.toLowerCase() ? ' active' : '';
+    html += '<div class="color-picker-dot' + active + '" style="background:' + c + '" data-color="' + c + '"></div>';
+  });
+  html += '</div>';
+  html += '<div class="color-picker-brightness">';
+  html += '<span>🌑</span>';
+  html += '<input type="range" min="0" max="100" value="50" id="cpBrightnessSlider" oninput="adjustColorBrightness(this.value)">';
+  html += '<span>☀️</span>';
+  html += '</div>';
+  html += '<div class="color-picker-preview">';
+  html += '<div class="color-picker-preview-swatch" id="cpPreviewSwatch" style="background:' + resultColor + '"></div>';
+  html += '<span class="color-picker-preview-hex" id="cpPreviewHex">' + resultColor + '</span>';
+  html += '</div>';
+  html += '<div class="color-picker-actions">';
+  html += '<button class="color-picker-btn-cancel" onclick="closeColorPicker()">Abbrechen</button>';
+  html += '<button class="color-picker-btn-ok" onclick="confirmColorPicker()">Übernehmen</button>';
+  html += '</div></div>';
+
+  var wrapper = document.createElement('div');
+  wrapper.id = 'colorPickerWrapper';
+  wrapper.innerHTML = html;
+  document.body.appendChild(wrapper);
+
+  document.getElementById('cpPalette').addEventListener('click', function(e) {
+    var dot = e.target.closest('.color-picker-dot');
+    if (dot && dot.dataset.color) {
+      selectPaletteColor(dot);
+    }
+  });
+}
+
+function closeColorPicker() {
+  var wrapper = document.getElementById('colorPickerWrapper');
+  if (wrapper) wrapper.remove();
+}
+
+function selectPaletteColor(el) {
+  _cpState.baseColor = el.dataset.color;
+  document.querySelectorAll('.color-picker-dot').forEach(function(d) { d.classList.remove('active'); });
+  el.classList.add('active');
+  _updatePickerPreview();
+}
+
+function adjustColorBrightness(val) {
+  _cpState.brightness = parseInt(val);
+  _updatePickerPreview();
+}
+
+function _updatePickerPreview() {
+  var result = _adjustBrightness(_cpState.baseColor, _cpState.brightness);
+  var swatch = document.getElementById('cpPreviewSwatch');
+  var hex = document.getElementById('cpPreviewHex');
+  if (swatch) swatch.style.background = result;
+  if (hex) hex.textContent = result;
+
+  // Update badge preview
+  var badge = document.getElementById('cpBadgePreview');
+  if (badge) {
+    var currentBg = document.getElementById('appearanceBg_' + _cpState.key)?.value || '#F3F4F6';
+    var currentText = document.getElementById('appearanceText_' + _cpState.key)?.value || '#6B7280';
+    if (_cpState.type === 'bg') {
+      badge.style.background = result;
+      badge.style.color = currentText;
+    } else {
+      badge.style.background = currentBg;
+      badge.style.color = result;
+    }
+  }
+}
+
+function confirmColorPicker() {
+  var result = _adjustBrightness(_cpState.baseColor, _cpState.brightness);
+  var inputId = _cpState.type === 'bg' ? 'appearanceBg_' + _cpState.key : 'appearanceText_' + _cpState.key;
+  var input = document.getElementById(inputId);
+  if (input) {
+    input.value = result;
+    updateShiftAppearancePreview(_cpState.key);
+  }
+  closeColorPicker();
+}
+
+function _adjustBrightness(hex, brightness) {
+  var r = parseInt(hex.slice(1,3), 16);
+  var g = parseInt(hex.slice(3,5), 16);
+  var b = parseInt(hex.slice(5,7), 16);
+  var factor = (brightness - 50) / 50;
+  if (factor > 0) {
+    r = Math.round(r + (255 - r) * factor);
+    g = Math.round(g + (255 - g) * factor);
+    b = Math.round(b + (255 - b) * factor);
+  } else if (factor < 0) {
+    var f = 1 + factor;
+    r = Math.round(r * f);
+    g = Math.round(g * f);
+    b = Math.round(b * f);
+  }
+  return '#' + [r,g,b].map(function(c) { return Math.min(255, Math.max(0, c)).toString(16).padStart(2, '0'); }).join('');
+}
+
+function _findClosestPaletteColor(hex) {
+  var r = parseInt(hex.slice(1,3), 16);
+  var g = parseInt(hex.slice(3,5), 16);
+  var b = parseInt(hex.slice(5,7), 16);
+  var closest = _colorPalette[0];
+  var minDist = Infinity;
+  _colorPalette.forEach(function(c) {
+    var cr = parseInt(c.slice(1,3), 16);
+    var cg = parseInt(c.slice(3,5), 16);
+    var cb = parseInt(c.slice(5,7), 16);
+    var dist = Math.pow(r-cr, 2) + Math.pow(g-cg, 2) + Math.pow(b-cb, 2);
+    if (dist < minDist) { minDist = dist; closest = c; }
+  });
+  return closest;
 }
 
 // ===============================
@@ -12679,23 +12846,24 @@ function updateCalendarDisplay() {
     badge.style.color = '';
   });
   
-  // Update with current shifts
+  // Update with current shifts (querySelectorAll to update duplicates across months)
   Object.entries(shifts).forEach(([dateStr, shiftType]) => {
-    const dayEl = document.querySelector(`.planer-day[data-date="${dateStr}"] .day-shift-badge`);
-    if (dayEl && shiftConfig[shiftType]) {
-      const config = shiftConfig[shiftType];
-      dayEl.className = `day-shift-badge ${shiftType}`;
-      dayEl.dataset.shift = shiftType;
-      dayEl.textContent = config.name?.substring(0, 1) || shiftLabels[shiftType] || '';
-      
-      // Apply custom colors
-      if (config.bgColor) {
-        dayEl.style.background = config.bgColor;
+    document.querySelectorAll(`.planer-day[data-date="${dateStr}"] .day-shift-badge`).forEach(dayEl => {
+      if (shiftConfig[shiftType]) {
+        const config = shiftConfig[shiftType];
+        dayEl.className = `day-shift-badge ${shiftType}`;
+        dayEl.dataset.shift = shiftType;
+        dayEl.textContent = config.name?.substring(0, 1) || shiftLabels[shiftType] || '';
+
+        // Apply custom colors
+        if (config.bgColor) {
+          dayEl.style.background = config.bgColor;
+        }
+        if (config.textColor) {
+          dayEl.style.color = config.textColor;
+        }
       }
-      if (config.textColor) {
-        dayEl.style.color = config.textColor;
-      }
-    }
+    });
   });
   
   // Update selected states
@@ -13863,7 +14031,7 @@ function updateShiftLegend() {
         }
       }
       if (label) {
-        label.textContent = shiftConfig[shiftKey].name?.substring(0, 5) || shiftKey;
+        label.textContent = shiftLabels[shiftKey] || shiftConfig[shiftKey].name || shiftKey;
       }
     }
   });

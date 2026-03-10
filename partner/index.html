@@ -4342,10 +4342,19 @@ async function partnerLoadFromSupabase() {
       localStorage.setItem('suppTreeCommunityRecipes', JSON.stringify(loadedRecipes));
     }
 
-    // 13. Feature Overrides aus Profil laden
-    var { data: dbProf } = await _sb.from('profiles').select('feature_overrides').eq('id', uid).maybeSingle();
-    if (dbProf && dbProf.feature_overrides) {
-      localStorage.setItem('suppTreeFeatureOverrides', JSON.stringify(dbProf.feature_overrides));
+    // 13. Feature Overrides + Welcome State + Onboarding Stats aus Profil laden
+    var { data: dbProf } = await _sb.from('profiles').select('feature_overrides, welcome_state, onboarding_stats').eq('id', uid).maybeSingle();
+    if (dbProf) {
+      if (dbProf.feature_overrides) {
+        localStorage.setItem('suppTreeFeatureOverrides', JSON.stringify(dbProf.feature_overrides));
+      }
+      if (dbProf.welcome_state) {
+        _welcomeStateCache = dbProf.welcome_state;
+        localStorage.setItem('suppTreeWelcomeState', JSON.stringify(dbProf.welcome_state));
+      }
+      if (dbProf.onboarding_stats) {
+        localStorage.setItem('suppTreeOnboardingStats', JSON.stringify(dbProf.onboarding_stats));
+      }
     }
 
     // 14. Kunden aus customer_berater + profiles
@@ -12053,8 +12062,37 @@ function getGreeting() {
 // ═══════ WIDGET SYSTEM ═══════
 
 // ── Welcome-Widget: Onboarding-Schritte für neue Partner ──
+var _welcomeStateCache=null;
+function _loadWelcomeState(){
+  if(_welcomeStateCache) return _welcomeStateCache;
+  try{_welcomeStateCache=JSON.parse(localStorage.getItem('suppTreeWelcomeState')||'null');}catch(e){}
+  // Migrate old keys
+  if(!_welcomeStateCache){
+    var oldSteps={},oldDismissed=false;
+    try{oldSteps=JSON.parse(localStorage.getItem('suppTreeWelcomeSteps')||'{}');}catch(e){}
+    try{oldDismissed=!!localStorage.getItem('suppTreeWelcomeDismissed');}catch(e){}
+    if(Object.keys(oldSteps).length||oldDismissed){
+      _welcomeStateCache={steps:oldSteps,dismissed:oldDismissed};
+      localStorage.setItem('suppTreeWelcomeState',JSON.stringify(_welcomeStateCache));
+      localStorage.removeItem('suppTreeWelcomeSteps');
+      localStorage.removeItem('suppTreeWelcomeDismissed');
+      return _welcomeStateCache;
+    }
+  }
+  if(!_welcomeStateCache) _welcomeStateCache={steps:{},dismissed:false};
+  return _welcomeStateCache;
+}
+function _saveWelcomeState(state){
+  _welcomeStateCache=state;
+  localStorage.setItem('suppTreeWelcomeState',JSON.stringify(state));
+  // Supabase sync
+  if(_sb&&_currentUser){
+    _sb.from('profiles').update({welcome_state:state}).eq('id',_currentUser.id).then(function(r){if(r.error)console.warn('welcome_state sync:',r.error);});
+  }
+}
 function getWelcomeSteps(){
-  var done={}; try{done=JSON.parse(localStorage.getItem('suppTreeWelcomeSteps')||'{}');}catch(e){}
+  var ws=_loadWelcomeState();
+  var done=ws.steps||{};
   var featureKey=SUBTYPE_FEATURE_MAP[partnerType]||partnerType;
   var typeLabels={heilpraktiker:'Heilpraktiker/in',ernaehrung:'Ernährungsberater/in',trainer:'Trainer/in',beauty:'Beauty-Expert/in',hebamme:'Hebamme',creator:'Creator',bgm:'BGM-Berater/in',studio:'Studio-Inhaber/in',coach:'Coach',supplement:'Hersteller/in'};
   var steps=[];
@@ -12073,7 +12111,6 @@ function getWelcomeSteps(){
       {key:'link',icon:'📱',title:'QR-Code & Link teilen',desc:'In Praxis aufstellen oder online teilen',screen:'affiliate'}
     ];
   } else {
-    // heilpraktiker und alle Service-Subtypen
     steps=[
       {key:'profil',icon:'👤',title:'Profil vervollständigen',desc:'Name, Öffnungszeiten & Qualifikationen',screen:'provider'},
       {key:'service',icon:'🩺',title:'Ersten Service erstellen',desc:'Dein erstes Angebot für Patienten',screen:'services'},
@@ -12082,16 +12119,19 @@ function getWelcomeSteps(){
   }
   var completedCount=0;
   for(var i=0;i<steps.length;i++){steps[i].done=!!done[steps[i].key];if(steps[i].done)completedCount++;}
-  return{steps:steps,completedCount:completedCount,typeLabel:typeLabels[partnerType]||partnerType,dismissed:!!localStorage.getItem('suppTreeWelcomeDismissed')};
+  return{steps:steps,completedCount:completedCount,typeLabel:typeLabels[partnerType]||partnerType,dismissed:!!ws.dismissed};
 }
 function markWelcomeStep(key,screen){
-  var done={}; try{done=JSON.parse(localStorage.getItem('suppTreeWelcomeSteps')||'{}');}catch(e){}
-  done[key]=true;
-  localStorage.setItem('suppTreeWelcomeSteps',JSON.stringify(done));
+  var ws=_loadWelcomeState();
+  if(!ws.steps) ws.steps={};
+  ws.steps[key]=true;
+  _saveWelcomeState(ws);
   showScreen(screen);
 }
 function dismissWelcome(){
-  localStorage.setItem('suppTreeWelcomeDismissed','1');
+  var ws=_loadWelcomeState();
+  ws.dismissed=true;
+  _saveWelcomeState(ws);
   renderDashboard();
 }
 function renderWidget_welcome(cfg={}){
@@ -16284,6 +16324,10 @@ async function finishOnboarding(backendType) {
     stats.timeline.push({ date: new Date().toISOString().slice(0,10), category: cat, specialty: spec, name: _obData.name || '' });
     if (stats.timeline.length > 500) stats.timeline = stats.timeline.slice(-500);
     localStorage.setItem('suppTreeOnboardingStats', JSON.stringify(stats));
+    // Supabase sync
+    if(_sb&&_currentUser){
+      _sb.from('profiles').update({onboarding_stats:stats}).eq('id',_currentUser.id).then(function(r){if(r.error)console.warn('onboarding_stats sync:',r.error);});
+    }
   } catch(e) {}
 
   // Lokal setzen
