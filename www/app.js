@@ -3385,6 +3385,18 @@ async function loadKnowledgeFromSupabase() {
       if (nl.includes('novel food') || nl.includes('nicht verkehrsfähig') || nl.includes('nicht empfohlen') || nl.includes('nicht zugelassen') || nl.includes('nicht supplementierbar') || nl.includes('btmg') || nl.includes('verboten') || nl.includes('eingestellt') || nl.includes('marketing-begriff') || nl.includes('doping') || nl.includes('status unklar') || nl.includes('grauzone') || nl.includes('rx-pflichtig') || nl.includes('pathogen') || nl.includes('keine evidenz') || nl.includes('keine humane evidenz') || nl.includes('kein nem') || nl.includes('gefährlich') || nl.includes('unzureichende evidenz') || nl.includes('kontrovers') || nl.includes('unsicher') || nl.includes('unwirksam') || nl.includes('nischenprodukt') || nl.includes('ohne evidenz')) return false;
       // Emoji-Filter (überall im Namen)
       if (n.includes('⚠') || n.includes('⛔') || n.includes('❌') || n.includes('🔬')) return false;
+      // Reine Markenprodukte filtern: Name beginnt mit Brand® oder ist nur ein Markenname
+      // z.B. "Nitrosigine®", "Silexan (Lavendelöl) - Lasea®", "Ashwagandha KSM-66®"
+      // NICHT filtern: "Kiefernrindenextrakt (Pycnogenol®)" — hat generischen Namen
+      var nameBeforeParen = n.split('(')[0].trim();
+      if (nameBeforeParen.includes('®') || nameBeforeParen.includes('™')) return false;
+      // Krankheitsspezifische Duplikate filtern (z.B. "Vitamin D (Hashimoto)", "Selen (Fertilität)")
+      var conditionParenRegex = /\((Hashimoto|Graves|Fertili|Schilddr|Basedow|Morbus|AREDS|Angst|Stress|Laxans|Abfuehr|Autoimmun|Hyperthyr|Depression|Stimmung|PCOS|Komorbid|Weiblich|Männlich)/i;
+      if (conditionParenRegex.test(nl)) return false;
+      // "Support"-Kombinationsprodukte (Crohn-Support, Colitis-Support, etc.)
+      if (nl.includes('-support') || nl.includes('support (')) return false;
+      // Marketing-Formeln und Komplex-Produkte die keine echten Supplements sind
+      if (nl.includes('-formel') || nl.includes('herz-omega') || nl.includes('gehirn-omega') || nl.includes('kinder-omega')) return false;
       return true;
     });
 
@@ -3444,9 +3456,12 @@ async function loadKnowledgeFromSupabase() {
       var icon = _kwCategoryIcons[s.unterkategorie] || _kwCategoryIcons[s.kategorie] || '📦';
       var sections = _kwBuildSections(s);
       var readTime = Math.max(2, Math.ceil((s.wirkung || '').length / 500));
-      // Clean name: remove ALL emojis and trailing notes (legal, evidence, etc.)
+      // Clean name: remove emojis, trailing notes, and branded parts in parens
       var cleanName = _kwCleanText(s.name || '')
         .replace(/\s*[-–]\s*(NOVEL FOOD|BtMG|NICHT VERKEHRSFÄHIG|Marketing|LEITLINIE|Moderate Evidenz|KEINE|UNZUREICHENDE|GEFÄHRLICH)[^]*/i, '')
+        .replace(/\s*\([^)]*®[^)]*\)/g, '') // "(Pycnogenol®)" etc. entfernen
+        .replace(/[®™]/g, '') // verbleibende ® oder ™ entfernen
+        .replace(/\s*[-–]\s*✓.*$/i, '') // "- ✓ PCOS-Evidenz..." entfernen
         .trim();
 
       return {
