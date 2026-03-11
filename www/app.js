@@ -3203,6 +3203,34 @@ function _kwFixUmlauts(t) {
   for (var key in replacements) {
     result = result.split(key).join(replacements[key]);
   }
+  // Deutsche Abkürzungen ausschreiben (mit Wortgrenzen via Regex)
+  var abbrevs = [
+    [/\bbes\./g, 'besonders'],
+    [/\binsb\./g, 'insbesondere'],
+    [/\bz\.B\./g, 'zum Beispiel'],
+    [/\bz\.b\./g, 'zum Beispiel'],
+    [/\bu\.a\./g, 'unter anderem'],
+    [/\bv\.a\./g, 'vor allem'],
+    [/\bd\.h\./g, 'das heißt'],
+    [/\bbzw\./g, 'beziehungsweise'],
+    [/\bbspw\./g, 'beispielsweise'],
+    [/\bbzgl\./g, 'bezüglich'],
+    [/\bca\./g, 'circa'],
+    [/\bmax\./g, 'maximal'],
+    [/\bmin\./g, 'minimal'],
+    [/\binkl\./g, 'inklusive'],
+    [/\bevtl\./g, 'eventuell'],
+    [/\bggf\./g, 'gegebenenfalls'],
+    [/\busw\./g, 'usw.'],
+    [/\betc\./g, 'etc.'],
+    [/\bi\.d\.R\./g, 'in der Regel'],
+    [/\blt\./g, 'laut'],
+    [/\bvgl\./g, 'vergleiche'],
+    [/\bsog\./g, 'sogenannte'],
+    [/\besp\./g, 'especially'],
+    [/\bv\./g, 'von']
+  ];
+  abbrevs.forEach(function(pair) { result = result.replace(pair[0], pair[1]); });
   return result;
 }
 
