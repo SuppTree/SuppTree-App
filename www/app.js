@@ -3092,6 +3092,8 @@ var kwDosierungen = {};
 var knowledgeArticles = [];
 var _kwDataLoaded = false;
 var _kwArticleCache = {}; // Cache für Detail-Daten (Quellen, Dosierungen etc.)
+var kwSelectedCountry = 'DE';
+var kwDetectedCountry = 'DE';
 
 // Emoji/Sonderzeichen aus Text entfernen
 function _kwCleanText(text) {
@@ -3155,10 +3157,48 @@ function _kwListify(str) {
 }
 
 // Hilfsfunktion: Umlaute in Supabase-Text korrigieren (ae→ä etc.)
+// Nur ersetzen wenn es typische deutsche Umlaut-Muster sind, nicht in Fachbegriffen
 function _kwFixUmlauts(t) {
   if (!t) return '';
-  return t.replace(/ae/g,'ä').replace(/oe/g,'ö').replace(/ue/g,'ü')
-    .replace(/Ae/g,'Ä').replace(/Oe/g,'Ö').replace(/Ue/g,'Ü');
+  // Häufige deutsche Wörter mit ae/oe/ue korrigieren
+  var replacements = {
+    'fuer': 'für', 'ueber': 'über', 'Ueber': 'Über', 'aeusser': 'äußer', 'Aeusser': 'Äußer',
+    'Traegt': 'Trägt', 'traegt': 'trägt', 'Muedigkeit': 'Müdigkeit', 'muedigkeit': 'müdigkeit',
+    'Uebelkeit': 'Übelkeit', 'uebelkeit': 'übelkeit', 'Durchfuehr': 'Durchführ',
+    'Verfuegbar': 'Verfügbar', 'verfuegbar': 'verfügbar', 'Bioverfuegbar': 'Bioverfügbar',
+    'bioverfuegbar': 'bioverfügbar', 'Vertraeglichkeit': 'Verträglichkeit', 'vertraeglichkeit': 'verträglichkeit',
+    'aerztlich': 'ärztlich', 'Aerztlich': 'Ärztlich', 'haeufig': 'häufig', 'Haeufig': 'Häufig',
+    'Erhoehter': 'Erhöhter', 'erhoehter': 'erhöhter', 'erhoehten': 'erhöhten', 'Erhoehten': 'Erhöhten',
+    'hoechst': 'höchst', 'Hoechst': 'Höchst', 'moeglich': 'möglich', 'Moeglich': 'Möglich',
+    'oeffentlich': 'öffentlich', 'Oeffentlich': 'Öffentlich',
+    'Kuerbis': 'Kürbis', 'kuerbis': 'kürbis', 'natuerlich': 'natürlich', 'Natuerlich': 'Natürlich',
+    'koennen': 'können', 'Koennen': 'Können', 'koennte': 'könnte',
+    'genuegend': 'genügend', 'unzulaessig': 'unzulässig',
+    'abfuehrend': 'abführend', 'Abfuehrend': 'Abführend',
+    'empfaenglich': 'empfänglich', 'unguenstig': 'ungünstig',
+    'Saeuglings': 'Säuglings', 'saeuglings': 'säuglings',
+    'Foerdert': 'Fördert', 'foerdert': 'fördert',
+    'Loeslich': 'Löslich', 'loeslich': 'löslich', 'wasserloeslich': 'wasserlöslich', 'fettloeslich': 'fettlöslich',
+    'Oel': 'Öl', 'oel': 'öl',
+    'Aelter': 'Älter', 'aelter': 'älter', 'Aelteren': 'Älteren',
+    'Mangelsymptome': 'Mangelsymptome',
+    'Qualitaet': 'Qualität', 'qualitaet': 'qualität',
+    'Schaedlich': 'Schädlich', 'schaedlich': 'schädlich',
+    'Stueck': 'Stück', 'stueck': 'stück',
+    'Waerme': 'Wärme', 'waerme': 'wärme',
+    'genuegen': 'genügen', 'unterstuetzt': 'unterstützt', 'Unterstuetzt': 'Unterstützt',
+    'Schlafqualitaet': 'Schlafqualität', 'schlafqualitaet': 'schlafqualität',
+    'Suesse': 'Süße', 'suesse': 'süße',
+    'schwaechend': 'schwächend', 'Muskelschwaeche': 'Muskelschwäche',
+    'Saeure': 'Säure', 'saeure': 'säure',
+    'Aehnlich': 'Ähnlich', 'aehnlich': 'ähnlich',
+    'Schaerfere': 'Schärfere', 'Kaelte': 'Kälte'
+  };
+  var result = t;
+  for (var key in replacements) {
+    result = result.split(key).join(replacements[key]);
+  }
+  return result;
 }
 
 // Build article content sections from Supabase fields — schöne Fließtexte
@@ -3825,31 +3865,38 @@ function closeKnowledgeCategory() {
 }
 
 async function openKnowledgeArticle(articleId) {
-  kwSelectedCountry = kwDetectedCountry;
-  const article = knowledgeArticles.find(a => a.id === articleId);
-  if (!article) return;
+  try {
+    kwSelectedCountry = kwDetectedCountry;
+    const article = knowledgeArticles.find(a => a.id === articleId);
+    if (!article) { console.error('Article not found:', articleId); return; }
 
-  // Close hashtag popup if open
-  closeHashtagPopup();
+    // Close hashtag popup if open
+    closeHashtagPopup();
 
-  currentArticleId = articleId;
+    currentArticleId = articleId;
 
-  document.getElementById('knowledgeMain').style.display = 'none';
-  document.getElementById('knowledgeCategoryView').style.display = 'none';
-  document.getElementById('knowledgeArticleView').style.display = 'block';
+    document.getElementById('knowledgeMain').style.display = 'none';
+    document.getElementById('knowledgeCategoryView').style.display = 'none';
+    document.getElementById('knowledgeArticleView').style.display = 'block';
 
-  // Reset scroll position
-  window.scrollTo(0, 0);
+    // Reset scroll position
+    window.scrollTo(0, 0);
 
-  // Lade Detail-Daten aus Supabase (Quellen, Dosierungen)
-  var details = await loadArticleDetails(articleId);
-  if (details) {
-    article.sources = details.sources || [];
-    article.studyCount = details.studyCount || 0;
+    // Lade Detail-Daten aus Supabase (Quellen, Dosierungen)
+    var details = await loadArticleDetails(articleId);
+    if (details) {
+      article.sources = details.sources || [];
+      article.studyCount = details.studyCount || 0;
+    }
+
+    renderArticleContent(article);
+    updateBookmarkButton();
+  } catch(e) {
+    console.error('openKnowledgeArticle error:', e);
+    // Fallback: zurück navigieren
+    document.getElementById('knowledgeArticleView').style.display = 'none';
+    document.getElementById('knowledgeMain').style.display = 'block';
   }
-
-  renderArticleContent(article);
-  updateBookmarkButton();
 }
 
 function renderArticleContent(article) {
@@ -3865,10 +3912,10 @@ function renderArticleContent(article) {
     let content = '';
 
     if (section.type === 'table') {
-      content = renderMarkdownTable(section.content);
+      content = renderMarkdownTable(section.content || '');
     } else {
       // Split into paragraphs by double newline
-      var blocks = section.content.split(/\n\n/);
+      var blocks = (section.content || '').split(/\n\n/);
       content = blocks.map(function(block) {
         block = block.trim();
         if (!block) return '';
