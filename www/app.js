@@ -3237,13 +3237,17 @@ async function loadKnowledgeFromSupabase() {
       return;
     }
 
-    // Filter: Verbotene/Arzneimittel/Novel Food ausblenden
+    // Filter: Alles was nicht als NEM zugelassen ist ausblenden
     data = data.filter(function(s) {
       var k = (s.kategorie || '').toLowerCase();
-      var n = (s.name || '').toLowerCase();
-      if (k.includes('verboten') || k.includes('nicht empfohlen') || k.includes('arzneimittel') || k.includes('novel food') || k.includes('experimentell') || k.includes('cannabinoid') || k.includes('stimulanz') || k.includes('beruhigungsmittel')) return false;
-      if (n.includes('novel food') || n.includes('nicht verkehrsfähig') || n.includes('nicht empfohlen') || n.includes('btmg') || n.includes('verboten') || n.includes('eingestellt')) return false;
-      if (n.startsWith('⚠') || n.startsWith('⛔') || n.startsWith('🔬')) return false;
+      var n = (s.name || '');
+      var nl = n.toLowerCase();
+      // Kategorie-Filter
+      if (k.includes('verboten') || k.includes('nicht empfohlen') || k.includes('arzneimittel') || k.includes('novel food') || k.includes('experimentell') || k.includes('cannabinoid') || k.includes('stimulanz') || k.includes('beruhigungsmittel') || k.includes('hormone') || k.includes('nanomaterial') || k.includes('pflanzliche arzneimittel')) return false;
+      // Name-Filter
+      if (nl.includes('novel food') || nl.includes('nicht verkehrsfähig') || nl.includes('nicht empfohlen') || nl.includes('nicht zugelassen') || nl.includes('nicht supplementierbar') || nl.includes('btmg') || nl.includes('verboten') || nl.includes('eingestellt') || nl.includes('marketing-begriff') || nl.includes('doping') || nl.includes('status unklar') || nl.includes('grauzone') || nl.includes('rx-pflichtig') || nl.includes('pathogen') || nl.includes('keine evidenz') || nl.includes('keine humane evidenz') || nl.includes('kein nem') || nl.includes('gefährlich') || nl.includes('unzureichende evidenz') || nl.includes('kontrovers') || nl.includes('unsicher') || nl.includes('unwirksam') || nl.includes('nischenprodukt') || nl.includes('ohne evidenz')) return false;
+      // Emoji-Filter (überall im Namen)
+      if (n.includes('⚠') || n.includes('⛔') || n.includes('❌') || n.includes('🔬')) return false;
       return true;
     });
 
