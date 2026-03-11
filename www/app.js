@@ -3267,7 +3267,7 @@ async function loadKnowledgeFromSupabase() {
       return {
         id: s.id,
         title: cleanName || s.name,
-        subtitle: s.wirkung_kurz || '',
+        subtitle: (s.wirkung_kurz || '').replace(/[⚠️⛔🔬❌❓⭐🏆✅☆★]+/g, '').replace(/\s{2,}/g, ' ').trim(),
         icon: icon,
         image: null,
         category: catKey,
