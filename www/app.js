@@ -3599,20 +3599,16 @@ async function loadKnowledgeFromSupabase() {
         id: s.id,
         title: cleanName || s.name,
         subtitle: (function() {
-          var wk = _kwCleanText(s.wirkung_kurz || '');
-          if (!wk) return '';
-          // Wenn es eine Kommaliste von Keywords ist (kein Verb/Punkt), in Satz umwandeln
-          var isKeywordList = wk.indexOf('.') === -1 && wk.split(',').length >= 2;
-          if (isKeywordList) {
-            var parts = wk.split(',').map(function(p){ return p.trim(); }).filter(Boolean);
-            var last = parts.pop();
-            var joined = parts.length > 0 ? parts.join(', ') + ' & ' + last : last;
-            // Präfix variieren basierend auf Supplement-ID
-            var prefixes = ['Gut für', 'Unterstützt', 'Fördert', 'Hilft bei', 'Wichtig für', 'Ideal für', 'Stärkt'];
-            var hash = s.id.split('').reduce(function(acc, c) { return acc + c.charCodeAt(0); }, 0);
-            return prefixes[hash % prefixes.length] + ' ' + joined;
+          // symptome_ziele bevorzugen — das sind echte Nutzerziele (Müdigkeit, Schlaf, Stress...)
+          if (s.symptome_ziele) {
+            var keywords = s.symptome_ziele.split(',')
+              .map(function(k) { return k.trim(); })
+              .filter(function(k) { return k.length > 1 && k.length < 30; })
+              .slice(0, 5);
+            if (keywords.length > 0) return keywords.join(' · ');
           }
-          return wk;
+          // Fallback: wirkung_kurz
+          return _kwCleanText(s.wirkung_kurz || '');
         })(),
         icon: icon,
         image: _kwLocalImage(s.id),
