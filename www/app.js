@@ -4185,14 +4185,16 @@ function renderArticleContent(article) {
     </div>`;
   }
 
-  // Build hashtag chips — max 6 sichtbar, Rest im Dropdown
+  // Build hashtag chips — max 6 sichtbar, Rest einklappbar
   var hashtags = getArticleHashtags(article);
   var hashtagHtml = '';
   var maxVisible = 6;
   if (hashtags.length > 0) {
     var visibleTags = hashtags.slice(0, maxVisible);
     var hiddenTags = hashtags.slice(maxVisible);
-    hashtagHtml = '<div class="kw-art-hashtags">' +
+    hashtagHtml = '<div class="kw-art-hashtags-wrap">' +
+      '<p class="kw-hashtags-label">🔗 In diesem Artikel erwähnte Supplements — tippe zum Öffnen:</p>' +
+      '<div class="kw-art-hashtags">' +
       visibleTags.map(function(h) {
         return '<span class="kw-hashtag" onclick="event.stopPropagation();openKnowledgeSearchFor(\'' + h.word.replace(/'/g, "\\'") + '\')">#' + h.word + '</span>';
       }).join('');
@@ -4203,7 +4205,7 @@ function renderArticleContent(article) {
           return '<span class="kw-hashtag" onclick="event.stopPropagation();openKnowledgeSearchFor(\'' + h.word.replace(/'/g, "\\'") + '\')">#' + h.word + '</span>';
         }).join('') + '</div>';
     }
-    hashtagHtml += '</div>';
+    hashtagHtml += '</div></div>';
   }
 
   container.innerHTML = `
