@@ -40022,7 +40022,9 @@ let scrollThreshold = 8;
     const knowledgeScreen = document.getElementById('knowledgeScreen');
     const kwArticleView = document.getElementById('knowledgeArticleView');
     const kwArticleOpen = kwArticleView && kwArticleView.style.display === 'block';
-    if (kwTsa && knowledgeScreen && knowledgeScreen.classList.contains('active') && !kwSearchOpen && !kwArticleOpen && !kwFavPageOpen) {
+    const kwCategoryView = document.getElementById('knowledgeCategoryView');
+    const kwCategoryOpen = kwCategoryView && kwCategoryView.style.display === 'block';
+    if (kwTsa && knowledgeScreen && knowledgeScreen.classList.contains('active') && !kwSearchOpen && !kwArticleOpen && !kwFavPageOpen && !kwCategoryOpen) {
       const scrollDiff = scrollTop - _kwLastScroll;
       const kwSearch = document.querySelector('.kw-search');
       if (kwSearch) {
