@@ -3207,24 +3207,19 @@ function _kwBuildSections(s) {
   var name = _kwCleanText(s.name || '');
   var fix = _kwFixUmlauts;
 
-  // 1. Wirkung — ausformuliert
+  // 1. Wirkung
   if (s.wirkung) {
-    var wText = fix(s.wirkung);
-    // Stichpunkte in Fließtext umwandeln
-    var wParts = wText.split(/[,;]/).map(function(p){ return p.trim(); }).filter(Boolean);
+    var wRaw = _kwCleanText(s.wirkung || '');
+    var wText = fix(wRaw);
+    // Als saubere Aufzählung darstellen
+    var wParts = wText.split(/[,;]/).map(function(p){ return p.trim(); }).filter(function(p){ return p.length > 2; });
     var intro = '';
-    if (wParts.length > 2) {
-      var first = wParts[0];
-      // "ist essentiell/wichtig..." oder "fördert..."
-      var verb = (first.match(/^(ist|hat|wird|kann|spielt|hilft|dient|stellt)/i)) ? ' ' : ' ist wichtig für ';
-      intro = name + verb + first.charAt(0).toLowerCase() + first.slice(1) + '. ';
-      intro += 'Zusätzlich unterstützt es ' + wParts.slice(1, -1).join(', ') + ' und ' + wParts[wParts.length-1] + '.';
-    } else if (wParts.length === 2) {
-      intro = name + ' unterstützt ' + wParts[0] + ' und ' + wParts[1] + '.';
+    if (wParts.length > 1) {
+      intro = wParts.map(function(p){ return '• ' + p.charAt(0).toUpperCase() + p.slice(1); }).join('\n');
     } else {
-      intro = name + ': ' + wText + '.';
+      intro = wText;
     }
-    // EFSA Health Claims hinzufügen
+    // EFSA Health Claims
     if (s.health_claims_efsa) {
       intro += '\n\n**Wissenschaftlich bestätigt (EFSA):**\n' + fix(s.health_claims_efsa).split(';').map(function(c){ return '• ' + c.trim(); }).join('\n');
     }
@@ -3293,7 +3288,8 @@ function _kwBuildSections(s) {
   if (s.zeitlicher_abstand_h && s.zeitlicher_abstand_h !== 'None' && s.zeitlicher_abstand_h !== '0' && s.zeitlicher_abstand_h !== 0) {
     kombi += '\n\nHalte mindestens **' + s.zeitlicher_abstand_h + ' Stunden Abstand** zu den oben genannten Stoffen.';
   }
-  if (s.kombinations_hinweis) {
+  // kombinations_hinweis nur zeigen wenn es neue Info enthält (nicht redundant mit nicht_zusammen_mit)
+  if (s.kombinations_hinweis && !s.nicht_zusammen_mit) {
     kombi += '\n\n' + fix(s.kombinations_hinweis) + '.';
   }
   if (kombi.trim()) {
@@ -3406,6 +3402,19 @@ async function loadKnowledgeFromSupabase() {
       if (nl.includes('novel food') || nl.includes('nicht verkehrsfähig') || nl.includes('nicht empfohlen') || nl.includes('nicht zugelassen') || nl.includes('nicht supplementierbar') || nl.includes('btmg') || nl.includes('verboten') || nl.includes('eingestellt') || nl.includes('marketing-begriff') || nl.includes('doping') || nl.includes('status unklar') || nl.includes('grauzone') || nl.includes('rx-pflichtig') || nl.includes('pathogen') || nl.includes('keine evidenz') || nl.includes('keine humane evidenz') || nl.includes('kein nem') || nl.includes('gefährlich') || nl.includes('unzureichende evidenz') || nl.includes('kontrovers') || nl.includes('unsicher') || nl.includes('unwirksam') || nl.includes('nischenprodukt') || nl.includes('ohne evidenz')) return false;
       // Emoji-Filter (überall im Namen)
       if (n.includes('⚠') || n.includes('⛔') || n.includes('❌') || n.includes('🔬')) return false;
+      return true;
+    });
+
+    // Duplikate filtern: Form-Varianten entfernen (z.B. Magnesiumcitrat wenn Magnesium existiert)
+    var _formSuffixes = /[-\s]*(citrat|bisglycinat|bisglycinate|glycinat|oxid|sulfat|orotat|malat|lactat|aspartat|ascorbat|hydroxid|fumarat|gluconat|picolinat|acetat|carnosin|chelat|threonat|butyrat|taurat|carbonat|methionin|laxans|abfuehr)/i;
+    var baseIds = {};
+    data.forEach(function(s) { if (!_formSuffixes.test(s.id)) baseIds[s.id] = true; });
+    data = data.filter(function(s) {
+      // Behalte immer Base-Supplements (magnesium, zink, eisen etc.)
+      if (baseIds[s.id]) return true;
+      // Filtere Form-Varianten nur wenn das Base-Supplement existiert
+      var baseId = s.id.replace(_formSuffixes, '').replace(/-+$/, '');
+      if (baseIds[baseId]) return false;
       return true;
     });
 
