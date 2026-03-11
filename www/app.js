@@ -3231,6 +3231,14 @@ function _kwFixUmlauts(t) {
     [/\bv\./g, 'von']
   ];
   abbrevs.forEach(function(pair) { result = result.replace(pair[0], pair[1]); });
+  // Vitamin-Buchstaben immer groß: "vitamin d3" → "Vitamin D3", "vitamin b12" → "Vitamin B12"
+  result = result.replace(/\bvitamin\s+([a-z])(\d*)/gi, function(m, letter, num) {
+    return 'Vitamin ' + letter.toUpperCase() + num;
+  });
+  // Satzanfänge großschreiben (nach ". " oder am Textbeginn)
+  result = result.replace(/(^|\.\s+)([a-zäöü])/g, function(m, pre, letter) {
+    return pre + letter.toUpperCase();
+  });
   return result;
 }
 
