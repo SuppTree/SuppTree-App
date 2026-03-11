@@ -4246,7 +4246,6 @@ function renderDosierungBox(articleId) {
     '<h3>📋 Dosierung nach Land</h3>' + detectedHint +
     '<div class="kw-dos-tabs">' + tabsHtml + '</div>' +
     '<div class="kw-dos-cards">' + cardsHtml + '</div>' +
-    (dos.hinweis ? '<div class="kw-dos-hinweis">⚠️ ' + dos.hinweis + '</div>' : '') +
     '<div class="kw-dos-disclaimer">Stand: März 2025. Alle Angaben ohne Gewähr. Die dargestellten Empfehlungen dienen ausschließlich der Information und ersetzen keine ärztliche Beratung. Für Änderungen der offiziellen Referenzwerte übernehmen wir keine Haftung.</div>' +
   '</div>';
 }
