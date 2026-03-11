@@ -3257,8 +3257,12 @@ async function loadKnowledgeFromSupabase() {
       var icon = _kwCategoryIcons[s.unterkategorie] || _kwCategoryIcons[s.kategorie] || '📦';
       var sections = _kwBuildSections(s);
       var readTime = Math.max(2, Math.ceil((s.wirkung || '').length / 500));
-      // Clean name: remove warning emojis and legal notes
-      var cleanName = (s.name || '').replace(/^[⚠️⛔🔬\s]+/, '').replace(/\s*[-–]\s*(NOVEL FOOD|BtMG|NICHT VERKEHRSFÄHIG|Marketing)[^]*$/i, '').trim();
+      // Clean name: remove ALL emojis and trailing notes (legal, evidence, etc.)
+      var cleanName = (s.name || '')
+        .replace(/[⚠️⛔🔬❌❓⭐🏆✅☆★]+/g, '')
+        .replace(/\s*[-–]\s*(NOVEL FOOD|BtMG|NICHT VERKEHRSFÄHIG|Marketing|LEITLINIE|Moderate Evidenz|KEINE|UNZUREICHENDE|GEFÄHRLICH)[^]*/i, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
 
       return {
         id: s.id,
