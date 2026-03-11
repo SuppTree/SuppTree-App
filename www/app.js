@@ -3231,9 +3231,9 @@ function _kwFixUmlauts(t) {
     [/\bv\./g, 'von']
   ];
   abbrevs.forEach(function(pair) { result = result.replace(pair[0], pair[1]); });
-  // Vitamin-Buchstaben immer groß: "vitamin d3" → "Vitamin D3", "vitamin b12" → "Vitamin B12"
-  result = result.replace(/\bvitamin\s+([a-z])(\d*)/gi, function(m, letter, num) {
-    return 'Vitamin ' + letter.toUpperCase() + num;
+  // Vitamin-Buchstaben immer groß: "vitamin d3" → "Vitamin D3", "vitamin-b12" → "Vitamin B12"
+  result = result.replace(/\bvitamin[-\s]+([a-z])(\d*[a-z]?\d*)/gi, function(m, letter, rest) {
+    return 'Vitamin ' + letter.toUpperCase() + rest;
   });
   // Satzanfänge großschreiben (nach ". " oder am Textbeginn)
   result = result.replace(/(^|\.\s+)([a-zäöü])/g, function(m, pre, letter) {
@@ -4262,10 +4262,13 @@ function renderArticleContent(article) {
     hashtagHtml += '</div></div>';
   }
 
+  var wasIstHtml = article.subtitle ? `<div class="kw-art-what-is"><span class="kw-art-what-is-label">Was ist ${article.title}?</span> ${article.subtitle}</div>` : '';
+
   container.innerHTML = `
     ${heroContent}
 
     <div class="kw-art-body">
+      ${wasIstHtml}
       ${hashtagHtml}
       <div class="kw-art-toc">
         <h4>Inhaltsverzeichnis</h4>
@@ -4576,7 +4579,7 @@ function getArticleHashtags(article) {
   raw.kombiniert_gut_mit.split(',').forEach(function(name) {
     var n = _kwFixUmlauts(name.trim());
     // Vitamin-Buchstaben groß, erster Buchstabe groß
-    n = n.replace(/\bvitamin\s+([a-z])(\d*)/gi, function(m, l, num) { return 'Vitamin ' + l.toUpperCase() + num; });
+    n = n.replace(/\bvitamin[-\s]+([a-z])(\d*[a-z]?\d*)/gi, function(m, l, rest) { return 'Vitamin ' + l.toUpperCase() + rest; });
     n = n.charAt(0).toUpperCase() + n.slice(1);
     if (!n || n.length < 3) return;
     var nLower = n.toLowerCase();
