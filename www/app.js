@@ -3586,7 +3586,7 @@ async function loadKnowledgeFromSupabase() {
         s.bioverfuegbarkeit_info, s.qualitaetsmerkmale, s.kombinations_hinweis,
         s.natuerliche_quellen, s.schwangerschaft, s.stillzeit, s.kinder_geeignet,
         s.senioren_hinweis, s.health_claims_efsa].filter(Boolean).join(' ');
-      var readTime = Math.max(2, Math.ceil(allText.length / 1200));
+      var readTime = Math.max(4, Math.ceil(allText.length / 600));
       // Clean name: remove emojis, trailing notes, and branded parts in parens
       var cleanName = _kwCleanText(s.name || '')
         .replace(/\s*[-–]\s*(NOVEL FOOD|BtMG|NICHT VERKEHRSFÄHIG|Marketing|LEITLINIE|Moderate Evidenz|KEINE|UNZUREICHENDE|GEFÄHRLICH)[^]*/i, '')
