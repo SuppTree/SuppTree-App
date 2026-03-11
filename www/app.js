@@ -4229,7 +4229,7 @@ function openArticleInMarketplace() {
     var banner = document.getElementById('productsBackBanner');
     var bannerText = document.getElementById('productsBackText');
     if (banner) {
-      if (bannerText) bannerText.textContent = '← Zurück zu ' + article.title;
+      if (bannerText) bannerText.textContent = 'Zurück zum Artikel';
       banner.style.display = 'flex';
     }
 
