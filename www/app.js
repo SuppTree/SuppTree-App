@@ -4123,15 +4123,32 @@ function renderArticleContent(article) {
   var hasStudy = article.sources.some(function(s) { return s.type === 'study' || s.type === 'meta-analysis'; });
   var hasGuideline = article.sources.some(function(s) { return s.type === 'guideline'; });
 
-  const sources = article.sources.map((source, i) => `
-    <div class="source-item">
+  const sources = article.sources.map((source, i) => {
+    // PMID aus Autor/Titel-Text extrahieren falls dort eingebettet
+    var pmid = source.pmid || '';
+    var authors = source.authors || '';
+    var title = source.title || '';
+    var year = source.year || '';
+    // "(PMID: 12345678)" oder "(PMID:12345678)" aus Autor, Titel und Jahr herausziehen
+    var pmidRegex = /\(PMID:?\s*(\d{6,9})\)/gi;
+    [authors, title, year].forEach(function(field) {
+      var m = field.match(pmidRegex);
+      if (m && !pmid) pmid = field.match(/PMID:?\s*(\d{6,9})/i)[1];
+    });
+    authors = authors.replace(pmidRegex, '').replace(/\s{2,}/g, ' ').trim();
+    title   = title.replace(pmidRegex, '').replace(/\s{2,}/g, ' ').trim();
+    year    = year.replace(pmidRegex, '').replace(/\s{2,}/g, ' ').trim();
+    // Auch freistehende Jahreszahl-Duplikate "(2025)" am Ende entfernen (Artefakt aus DB)
+    authors = authors.replace(/\s*\(\d{4}\)\s*$/, '').trim();
+    var typeLabel = source.type === 'study' ? 'Studie' : source.type === 'meta-analysis' ? 'Meta-Analyse' : source.type === 'guideline' ? 'Leitlinie' : 'Quelle';
+    return `<div class="source-item">
       <span>${i + 1}.</span>
-      ${source.authors} (${source.year}). <em>${source.title}</em>.
+      ${authors}${year ? ' (' + year + ')' : ''}. <em>${title}</em>.
       ${source.journal ? source.journal + '.' : ''}
-      ${source.pmid ? '<span class="source-pmid">PMID: ' + source.pmid + '</span>' : ''}
-      <span class="source-type">${source.type === 'study' ? 'Studie' : source.type === 'meta-analysis' ? 'Meta-Analyse' : source.type === 'guideline' ? 'Leitlinie' : 'Quelle'}</span>
-    </div>
-  `).join('');
+      <span class="source-type">${typeLabel}</span>
+      ${pmid ? '<span class="source-pmid">PMID: ' + pmid + '</span>' : ''}
+    </div>`;
+  }).join('');
 
   // Build glossary footnotes
   var glossaryItems = [];
