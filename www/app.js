@@ -3501,23 +3501,53 @@ function _kwBuildTags(s) {
 // Haupt-Ladefunktion: Supplements aus Supabase → knowledgeArticles
 // Lokale Bilder aus www/img/wissen/ — Dateiname = Artikel-ID oder vereinfacht
 var _kwLocalImages = {
+  // Mineralstoffe
   'magnesium': 'img/wissen/magnesium.jpg',
   'calcium': 'img/wissen/calcium.jpg',
-  'vitamin-d3': 'img/wissen/vitamin-d3.jpg',
-  'vitamin-b12': 'img/wissen/vitamin-b12.jpg',
+  'calciumcitrat': 'img/wissen/calcium.jpg',
   'zink': 'img/wissen/zink.jpg',
   'zinkbisglycinat': 'img/wissen/zink.jpg',
   'eisen': 'img/wissen/eisen.jpg',
   'eisenbisglycinat': 'img/wissen/eisen.jpg',
+  'selen': 'img/wissen/selen.jpg',
+  // Vitamine
+  'vitamin-d3': 'img/wissen/vitamin-d3.jpg',
+  'vitamin-d': 'img/wissen/vitamin-d3.jpg',
+  'vitamin-b12': 'img/wissen/vitamin-b12.jpg',
+  'vitamin-b6': 'img/wissen/vitamin-b6.jpg',
+  'vitamin-b1': 'img/wissen/vitamin-b1.jpg',
+  'vitamin-b3': 'img/wissen/vitamin-b3.jpg',
+  'vitamin-c': 'img/wissen/vitamin-c.jpg',
+  'liposomales-vitamin-c': 'img/wissen/vitamin-c.jpg',
+  'vitamin-k2': 'img/wissen/vitamin-k2.jpg',
+  'vitamin-k': 'img/wissen/vitamin-k2.jpg',
+  'biotin': 'img/wissen/biotin.jpg',
+  'folsaeure': 'img/wissen/folsaeure.jpg',
+  'folat': 'img/wissen/folsaeure.jpg',
+  // Fettsäuren
   'omega-3-fettsaeuren': 'img/wissen/omega3.jpg',
   'omega-3-fettsauren-epa-dha': 'img/wissen/omega3.jpg',
   'omega-3-epa-dha': 'img/wissen/omega3.jpg',
+  // Sport & Energie
   'kreatin': 'img/wissen/kreatin.jpg',
   'kreatin-monohydrat': 'img/wissen/kreatin.jpg',
+  'l-carnitin': 'img/wissen/l-carnitin.jpg',
+  'l-glutamin': 'img/wissen/l-glutamin.jpg',
+  'coenzym-q10': 'img/wissen/coenzym-q10.jpg',
+  'q10': 'img/wissen/coenzym-q10.jpg',
+  // Pflanzenextrakte
   'ashwagandha': 'img/wissen/ashwagandha.jpg',
   'curcumin': 'img/wissen/curcumin.jpg',
-  'vitamin-c': 'img/wissen/vitamin-c.jpg',
-  'liposomales-vitamin-c': 'img/wissen/vitamin-c.jpg'
+  'kurkuma': 'img/wissen/curcumin.jpg',
+  'ginkgo': 'img/wissen/ginkgo.jpg',
+  'ginkgo-biloba': 'img/wissen/ginkgo.jpg',
+  'rhodiola': 'img/wissen/rhodiola.jpg',
+  'rhodiola-rosea': 'img/wissen/rhodiola.jpg',
+  'maca': 'img/wissen/maca.jpg',
+  'berberin': 'img/wissen/berberin.jpg',
+  // Sonstige
+  'melatonin': 'img/wissen/melatonin.jpg',
+  'probiotika': 'img/wissen/probiotika.jpg',
 };
 function _kwLocalImage(id) {
   if (_kwLocalImages[id]) return _kwLocalImages[id];
