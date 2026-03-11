@@ -3148,60 +3148,168 @@ function _kwMapSubcategory(unterkat) {
   return u.replace(/\s+/g, '-');
 }
 
-// Build article content sections from Supabase fields
+// Hilfsfunktion: Stichpunkte in Fließtext mit Aufzählung
+function _kwListify(str) {
+  if (!str) return '';
+  return str.split(',').map(function(k) { return '• ' + _kwCleanText(k.trim()).replace(/-/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}); }).join('\n');
+}
+
+// Hilfsfunktion: Umlaute in Supabase-Text korrigieren (ae→ä etc.)
+function _kwFixUmlauts(t) {
+  if (!t) return '';
+  return t.replace(/ae/g,'ä').replace(/oe/g,'ö').replace(/ue/g,'ü')
+    .replace(/Ae/g,'Ä').replace(/Oe/g,'Ö').replace(/Ue/g,'Ü');
+}
+
+// Build article content sections from Supabase fields — schöne Fließtexte
 function _kwBuildSections(s) {
   var sections = [];
+  var name = _kwCleanText(s.name || '');
+  var fix = _kwFixUmlauts;
 
-  // 1. Wirkung
+  // 1. Wirkung — ausformuliert
   if (s.wirkung) {
-    sections.push({
-      title: 'Was macht ' + s.name + ' im Körper?',
-      content: s.wirkung
-    });
+    var wText = fix(s.wirkung);
+    // Stichpunkte in Fließtext umwandeln
+    var wParts = wText.split(/[,;]/).map(function(p){ return p.trim(); }).filter(Boolean);
+    var intro = '';
+    if (wParts.length > 2) {
+      var first = wParts[0];
+      // "ist essentiell/wichtig..." oder "fördert..."
+      var verb = (first.match(/^(ist|hat|wird|kann|spielt|hilft|dient|stellt)/i)) ? ' ' : ' ist wichtig für ';
+      intro = name + verb + first.charAt(0).toLowerCase() + first.slice(1) + '. ';
+      intro += 'Zusätzlich unterstützt es ' + wParts.slice(1, -1).join(', ') + ' und ' + wParts[wParts.length-1] + '.';
+    } else if (wParts.length === 2) {
+      intro = name + ' unterstützt ' + wParts[0] + ' und ' + wParts[1] + '.';
+    } else {
+      intro = name + ': ' + wText + '.';
+    }
+    // EFSA Health Claims hinzufügen
+    if (s.health_claims_efsa) {
+      intro += '\n\n**Wissenschaftlich bestätigt (EFSA):**\n' + fix(s.health_claims_efsa).split(';').map(function(c){ return '• ' + c.trim(); }).join('\n');
+    }
+    sections.push({ title: 'Was macht ' + name + ' im Körper?', content: intro });
   }
 
-  // 2. Einnahme
+  // 2. Einnahme — als lesbarer Leitfaden
   var einnahme = '';
-  if (s.einnahme_zeitpunkt) einnahme += '**Zeitpunkt:** ' + s.einnahme_zeitpunkt + '\n\n';
-  if (s.einnahme_mit) einnahme += '**Am besten mit:** ' + s.einnahme_mit + '\n\n';
-  if (s.einnahme_ohne) einnahme += '**Nicht zusammen mit:** ' + s.einnahme_ohne + '\n\n';
-  if (s.einnahme_hinweis) einnahme += s.einnahme_hinweis + '\n\n';
-  if (s.max_einzeldosis) einnahme += '**Maximale Einzeldosis:** ' + s.max_einzeldosis;
+  if (s.einnahme_zeitpunkt) {
+    einnahme += name + ' wird am besten **' + fix(s.einnahme_zeitpunkt).toLowerCase() + '** eingenommen.';
+  }
+  if (s.einnahme_mit) {
+    einnahme += (einnahme ? ' ' : '') + 'Für eine optimale Aufnahme sollte ' + name + ' **' + fix(s.einnahme_mit).toLowerCase() + '** eingenommen werden.';
+  }
+  if (s.einnahme_ohne) {
+    einnahme += '\n\n**Bitte beachten:** ' + fix(s.einnahme_ohne) + '.';
+  }
+  if (s.einnahme_hinweis) {
+    einnahme += '\n\n' + fix(s.einnahme_hinweis) + '.';
+  }
+  if (s.max_einzeldosis) {
+    einnahme += '\n\n**Maximale Einzeldosis:** ' + fix(s.max_einzeldosis);
+  }
   if (einnahme.trim()) {
     var einnahmeSection = { title: 'Richtige Einnahme', content: einnahme.trim() };
     if (s.beste_form) {
-      einnahmeSection.infoBox = { type: 'tip', title: 'Beste Form', content: s.beste_form };
+      einnahmeSection.infoBox = { type: 'tip', title: 'Empfohlene Form', content: fix(s.beste_form) };
     }
     sections.push(einnahmeSection);
   }
 
-  // 3. Kombinationen
+  // 3. Dosierung & Bedarf
+  if (s.rda_erwachsene || s.bfr_hoechstmenge || s.optimalbereich) {
+    var dos = '';
+    if (s.rda_erwachsene) {
+      dos += '**Empfohlene Tagesdosis (RDA):** ' + s.rda_erwachsene + ' ' + (s.rda_einheit || '') + '\n\n';
+    }
+    if (s.dge_referenz) {
+      dos += '**DGE-Referenzwert:** ' + s.dge_referenz + '\n\n';
+    }
+    if (s.bfr_hoechstmenge) {
+      dos += '**BfR-Höchstmenge (NEM):** ' + s.bfr_hoechstmenge + ' ' + (s.ul_einheit || '') + '\n\n';
+    }
+    if (s.optimalbereich) {
+      dos += '**Optimaler Blutwert:** ' + fix(s.optimalbereich);
+    }
+    if (dos.trim()) {
+      var dosSection = { title: 'Dosierung & Referenzwerte', content: dos.trim() };
+      if (s.bluttest_empfohlen) {
+        dosSection.infoBox = { type: 'info', title: 'Bluttest', content: fix(s.bluttest_empfohlen) + (s.welcher_blutwert ? ' — Messwert: ' + fix(s.welcher_blutwert) : '') };
+      }
+      sections.push(dosSection);
+    }
+  }
+
+  // 4. Kombinationen — mit Erklärungen
   var kombi = '';
-  if (s.kombiniert_gut_mit) kombi += '**Passt gut zu:**\n' + s.kombiniert_gut_mit.split(',').map(function(k) { return '• ' + k.trim(); }).join('\n') + '\n\n';
-  if (s.nicht_zusammen_mit) kombi += '**Nicht gleichzeitig mit:**\n' + s.nicht_zusammen_mit.split(',').map(function(k) { return '• ' + k.trim(); }).join('\n') + '\n\n';
-  if (s.zeitlicher_abstand_h && s.zeitlicher_abstand_h !== 'None' && s.zeitlicher_abstand_h !== '0' && s.zeitlicher_abstand_h !== 0) kombi += '**Zeitlicher Abstand:** ' + s.zeitlicher_abstand_h + ' Stunden\n\n';
-  if (s.kombinations_hinweis) kombi += s.kombinations_hinweis;
+  if (s.kombiniert_gut_mit) {
+    var gutMit = s.kombiniert_gut_mit.split(',').map(function(k){ return k.trim().replace(/-/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}); });
+    kombi += name + ' wirkt besonders gut in Kombination mit:\n' + gutMit.map(function(k){ return '• ' + k; }).join('\n') + '\n\n';
+  }
+  if (s.nicht_zusammen_mit) {
+    var nichtMit = s.nicht_zusammen_mit.split(',').map(function(k){ return k.trim().replace(/-/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}); });
+    kombi += '**Nicht gleichzeitig einnehmen mit:**\n' + nichtMit.map(function(k){ return '• ' + k; }).join('\n');
+  }
+  if (s.zeitlicher_abstand_h && s.zeitlicher_abstand_h !== 'None' && s.zeitlicher_abstand_h !== '0' && s.zeitlicher_abstand_h !== 0) {
+    kombi += '\n\nHalte mindestens **' + s.zeitlicher_abstand_h + ' Stunden Abstand** zu den oben genannten Stoffen.';
+  }
+  if (s.kombinations_hinweis) {
+    kombi += '\n\n' + fix(s.kombinations_hinweis) + '.';
+  }
   if (kombi.trim()) {
     sections.push({ title: 'Kombinationen & Wechselwirkungen', content: kombi.trim() });
   }
 
-  // 4. Bioverfügbarkeit
-  if (s.bioverfuegbarkeit_info && s.bioverfuegbarkeit_info !== 'None') {
-    sections.push({ title: 'Bioverfügbarkeit', content: s.bioverfuegbarkeit_info });
+  // 5. Bioverfügbarkeit & Qualität
+  if (s.bioverfuegbarkeit_info || s.qualitaetsmerkmale) {
+    var bio = '';
+    if (s.bioverfuegbarkeit_info && s.bioverfuegbarkeit_info !== 'None') {
+      bio += fix(s.bioverfuegbarkeit_info) + '.';
+    }
+    if (s.qualitaetsmerkmale) {
+      bio += (bio ? '\n\n' : '') + '**Qualitätsmerkmale:** ' + fix(s.qualitaetsmerkmale) + '.';
+    }
+    if (bio.trim()) {
+      sections.push({ title: 'Bioverfügbarkeit & Qualität', content: bio.trim() });
+    }
   }
 
-  // 5. Warnhinweise
+  // 6. Besondere Zielgruppen
+  var zielgruppen = '';
+  if (s.schwangerschaft && s.schwangerschaft !== 'Nein') {
+    zielgruppen += '**Schwangerschaft & Stillzeit:** ' + fix(s.schwangerschaft);
+    if (s.stillzeit && s.stillzeit !== s.schwangerschaft) zielgruppen += ' | Stillzeit: ' + fix(s.stillzeit);
+    zielgruppen += '\n\n';
+  }
+  if (s.kinder_geeignet && s.kinder_geeignet !== 'Nein') {
+    zielgruppen += '**Kinder:** ' + fix(s.kinder_geeignet) + '\n\n';
+  }
+  if (s.senioren_hinweis) {
+    zielgruppen += '**Senioren:** ' + fix(s.senioren_hinweis) + '\n\n';
+  }
+  if (zielgruppen.trim()) {
+    sections.push({ title: 'Besondere Zielgruppen', content: zielgruppen.trim() });
+  }
+
+  // 7. Warnhinweise — klar und deutlich
   var warn = '';
-  if (s.warnhinweise) warn += s.warnhinweise + '\n\n';
-  if (s.kontraindikationen) warn += '**Nicht einnehmen bei:**\n' + s.kontraindikationen + '\n\n';
-  if (s.nebenwirkungen_ueberdosis) warn += '**Überdosierung:**\n' + s.nebenwirkungen_ueberdosis;
+  if (s.warnhinweise) warn += fix(s.warnhinweise) + '.\n\n';
+  if (s.kontraindikationen) warn += '**Nicht einnehmen bei:**\n• ' + fix(s.kontraindikationen).split(',').map(function(k){ return k.trim(); }).join('\n• ') + '\n\n';
+  if (s.nebenwirkungen_ueberdosis) warn += '**Bei Überdosierung:**\n' + fix(s.nebenwirkungen_ueberdosis);
+  if (s.ueberdosis_symptome && s.ueberdosis_symptome !== s.nebenwirkungen_ueberdosis) {
+    warn += (warn ? '\n\n' : '') + '**Symptome einer Überdosierung:** ' + fix(s.ueberdosis_symptome);
+  }
   if (warn.trim()) {
-    sections.push({ title: 'Warnhinweise & Dosierung', content: warn.trim() });
+    sections.push({ title: 'Sicherheit & Warnhinweise', content: warn.trim() });
   }
 
-  // 6. Natürliche Quellen
+  // 8. Natürliche Quellen — als Liste
   if (s.natuerliche_quellen && s.natuerliche_quellen !== 'None') {
-    sections.push({ title: 'Natürliche Quellen', content: s.natuerliche_quellen });
+    var quellen = fix(s.natuerliche_quellen).split(',').map(function(q){ return '• ' + q.trim(); }).join('\n');
+    sections.push({
+      title: 'Natürliche Quellen',
+      content: name + ' kommt natürlich in folgenden Lebensmitteln vor:\n\n' + quellen
+    });
   }
 
   return sections;
@@ -3236,7 +3344,10 @@ async function loadKnowledgeFromSupabase() {
       'einnahme_zeitpunkt,einnahme_mit,einnahme_ohne,einnahme_hinweis,max_einzeldosis,' +
       'kombiniert_gut_mit,nicht_zusammen_mit,zeitlicher_abstand_h,kombinations_hinweis,' +
       'bioverfuegbarkeit_info,beste_form,warnhinweise,kontraindikationen,nebenwirkungen_ueberdosis,' +
-      'natuerliche_quellen,vegan_verfuegbar,fettloeslich,rda_erwachsene,rda_einheit,ul_efsa,bfr_hoechstmenge,dge_referenz' +
+      'natuerliche_quellen,vegan_verfuegbar,fettloeslich,rda_erwachsene,rda_einheit,ul_efsa,ul_einheit,' +
+      'bfr_hoechstmenge,dge_referenz,health_claims_efsa,qualitaetsmerkmale,optimalbereich,' +
+      'bluttest_empfohlen,welcher_blutwert,schwangerschaft,stillzeit,kinder_geeignet,' +
+      'senioren_hinweis,ueberdosis_symptome' +
       '&limit=2000&order=name.asc'
     );
     if (!data || data.length === 0) {
@@ -3284,7 +3395,7 @@ async function loadKnowledgeFromSupabase() {
         tags: _kwBuildTags(s),
         vegan: s.vegan_verfuegbar === 'Ja',
         content: {
-          intro: (s.wirkung || '').split('.').slice(0, 2).join('.') + '.',
+          intro: _kwFixUmlauts(s.wirkung || ''),
           sections: sections
         },
         sources: [], // wird beim Öffnen nachgeladen
