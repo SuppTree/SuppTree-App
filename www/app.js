@@ -4194,6 +4194,38 @@ async function openKnowledgeArticle(articleId) {
   }
 }
 
+function openArticleInMarketplace() {
+  var article = knowledgeArticles.find(function(a) { return a.id === currentArticleId; });
+  if (!article) return;
+
+  // Basis-Name: alles vor Klammer/Bindestrich, z.B. "Magnesium" aus "Magnesiumcitrat"
+  var searchTerm = article.title.split('(')[0].split('–')[0].trim();
+
+  // Prüfen ob Produkt existiert
+  var found = typeof products !== 'undefined' && products.some(function(p) {
+    return p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           (p.category && p.category.toLowerCase().includes(searchTerm.toLowerCase()));
+  });
+
+  // Zum Marktplatz wechseln
+  closeKnowledgeArticle();
+  switchScreen('productsScreen');
+
+  // Kurz warten bis Screen sichtbar, dann Suche starten
+  setTimeout(function() {
+    if (typeof quickSearch === 'function') quickSearch(searchTerm);
+    if (!found) {
+      // Toast: Supplement noch nicht im Marktplatz
+      var toast = document.createElement('div');
+      toast.className = 'kw-marketplace-toast';
+      toast.textContent = '„' + searchTerm + '" noch nicht im Marktplatz — ähnliche Produkte werden angezeigt.';
+      document.body.appendChild(toast);
+      setTimeout(function() { toast.classList.add('visible'); }, 50);
+      setTimeout(function() { toast.classList.remove('visible'); setTimeout(function(){ toast.remove(); }, 400); }, 3500);
+    }
+  }, 200);
+}
+
 function renderArticleContent(article) {
   const container = document.getElementById('articleContent');
 
