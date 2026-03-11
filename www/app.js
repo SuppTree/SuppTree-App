@@ -3390,6 +3390,34 @@ function _kwBuildTags(s) {
 }
 
 // Haupt-Ladefunktion: Supplements aus Supabase → knowledgeArticles
+// Lokale Bilder aus www/img/wissen/ — Dateiname = Artikel-ID oder vereinfacht
+var _kwLocalImages = {
+  'magnesium': 'img/wissen/magnesium.jpg',
+  'calcium': 'img/wissen/calcium.jpg',
+  'vitamin-d3': 'img/wissen/vitamin-d3.jpg',
+  'vitamin-b12': 'img/wissen/vitamin-b12.jpg',
+  'zink': 'img/wissen/zink.jpg',
+  'zinkbisglycinat': 'img/wissen/zink.jpg',
+  'eisen': 'img/wissen/eisen.jpg',
+  'eisenbisglycinat': 'img/wissen/eisen.jpg',
+  'omega-3-fettsaeuren': 'img/wissen/omega3.jpg',
+  'omega-3-fettsauren-epa-dha': 'img/wissen/omega3.jpg',
+  'omega-3-epa-dha': 'img/wissen/omega3.jpg',
+  'kreatin': 'img/wissen/kreatin.jpg',
+  'kreatin-monohydrat': 'img/wissen/kreatin.jpg',
+  'ashwagandha': 'img/wissen/ashwagandha.jpg',
+  'curcumin': 'img/wissen/curcumin.jpg',
+  'vitamin-c': 'img/wissen/vitamin-c.jpg',
+  'liposomales-vitamin-c': 'img/wissen/vitamin-c.jpg'
+};
+function _kwLocalImage(id) {
+  if (_kwLocalImages[id]) return _kwLocalImages[id];
+  // Automatisch prüfen: ID direkt als Dateiname
+  var simple = id.replace(/[^a-z0-9\-]/g, '');
+  if (_kwLocalImages[simple]) return _kwLocalImages[simple];
+  return null;
+}
+
 async function loadKnowledgeFromSupabase() {
   if (_kwDataLoaded) return;
   try {
@@ -3508,7 +3536,7 @@ async function loadKnowledgeFromSupabase() {
         title: cleanName || s.name,
         subtitle: _kwCleanText(s.wirkung_kurz || ''),
         icon: icon,
-        image: null,
+        image: _kwLocalImage(s.id),
         category: catKey,
         subcategory: _kwMapSubcategory(s.unterkategorie),
         readTime: readTime,
