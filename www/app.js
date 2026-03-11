@@ -4193,7 +4193,7 @@ function renderArticleContent(article) {
     var visibleTags = hashtags.slice(0, maxVisible);
     var hiddenTags = hashtags.slice(maxVisible);
     hashtagHtml = '<div class="kw-art-hashtags-wrap">' +
-      '<p class="kw-hashtags-label">🔗 In diesem Artikel erwähnte Supplements — tippe zum Öffnen:</p>' +
+      '<p class="kw-hashtags-label">✅ Gut kombinierbar mit — tippe zum Öffnen:</p>' +
       '<div class="kw-art-hashtags">' +
       visibleTags.map(function(h) {
         return '<span class="kw-hashtag" onclick="event.stopPropagation();openKnowledgeSearchFor(\'' + h.word.replace(/'/g, "\\'") + '\')">#' + h.word + '</span>';
@@ -4512,25 +4512,24 @@ function getHashtagKeywords() {
 }
 
 function getArticleHashtags(article) {
-  // Find which other supplements are mentioned in this article's content
-  var fullText = (article.content.intro || '');
-  if (article.content.sections) {
-    article.content.sections.forEach(function(s) { fullText += ' ' + s.content; });
-  }
-  fullText = fullText.toLowerCase();
+  // Hashtags aus "kombiniert_gut_mit" Feld — echte Supplement-Kombinationen aus DB
+  var raw = article._raw;
+  if (!raw || !raw.kombiniert_gut_mit) return [];
 
-  var keywords = getHashtagKeywords();
-  var found = {};
   var hashtags = [];
+  var seen = {};
 
-  keywords.forEach(function(kw) {
-    if (kw.articleId === article.id) return; // skip self
-    if (found[kw.articleId]) return; // one per article
-    var regex = new RegExp('\\b' + kw.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
-    if (regex.test(fullText)) {
-      found[kw.articleId] = true;
-      hashtags.push({ word: kw.articleTitle, articleId: kw.articleId });
-    }
+  raw.kombiniert_gut_mit.split(',').forEach(function(name) {
+    var n = name.trim().replace(/-/g, ' ');
+    if (!n || n.length < 3) return;
+    var nLower = n.toLowerCase();
+    if (seen[nLower]) return;
+    // Prüfe ob es dazu einen Artikel gibt
+    var match = knowledgeArticles.find(function(a) {
+      return a.id !== article.id && a.title.toLowerCase().replace(/-/g, ' ') === nLower;
+    });
+    seen[nLower] = true;
+    hashtags.push({ word: n, articleId: match ? match.id : null });
   });
 
   return hashtags;
