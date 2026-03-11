@@ -3491,7 +3491,10 @@ async function loadKnowledgeFromSupabase() {
       var catKey = _kwMapCategory(s.kategorie);
       var icon = _kwCategoryIcons[s.unterkategorie] || _kwCategoryIcons[s.kategorie] || '📦';
       var sections = _kwBuildSections(s);
-      var readTime = Math.max(2, Math.ceil((s.wirkung || '').length / 500));
+      var allText = [s.wirkung, s.einnahme_hinweis, s.warnhinweise, s.bioverfuegbarkeit_info,
+        s.kombinations_hinweis, s.natuerliche_quellen, s.zielgruppen_schwangerschaft,
+        s.zielgruppen_kinder, s.zielgruppen_senioren].filter(Boolean).join(' ');
+      var readTime = Math.max(3, Math.ceil(allText.length / 900));
       // Clean name: remove emojis, trailing notes, and branded parts in parens
       var cleanName = _kwCleanText(s.name || '')
         .replace(/\s*[-–]\s*(NOVEL FOOD|BtMG|NICHT VERKEHRSFÄHIG|Marketing|LEITLINIE|Moderate Evidenz|KEINE|UNZUREICHENDE|GEFÄHRLICH)[^]*/i, '')
@@ -4528,13 +4531,15 @@ function getArticleHashtags(article) {
   var seen = {};
 
   raw.kombiniert_gut_mit.split(',').forEach(function(name) {
-    var n = name.trim().replace(/-/g, ' ');
+    var n = _kwFixUmlauts(name.trim());
+    // Vitamin-Buchstaben groß, erster Buchstabe groß
+    n = n.replace(/\bvitamin\s+([a-z])(\d*)/gi, function(m, l, num) { return 'Vitamin ' + l.toUpperCase() + num; });
+    n = n.charAt(0).toUpperCase() + n.slice(1);
     if (!n || n.length < 3) return;
     var nLower = n.toLowerCase();
     if (seen[nLower]) return;
-    // Prüfe ob es dazu einen Artikel gibt
     var match = knowledgeArticles.find(function(a) {
-      return a.id !== article.id && a.title.toLowerCase().replace(/-/g, ' ') === nLower;
+      return a.id !== article.id && a.title.toLowerCase() === nLower;
     });
     seen[nLower] = true;
     hashtags.push({ word: n, articleId: match ? match.id : null });
