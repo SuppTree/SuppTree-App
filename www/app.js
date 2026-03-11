@@ -563,6 +563,11 @@ function showMeinLoginHint(screenId) {
       title: 'Dein Warenkorb & Abos',
       desc: 'Speichere Produkte, verwalte deine Abonnements und behalte deine Bestellungen im Blick.',
       features: ['Warenkorb & Wunschliste', 'Supplement-Abos verwalten', 'Bestellstatus verfolgen', 'Schnelle Nachbestellung']
+    },
+    matrixScreen: {
+      title: 'Interaktionsmatrix',
+      desc: 'Prüfe Wechselwirkungen zwischen deinen Supplements und erhalte personalisierte Hinweise.',
+      features: ['Wechselwirkungen erkennen', 'Supplement-Kombinationen prüfen', 'Persönliche Empfehlungen', 'Wissenschaftlich fundiert']
     }
   };
 
@@ -3055,1483 +3060,315 @@ const knowledgeCategories = {
       { id: 'nachtschicht', name: 'Nachtschicht' },
       { id: 'wechselschicht', name: 'Wechselschicht' }
     ]
+  },
+  amino: {
+    id: 'amino',
+    name: 'Aminosäuren',
+    icon: '🧬',
+    gradient: 'linear-gradient(135deg, #f3e8ff, #e9d5ff)',
+    description: 'Bausteine der Proteine und wichtige Botenstoffe',
+    subcategories: [
+      { id: 'alle', name: 'Alle' },
+      { id: 'essentiell', name: 'Essentiell' },
+      { id: 'nicht-essentiell', name: 'Nicht-essentiell' }
+    ]
+  },
+  sonstige: {
+    id: 'sonstige',
+    name: 'Weitere Supplements',
+    icon: '📦',
+    gradient: 'linear-gradient(135deg, #f1f5f9, #e2e8f0)',
+    description: 'Enzyme, Hormone und weitere Nahrungsergänzungen',
+    subcategories: [
+      { id: 'alle', name: 'Alle' }
+    ]
   }
 };
 
-const knowledgeArticles = [
-  // ==================== VITAMIN D ====================
-  {
-    id: 'vitamin-d-complete',
-    title: 'Vitamin D: Der komplette Guide',
-    subtitle: 'Alles über Dosierung, Timing, Cofaktoren und aktuelle Forschung',
-    icon: '☀️',
-    category: 'vitamine',
-    subcategory: 'fettloeslich',
-    readTime: 15,
-    studyCount: 12,
-    views: 4200,
-    featured: true,
-    tags: ['vitamin d', 'd3', 'sonnenvitamin', 'knochen', 'immunsystem'],
-    content: {
-      intro: 'Vitamin D ist eines der wichtigsten Hormone im menschlichen Körper und an über 1.000 Genprozessen beteiligt. Trotzdem sind etwa 60% der deutschen Bevölkerung unterversorgt – besonders in den Wintermonaten.',
-      sections: [
-        {
-          title: 'Was ist Vitamin D?',
-          content: `Vitamin D ist streng genommen kein Vitamin, sondern ein Prohormon. Der Körper kann es selbst herstellen, wenn UVB-Strahlung auf die Haut trifft. In Deutschland ist die Sonneneinstrahlung von Oktober bis März jedoch zu schwach für eine ausreichende Synthese.
-
-Es gibt zwei Hauptformen:
-• **Vitamin D2 (Ergocalciferol)**: Pflanzliche Form, weniger effektiv
-• **Vitamin D3 (Cholecalciferol)**: Tierische Form, 87% effektiver laut Studien`
-        },
-        {
-          title: 'Funktionen im Körper',
-          content: `Vitamin D ist an zahlreichen Prozessen beteiligt:
-
-**Knochengesundheit**: Reguliert die Calcium- und Phosphataufnahme im Darm. Ein Mangel führt zu Osteomalazie (Knochenerweichung) bei Erwachsenen.
-
-**Immunsystem**: Aktiviert T-Zellen und moduliert die Immunantwort. Studien zeigen ein um 42% reduziertes Risiko für Atemwegsinfekte bei optimalen Spiegeln.
-
-**Muskulatur**: Beeinflusst die Muskelproteinsynthese. Mangel korreliert mit erhöhtem Sturzrisiko bei Älteren.
-
-**Stimmung**: Rezeptoren im Gehirn beeinflussen Serotoninproduktion. Zusammenhang mit saisonaler Depression (SAD).`
-        },
-        {
-          title: 'Optimale Blutwerte',
-          type: 'table',
-          content: `| Status | 25-OH-D (ng/ml) | 25-OH-D (nmol/L) |
-| Schwerer Mangel | < 10 | < 25 |
-| Mangel | 10-20 | 25-50 |
-| Suboptimal | 20-30 | 50-75 |
-| Optimal | 30-50 | 75-125 |
-| Erhöht | 50-100 | 125-250 |
-| Toxisch | > 150 | > 375 |`
-        },
-        {
-          title: 'Dosierungsempfehlungen',
-          content: `Die optimale Dosierung hängt vom aktuellen Blutspiegel, Körpergewicht und Hauttyp ab.
-
-**Erhaltungsdosis (bei normalem Spiegel)**:
-• 1.000-2.000 IE täglich für die meisten Erwachsenen
-• 800-1.000 IE für Senioren (reduzierte Hautsynthese)
-
-**Aufsättigungsdosis (bei Mangel)**:
-• Bei Werten < 20 ng/ml: 5.000-10.000 IE täglich für 8-12 Wochen
-• Danach Kontrolle und Anpassung auf Erhaltungsdosis
-
-**Faustregel nach Dr. Michael Holick**:
-Pro 1 ng/ml Erhöhung werden ca. 100 IE täglich benötigt.`,
-          infoBox: {
-            type: 'tip',
-            title: '💡 Praxis-Tipp',
-            content: 'Bei Supplementierung über 4.000 IE/Tag sollte der Blutspiegel alle 3 Monate kontrolliert werden.'
-          }
-        },
-        {
-          title: 'Cofaktoren: K2, Magnesium & mehr',
-          content: `Vitamin D arbeitet nicht allein. Für optimale Wirkung sind Cofaktoren essentiell:
-
-**Vitamin K2 (MK-7)**
-Aktiviert Matrix-GLA-Protein und Osteocalcin, die Calcium in die Knochen transportieren statt in Arterien. Empfehlung: 100-200 µg pro 5.000 IE Vitamin D.
-
-**Magnesium**
-Wird für die Umwandlung von Vitamin D in seine aktive Form benötigt. Etwa 50% der Deutschen haben einen Magnesiummangel. Empfehlung: 300-400 mg täglich.
-
-**Zink**
-Unterstützt den Vitamin-D-Rezeptor. Empfehlung: 15-30 mg täglich.`,
-          infoBox: {
-            type: 'warning',
-            title: '⚠️ Wichtig',
-            content: 'Ohne ausreichend Vitamin K2 kann hochdosiertes Vitamin D langfristig zu Gefäßverkalkung führen.'
-          }
-        },
-        {
-          title: 'Optimales Timing',
-          content: `**Morgens mit dem Frühstück** ist der ideale Einnahmezeitpunkt:
-
-1. **Fettlöslichkeit**: Vitamin D benötigt Fett zur Absorption. Eine Mahlzeit mit mindestens 10g Fett erhöht die Aufnahme um bis zu 50%.
-
-2. **Circadianer Rhythmus**: Vitamin D beeinflusst den Melatoninspiegel. Abendliche Einnahme kann den Schlaf stören.
-
-3. **Compliance**: Morgenroutinen sind leichter einzuhalten.
-
-**Für Schichtarbeiter**: Einnahme mit der ersten Hauptmahlzeit nach dem Aufwachen, unabhängig von der Uhrzeit.`
-        },
-        {
-          title: 'Risikogruppen für Mangel',
-          content: `Bestimmte Gruppen haben ein erhöhtes Risiko für Vitamin-D-Mangel:
-
-• **Ältere Menschen (65+)**: Hautsynthese um 75% reduziert
-• **Menschen mit dunkler Haut**: Mehr Melanin blockiert UVB
-• **Übergewichtige (BMI > 30)**: Vitamin D wird im Fettgewebe gespeichert
-• **Schichtarbeiter**: Kaum Sonnenlichtexposition
-• **Veganer**: Keine tierischen D3-Quellen
-• **Menschen mit Darmerkrankungen**: Reduzierte Absorption
-• **Büroarbeiter**: < 2 Stunden Tageslicht täglich`
-        }
-      ]
-    },
-    sources: [
-      { 
-        type: 'study',
-        authors: 'Holick MF et al.',
-        title: 'Evaluation, Treatment, and Prevention of Vitamin D Deficiency',
-        journal: 'The Journal of Clinical Endocrinology & Metabolism',
-        year: 2011,
-        doi: '10.1210/jc.2011-0385'
-      },
-      {
-        type: 'study',
-        authors: 'Martineau AR et al.',
-        title: 'Vitamin D supplementation to prevent acute respiratory tract infections',
-        journal: 'BMJ',
-        year: 2017,
-        doi: '10.1136/bmj.i6583'
-      },
-      {
-        type: 'study',
-        authors: 'Tripkovic L et al.',
-        title: 'Comparison of vitamin D2 and vitamin D3 supplementation',
-        journal: 'The American Journal of Clinical Nutrition',
-        year: 2012,
-        doi: '10.3945/ajcn.111.031070'
-      },
-      {
-        type: 'guideline',
-        authors: 'Deutsche Gesellschaft für Ernährung',
-        title: 'Referenzwerte für Vitamin D',
-        year: 2012,
-        url: 'https://www.dge.de/wissenschaft/referenzwerte/vitamin-d/'
-      },
-      {
-        type: 'study',
-        authors: 'Dawson-Hughes B et al.',
-        title: 'Dietary fat increases vitamin D-3 absorption',
-        journal: 'Journal of the Academy of Nutrition and Dietetics',
-        year: 2015,
-        doi: '10.1016/j.jand.2014.01.014'
-      }
-    ]
-  },
-
-  // ==================== MAGNESIUM ====================
-  {
-    id: 'magnesium-arten-vergleich',
-    title: 'Magnesium Arten im Vergleich',
-    subtitle: 'Citrat, Glycinat, Oxid – welches ist das beste für dich?',
-    icon: '⚡',
-    category: 'mineralien',
-    subcategory: 'mengenelemente',
-    readTime: 12,
-    studyCount: 8,
-    views: 3100,
-    featured: false,
-    tags: ['magnesium', 'citrat', 'glycinat', 'oxid', 'bioverfügbarkeit'],
-    content: {
-      intro: 'Magnesium ist an über 300 enzymatischen Reaktionen beteiligt und essentiell für Energie, Muskeln und Nerven. Aber nicht jede Form ist gleich – die Unterschiede in Bioverfügbarkeit und Wirkung sind erheblich.',
-      sections: [
-        {
-          title: 'Warum die Form wichtig ist',
-          content: `Magnesium kommt nie allein vor – es ist immer an einen "Träger" gebunden. Dieser Träger bestimmt:
-
-• **Bioverfügbarkeit**: Wie viel kommt im Blut an?
-• **Verträglichkeit**: Magen-Darm-Nebenwirkungen?
-• **Zusätzliche Wirkungen**: Manche Träger haben eigene Benefits
-• **Elementares Magnesium**: Der tatsächliche Mg-Gehalt variiert stark`
-        },
-        {
-          title: 'Die wichtigsten Magnesium-Formen',
-          type: 'comparison',
-          content: `**Magnesium Glycinat (Bisglicinat)**
-• Bioverfügbarkeit: ⭐⭐⭐⭐⭐ (sehr hoch)
-• Verträglichkeit: ⭐⭐⭐⭐⭐ (sehr gut)
-• Elementares Mg: ~14%
-• Beste für: Schlaf, Entspannung, Stress
-• Glycin hat zusätzlich beruhigende Wirkung auf NMDA-Rezeptoren
-
-**Magnesium Citrat**
-• Bioverfügbarkeit: ⭐⭐⭐⭐ (hoch)
-• Verträglichkeit: ⭐⭐⭐ (kann abführend wirken)
-• Elementares Mg: ~16%
-• Beste für: Allgemeine Supplementierung, Verdauung
-• Günstig und weit verbreitet
-
-**Magnesium Malat**
-• Bioverfügbarkeit: ⭐⭐⭐⭐ (hoch)
-• Verträglichkeit: ⭐⭐⭐⭐ (gut)
-• Elementares Mg: ~15%
-• Beste für: Energie, Sport, Fibromyalgie
-• Äpfelsäure unterstützt ATP-Produktion
-
-**Magnesium Threonat**
-• Bioverfügbarkeit: ⭐⭐⭐⭐ (hoch, überwindet Blut-Hirn-Schranke)
-• Verträglichkeit: ⭐⭐⭐⭐ (gut)
-• Elementares Mg: ~8%
-• Beste für: Kognition, Gedächtnis
-• Einzige Form mit nachgewiesener Hirnpenetration
-
-**Magnesium Oxid**
-• Bioverfügbarkeit: ⭐⭐ (niedrig, ~4%)
-• Verträglichkeit: ⭐⭐ (oft abführend)
-• Elementares Mg: ~60%
-• Beste für: Sodbrennen (als Antazidum)
-• Trotz hohem Mg-Gehalt schlecht absorbiert
-
-**Magnesium Taurat**
-• Bioverfügbarkeit: ⭐⭐⭐⭐ (hoch)
-• Verträglichkeit: ⭐⭐⭐⭐⭐ (sehr gut)
-• Elementares Mg: ~9%
-• Beste für: Herz, Blutdruck
-• Taurin unterstützt kardiovaskuläre Funktion`
-        },
-        {
-          title: 'Empfehlungen nach Anwendungsgebiet',
-          content: `**Für besseren Schlaf**: Magnesium Glycinat
-300-400 mg abends, 1-2 Stunden vor dem Schlafen
-
-**Für Sport & Energie**: Magnesium Malat
-200-400 mg morgens oder vor dem Training
-
-**Für Kognition & Gedächtnis**: Magnesium Threonat
-2.000 mg (= 144 mg elementares Mg) verteilt auf 2 Dosen
-
-**Bei Verstopfung**: Magnesium Citrat
-200-400 mg, bei Bedarf steigern
-
-**Für Herz & Blutdruck**: Magnesium Taurat
-300-400 mg täglich
-
-**Allgemeine Supplementierung**: Magnesium Citrat oder Glycinat
-300-400 mg täglich`,
-          infoBox: {
-            type: 'tip',
-            title: '💡 Kombinations-Tipp',
-            content: 'Viele kombinieren verschiedene Formen: z.B. Glycinat abends für Schlaf + Malat morgens für Energie.'
-          }
-        },
-        {
-          title: 'Dosierung & Timing',
-          content: `**Täglicher Bedarf**:
-• Männer: 350-400 mg
-• Frauen: 300-350 mg
-• Sportler: bis 500 mg
-• Bei Mangel: bis 600 mg für 4-8 Wochen
-
-**Optimales Timing**:
-• Glycinat/Taurat: Abends (entspannend)
-• Malat/Citrat: Morgens oder mittags
-• Threonat: Morgens und nachmittags
-
-**Wichtig**: Nicht zusammen mit Zink, Calcium oder Eisen einnehmen – mindestens 2 Stunden Abstand.`,
-          infoBox: {
-            type: 'warning',
-            title: '⚠️ Nebenwirkungen',
-            content: 'Bei Überdosierung können Durchfall, Übelkeit und Bauchkrämpfe auftreten. Beginne mit niedriger Dosis und steigere langsam.'
-          }
-        },
-        {
-          title: 'Anzeichen für Magnesiummangel',
-          content: `Etwa 50% der Deutschen nehmen weniger als die empfohlene Menge auf. Symptome eines Mangels:
-
-• Muskelkrämpfe und Zuckungen
-• Müdigkeit und Erschöpfung
-• Kopfschmerzen und Migräne
-• Schlafstörungen
-• Herzrhythmusstörungen
-• Nervosität und Reizbarkeit
-• Verstopfung
-
-**Risikofaktoren für Mangel**:
-• Hoher Kaffeekonsum (>4 Tassen/Tag)
-• Alkohol
-• Stress (erhöht Mg-Ausscheidung)
-• Schweißverlust durch Sport
-• Bestimmte Medikamente (PPI, Diuretika)`
-        }
-      ]
-    },
-    sources: [
-      {
-        type: 'study',
-        authors: 'Schuchardt JP, Hahn A',
-        title: 'Intestinal Absorption and Factors Influencing Bioavailability of Magnesium',
-        journal: 'Current Nutrition & Food Science',
-        year: 2017,
-        doi: '10.2174/1573401313666170427162740'
-      },
-      {
-        type: 'study',
-        authors: 'Slutsky I et al.',
-        title: 'Enhancement of Learning and Memory by Elevating Brain Magnesium',
-        journal: 'Neuron',
-        year: 2010,
-        doi: '10.1016/j.neuron.2009.12.026'
-      },
-      {
-        type: 'study',
-        authors: 'Abbasi B et al.',
-        title: 'The effect of magnesium supplementation on primary insomnia',
-        journal: 'Journal of Research in Medical Sciences',
-        year: 2012,
-        pmid: '23853635'
-      },
-      {
-        type: 'guideline',
-        authors: 'Deutsche Gesellschaft für Ernährung',
-        title: 'Referenzwerte für Magnesium',
-        year: 2021,
-        url: 'https://www.dge.de/wissenschaft/referenzwerte/magnesium/'
-      }
-    ]
-  },
-
-  // ==================== SCHICHTARBEIT ====================
-  {
-    id: 'schichtarbeit-supplements',
-    title: 'Supplements für Schichtarbeiter',
-    subtitle: 'Optimale Einnahme bei wechselnden Arbeitszeiten',
-    icon: '🌙',
-    category: 'schichtarbeit',
-    subcategory: 'chronobiologie',
-    readTime: 18,
-    studyCount: 15,
-    views: 2800,
-    featured: true,
-    tags: ['schichtarbeit', 'nachtschicht', 'melatonin', 'circadian', 'timing'],
-    content: {
-      intro: 'Etwa 15% der deutschen Arbeitnehmer arbeiten in Schichtarbeit. Die chronische Störung des circadianen Rhythmus erhöht das Risiko für Herz-Kreislauf-Erkrankungen, Diabetes und Depressionen. Gezielte Supplementierung kann helfen, diese Risiken zu minimieren.',
-      sections: [
-        {
-          title: 'Das Problem: Circadiane Disruption',
-          content: `Unser Körper folgt einem internen 24-Stunden-Rhythmus, der durch den suprachiasmatischen Nucleus (SCN) im Gehirn gesteuert wird. Schichtarbeit bringt diesen Rhythmus durcheinander:
-
-**Auswirkungen:**
-• 6-fache Reduktion circadianer Genexpression
-• Gestörte Hormonproduktion (Cortisol, Melatonin)
-• Erhöhte Entzündungsmarker
-• Beeinträchtigte Insulinsensitivität
-• Geschwächtes Immunsystem
-
-Eine Meta-Analyse mit über 2 Millionen Teilnehmern zeigte: Schichtarbeiter haben ein um 23% erhöhtes Risiko für Herzinfarkte.`
-        },
-        {
-          title: 'Die wichtigsten Supplements für Schichtarbeiter',
-          content: `**1. Vitamin D (essentiell)**
-Schichtarbeiter haben signifikant niedrigere Vitamin-D-Spiegel (Durchschnitt: -1,85 ng/ml). Die fehlende Sonnenlichtexposition macht Supplementierung zur Pflicht.
-• Dosierung: 3.000-5.000 IE täglich
-• Timing: Mit der ersten Hauptmahlzeit nach dem Aufwachen
-• Wichtig: Blutspiegel alle 6 Monate kontrollieren
-
-**2. Magnesium**
-Stress und gestörter Schlaf erhöhen den Magnesiumbedarf. Magnesium unterstützt über 300 enzymatische Reaktionen und fördert die Entspannung.
-• Dosierung: 300-400 mg täglich
-• Form: Glycinat für Schlaf, Malat für Energie
-• Timing: Glycinat vor dem Schlaf, Malat nach dem Aufwachen
-
-**3. Melatonin (situativ)**
-Das "Schlafhormon" kann helfen, den Schlafrhythmus zu regulieren.
-• Dosierung: 0,5-3 mg (niedrig starten!)
-• Timing: 30-60 min vor dem gewünschten Einschlafen
-• Wichtig: Nicht bei Dauernachtschicht, nur bei Schichtwechsel`,
-          infoBox: {
-            type: 'warning',
-            title: '⚠️ Melatonin-Timing',
-            content: 'Falsches Timing kann den Rhythmus weiter verschieben! Bei Dauernachtschicht ist Melatonin oft kontraproduktiv.'
-          }
-        },
-        {
-          title: 'Melatonin: Die Phasenreaktionskurve',
-          content: `Die Wirkung von Melatonin hängt stark vom Einnahmezeitpunkt ab:
-
-**Phasenvorverlagerung (früher schlafen)**:
-Melatonin 5-6 Stunden VOR der üblichen Schlafzeit
-
-**Phasenverzögerung (später schlafen)**:
-Melatonin NACH dem Aufwachen (morgens)
-
-**Minimale Verschiebung**:
-Melatonin direkt zur Schlafenszeit
-
-**Praktisches Beispiel – Wechsel von Nacht- auf Frühschicht:**
-1. Letzte Nachtschicht endet um 6:00 Uhr
-2. Am Tag vor der Frühschicht: Melatonin um 18:00 Uhr
-3. Dadurch verschiebt sich der Rhythmus nach vorne
-4. Einschlafen gegen 22:00 Uhr möglich`
-        },
-        {
-          title: 'Weitere hilfreiche Supplements',
-          content: `**Ashwagandha**
-Adaptogen, das Cortisol signifikant senkt (Studie: -23% nach 60 Tagen). Hilft bei stressbedingten Schlafproblemen.
-• Dosierung: 300-600 mg KSM-66 Extrakt
-• Timing: Morgens oder vor dem Schlaf
-
-**B-Vitamin-Komplex**
-Energiestoffwechsel und Nervenfunktion. Besonders B12 ist bei Schichtarbeitern oft niedrig.
-• Dosierung: Aktivierte B-Vitamine (Methylfolat, Methylcobalamin)
-• Timing: Morgens (können wach machen)
-
-**Omega-3-Fettsäuren**
-Entzündungshemmend, unterstützen Gehirn und Herz-Kreislauf-System.
-• Dosierung: 2-3g EPA/DHA täglich
-• Timing: Mit fetthaltiger Mahlzeit
-
-**Glycin**
-Aminosäure mit schlaffördernder Wirkung. Senkt die Kernkörpertemperatur.
-• Dosierung: 3g vor dem Schlaf
-• Kein "Hangover" wie bei Melatonin`,
-          infoBox: {
-            type: 'tip',
-            title: '💡 Glycin als Melatonin-Alternative',
-            content: 'Glycin ist bei Dauernachtschicht oft besser geeignet als Melatonin, da es den circadianen Rhythmus nicht verschiebt.'
-          }
-        },
-        {
-          title: 'Timing-Strategien nach Schichttyp',
-          content: `**Dauernachtschicht (z.B. 22-6 Uhr)**
-Die stabilste Variante für den Körper.
-• Schlaf: 8-16 Uhr (bei verdunkeltem Raum)
-• Supplements morgens (nach der Schicht):
-  - Glycin 3g + Magnesium Glycinat 400mg
-• Supplements vor der Schicht:
-  - Vitamin D + K2 + Omega-3 (mit Mahlzeit)
-  - Rhodiola oder B-Vitamine für Energie
-
-**Wechselschicht (Früh-Spät-Nacht)**
-Am belastendsten für den Körper.
-• Bei Wechsel von Nacht auf Früh: Melatonin abends nutzen
-• Bei Wechsel von Früh auf Nacht: Schlaf verschieben, kein Melatonin
-• Grundsätzlich: Magnesium und Vitamin D beibehalten
-
-**12-Stunden-Schichten**
-Lange Wachphasen erfordern stabile Energie.
-• Vor Schichtbeginn: B-Komplex, Rhodiola
-• Während der Schicht: Koffein nur in erster Hälfte
-• Nach der Schicht: Magnesium, ggf. Glycin`
-        },
-        {
-          title: 'Koffein-Timing: Die goldene Regel',
-          content: `Koffein hat eine Halbwertszeit von 5-6 Stunden. Für optimalen Schlaf:
-
-**Stopp-Regel**: Kein Koffein 6-8 Stunden vor dem geplanten Schlaf.
-
-**Beispiel Nachtschicht (22-6 Uhr), Schlaf 8-16 Uhr**:
-• Letzte Tasse Kaffee: spätestens 0:00 Uhr
-• Besser: Koffein nur zu Schichtbeginn
-
-**Wichtig für Melatonin-Nutzer**: 
-Koffein blockiert Adenosin-Rezeptoren und kann die Melatoninwirkung abschwächen. Mindestens 4 Stunden Abstand halten.`,
-          infoBox: {
-            type: 'study',
-            title: '🔬 Studie',
-            content: 'Eine Studie im Journal of Clinical Sleep Medicine zeigte: Koffein 6 Stunden vor dem Schlaf reduziert die Schlafzeit um durchschnittlich 1 Stunde.'
-          }
-        }
-      ]
-    },
-    sources: [
-      {
-        type: 'study',
-        authors: 'Vyas MV et al.',
-        title: 'Shift work and vascular events: systematic review and meta-analysis',
-        journal: 'BMJ',
-        year: 2012,
-        doi: '10.1136/bmj.e4800'
-      },
-      {
-        type: 'study',
-        authors: 'Romano KA et al.',
-        title: 'Vitamin D and Sleep Regulation: Is there a Role for Vitamin D?',
-        journal: 'Current Pharmaceutical Design',
-        year: 2020,
-        doi: '10.2174/1381612826666200310145935'
-      },
-      {
-        type: 'study',
-        authors: 'Chandrasekaran B et al.',
-        title: 'Effects of ashwagandha on cortisol levels: A systematic review',
-        journal: 'Journal of Evidence-Based Integrative Medicine',
-        year: 2021,
-        doi: '10.1177/2515690X211006300'
-      },
-      {
-        type: 'study',
-        authors: 'Drake C et al.',
-        title: 'Caffeine effects on sleep taken 0, 3, or 6 hours before going to bed',
-        journal: 'Journal of Clinical Sleep Medicine',
-        year: 2013,
-        doi: '10.5664/jcsm.3170'
-      },
-      {
-        type: 'study',
-        authors: 'Bannai M et al.',
-        title: 'The Effects of Glycine on Sleep Quality',
-        journal: 'Sleep and Biological Rhythms',
-        year: 2012,
-        doi: '10.1111/j.1479-8425.2012.00532.x'
-      }
-    ]
-  },
-
-  // ==================== ASHWAGANDHA ====================
-  {
-    id: 'ashwagandha-guide',
-    title: 'Ashwagandha: Das König-Adaptogen',
-    subtitle: 'Stress, Schlaf, Hormone – was sagt die Wissenschaft?',
-    icon: '🌱',
-    category: 'pflanzen',
-    subcategory: 'adaptogene',
-    readTime: 14,
-    studyCount: 10,
-    views: 2400,
-    featured: false,
-    tags: ['ashwagandha', 'adaptogen', 'stress', 'cortisol', 'schlaf', 'testosteron'],
-    content: {
-      intro: 'Ashwagandha (Withania somnifera) ist eines der am besten erforschten Adaptogene mit über 1.000 Studien. Die ayurvedische Heilpflanze zeigt beeindruckende Effekte auf Stress, Schlaf und Hormone – aber nicht jeder Extrakt ist gleich wirksam.',
-      sections: [
-        {
-          title: 'Was sind Adaptogene?',
-          content: `Adaptogene sind Substanzen, die dem Körper helfen, sich an Stress anzupassen. Sie:
-
-• Normalisieren die Stressreaktion (HPA-Achse)
-• Wirken bidirektional (hoch → runter, niedrig → hoch)
-• Haben ein breites Sicherheitsprofil
-• Zeigen keine Toleranzentwicklung
-
-Ashwagandha erfüllt alle Kriterien und ist besonders potent in der Cortisol-Regulation.`
-        },
-        {
-          title: 'Wissenschaftlich belegte Wirkungen',
-          content: `**Stress & Cortisol**
-Meta-Analyse (2022) mit 12 Studien: Signifikante Reduktion von Cortisol (-23%), Angst und Stress-Scores.
-
-**Schlafqualität**
-Systematische Review (2021): Verbesserung der Schlafqualität um 72%, Einschlafzeit reduziert.
-
-**Testosteron**
-Studie mit 57 Männern: +15% Testosteron, +18% DHEA-S nach 8 Wochen.
-
-**Muskelkraft**
-8-Wochen-Studie: +18% Kraft im Bankdrücken, +12% Beinpresse vs. Placebo.
-
-**Kognition**
-Verbesserung von Reaktionszeit, Aufmerksamkeit und exekutiver Funktion.`,
-          infoBox: {
-            type: 'study',
-            title: '🔬 Highlight-Studie',
-            content: 'Chandrasekaran et al. (2021): 600mg KSM-66 für 8 Wochen senkte Cortisol um durchschnittlich 27,9% und verbesserte die Schlafqualität signifikant.'
-          }
-        },
-        {
-          title: 'Extrakte im Vergleich',
-          content: `Nicht jedes Ashwagandha-Produkt ist gleich. Die Extrakt-Art bestimmt die Wirksamkeit:
-
-**KSM-66® (Vollspektrum-Wurzelextrakt)**
-• Standardisiert auf 5% Withanolide
-• Am meisten erforscht (22+ klinische Studien)
-• Optimale Balance aus Wirkung und Verträglichkeit
-• Empfohlene Dosis: 300-600 mg/Tag
-
-**Sensoril® (Wurzel + Blatt)**
-• Standardisiert auf 10% Withanolide
-• Stärker sedierend
-• Empfohlene Dosis: 125-250 mg/Tag
-
-**Shoden® (Hochkonzentrat)**
-• Standardisiert auf 35% Withanolide
-• Neuester Extrakt, weniger Studien
-• Empfohlene Dosis: 120 mg/Tag
-
-**Unstandarisiertes Pulver**
-• Variable Withanolid-Gehalte
-• Weniger vorhersehbare Wirkung
-• Dosis: 3-6g Pulver/Tag nötig`
-        },
-        {
-          title: 'Dosierung & Timing',
-          content: `**Für Stress-Reduktion:**
-300-600 mg KSM-66, morgens oder verteilt auf 2 Dosen
-
-**Für besseren Schlaf:**
-300-600 mg KSM-66, 1-2 Stunden vor dem Schlafen
-
-**Für Sport & Testosteron:**
-600 mg KSM-66, morgens
-
-**Für Schilddrüsenunterfunktion:**
-Mit Arzt besprechen – kann T4 erhöhen!
-
-**Cycling empfohlen:**
-8 Wochen Einnahme, 2 Wochen Pause
-Oder: 5 Tage Einnahme, 2 Tage Pause`,
-          infoBox: {
-            type: 'warning',
-            title: '⚠️ Vorsicht bei',
-            content: 'Schilddrüsenüberfunktion, Autoimmunerkrankungen, Schwangerschaft, Immunsuppressiva. Bei Schilddrüsenmedikation ärztliche Rücksprache halten!'
-          }
-        },
-        {
-          title: 'Nebenwirkungen & Interaktionen',
-          content: `**Häufige Nebenwirkungen (selten):**
-• Magen-Darm-Beschwerden (mit Mahlzeit nehmen)
-• Schläfrigkeit (bei hoher Dosis)
-• Kopfschmerzen (selten)
-
-**Interaktionen:**
-• Schilddrüsenmedikamente (kann T4 erhöhen)
-• Beruhigungsmittel (verstärkt sedierend)
-• Immunsuppressiva (Ashwagandha ist immunmodulierend)
-• Diabetes-Medikamente (kann Blutzucker senken)
-
-**Qualitätsmerkmale beim Kauf:**
-• Standardisierter Extrakt (KSM-66, Sensoril)
-• Withanolid-Gehalt angegeben
-• Schwermetall-getestet
-• Third-Party-Zertifizierung`
-        }
-      ]
-    },
-    sources: [
-      {
-        type: 'study',
-        authors: 'Salve J et al.',
-        title: 'Adaptogenic and Anxiolytic Effects of Ashwagandha Root Extract',
-        journal: 'Cureus',
-        year: 2019,
-        doi: '10.7759/cureus.6466'
-      },
-      {
-        type: 'study',
-        authors: 'Wankhede S et al.',
-        title: 'Effects of Ashwagandha on Muscle Strength and Recovery',
-        journal: 'Journal of the International Society of Sports Nutrition',
-        year: 2015,
-        doi: '10.1186/s12970-015-0104-9'
-      },
-      {
-        type: 'meta-analysis',
-        authors: 'Bonilla DA et al.',
-        title: 'Effects of Ashwagandha on Physical Performance: Systematic Review',
-        journal: 'Journal of Functional Morphology and Kinesiology',
-        year: 2021,
-        doi: '10.3390/jfmk6010020'
-      }
-    ]
-  },
-
-  // ==================== OMEGA-3 ====================
-  {
-    id: 'omega3-guide',
-    title: 'Omega-3: EPA, DHA & die richtige Dosis',
-    subtitle: 'Fischöl, Algenöl oder Krillöl – was ist am besten?',
-    icon: '🐟',
-    category: 'omega',
-    subcategory: 'omega3',
-    readTime: 13,
-    studyCount: 18,
-    views: 2600,
-    featured: false,
-    tags: ['omega-3', 'fischöl', 'epa', 'dha', 'algenöl', 'entzündung'],
-    content: {
-      intro: 'Omega-3-Fettsäuren sind essentiell – der Körper kann sie nicht selbst herstellen. Sie sind entscheidend für Gehirn, Herz und die Kontrolle von Entzündungen. Doch die Qualitätsunterschiede auf dem Markt sind enorm.',
-      sections: [
-        {
-          title: 'EPA vs. DHA: Die Unterschiede',
-          content: `Beide sind langkettige Omega-3-Fettsäuren, haben aber unterschiedliche Schwerpunkte:
-
-**EPA (Eicosapentaensäure)**
-• Primär entzündungshemmend
-• Gut für: Herz, Gelenke, Stimmung
-• Wird zu entzündungshemmenden Eicosanoiden umgewandelt
-• Studien zeigen Wirksamkeit bei Depression
-
-**DHA (Docosahexaensäure)**
-• Strukturbaustein von Gehirn und Netzhaut
-• Gut für: Kognition, Augen, Schwangerschaft
-• 60% der Gehirn-Fettsäuren sind DHA
-• Wichtig für Kindesentwicklung
-
-**Für die meisten Menschen**: Kombination aus beiden (2:1 oder 1:1 Verhältnis)
-**Bei Entzündungen/Depression**: Höherer EPA-Anteil
-**Für Gehirn/Schwangerschaft**: Höherer DHA-Anteil`
-        },
-        {
-          title: 'Quellen im Vergleich',
-          content: `**Fischöl (Triglycerid-Form)**
-• Natürlichste Form, gute Absorption
-• EPA + DHA kombiniert
-• Qualität variiert stark (Oxidation, Schwermetalle)
-• Preis: €€
-
-**Fischöl (Ethylester-Form)**
-• Konzentrierter, aber 27% schlechtere Absorption
-• Günstiger als TG-Form
-• Oft in hochdosierten Produkten
-• Preis: €
-
-**Krillöl**
-• Phospholipid-gebunden (gute Absorption)
-• Enthält Astaxanthin (Antioxidans)
-• Niedriger EPA/DHA-Gehalt pro Kapsel
-• Nachhaltigkeitsfragen
-• Preis: €€€
-
-**Algenöl**
-• Vegane Alternative, direkte DHA-Quelle
-• Keine Schwermetallbelastung
-• Oft DHA-lastig (weniger EPA)
-• Nachhaltig
-• Preis: €€€
-
-**Leinsamenöl (ALA)**
-• Pflanzliche Omega-3-Form
-• Nur ~5% Konversion zu EPA/DHA
-• Kein Ersatz für EPA/DHA
-• Preis: €`,
-          infoBox: {
-            type: 'tip',
-            title: '💡 Qualitäts-Check',
-            content: 'TOTOX-Wert (Total Oxidation) sollte unter 26 liegen. Gute Hersteller publizieren diesen Wert.'
-          }
-        },
-        {
-          title: 'Dosierungsempfehlungen',
-          content: `**Allgemeine Gesundheit:**
-500-1.000 mg EPA+DHA täglich
-
-**Herz-Kreislauf-Prävention:**
-1.000-2.000 mg EPA+DHA täglich
-(AHA empfiehlt 1g für Patienten mit Herzerkrankung)
-
-**Entzündungen/Autoimmun:**
-2.000-4.000 mg EPA+DHA täglich
-(Höherer EPA-Anteil bevorzugt)
-
-**Depression/Angst:**
-1.000-2.000 mg EPA täglich
-(Meta-Analysen zeigen Wirksamkeit ab 1g EPA)
-
-**Schwangerschaft:**
-200-300 mg DHA täglich
-(Wichtig für Gehirnentwicklung des Babys)
-
-**Sportler:**
-2.000-3.000 mg EPA+DHA täglich
-(Entzündungshemmung, Regeneration)`
-        },
-        {
-          title: 'Einnahme & Timing',
-          content: `**Mit fetthaltiger Mahlzeit**
-Absorption erhöht sich um bis zu 300% gegenüber nüchtern.
-
-**Verteilung möglich**
-Bei hohen Dosen (>2g) auf 2 Mahlzeiten verteilen für bessere Verträglichkeit.
-
-**Einfrieren gegen Aufstoßen**
-Fischölkapseln im Gefrierfach lagern → weniger Fischgeschmack beim Aufstoßen.
-
-**Nicht mit Blutverdünnern**
-Bei Medikamenten wie Warfarin/Aspirin: Ärztliche Rücksprache bei >3g täglich.`,
-          infoBox: {
-            type: 'warning',
-            title: '⚠️ Vor Operationen',
-            content: 'Omega-3 in hohen Dosen kann Blutgerinnung beeinflussen. 1-2 Wochen vor geplanten OPs absetzen (Arzt fragen).'
-          }
-        },
-        {
-          title: 'Omega-3-Index testen',
-          content: `Der Omega-3-Index misst EPA+DHA in roten Blutkörperchen (% der Gesamtfettsäuren):
-
-**< 4%**: Hohes Risiko (typisch für Durchschnittsdeutsche)
-**4-8%**: Moderates Risiko
-**8-12%**: Optimal (Zielbereich)
-**> 12%**: Keine zusätzlichen Benefits gezeigt
-
-Ein Bluttest kostet ca. €50-70 und ist die einzige Möglichkeit, den persönlichen Status zu kennen. Die "richtige" Dosis variiert individuell stark (Absorption, Stoffwechsel).`
-        }
-      ]
-    },
-    sources: [
-      {
-        type: 'meta-analysis',
-        authors: 'Liao Y et al.',
-        title: 'Efficacy of omega-3 PUFAs in depression: A meta-analysis',
-        journal: 'Translational Psychiatry',
-        year: 2019,
-        doi: '10.1038/s41398-019-0515-5'
-      },
-      {
-        type: 'study',
-        authors: 'Dyall SC',
-        title: 'Long-chain omega-3 fatty acids and the brain',
-        journal: 'Current Opinion in Clinical Nutrition and Metabolic Care',
-        year: 2015,
-        doi: '10.1097/MCO.0000000000000166'
-      },
-      {
-        type: 'guideline',
-        authors: 'American Heart Association',
-        title: 'Omega-3 Fatty Acids and Cardiovascular Disease',
-        year: 2019,
-        url: 'https://www.ahajournals.org/doi/10.1161/CIR.0000000000000709'
-      }
-    ]
-  },
-
-  // ==================== KREATIN ====================
-  {
-    id: 'kreatin-guide',
-    title: 'Kreatin: Mehr als nur Muskeln',
-    subtitle: 'Kraft, Kognition und Gesundheit – der Allrounder',
-    icon: '💪',
-    category: 'sport',
-    subcategory: 'kraft',
-    readTime: 11,
-    studyCount: 22,
-    views: 3400,
-    featured: false,
-    tags: ['kreatin', 'muskel', 'kraft', 'kognition', 'sport'],
-    content: {
-      intro: 'Kreatin ist das am besten erforschte Supplement überhaupt – mit über 500 Studien. Es ist nicht nur für Bodybuilder: Die Wirkungen auf Gehirn, Energie und sogar Depression werden zunehmend erforscht.',
-      sections: [
-        {
-          title: 'Wie Kreatin wirkt',
-          content: `Kreatin ist eine körpereigene Substanz, die in Muskeln und Gehirn als Energiereserve dient.
-
-**Energiebereitstellung (ATP)**
-Bei intensiver Belastung regeneriert Kreatin ATP (die Energiewährung der Zellen) schneller. Das ermöglicht mehr Kraft und Wiederholungen.
-
-**Im Gehirn**
-Das Gehirn nutzt 20% unserer Energie. Kreatin kann die kognitive Leistung unter Stress oder Schlafmangel verbessern.
-
-**Körpereigene Produktion**
-Der Körper stellt ca. 1g Kreatin täglich her. Weitere 1-2g kommen idealerweise aus der Nahrung (Fleisch, Fisch).`
-        },
-        {
-          title: 'Belegte Wirkungen',
-          content: `**Kraft & Muskelmasse**
-• +8-14% mehr Kraft im Training
-• +1-2 kg fettfreie Masse (bei Krafttraining)
-• Schnellere Regeneration zwischen Sätzen
-
-**Kognition**
-• Verbessertes Kurzzeitgedächtnis unter Stress
-• +20-50% bessere Leistung bei komplexen Aufgaben nach Schlafentzug
-• Besonders effektiv bei Vegetariern/Veganern
-
-**Für ältere Menschen**
-• Erhalt von Muskelmasse (Sarcopenie-Prävention)
-• Verbesserte Knochengesundheit
-• Bessere kognitive Funktion
-
-**Potenzielle weitere Vorteile (Forschung läuft):**
-• Unterstützung bei Depression
-• Blutzuckerregulation
-• Neurologischer Schutz`
-        },
-        {
-          title: 'Dosierung',
-          content: `**Standard-Protokoll (empfohlen):**
-3-5g Kreatin Monohydrat täglich, dauerhaft.
-Keine Ladephase nötig – Sättigung nach ca. 3 Wochen.
-
-**Ladephase (optional, schnellerer Effekt):**
-20g täglich (4x5g) für 5-7 Tage, dann 3-5g Erhaltung.
-
-**Nach Körpergewicht:**
-• <70 kg: 3g täglich
-• 70-90 kg: 4g täglich
-• >90 kg: 5g täglich
-
-**Timing:**
-Egal – Konsistenz ist wichtiger als Timing. Mit Mahlzeit für bessere Aufnahme.`,
-          infoBox: {
-            type: 'tip',
-            title: '💡 Kreatin Monohydrat',
-            content: 'Monohydrat ist die am besten erforschte Form. "Optimierte" Formen wie Kre-Alkalyn oder HCL haben keine bewiesenen Vorteile bei höheren Kosten.'
-          }
-        },
-        {
-          title: 'Mythen & Fakten',
-          content: `**"Kreatin schädigt die Nieren"**
-❌ MYTHOS – Keine einzige Studie zeigt Nierenschäden bei Gesunden. Bei bestehender Nierenerkrankung: Arzt fragen.
-
-**"Man muss Kreatin cyclen"**
-❌ MYTHOS – Dauerhafte Einnahme ist sicher und sinnvoll.
-
-**"Kreatin verursacht Haarausfall"**
-🤔 UNKLAR – Eine Studie zeigte erhöhtes DHT, aber keine Folgestudien bestätigten Haarausfall.
-
-**"Kreatin ist Doping"**
-❌ MYTHOS – Kreatin steht auf keiner Dopingliste und ist 100% legal.
-
-**"Gewichtszunahme durch Kreatin = Fett"**
-❌ MYTHOS – Die initiale Zunahme (1-2 kg) ist Wassereinlagerung in Muskeln, kein Fett.`
-        },
-        {
-          title: 'Spezielle Gruppen',
-          content: `**Vegetarier/Veganer**
-Besonders profitieren sie, da keine Kreatin-Zufuhr aus Fleisch erfolgt. Studien zeigen stärkere kognitive Verbesserungen.
-
-**Frauen**
-Gleiche Wirksamkeit wie bei Männern. Die Angst vor "aufgepumpten Muskeln" ist unbegründet.
-
-**Ältere Menschen (65+)**
-Wichtig für Muskelerhalt. In Kombination mit Krafttraining besonders effektiv.
-
-**Ausdauersportler**
-Weniger ausgeprägte Vorteile, aber kann bei Intervalltraining helfen.`
-        }
-      ]
-    },
-    sources: [
-      {
-        type: 'meta-analysis',
-        authors: 'Kreider RB et al.',
-        title: 'International Society of Sports Nutrition position stand: creatine supplementation',
-        journal: 'Journal of the International Society of Sports Nutrition',
-        year: 2017,
-        doi: '10.1186/s12970-017-0173-z'
-      },
-      {
-        type: 'study',
-        authors: 'Avgerinos KI et al.',
-        title: 'Effects of creatine supplementation on cognitive function',
-        journal: 'Experimental Gerontology',
-        year: 2018,
-        doi: '10.1016/j.exger.2018.06.011'
-      },
-      {
-        type: 'study',
-        authors: 'Benton D, Donohoe R',
-        title: 'The influence of creatine supplementation on cognitive functioning of vegetarians',
-        journal: 'British Journal of Nutrition',
-        year: 2011,
-        doi: '10.1017/S0007114510004733'
-      }
-    ]
-  },
-
-  // ==================== MELATONIN ====================
-  {
-    id: 'melatonin-guide',
-    title: 'Melatonin: Mehr als nur Schlafmittel',
-    subtitle: 'Dosierung, Timing und was die Forschung sagt',
-    icon: '🌙',
-    category: 'schlaf',
-    subcategory: 'einschlafen',
-    readTime: 10,
-    studyCount: 14,
-    views: 3800,
-    featured: false,
-    tags: ['melatonin', 'schlaf', 'jetlag', 'circadian'],
-    content: {
-      intro: 'Melatonin ist das "Dunkelheitshormon" – es signalisiert dem Körper, dass Schlafenszeit ist. Als Supplement wird es oft falsch dosiert und zum falschen Zeitpunkt genommen, was seine Wirksamkeit stark reduziert.',
-      sections: [
-        {
-          title: 'Wie Melatonin wirkt',
-          content: `Melatonin wird in der Zirbeldrüse produziert und steuert den Schlaf-Wach-Rhythmus:
-
-• Produktion beginnt bei Dunkelheit (ca. 21 Uhr)
-• Peak gegen 2-3 Uhr nachts
-• Unterdrückt durch blaues Licht (Bildschirme!)
-• Fällt morgens ab → Aufwachsignal
-
-**Wichtig:** Melatonin macht nicht müde – es signalisiert "Schlafenszeit". Es ist kein Sedativum wie Schlaftabletten.`
-        },
-        {
-          title: 'Die richtige Dosierung',
-          content: `Die meisten Produkte sind viel zu hoch dosiert. Studien zeigen: **Weniger ist mehr.**
-
-**Optimale Dosis für Einschlafen:**
-0,3-1 mg (ja, wirklich so wenig!)
-
-**Typischer Fehler:**
-5-10 mg Produkte können:
-• Toleranz aufbauen
-• Am nächsten Morgen Müdigkeit verursachen
-• Natürliche Produktion unterdrücken
-
-**Für Jetlag:**
-0,5-3 mg, je nach Zeitzonenunterschied
-
-**Für Schichtarbeiter:**
-0,5-1 mg, nur bei Rhythmuswechsel`,
-          infoBox: {
-            type: 'warning',
-            title: '⚠️ Überdosierung',
-            content: 'Mehr Melatonin = mehr Wirkung? Falsch! Hohe Dosen können paradoxerweise den Schlaf verschlechtern und den Rhythmus weiter stören.'
-          }
-        },
-        {
-          title: 'Timing ist alles',
-          content: `**Für schnelleres Einschlafen:**
-30-60 Minuten vor der gewünschten Schlafzeit
-
-**Für Rhythmusverschiebung (Jetlag, Schichtarbeit):**
-Das Timing bestimmt die Richtung der Verschiebung:
-
-• Einnahme am ABEND → Rhythmus nach VORNE
-• Einnahme am MORGEN → Rhythmus nach HINTEN
-
-**Beispiel Jetlag (Flug nach Osten, z.B. New York → Berlin):**
-• Erster Abend: Melatonin zur lokalen Schlafzeit
-• Rhythmus verschiebt sich pro Tag um ca. 1 Stunde
-• Für 6h Zeitunterschied: 4-6 Tage Anpassung`
-        },
-        {
-          title: 'Wann Melatonin hilft – und wann nicht',
-          content: `**Gute Anwendungsgebiete:**
-• Jetlag (starke Evidenz)
-• Einschlafverzögerung (Delayed Sleep Phase)
-• Gelegentliche Schlafprobleme
-• Ältere Menschen (natürliche Produktion sinkt)
-
-**Weniger geeignet:**
-• Durchschlafprobleme (Melatonin wirkt kurz)
-• Chronische Insomnie (Ursache behandeln!)
-• Dauernachtschicht (Rhythmus nicht verschieben)
-• Angst-bedingte Schlafstörungen
-
-**Alternativen bei Durchschlafproblemen:**
-• Magnesium Glycinat
-• Glycin
-• Verlängertes Melatonin (Retard-Form)`
-        },
-        {
-          title: 'Nebenwirkungen & Vorsichtsmaßnahmen',
-          content: `**Mögliche Nebenwirkungen:**
-• Kopfschmerzen
-• Schwindel
-• Benommenheit am nächsten Tag
-• Lebhafte Träume
-• Bei Überdosis: Tagesmüdigkeit
-
-**Nicht empfohlen bei:**
-• Autoimmunerkrankungen
-• Depression (kann verstärken)
-• Schwangerschaft/Stillzeit
-• Kindern (außer ärztlich verordnet)
-
-**Interaktionen:**
-• Blutverdünner
-• Immunsuppressiva
-• Diabetes-Medikamente
-• Verhütungsmittel (können Melatonin erhöhen)`
-        }
-      ]
-    },
-    sources: [
-      {
-        type: 'meta-analysis',
-        authors: 'Ferracioli-Oda E et al.',
-        title: 'Meta-analysis: melatonin for the treatment of primary sleep disorders',
-        journal: 'PLoS ONE',
-        year: 2013,
-        doi: '10.1371/journal.pone.0063773'
-      },
-      {
-        type: 'study',
-        authors: 'Zhdanova IV et al.',
-        title: 'Melatonin treatment for age-related insomnia',
-        journal: 'Journal of Clinical Endocrinology & Metabolism',
-        year: 2001,
-        doi: '10.1210/jcem.86.10.7901'
-      },
-      {
-        type: 'guideline',
-        authors: 'Auld F et al.',
-        title: 'Evidence for the efficacy of melatonin in the treatment of primary adult sleep disorders',
-        journal: 'Sleep Medicine Reviews',
-        year: 2017,
-        doi: '10.1016/j.smrv.2016.06.005'
-      }
-    ]
-  },
-
-  // ==================== PROBIOTIKA ====================
-  {
-    id: 'probiotika-guide',
-    title: 'Probiotika: Welche Stämme für welchen Zweck?',
-    subtitle: 'Die Wissenschaft hinter dem Darm-Mikrobiom',
-    icon: '🦠',
-    category: 'darm',
-    subcategory: 'probiotika',
-    readTime: 14,
-    studyCount: 20,
-    views: 2200,
-    featured: false,
-    tags: ['probiotika', 'darm', 'mikrobiom', 'verdauung', 'immunsystem'],
-    content: {
-      intro: 'Das Darm-Mikrobiom enthält mehr Bakterien als der Körper Zellen hat. Probiotika können dieses Ökosystem beeinflussen – aber nicht jeder Stamm wirkt gleich. Die Stammspezifität ist der Schlüssel zum Erfolg.',
-      sections: [
-        {
-          title: 'Grundlagen: Was sind Probiotika?',
-          content: `Probiotika sind lebende Mikroorganismen, die bei ausreichender Menge einen gesundheitlichen Nutzen bringen.
-
-**Wichtige Begriffe:**
-• **Gattung**: z.B. Lactobacillus
-• **Art**: z.B. Lactobacillus rhamnosus
-• **Stamm**: z.B. Lactobacillus rhamnosus GG
-
-**Kritisch:** Die Wirkung ist STAMM-spezifisch! "Lactobacillus" sagt nichts über die Wirkung aus.
-
-**CFU (Colony Forming Units):**
-Die Anzahl lebender Bakterien. Typische Dosierungen: 1-50 Milliarden CFU.`
-        },
-        {
-          title: 'Stämme nach Anwendungsgebiet',
-          content: `**Durchfall (Antibiotika-assoziiert)**
-• Saccharomyces boulardii – stärkste Evidenz
-• Lactobacillus rhamnosus GG
-• Dosis: 250-500mg S. boulardii oder 10+ Mrd CFU
-
-**Reizdarmsyndrom (IBS)**
-• Bifidobacterium infantis 35624
-• Lactobacillus plantarum 299v
-• VSL#3 (Multi-Stamm-Kombination)
-
-**Immunsystem**
-• Lactobacillus rhamnosus GG
-• Lactobacillus casei Shirota
-• Reduziert Erkältungsdauer um ~2 Tage
-
-**Stimmung & Angst (Psychobiotika)**
-• Lactobacillus helveticus R0052 + Bifidobacterium longum R0175
-• Bifidobacterium longum 1714
-• Studien zeigen Cortisol-Reduktion
-
-**Vaginale Gesundheit**
-• Lactobacillus rhamnosus GR-1
-• Lactobacillus reuteri RC-14
-• Oral eingenommen, wandern zum Vaginalbereich`,
-          infoBox: {
-            type: 'tip',
-            title: '💡 Tipp',
-            content: 'Achte beim Kauf auf die genaue Stammbezeichnung (z.B. "GG" bei L. rhamnosus). Ohne Stammangabe ist die Wirksamkeit nicht garantiert.'
-          }
-        },
-        {
-          title: 'Dosierung & Einnahme',
-          content: `**Allgemeine Empfehlung:**
-1-10 Milliarden CFU für Prävention
-10-50 Milliarden CFU für therapeutische Zwecke
-
-**Timing:**
-• Mit oder ohne Mahlzeit (stammabhängig)
-• Morgens oft besser (mehr Magensäure = mehr Stress für Bakterien)
-• Konsistenz wichtiger als Timing
-
-**Dauer:**
-• Mindestens 4 Wochen für messbare Effekte
-• Bei chronischen Problemen: Dauereinnahme oft nötig
-• Stopp der Einnahme → Effekt lässt nach (Probiotika kolonisieren nicht dauerhaft)
-
-**Lagerung:**
-• Kühlpflichtig vs. stabil: Produktangaben beachten
-• Feuchtigkeit vermeiden
-• Nicht mit heißen Getränken einnehmen`
-        },
-        {
-          title: 'Präbiotika: Futter für gute Bakterien',
-          content: `Präbiotika sind Ballaststoffe, die Probiotika "füttern":
-
-**Wichtigste Präbiotika:**
-• **Inulin** – aus Chicorée, Topinambur
-• **FOS (Fructooligosaccharide)** – in Zwiebeln, Knoblauch
-• **GOS (Galactooligosaccharide)** – in Hülsenfrüchten
-• **Resistente Stärke** – in gekochten, abgekühlten Kartoffeln
-
-**Synbiotika:**
-Kombination aus Pro- und Präbiotika. Kann synergistische Effekte haben, aber auch Blähungen verstärken.
-
-**Dosierung Präbiotika:**
-• Starte mit 2-3g täglich
-• Langsam auf 5-10g steigern
-• Zu schnelle Steigerung → Blähungen, Durchfall`,
-          infoBox: {
-            type: 'warning',
-            title: '⚠️ Vorsicht bei SIBO',
-            content: 'Bei Dünndarmfehlbesiedlung (SIBO) können Präbiotika und manche Probiotika die Symptome verschlechtern. Erst ärztlich abklären!'
-          }
-        },
-        {
-          title: 'Qualitätsmerkmale',
-          content: `**Auf dem Label sollte stehen:**
-• Genaue Stammbezeichnung (z.B. L. rhamnosus GG)
-• CFU-Garantie bis Mindesthaltbarkeitsdatum
-• Lagerungshinweise
-
-**Qualitäts-Zertifizierungen:**
-• NSF International
-• USP Verified
-• Third-Party-Testing
-
-**Vorsicht bei:**
-• "Proprietary Blends" ohne Stammangaben
-• Sehr günstige Produkte ohne Qualitätsnachweise
-• Übertriebene Gesundheitsversprechen`
-        }
-      ]
-    },
-    sources: [
-      {
-        type: 'meta-analysis',
-        authors: 'McFarland LV',
-        title: 'Systematic review and meta-analysis of Saccharomyces boulardii',
-        journal: 'World Journal of Gastroenterology',
-        year: 2010,
-        doi: '10.3748/wjg.v16.i18.2202'
-      },
-      {
-        type: 'study',
-        authors: 'Messaoudi M et al.',
-        title: 'Assessment of psychotropic-like properties of a probiotic formulation',
-        journal: 'British Journal of Nutrition',
-        year: 2011,
-        doi: '10.1017/S0007114510004319'
-      },
-      {
-        type: 'guideline',
-        authors: 'World Gastroenterology Organisation',
-        title: 'Probiotics and Prebiotics Guidelines',
-        year: 2017,
-        url: 'https://www.worldgastroenterology.org/guidelines/probiotics-and-prebiotics'
-      }
-    ]
-  },
-
-  // ==================== ZINK ====================
-  {
-    id: 'zink-guide',
-    title: 'Zink: Das Immunmineral',
-    subtitle: 'Immunsystem, Testosteron, Haut – richtige Form & Dosierung',
-    icon: '🛡️',
-    category: 'mineralien',
-    subcategory: 'spurenelemente',
-    readTime: 9,
-    studyCount: 11,
-    views: 1900,
-    featured: false,
-    tags: ['zink', 'immunsystem', 'testosteron', 'haut', 'erkältung'],
-    content: {
-      intro: 'Zink ist an über 300 Enzymreaktionen beteiligt und essentiell für Immunsystem, Wundheilung und Hormonproduktion. Etwa 30% der Weltbevölkerung haben einen Mangel.',
-      sections: [
-        {
-          title: 'Funktionen im Körper',
-          content: `**Immunsystem**
-Zink ist kritisch für T-Zell-Funktion und Antikörperproduktion. Mangel = geschwächte Abwehr.
-
-**Hormone**
-Wichtig für Testosteron- und Schilddrüsenhormon-Produktion.
-
-**Haut & Wundheilung**
-Essentiell für Kollagensynthese und Zellteilung.
-
-**Kognition**
-Beeinflusst Neurotransmitter-Signaling im Gehirn.
-
-**Geschmack & Geruch**
-Zinkmangel kann Geschmacksverlust verursachen.`
-        },
-        {
-          title: 'Zink-Formen im Vergleich',
-          content: `**Zink Picolinat**
-• Bioverfügbarkeit: ⭐⭐⭐⭐⭐
-• Gut verträglich
-• Empfohlen für allgemeine Supplementierung
-
-**Zink Bisglicinat**
-• Bioverfügbarkeit: ⭐⭐⭐⭐⭐
-• Sehr magenfreundlich
-• Glycin als Bonus
-
-**Zink Citrat**
-• Bioverfügbarkeit: ⭐⭐⭐⭐
-• Günstig und effektiv
-• Gute Allround-Option
-
-**Zinkgluconat**
-• Bioverfügbarkeit: ⭐⭐⭐
-• Gut für Lutschtabletten (Erkältung)
-• Topische Anwendung möglich
-
-**Zinkoxid**
-• Bioverfügbarkeit: ⭐⭐
-• Günstig, aber schlecht absorbiert
-• Besser für Hautcremes`
-        },
-        {
-          title: 'Dosierung',
-          content: `**Tägliche Empfehlung:**
-• Männer: 11 mg
-• Frauen: 8 mg
-• Schwangerschaft: 11 mg
-• Stillzeit: 12 mg
-
-**Supplementierung:**
-• Prävention: 15-25 mg täglich
-• Bei akuter Erkältung: 75 mg Zinkgluconat (Lutschtabletten)
-• Testosteron-Support: 25-30 mg täglich
-
-**Obergrenze:** 40 mg täglich (langfristig)`,
-          infoBox: {
-            type: 'warning',
-            title: '⚠️ Nicht überdosieren',
-            content: 'Hohe Zink-Dosen (>50mg langfristig) können Kupfermangel verursachen und das Immunsystem schwächen statt stärken.'
-          }
-        },
-        {
-          title: 'Timing & Interaktionen',
-          content: `**Optimales Timing:**
-• Auf leeren Magen (beste Absorption)
-• Falls Übelkeit: mit leichter Mahlzeit
-• NICHT mit Kaffee (Phytinsäure reduziert Absorption)
-
-**Abstand halten zu:**
-• Calcium (2h)
-• Eisen (2h)
-• Kupfer (2h)
-• Antibiotika (Fluorochinolone, Tetracycline)
-
-**Vegetarier/Veganer:**
-Benötigen ~50% mehr Zink, da pflanzliche Phytate die Absorption hemmen.`
-        }
-      ]
-    },
-    sources: [
-      {
-        type: 'meta-analysis',
-        authors: 'Science M et al.',
-        title: 'Zinc for the treatment of the common cold',
-        journal: 'Cochrane Database of Systematic Reviews',
-        year: 2012,
-        doi: '10.1002/14651858.CD001364.pub4'
-      },
-      {
-        type: 'study',
-        authors: 'Prasad AS',
-        title: 'Discovery of human zinc deficiency: its impact on human health and disease',
-        journal: 'Advances in Nutrition',
-        year: 2013,
-        doi: '10.3945/an.112.003210'
-      }
-    ]
-  },
-
-  // ==================== B12 ====================
-  {
-    id: 'vitamin-b12-guide',
-    title: 'Vitamin B12: Energie, Nerven & mehr',
-    subtitle: 'Methylcobalamin vs. Cyanocobalamin – was ist besser?',
-    icon: '⚡',
-    category: 'vitamine',
-    subcategory: 'b-vitamine',
-    readTime: 10,
-    studyCount: 9,
-    views: 2100,
-    featured: false,
-    tags: ['b12', 'cobalamin', 'vegan', 'energie', 'nerven'],
-    content: {
-      intro: 'Vitamin B12 ist essentiell für Energieproduktion, Nervenfunktion und DNA-Synthese. Veganer und ältere Menschen sind besonders gefährdet für einen Mangel.',
-      sections: [
-        {
-          title: 'Warum B12 so wichtig ist',
-          content: `**Energiestoffwechsel**
-B12 ist essentiell für die Umwandlung von Nahrung in Energie (ATP).
-
-**Nervensystem**
-Schützt die Myelinscheiden der Nerven. Mangel kann irreversible Nervenschäden verursachen.
-
-**DNA-Synthese**
-Wichtig für Zellteilung, besonders rote Blutkörperchen.
-
-**Homocystein-Abbau**
-Zusammen mit Folat senkt B12 das kardiovaskuläre Risiko.`
-        },
-        {
-          title: 'Formen im Vergleich',
-          content: `**Methylcobalamin**
-• Aktive Form, direkt verwertbar
-• Besser für neurologische Funktionen
-• Lichtempfindlich
-• Empfohlen für die meisten Menschen
-
-**Adenosylcobalamin**
-• Aktive Form für Energiestoffwechsel
-• Selten als Einzelsupplement
-
-**Hydroxocobalamin**
-• Längere Speicherzeit im Körper
-• Bevorzugt für Injektionen
-
-**Cyanocobalamin**
-• Synthetische, stabile Form
-• Muss erst umgewandelt werden
-• Günstig, aber weniger effektiv
-• Enthält minimale Cyanid-Mengen`
-        },
-        {
-          title: 'Dosierung',
-          content: `**Täglicher Bedarf:** 4 µg
-
-**Supplementierung:**
-• Prävention: 250-500 µg Methylcobalamin
-• Bei Mangel: 1.000-2.000 µg täglich für 4-8 Wochen
-• Erhaltung nach Mangel: 500-1.000 µg täglich
-
-**Absorption beachten:**
-Nur ~1,5% werden bei hohen Dosen absorbiert (passive Diffusion). Deshalb: Häufiger niedrig dosiert > selten hoch dosiert.
-
-**Sublingual:**
-Tabletten unter der Zunge auflösen umgeht den Magen-Darm-Trakt – bei Absorptionsproblemen sinnvoll.`,
-          infoBox: {
-            type: 'tip',
-            title: '💡 Für Veganer',
-            content: 'B12-Supplementierung ist bei veganer Ernährung PFLICHT. Es gibt keine zuverlässigen pflanzlichen B12-Quellen.'
-          }
-        },
-        {
-          title: 'Mangelsymptome',
-          content: `**Frühzeichen:**
-• Müdigkeit und Schwäche
-• Blasse Haut
-• Kribbeln in Händen/Füßen
-• Konzentrationsprobleme
-
-**Fortgeschritten:**
-• Anämie
-• Gangstörungen
-• Gedächtnisprobleme
-• Depression
-• Irreversible Nervenschäden (bei lang unbehandeltem Mangel)
-
-**Risikogruppen:**
-• Veganer und Vegetarier
-• Menschen über 50 (reduzierte Absorption)
-• Menschen mit Darmerkrankungen
-• PPI-Nutzer (Magensäureblocker)
-• Nach Magenbypass-OP`
-        }
-      ]
-    },
-    sources: [
-      {
-        type: 'guideline',
-        authors: 'Deutsche Gesellschaft für Ernährung',
-        title: 'Referenzwerte für Vitamin B12',
-        year: 2019,
-        url: 'https://www.dge.de/wissenschaft/referenzwerte/vitamin-b12/'
-      },
-      {
-        type: 'study',
-        authors: 'Obeid R et al.',
-        title: 'Cobalamin coenzyme forms are not likely to be superior to cyano- and hydroxyl-cobalamin',
-        journal: 'Molecular Nutrition & Food Research',
-        year: 2015,
-        doi: '10.1002/mnfr.201500019'
-      }
-    ]
+// Dosierungs-Datenbank — wird aus Supabase geladen
+var kwDosierungen = {};
+
+// Knowledge Articles — wird aus Supabase geladen
+var knowledgeArticles = [];
+var _kwDataLoaded = false;
+var _kwArticleCache = {}; // Cache für Detail-Daten (Quellen, Dosierungen etc.)
+
+// Supabase Knowledge Fetch Helper
+async function _kwFetch(table, query) {
+  var url = SUPABASE_URL + '/rest/v1/' + table + '?' + query;
+  var resp = await fetch(url, {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+  });
+  if (!resp.ok) return [];
+  return resp.json();
+}
+
+// Kategorie-Icons für die Darstellung
+var _kwCategoryIcons = {
+  'Vitamine': '💊', 'Mineralstoffe': '⚡', 'Mineralien': '⚡', 'Aminosaeuren': '🧬',
+  'Fettsaeuren': '🐟', 'Pflanzenextrakte': '🌿', 'Probiotika': '🦠',
+  'Enzyme': '⚗️', 'Sonstige': '📦', 'Hormone': '🧪', 'Ballaststoffe': '🌾',
+  'Carotinoide / Provitamine': '🥕', 'Fettloesliche Vitamine': '☀️',
+  'Wasserloesliche Vitamine': '💧', 'B-Vitamine': '🔴',
+  'Spurenelemente': '🔬', 'Mengenelemente': '⚡',
+  'Adaptogene': '🌿', 'Polyphenole': '🍇'
+};
+
+// Mapping Supabase kategorie → knowledgeCategories key
+function _kwMapCategory(kat) {
+  if (!kat) return 'sonstige';
+  var k = kat.toLowerCase().replace(/[⚠️⛔🔬]/g, '').trim();
+  if (k.includes('vitamin') || k.includes('carotin')) return 'vitamine';
+  if (k.includes('mineral') || k.includes('spurenelement') || k.includes('mengenelement')) return 'mineralien';
+  if (k.includes('pflanzen') || k.includes('adaptogen') || k.includes('polyphenol') || k.includes('algen') || k.includes('vitalpilz') || k.includes('phytosterol') || k.includes('phytochem') || k.includes('alkaloid') || k.includes('terpen') || k.includes('saponin')) return 'pflanzen';
+  if (k.includes('fetts') || k.includes('omega') || k.includes('phospholipid') || k.includes('lipid') || k.includes('fettalko')) return 'omega';
+  if (k.includes('probio') || k.includes('präbio') || k.includes('postbio') || k.includes('synbio') || k.includes('darm') || k.includes('ballast') || k.includes('verdauung') || k.includes('ferment')) return 'darm';
+  if (k.includes('amino') || k.includes('protein')) return 'amino';
+  if (k.includes('sport') || k.includes('kreatin')) return 'sport';
+  return 'sonstige';
+}
+
+// Map Supabase subcategory
+function _kwMapSubcategory(unterkat) {
+  if (!unterkat) return '';
+  var u = unterkat.toLowerCase();
+  if (u.includes('fettl')) return 'fettloeslich';
+  if (u.includes('wasserl')) return 'wasserloeslich';
+  if (u.includes('b-vita')) return 'b-vitamine';
+  if (u.includes('mengen')) return 'mengenelemente';
+  if (u.includes('spuren')) return 'spurenelemente';
+  if (u.includes('adaptogen')) return 'adaptogene';
+  return u.replace(/\s+/g, '-');
+}
+
+// Build article content sections from Supabase fields
+function _kwBuildSections(s) {
+  var sections = [];
+
+  // 1. Wirkung
+  if (s.wirkung) {
+    sections.push({
+      title: 'Was macht ' + s.name + ' im Körper?',
+      content: s.wirkung
+    });
   }
-];
+
+  // 2. Einnahme
+  var einnahme = '';
+  if (s.einnahme_zeitpunkt) einnahme += '**Zeitpunkt:** ' + s.einnahme_zeitpunkt + '\n\n';
+  if (s.einnahme_mit) einnahme += '**Am besten mit:** ' + s.einnahme_mit + '\n\n';
+  if (s.einnahme_ohne) einnahme += '**Nicht zusammen mit:** ' + s.einnahme_ohne + '\n\n';
+  if (s.einnahme_hinweis) einnahme += s.einnahme_hinweis + '\n\n';
+  if (s.max_einzeldosis) einnahme += '**Maximale Einzeldosis:** ' + s.max_einzeldosis;
+  if (einnahme.trim()) {
+    var einnahmeSection = { title: 'Richtige Einnahme', content: einnahme.trim() };
+    if (s.beste_form) {
+      einnahmeSection.infoBox = { type: 'tip', title: 'Beste Form', content: s.beste_form };
+    }
+    sections.push(einnahmeSection);
+  }
+
+  // 3. Kombinationen
+  var kombi = '';
+  if (s.kombiniert_gut_mit) kombi += '**Passt gut zu:**\n' + s.kombiniert_gut_mit.split(',').map(function(k) { return '• ' + k.trim(); }).join('\n') + '\n\n';
+  if (s.nicht_zusammen_mit) kombi += '**Nicht gleichzeitig mit:**\n' + s.nicht_zusammen_mit.split(',').map(function(k) { return '• ' + k.trim(); }).join('\n') + '\n\n';
+  if (s.zeitlicher_abstand_h && s.zeitlicher_abstand_h !== 'None' && s.zeitlicher_abstand_h !== '0' && s.zeitlicher_abstand_h !== 0) kombi += '**Zeitlicher Abstand:** ' + s.zeitlicher_abstand_h + ' Stunden\n\n';
+  if (s.kombinations_hinweis) kombi += s.kombinations_hinweis;
+  if (kombi.trim()) {
+    sections.push({ title: 'Kombinationen & Wechselwirkungen', content: kombi.trim() });
+  }
+
+  // 4. Bioverfügbarkeit
+  if (s.bioverfuegbarkeit_info && s.bioverfuegbarkeit_info !== 'None') {
+    sections.push({ title: 'Bioverfügbarkeit', content: s.bioverfuegbarkeit_info });
+  }
+
+  // 5. Warnhinweise
+  var warn = '';
+  if (s.warnhinweise) warn += s.warnhinweise + '\n\n';
+  if (s.kontraindikationen) warn += '**Nicht einnehmen bei:**\n' + s.kontraindikationen + '\n\n';
+  if (s.nebenwirkungen_ueberdosis) warn += '**Überdosierung:**\n' + s.nebenwirkungen_ueberdosis;
+  if (warn.trim()) {
+    sections.push({ title: 'Warnhinweise & Dosierung', content: warn.trim() });
+  }
+
+  // 6. Natürliche Quellen
+  if (s.natuerliche_quellen && s.natuerliche_quellen !== 'None') {
+    sections.push({ title: 'Natürliche Quellen', content: s.natuerliche_quellen });
+  }
+
+  return sections;
+}
+
+// Tags aus den Supabase-Feldern bauen
+function _kwBuildTags(s) {
+  var tags = [];
+  if (s.name) tags.push(s.name);
+  if (s.auch_bekannt_als) {
+    s.auch_bekannt_als.split(',').slice(0, 3).forEach(function(t) {
+      var tag = t.trim();
+      if (tag && tag.length < 30) tags.push(tag);
+    });
+  }
+  if (s.symptome_ziele) {
+    s.symptome_ziele.split(',').slice(0, 3).forEach(function(t) {
+      var tag = t.trim();
+      if (tag && tag.length < 25) tags.push(tag.charAt(0).toUpperCase() + tag.slice(1));
+    });
+  }
+  return tags.slice(0, 6);
+}
+
+// Haupt-Ladefunktion: Supplements aus Supabase → knowledgeArticles
+async function loadKnowledgeFromSupabase() {
+  if (_kwDataLoaded) return;
+  try {
+    // Fetch alle Supplements (overview fields)
+    var data = await _kwFetch('supplements_basis',
+      'select=id,name,auch_bekannt_als,kategorie,unterkategorie,wirkung,wirkung_kurz,symptome_ziele,' +
+      'einnahme_zeitpunkt,einnahme_mit,einnahme_ohne,einnahme_hinweis,max_einzeldosis,' +
+      'kombiniert_gut_mit,nicht_zusammen_mit,zeitlicher_abstand_h,kombinations_hinweis,' +
+      'bioverfuegbarkeit_info,beste_form,warnhinweise,kontraindikationen,nebenwirkungen_ueberdosis,' +
+      'natuerliche_quellen,vegan_verfuegbar,fettloeslich,rda_erwachsene,rda_einheit,ul_efsa,bfr_hoechstmenge,dge_referenz' +
+      '&limit=2000&order=name.asc'
+    );
+    if (!data || data.length === 0) {
+      console.log('Supabase: Keine Supplements gefunden, verwende Fallback');
+      return;
+    }
+
+    // Filter: Verbotene/Arzneimittel ausblenden
+    data = data.filter(function(s) {
+      var k = (s.kategorie || '').toLowerCase();
+      return !k.includes('verboten') && !k.includes('nicht empfohlen') && !k.includes('arzneimittel');
+    });
+
+    // Transform zu knowledgeArticles Format
+    knowledgeArticles = data.map(function(s) {
+      var catKey = _kwMapCategory(s.kategorie);
+      var icon = _kwCategoryIcons[s.unterkategorie] || _kwCategoryIcons[s.kategorie] || '📦';
+      var sections = _kwBuildSections(s);
+      var readTime = Math.max(2, Math.ceil((s.wirkung || '').length / 500));
+      // Clean name: remove warning emojis and legal notes
+      var cleanName = (s.name || '').replace(/^[⚠️⛔🔬\s]+/, '').replace(/\s*[-–]\s*(NOVEL FOOD|BtMG|NICHT VERKEHRSFÄHIG|Marketing)[^]*$/i, '').trim();
+
+      return {
+        id: s.id,
+        title: cleanName || s.name,
+        subtitle: s.wirkung_kurz || '',
+        icon: icon,
+        image: null,
+        category: catKey,
+        subcategory: _kwMapSubcategory(s.unterkategorie),
+        readTime: readTime,
+        studyCount: 5, // Platzhalter — exakte Zahl wird beim Öffnen geladen
+        views: 0,
+        featured: false,
+        tags: _kwBuildTags(s),
+        vegan: s.vegan_verfuegbar === 'Ja',
+        content: {
+          intro: (s.wirkung || '').split('.').slice(0, 2).join('.') + '.',
+          sections: sections
+        },
+        sources: [], // wird beim Öffnen nachgeladen
+        _raw: s // Rohdaten für Detail-View
+      };
+    });
+
+    _kwDataLoaded = true;
+    console.log('Supabase: ' + knowledgeArticles.length + ' Supplements geladen');
+  } catch(e) {
+    console.error('Supabase Knowledge Load Error:', e);
+  }
+}
+
+// Detail-Daten für einen Artikel nachladen (Quellen, Dosierungen, Studien)
+async function loadArticleDetails(articleId) {
+  if (_kwArticleCache[articleId]) return _kwArticleCache[articleId];
+
+  try {
+    // Parallel fetchen: Quellen, Studien, Länder-Dosierungen
+    var [quellen, studien, dosierung] = await Promise.all([
+      _kwFetch('quellen_verzeichnis', 'supplement_id=eq.' + articleId + '&limit=20'),
+      _kwFetch('studien_evidenz', 'supplement_id=eq.' + articleId + '&limit=20'),
+      _kwFetch('laender_regulierung', 'supplement_id=eq.' + articleId + '&limit=1')
+    ]);
+
+    // Sources zusammenbauen
+    var sources = [];
+    if (studien) studien.forEach(function(st) {
+      sources.push({
+        type: st.studie_typ === 'Guideline' || st.studie_typ === 'Leitlinie' ? 'guideline' : 'study',
+        authors: st.studie_name || '',
+        title: st.indikation || st.ergebnis_kurz || '',
+        journal: st.studie_typ || '',
+        year: st.evidenz_level || '',
+        url: st.pmid ? 'https://pubmed.ncbi.nlm.nih.gov/' + st.pmid + '/' : ''
+      });
+    });
+    if (quellen) quellen.forEach(function(q) {
+      sources.push({
+        type: q.quelle_typ === 'Primaerquelle' ? 'guideline' : 'study',
+        authors: q.quelle_name || '',
+        title: q.extrahierte_daten || '',
+        journal: '',
+        year: q.abgerufen_am ? q.abgerufen_am.substring(0, 4) : '',
+        url: q.quelle_url || ''
+      });
+    });
+
+    // Dosierung für Länder aufbauen
+    var dosObj = null;
+    if (dosierung && dosierung.length > 0) {
+      var d = dosierung[0];
+      var article = knowledgeArticles.find(function(a) { return a.id === articleId; });
+      var raw = article ? article._raw : null;
+      dosObj = {
+        name: d.supplement_name,
+        einheit: (raw && raw.rda_einheit) || '',
+        laender: {
+          DE: {
+            empfehlung: d.de_empf || '-',
+            obergrenze: d.de_max || 'keine festgelegt',
+            quelle: d.de_quelle || 'DGE',
+            jahr: '',
+            url: ''
+          },
+          AT: {
+            empfehlung: d.at_empf || '-',
+            obergrenze: d.at_max || 'keine festgelegt',
+            quelle: d.at_quelle || 'ÖGE',
+            jahr: '',
+            url: ''
+          },
+          CH: {
+            empfehlung: d.ch_empf || '-',
+            obergrenze: d.ch_max || 'keine festgelegt',
+            quelle: d.ch_quelle || 'SGE',
+            jahr: '',
+            url: ''
+          }
+        },
+        hinweis: raw ? (raw.warnhinweise || '').split('.')[0] : ''
+      };
+      kwDosierungen[articleId] = dosObj;
+    }
+
+    var result = { sources: sources, dosierung: dosObj, studyCount: sources.length };
+    _kwArticleCache[articleId] = result;
+    return result;
+  } catch(e) {
+    console.error('Detail load error:', e);
+    return { sources: [], dosierung: null, studyCount: 0 };
+  }
+}
+
+// ============ LEGACY DATA REMOVED — now from Supabase ============
+// kwDosierungen is populated dynamically when articles are opened
+// knowledgeArticles is populated by loadKnowledgeFromSupabase()
+
+
+// (Legacy data removed - now loaded from Supabase)
 
 // ===============================
 // KNOWLEDGE HUB FUNCTIONS
@@ -4540,69 +3377,224 @@ let currentKnowledgeCategory = null;
 let currentKnowledgeSubcategory = 'alle';
 let bookmarkedArticles = JSON.parse(localStorage.getItem('suppTreeBookmarks') || '[]');
 
-function initKnowledgeHub() {
+async function initKnowledgeHub() {
+  // Lade Daten aus Supabase (einmalig)
+  if (!_kwDataLoaded) {
+    await loadKnowledgeFromSupabase();
+  }
+  renderBookmarkedArticles();
   renderKnowledgeCategories();
   renderPopularArticles();
   renderShiftWorkerArticles();
   renderRecentArticles();
 }
 
+var kwFilterGroups = [
+  { id: 'kategorie', name: 'Kategorie', items: [
+    { id: 'vitamine', label: 'Vitamine' },
+    { id: 'mineralien', label: 'Mineralien' },
+    { id: 'pflanzen', label: 'Pflanzen' },
+    { id: 'omega', label: 'Omega & Fette' },
+    { id: 'amino', label: 'Aminosäuren' },
+    { id: 'darm', label: 'Darmgesundheit' },
+    { id: 'sport', label: 'Sport & Fitness' },
+    { id: 'sonstige', label: 'Weitere' }
+  ]},
+  { id: 'zielgruppe', name: 'Zielgruppe', items: [
+    { id: 'frauen', label: 'Frauen' },
+    { id: 'maenner', label: 'Männer' },
+    { id: 'kinder', label: 'Kinder' },
+    { id: 'senioren', label: 'Senioren' },
+    { id: 'schwangere', label: 'Schwangere' },
+    { id: 'sportler', label: 'Sportler' },
+    { id: 'schichtarbeiter', label: 'Schichtarbeiter' },
+    { id: 'veganer', label: 'Veganer' }
+  ]},
+  { id: 'ziel', name: 'Ziel', items: [
+    { id: 'immunsystem', label: 'Immunsystem' },
+    { id: 'energie', label: 'Energie' },
+    { id: 'schlaf', label: 'Schlaf' },
+    { id: 'fokus', label: 'Fokus' },
+    { id: 'haut-haare', label: 'Haut & Haare' },
+    { id: 'gelenke', label: 'Gelenke' },
+    { id: 'stress', label: 'Stressabbau' }
+  ]},
+  { id: 'symptom', name: 'Symptome', items: [
+    { id: 'muedigkeit', label: 'Müdigkeit' },
+    { id: 'kopfschmerzen', label: 'Kopfschmerzen' },
+    { id: 'muskelkraempfe', label: 'Muskelkrämpfe' },
+    { id: 'haarausfall', label: 'Haarausfall' },
+    { id: 'konzentration', label: 'Konzentration' },
+    { id: 'verdauung', label: 'Verdauung' },
+    { id: 'stimmung', label: 'Stimmung' }
+  ]}
+];
+
+var activeFilterTab = 'kategorie';
+
 function renderKnowledgeCategories() {
-  const container = document.getElementById('knowledgeCategories');
+  renderKwFilterTabs();
+  renderKwFilterChips();
+}
+
+function renderKwFilterTabs() {
+  var container = document.getElementById('kwFilterTabs');
   if (!container) return;
 
-  container.innerHTML = Object.values(knowledgeCategories).map(cat => `
-    <div class="kw-cat-chip" style="background: ${cat.gradient}; ${cat.textColor ? 'color:' + cat.textColor : ''}" onclick="openKnowledgeCategory('${cat.id}')">
-      <div class="kw-cat-icon">${cat.icon}</div>
-      <span>${cat.name}</span>
-    </div>
-  `).join('');
+  container.innerHTML = kwFilterGroups.map(function(g) {
+    var isActive = g.id === activeFilterTab;
+    return '<button class="kw-ftab' + (isActive ? ' active' : '') + '" onclick="kwSwitchFilterTab(\'' + g.id + '\')">' +
+      g.name + '</button>';
+  }).join('');
+}
+
+function renderKwFilterChips() {
+  var container = document.getElementById('kwFilterChips');
+  if (!container) return;
+
+  var group = kwFilterGroups.find(function(g) { return g.id === activeFilterTab; });
+  if (!group) return;
+
+  container.innerHTML = group.items.map(function(item) {
+    return '<div class="kw-fchip" onclick="applyKnowledgeFilter(\'' + activeFilterTab + '\', \'' + item.id + '\')">' +
+      '<span>' + item.label + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function kwSwitchFilterTab(tabId) {
+  activeFilterTab = tabId;
+  renderKwFilterTabs();
+  renderKwFilterChips();
+  var chips = document.getElementById('kwFilterChips');
+  if (chips) chips.scrollLeft = 0;
+}
+
+function applyKnowledgeFilter(groupId, itemId) {
+  if (groupId === 'kategorie') {
+    // Direct category match — open category view
+    if (knowledgeCategories[itemId]) {
+      openKnowledgeCategory(itemId);
+      return;
+    }
+  }
+
+  // For other filters: search articles by tag match
+  var results = knowledgeArticles.filter(function(a) {
+    if (a.tags && a.tags.some(function(t) { return t.toLowerCase().includes(itemId); })) return true;
+    if (a.category === itemId) return true;
+    // Also match in content
+    var text = (a.content && a.content.intro || '') + ' ';
+    if (a.content && a.content.sections) a.content.sections.forEach(function(s) { text += s.content + ' '; });
+    return text.toLowerCase().includes(itemId.replace(/-/g, ' '));
+  });
+
+  var group = kwFilterGroups.find(function(g) { return g.id === groupId; });
+  var item = group ? group.items.find(function(i) { return i.id === itemId; }) : null;
+  var label = item ? item.label : itemId;
+
+  // Show filtered results
+  showFilteredResults(label, results);
+}
+
+function showFilteredResults(label, results) {
+  var main = document.getElementById('knowledgeMain');
+  if (main) main.style.display = 'none';
+
+  var appContainer = document.querySelector('#knowledgeScreen .app');
+  if (!appContainer) return;
+
+  var oldPage = document.querySelector('.kw-filter-page');
+  if (oldPage) oldPage.remove();
+
+  var page = document.createElement('div');
+  page.className = 'kw-filter-page';
+
+  var listHtml = '';
+  if (results.length > 0) {
+    listHtml = '<div class="kw-article-list">' + results.map(function(a) { return renderArticleRowCard(a); }).join('') + '</div>';
+  } else {
+    listHtml = '<div class="kw-search-hint">' +
+      '<p>Noch keine Artikel zu diesem Thema</p>' +
+      '<span style="font-size:12px;color:#aaa">Neue Artikel werden laufend hinzugefügt</span></div>';
+  }
+
+  page.innerHTML = '<div class="kw-filter-page-header">' +
+    '<button onclick="closeFilteredResults()" style="color:var(--text-dark);background:#f1f3f5;border:none;width:36px;height:36px;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>' +
+    '<h3>' + label + ' <span style="color:var(--text-muted);font-weight:400">(' + results.length + ')</span></h3>' +
+    '</div>' +
+    '<div class="kw-filter-page-content">' + listHtml + '</div>';
+
+  appContainer.appendChild(page);
+  window.scrollTo(0, 0);
+}
+
+function closeFilteredResults() {
+  var page = document.querySelector('.kw-filter-page');
+  if (page) page.remove();
+  var main = document.getElementById('knowledgeMain');
+  if (main) main.style.display = 'block';
+  window.scrollTo(0, 0);
 }
 
 function renderPopularArticles() {
   const container = document.getElementById('popularArticles');
   if (!container) return;
 
-  const popular = [...knowledgeArticles]
-    .sort((a, b) => b.views - a.views)
-    .slice(0, 6);
+  // Zeige bekannte Supplements die jeder kennt (alphabetisch gemischt aus verschiedenen Kategorien)
+  var popularIds = ['vitamin-d3', 'magnesium', 'omega-3-epa-dha', 'zinkbisglycinat', 'liposomales-vitamin-c', 'vitamin-b12', 'eisenbisglycinat', 'kreatin-monohydrat', 'ashwagandha', 'curcumin', 'biotin', 'folsaeure'];
+  var popular = popularIds.map(function(id) {
+    return knowledgeArticles.find(function(a) { return a.id === id; });
+  }).filter(Boolean).slice(0, 8);
+
+  // Fallback: erste 8 Artikel wenn keine matches
+  if (popular.length < 4) popular = knowledgeArticles.slice(0, 8);
 
   container.innerHTML = popular.map(a => renderArticleScrollCard(a)).join('');
 }
 
 function renderShiftWorkerArticles() {
-  const container = document.getElementById('shiftWorkerArticles');
-  if (!container) return;
-
-  const shiftArticles = knowledgeArticles.filter(a =>
-    a.category === 'schichtarbeit' || a.tags.includes('schichtarbeit') || a.tags.includes('melatonin')
-  ).slice(0, 4);
-
-  container.innerHTML = shiftArticles.map(a => renderArticleScrollCard(a)).join('');
+  // Nicht mehr nötig — war ein statischer Bereich
 }
 
 function renderRecentArticles() {
   const container = document.getElementById('recentArticles');
   if (!container) return;
 
-  const recent = knowledgeArticles.slice(0, 5);
-  container.innerHTML = recent.map(a => renderArticleRowCard(a)).join('');
+  // Zeige Supplements aus verschiedenen Kategorien
+  var categories = ['vitamine', 'mineralien', 'pflanzen', 'omega', 'amino'];
+  var recent = [];
+  categories.forEach(function(cat) {
+    var fromCat = knowledgeArticles.filter(function(a) { return a.category === cat; });
+    if (fromCat.length > 0) recent.push(fromCat[0]);
+  });
+  // Auffüllen auf 8
+  if (recent.length < 8) {
+    knowledgeArticles.forEach(function(a) {
+      if (recent.length >= 8) return;
+      if (!recent.find(function(r) { return r.id === a.id; })) recent.push(a);
+    });
+  }
+  container.innerHTML = recent.slice(0, 8).map(a => renderArticleRowCard(a)).join('');
 }
 
 // Horizontal scroll card (Popular, Shift Worker sections)
 function renderArticleScrollCard(article) {
   const cat = knowledgeCategories[article.category];
   const bg = cat ? cat.gradient : 'linear-gradient(135deg,#f3f4f6,#e5e7eb)';
+  var topContent = article.image
+    ? `<img src="${article.image}" alt="${article.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="kw-card-icon-fallback" style="display:none;background:${bg}">${article.icon}</div>`
+    : `<div class="kw-card-icon-fallback" style="background:${bg}">${article.icon}</div>`;
+  var favBadge = bookmarkedArticles.indexOf(article.id) !== -1 ? '<span class="kw-card-fav-badge">❤️</span>' : '';
   return `
     <div class="kw-article-card" onclick="openKnowledgeArticle('${article.id}')">
-      <div class="kw-article-card-top" style="background:${bg}">${article.icon}</div>
+      <div class="kw-article-card-top">${topContent}${favBadge}</div>
       <div class="kw-article-card-body">
         <h4>${article.title}</h4>
         <p>${article.subtitle}</p>
         <div class="kw-article-card-meta">
           <span>📖 ${article.readTime} min</span>
           <span class="kw-studies">🔬 ${article.studyCount}</span>
-          <span>👁️ ${(article.views/1000).toFixed(1)}k</span>
         </div>
       </div>
     </div>
@@ -4613,18 +3605,22 @@ function renderArticleScrollCard(article) {
 function renderArticleRowCard(article) {
   const cat = knowledgeCategories[article.category];
   const bg = cat ? cat.gradient : 'linear-gradient(135deg,#f3f4f6,#e5e7eb)';
+  var iconContent = article.image
+    ? `<img src="${article.image}" alt="${article.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="kw-row-icon-fallback" style="display:none;background:${bg}">${article.icon}</div>`
+    : `<div class="kw-row-icon-fallback" style="background:${bg}">${article.icon}</div>`;
+  var favIndicator = bookmarkedArticles.indexOf(article.id) !== -1 ? '<span class="kw-row-fav">❤️</span>' : '';
   return `
     <div class="kw-article-row" onclick="openKnowledgeArticle('${article.id}')">
-      <div class="kw-article-row-icon" style="background:${bg}">${article.icon}</div>
+      <div class="kw-article-row-icon">${iconContent}</div>
       <div class="kw-article-row-info">
         <h4>${article.title}</h4>
         <p>${article.subtitle}</p>
         <div class="kw-article-row-meta">
           <span>📖 ${article.readTime} min</span>
           <span class="kw-studies">🔬 ${article.studyCount}</span>
-          <span>👁️ ${(article.views/1000).toFixed(1)}k</span>
         </div>
       </div>
+      ${favIndicator}
       <div class="kw-article-row-arrow">›</div>
     </div>
   `;
@@ -4700,19 +3696,32 @@ function closeKnowledgeCategory() {
   currentKnowledgeCategory = null;
 }
 
-function openKnowledgeArticle(articleId) {
+async function openKnowledgeArticle(articleId) {
+  kwSelectedCountry = kwDetectedCountry;
   const article = knowledgeArticles.find(a => a.id === articleId);
   if (!article) return;
-  
+
+  // Close hashtag popup if open
+  closeHashtagPopup();
+
+  currentArticleId = articleId;
+
   document.getElementById('knowledgeMain').style.display = 'none';
   document.getElementById('knowledgeCategoryView').style.display = 'none';
   document.getElementById('knowledgeArticleView').style.display = 'block';
-  
+
   // Reset scroll position
-  const appContainer = document.querySelector('#knowledgeScreen .app');
-  if (appContainer) appContainer.scrollTop = 0;
-  
+  window.scrollTo(0, 0);
+
+  // Lade Detail-Daten aus Supabase (Quellen, Dosierungen)
+  var details = await loadArticleDetails(articleId);
+  if (details) {
+    article.sources = details.sources || [];
+    article.studyCount = details.studyCount || 0;
+  }
+
   renderArticleContent(article);
+  updateBookmarkButton();
 }
 
 function renderArticleContent(article) {
@@ -4730,9 +3739,31 @@ function renderArticleContent(article) {
     if (section.type === 'table') {
       content = renderMarkdownTable(section.content);
     } else {
-      content = `<p>${section.content.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`;
+      // Split into paragraphs by double newline
+      var blocks = section.content.split(/\n\n/);
+      content = blocks.map(function(block) {
+        block = block.trim();
+        if (!block) return '';
+        // Check if block contains bullet points
+        var lines = block.split('\n');
+        var html = '';
+        var inList = false;
+        lines.forEach(function(line) {
+          line = line.trim();
+          if (!line) return;
+          if (line.startsWith('• ') || line.startsWith('- ')) {
+            if (!inList) { html += '<ul>'; inList = true; }
+            html += '<li>' + line.replace(/^[•\-]\s*/, '') + '</li>';
+          } else {
+            if (inList) { html += '</ul>'; inList = false; }
+            html += '<p>' + line + '</p>';
+          }
+        });
+        if (inList) html += '</ul>';
+        return html;
+      }).join('');
+      // Bold
       content = content.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      content = content.replace(/• /g, '<li>').replace(/<\/p><p><li>/g, '</p><ul><li>').replace(/<li>([^<]+)(<br>|<\/p>)/g, '<li>$1</li>$2');
     }
 
     let infoBoxHtml = '';
@@ -4755,29 +3786,72 @@ function renderArticleContent(article) {
   }).join('');
 
   // Build sources
+  var hasDoi = article.sources.some(function(s) { return s.doi; });
+  var hasStudy = article.sources.some(function(s) { return s.type === 'study' || s.type === 'meta-analysis'; });
+  var hasGuideline = article.sources.some(function(s) { return s.type === 'guideline'; });
+
   const sources = article.sources.map((source, i) => `
     <div class="source-item">
       <span>${i + 1}.</span>
       ${source.authors} (${source.year}). <em>${source.title}</em>.
       ${source.journal ? source.journal + '.' : ''}
-      ${source.doi ? `<a href="https://doi.org/${source.doi}" target="_blank">DOI</a>` : ''}
+      ${source.doi ? `<a href="https://doi.org/${source.doi}" target="_blank">DOI*</a>` : ''}
       ${source.url ? `<a href="${source.url}" target="_blank">Link</a>` : ''}
-      <span class="source-type">${source.type === 'study' ? 'Studie' : source.type === 'meta-analysis' ? 'Meta-Analyse' : source.type === 'guideline' ? 'Leitlinie' : 'Quelle'}</span>
+      <span class="source-type">${source.type === 'study' ? 'Studie**' : source.type === 'meta-analysis' ? 'Meta-Analyse**' : source.type === 'guideline' ? 'Leitlinie***' : 'Quelle'}</span>
     </div>
   `).join('');
 
-  container.innerHTML = `
+  // Build glossary footnotes
+  var glossaryItems = [];
+  if (hasDoi) glossaryItems.push('<span><strong>*DOI</strong> = Digital Object Identifier – eine eindeutige Kennung, über die du die Originalquelle direkt online findest.</span>');
+  if (hasStudy) glossaryItems.push('<span><strong>**Studie</strong> = Eine wissenschaftliche Untersuchung, die in einer Fachzeitschrift veröffentlicht und von anderen Wissenschaftlern geprüft wurde.</span>');
+  if (hasGuideline) glossaryItems.push('<span><strong>***Leitlinie</strong> = Eine offizielle Empfehlung von anerkannten Fachgesellschaften (z. B. DGE, EFSA, WHO).</span>');
+  var glossaryHtml = glossaryItems.length > 0 ? '<div class="sources-glossary">' + glossaryItems.join('') + '</div>' : '';
+
+  // Hero image or fallback to icon
+  var heroContent = '';
+  if (article.image) {
+    heroContent = `
+    <div class="kw-art-hero has-image">
+      <div class="kw-art-hero-img">
+        <img src="${article.image}" alt="${article.title}" onerror="this.parentElement.innerHTML='<div class=\\'kw-art-hero-icon\\'>${article.icon}</div>'">
+        <div class="kw-art-hero-overlay"></div>
+      </div>
+      <div class="kw-art-hero-text">
+        <h1>${article.title}</h1>
+        <div class="kw-art-hero-meta">
+          <span>📖 ${article.readTime} min Lesezeit</span>
+          <span>🔬 ${article.studyCount} Quellen</span>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    heroContent = `
     <div class="kw-art-hero">
       <div class="kw-art-hero-icon">${article.icon}</div>
       <h1>${article.title}</h1>
       <div class="kw-art-hero-meta">
-        <span>📖 ${article.readTime} min</span>
-        <span>🔬 ${article.studyCount} Studien</span>
-        <span>👁️ ${article.views.toLocaleString('de-DE')}</span>
+        <span>📖 ${article.readTime} min Lesezeit</span>
+        <span>🔬 ${article.studyCount} Quellen</span>
       </div>
-    </div>
+    </div>`;
+  }
+
+  // Build hashtag chips
+  var hashtags = getArticleHashtags(article);
+  var hashtagHtml = '';
+  if (hashtags.length > 0) {
+    hashtagHtml = '<div class="kw-art-hashtags">' +
+      hashtags.map(function(h) {
+        return '<span class="kw-hashtag" onclick="event.stopPropagation();openKnowledgeSearchFor(\'' + h.word.replace(/'/g, "\\'") + '\')">#' + h.word + '</span>';
+      }).join('') + '</div>';
+  }
+
+  container.innerHTML = `
+    ${heroContent}
 
     <div class="kw-art-body">
+      ${hashtagHtml}
       <div class="kw-art-toc">
         <h4>Inhaltsverzeichnis</h4>
         <ul>${toc}</ul>
@@ -4787,12 +3861,65 @@ function renderArticleContent(article) {
 
       ${sections}
 
+      ${renderDosierungBox(article.id)}
+
       <div class="sources-section">
         <h4>Quellen & Studien</h4>
         ${sources}
+        ${glossaryHtml}
       </div>
     </div>
   `;
+}
+
+function renderDosierungBox(articleId) {
+  var dos = kwDosierungen[articleId];
+  if (!dos) return '';
+
+  var countries = ['DE', 'AT', 'CH'];
+  var flags = { DE: '🇩🇪', AT: '🇦🇹', CH: '🇨🇭' };
+  var names = { DE: 'Deutschland', AT: 'Österreich', CH: 'Schweiz' };
+
+  var tabsHtml = countries.map(function(c) {
+    return '<button class="kw-dos-tab' + (c === kwSelectedCountry ? ' active' : '') + '" onclick="switchDosCountry(\'' + c + '\', \'' + articleId + '\')">' +
+      flags[c] + ' ' + names[c] + '</button>';
+  }).join('');
+
+  var cardsHtml = countries.map(function(c) {
+    var d = dos.laender[c];
+    return '<div class="kw-dos-card' + (c === kwSelectedCountry ? ' active' : '') + '" data-country="' + c + '">' +
+      '<div class="kw-dos-row"><span class="kw-dos-label">Empfehlung</span><span class="kw-dos-value">' + d.empfehlung + ' ' + dos.einheit + '</span></div>' +
+      '<div class="kw-dos-row"><span class="kw-dos-label">Obergrenze</span><span class="kw-dos-value">' + d.obergrenze + (d.obergrenze !== 'keine festgelegt' ? ' ' + dos.einheit : '') + '</span></div>' +
+      '<div class="kw-dos-source">' + d.quelle + ' (' + d.jahr + ')' +
+        (d.url ? ' <a href="' + d.url + '" target="_blank">↗</a>' : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  var detectedHint = '<span class="kw-dos-detected">' + flags[kwDetectedCountry] + ' Automatisch erkannt: ' + names[kwDetectedCountry] + '</span>';
+
+  return '<div class="kw-dos-box">' +
+    '<h3>📋 Dosierung nach Land</h3>' + detectedHint +
+    '<div class="kw-dos-tabs">' + tabsHtml + '</div>' +
+    '<div class="kw-dos-cards">' + cardsHtml + '</div>' +
+    (dos.hinweis ? '<div class="kw-dos-hinweis">⚠️ ' + dos.hinweis + '</div>' : '') +
+    '<div class="kw-dos-disclaimer">Stand: März 2025. Alle Angaben ohne Gewähr. Die dargestellten Empfehlungen dienen ausschließlich der Information und ersetzen keine ärztliche Beratung. Für Änderungen der offiziellen Referenzwerte übernehmen wir keine Haftung.</div>' +
+  '</div>';
+}
+
+function switchDosCountry(country, articleId) {
+  kwSelectedCountry = country;
+  localStorage.setItem('kwCountry', country);
+
+  // Update tabs
+  document.querySelectorAll('.kw-dos-tab').forEach(function(tab) {
+    tab.classList.toggle('active', tab.textContent.includes(country === 'DE' ? 'Deutschland' : country === 'AT' ? 'Österreich' : 'Schweiz'));
+  });
+
+  // Update cards
+  document.querySelectorAll('.kw-dos-card').forEach(function(card) {
+    card.classList.toggle('active', card.dataset.country === country);
+  });
 }
 
 function renderMarkdownTable(tableString) {
@@ -4823,13 +3950,451 @@ function closeKnowledgeArticle() {
   }
 }
 
+var currentArticleId = null;
+
 function toggleArticleBookmark() {
-  // Placeholder for bookmark functionality
-  showToast('Lesezeichen-Funktion kommt bald!');
+  if (!currentArticleId) return;
+  var idx = bookmarkedArticles.indexOf(currentArticleId);
+  if (idx === -1) {
+    bookmarkedArticles.push(currentArticleId);
+    showToast('Zu Favoriten hinzugefügt');
+  } else {
+    bookmarkedArticles.splice(idx, 1);
+    showToast('Aus Favoriten entfernt');
+  }
+  localStorage.setItem('suppTreeBookmarks', JSON.stringify(bookmarkedArticles));
+  updateBookmarkButton();
+  renderBookmarkedArticles();
+  renderPopularArticles();
+  renderRecentArticles();
+}
+
+function updateBookmarkButton() {
+  var btn = document.querySelector('.kw-art-bookmark');
+  if (!btn || !currentArticleId) return;
+  var isBookmarked = bookmarkedArticles.indexOf(currentArticleId) !== -1;
+  btn.textContent = isBookmarked ? '❤️' : '🤍';
+  btn.classList.toggle('active', isBookmarked);
+}
+
+function renderBookmarkedArticles() {
+  var container = document.getElementById('bookmarkedArticles');
+  if (!container) return;
+
+  var articles = bookmarkedArticles.map(function(id) {
+    return knowledgeArticles.find(function(a) { return a.id === id; });
+  }).filter(Boolean);
+
+  if (articles.length === 0) {
+    container.innerHTML = `
+      <div class="kw-fav-empty">
+        <div class="kw-fav-empty-icon">🤍</div>
+        <p>Noch keine Favoriten</p>
+        <span>Tippe auf das Herz in einem Artikel, um ihn hier zu speichern</span>
+      </div>
+    `;
+    return;
+  }
+
+  // Show max 3 preview items as compact mini-cards
+  var preview = articles.slice(0, 3);
+  var moreCount = articles.length - 3;
+
+  var previewHtml = preview.map(function(a) {
+    var imgHtml = a.image
+      ? '<img src="' + a.image + '" alt="">'
+      : '<div class="kw-fav-mini-icon">' + a.icon + '</div>';
+    return '<div class="kw-fav-mini" onclick="openKnowledgeArticle(\'' + a.id + '\')">' +
+      '<div class="kw-fav-mini-img">' + imgHtml + '</div>' +
+      '<div class="kw-fav-mini-info">' +
+        '<div class="kw-fav-mini-title">' + a.title + '</div>' +
+        '<div class="kw-fav-mini-meta">📖 ' + a.readTime + ' min · 🔬 ' + a.studyCount + ' Quellen</div>' +
+      '</div>' +
+      '<button class="kw-fav-mini-remove" onclick="event.stopPropagation();removeFavorite(\'' + a.id + '\')">✕</button>' +
+    '</div>';
+  }).join('');
+
+  var showAllBtn = articles.length > 3
+    ? '<button class="kw-fav-show-all" onclick="openAllFavorites()">Alle ' + articles.length + ' Favoriten anzeigen</button>'
+    : '';
+
+  container.innerHTML = '<div class="kw-fav-list">' + previewHtml + '</div>' + showAllBtn;
+}
+
+function removeFavorite(articleId) {
+  var idx = bookmarkedArticles.indexOf(articleId);
+  if (idx !== -1) bookmarkedArticles.splice(idx, 1);
+  localStorage.setItem('suppTreeBookmarks', JSON.stringify(bookmarkedArticles));
+  renderBookmarkedArticles();
+  renderPopularArticles();
+  renderRecentArticles();
+  showToast('Favorit entfernt');
+}
+
+var kwFavPageOpen = false;
+
+function openAllFavorites() {
+  var appContainer = document.querySelector('#knowledgeScreen .app');
+  if (!appContainer) return;
+
+  kwFavPageOpen = true;
+  var kwTsa = document.getElementById('kwTopSearchArea');
+  if (kwTsa) kwTsa.classList.remove('scroll-visible');
+
+  var main = document.getElementById('knowledgeMain');
+  if (main) main.style.display = 'none';
+
+  var oldPage = document.querySelector('.kw-fav-page');
+  if (oldPage) oldPage.remove();
+
+  var articles = bookmarkedArticles.map(function(id) {
+    return knowledgeArticles.find(function(a) { return a.id === id; });
+  }).filter(Boolean);
+
+  var page = document.createElement('div');
+  page.className = 'kw-fav-page';
+  page.innerHTML = '<div class="kw-fav-page-header">' +
+    '<button onclick="closeAllFavorites()" style="color:var(--text-dark);background:#f1f3f5;border:none;width:36px;height:36px;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>' +
+    '<h3>Deine Favoriten <span style="color:var(--text-muted);font-weight:400">(' + articles.length + ')</span></h3>' +
+    '</div>' +
+    '<div class="kw-fav-page-list">' +
+    articles.map(function(a) {
+      var imgHtml = a.image
+        ? '<img src="' + a.image + '" alt="">'
+        : '<div class="kw-fav-mini-icon">' + a.icon + '</div>';
+      return '<div class="kw-fav-mini" onclick="closeAllFavorites();openKnowledgeArticle(\'' + a.id + '\')">' +
+        '<div class="kw-fav-mini-img">' + imgHtml + '</div>' +
+        '<div class="kw-fav-mini-info">' +
+          '<div class="kw-fav-mini-title">' + a.title + '</div>' +
+          '<div class="kw-fav-mini-meta">📖 ' + a.readTime + ' min · 🔬 ' + a.studyCount + ' Quellen</div>' +
+        '</div>' +
+        '<button class="kw-fav-mini-remove" onclick="event.stopPropagation();removeFavoriteFromPage(\'' + a.id + '\')">✕</button>' +
+      '</div>';
+    }).join('') +
+    '</div>';
+
+  appContainer.appendChild(page);
+  window.scrollTo(0, 0);
+}
+
+function closeAllFavorites() {
+  kwFavPageOpen = false;
+  var page = document.querySelector('.kw-fav-page');
+  if (page) page.remove();
+  var main = document.getElementById('knowledgeMain');
+  if (main) main.style.display = 'block';
+  renderBookmarkedArticles();
+  window.scrollTo(0, 0);
+}
+
+function removeFavoriteFromPage(articleId) {
+  removeFavorite(articleId);
+  // Re-render the full page list
+  var pageList = document.querySelector('.kw-fav-page-list');
+  var countSpan = document.querySelector('.kw-fav-page-header span');
+  if (!pageList) return;
+
+  var articles = bookmarkedArticles.map(function(id) {
+    return knowledgeArticles.find(function(a) { return a.id === id; });
+  }).filter(Boolean);
+
+  if (articles.length === 0) {
+    closeAllFavorites();
+    return;
+  }
+
+  if (countSpan) countSpan.textContent = '(' + articles.length + ')';
+  pageList.innerHTML = articles.map(function(a) {
+    var imgHtml = a.image
+      ? '<img src="' + a.image + '" alt="">'
+      : '<div class="kw-fav-mini-icon">' + a.icon + '</div>';
+    return '<div class="kw-fav-mini" onclick="closeAllFavorites();openKnowledgeArticle(\'' + a.id + '\')">' +
+      '<div class="kw-fav-mini-img">' + imgHtml + '</div>' +
+      '<div class="kw-fav-mini-info">' +
+        '<div class="kw-fav-mini-title">' + a.title + '</div>' +
+        '<div class="kw-fav-mini-meta">📖 ' + a.readTime + ' min · 🔬 ' + a.studyCount + ' Quellen</div>' +
+      '</div>' +
+      '<button class="kw-fav-mini-remove" onclick="event.stopPropagation();removeFavoriteFromPage(\'' + a.id + '\')">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+// Build hashtag keyword map from article titles
+function getHashtagKeywords() {
+  var keywords = [];
+  knowledgeArticles.forEach(function(article) {
+    // Extract the main supplement name from the title (before the dash)
+    var mainName = article.title.split('–')[0].split('-')[0].split(':')[0].trim();
+    // Also add shorter keyword variants
+    var shortNames = [mainName];
+    // Common supplement keywords from tags
+    if (article.tags) {
+      article.tags.forEach(function(t) {
+        if (t.length >= 3) shortNames.push(t);
+      });
+    }
+    shortNames.forEach(function(name) {
+      if (name.length >= 3) {
+        keywords.push({ word: name, articleId: article.id, articleTitle: mainName });
+      }
+    });
+  });
+  // Sort by length descending so longer matches take priority
+  keywords.sort(function(a, b) { return b.word.length - a.word.length; });
+  return keywords;
+}
+
+function getArticleHashtags(article) {
+  // Find which other supplements are mentioned in this article's content
+  var fullText = (article.content.intro || '');
+  if (article.content.sections) {
+    article.content.sections.forEach(function(s) { fullText += ' ' + s.content; });
+  }
+  fullText = fullText.toLowerCase();
+
+  var keywords = getHashtagKeywords();
+  var found = {};
+  var hashtags = [];
+
+  keywords.forEach(function(kw) {
+    if (kw.articleId === article.id) return; // skip self
+    if (found[kw.articleId]) return; // one per article
+    var regex = new RegExp('\\b' + kw.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    if (regex.test(fullText)) {
+      found[kw.articleId] = true;
+      hashtags.push({ word: kw.articleTitle, articleId: kw.articleId });
+    }
+  });
+
+  return hashtags;
+}
+
+function openKnowledgeSearchFor(term) {
+  // Close existing popup if any
+  closeHashtagPopup();
+
+  var q = term.toLowerCase();
+
+  // Find direct match
+  var direct = knowledgeArticles.filter(function(a) {
+    if (a.title.toLowerCase().includes(q)) return true;
+    if (a.tags && a.tags.some(function(t) { return t.toLowerCase().includes(q); })) return true;
+    return false;
+  });
+
+  // Find mentions
+  var directIds = direct.map(function(a) { return a.id; });
+  var mentions = knowledgeArticles.filter(function(a) {
+    if (directIds.indexOf(a.id) !== -1) return false;
+    var text = (a.content && a.content.intro || '') + ' ';
+    if (a.content && a.content.sections) a.content.sections.forEach(function(s) { text += s.content + ' '; });
+    return text.toLowerCase().includes(q);
+  });
+
+  var allResults = direct.concat(mentions);
+  if (allResults.length === 0) return;
+
+  // Build popup
+  var popup = document.createElement('div');
+  popup.className = 'kw-hashtag-popup';
+  popup.id = 'kwHashtagPopup';
+
+  var listHtml = allResults.slice(0, 5).map(function(a) {
+    var cat = knowledgeCategories[a.category];
+    var imgHtml = a.image
+      ? '<img src="' + a.image + '" alt="">'
+      : '<div class="kw-hp-icon" style="background:' + (cat ? cat.gradient : '#f3f4f6') + '">' + a.icon + '</div>';
+    var isDirect = directIds.indexOf(a.id) !== -1;
+    return '<div class="kw-hp-item" onclick="closeHashtagPopup();openKnowledgeArticle(\'' + a.id + '\')">' +
+      '<div class="kw-hp-thumb">' + imgHtml + '</div>' +
+      '<div class="kw-hp-info"><div class="kw-hp-title">' + a.title + '</div>' +
+      '<div class="kw-hp-meta">' + (isDirect ? '' : '<span class="kw-hp-mention">Erwähnt</span>') +
+      '📖 ' + a.readTime + ' min · 🔬 ' + a.studyCount + '</div></div></div>';
+  }).join('');
+
+  popup.innerHTML = '<div class="kw-hp-header"><span>#' + term + '</span>' +
+    '<button onclick="closeHashtagPopup()">✕</button></div>' +
+    '<div class="kw-hp-list">' + listHtml + '</div>' +
+    (allResults.length > 5 ? '<div class="kw-hp-more" onclick="closeHashtagPopup();openKnowledgeSearch();setTimeout(function(){var i=document.getElementById(\'kwSearchInput\');if(i){i.value=\'' + term.replace(/'/g, "\\'") + '\';performKnowledgeSearch(\'' + term.replace(/'/g, "\\'") + '\');}},150);">Alle ' + allResults.length + ' Ergebnisse anzeigen</div>' : '');
+
+  // Add overlay
+  var overlay = document.createElement('div');
+  overlay.className = 'kw-hashtag-overlay';
+  overlay.id = 'kwHashtagOverlay';
+  overlay.onclick = closeHashtagPopup;
+  document.body.appendChild(overlay);
+  document.body.appendChild(popup);
+
+  // Lock scroll & animate in
+  lockBody();
+  requestAnimationFrame(function() {
+    overlay.classList.add('visible');
+    popup.classList.add('visible');
+  });
+}
+
+function closeHashtagPopup() {
+  unlockBody();
+  var popup = document.getElementById('kwHashtagPopup');
+  var overlay = document.getElementById('kwHashtagOverlay');
+  if (popup) popup.remove();
+  if (overlay) overlay.remove();
+}
+
+var kwSearchOpen = false;
+
+function getKnowledgeSuggestions() {
+  // Zeige beliebte Supplements
+  var popularIds = ['vitamin-d3', 'magnesium', 'omega-3-epa-dha', 'zinkbisglycinat', 'liposomales-vitamin-c', 'vitamin-b12'];
+  var topArticles = popularIds.map(function(id) { return knowledgeArticles.find(function(a) { return a.id === id; }); }).filter(Boolean);
+  if (topArticles.length < 4) topArticles = knowledgeArticles.slice(0, 6);
+  // Also collect popular tags
+  var tagCount = {};
+  knowledgeArticles.forEach(function(a) {
+    if (a.tags) a.tags.forEach(function(t) { tagCount[t] = (tagCount[t] || 0) + 1; });
+  });
+  var topTags = Object.keys(tagCount).sort(function(a, b) { return tagCount[b] - tagCount[a]; }).slice(0, 8);
+
+  return `
+    <div class="kw-search-suggestions">
+      <div class="kw-search-section-title">Beliebte Suchbegriffe</div>
+      <div class="kw-search-tags">
+        ${topTags.map(function(t) { var cap = t.charAt(0).toUpperCase() + t.slice(1); return '<span class="kw-search-tag" onclick="performKnowledgeSearchFromTag(\'' + t + '\')">' + cap + '</span>'; }).join('')}
+      </div>
+      <div class="kw-search-section-title" style="margin-top:20px">Beliebte Artikel</div>
+      <div class="kw-article-list">
+        ${topArticles.map(function(a) { return renderArticleRowCard(a); }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function performKnowledgeSearchFromTag(tag) {
+  var input = document.getElementById('kwSearchInput');
+  if (input) { input.value = tag; }
+  performKnowledgeSearch(tag);
 }
 
 function openKnowledgeSearch() {
-  showToast('Wissenssuche kommt bald!');
+  const appContainer = document.querySelector('#knowledgeScreen .app');
+  if (!appContainer) return;
+
+  kwSearchOpen = true;
+
+  // Hide sticky search bar
+  var kwTsa = document.getElementById('kwTopSearchArea');
+  if (kwTsa) kwTsa.classList.remove('scroll-visible');
+
+  // Hide main content
+  var main = document.getElementById('knowledgeMain');
+  if (main) main.style.display = 'none';
+  var catView = document.getElementById('knowledgeCategoryView');
+  if (catView) catView.style.display = 'none';
+
+  // Remove old search page if exists
+  var oldSearch = document.querySelector('.kw-search-page');
+  if (oldSearch) oldSearch.remove();
+
+  var searchPage = document.createElement('div');
+  searchPage.className = 'kw-search-page';
+  searchPage.innerHTML = `
+    <div class="kw-search-header">
+      <button onclick="closeKnowledgeSearch()" style="color:var(--text-dark);background:#f1f3f5;border:none;width:36px;height:36px;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
+      <div class="kw-search-input-wrap">
+        <input type="text" id="kwSearchInput" placeholder="Supplement suchen..." autofocus oninput="performKnowledgeSearch(this.value)">
+        <button id="kwSearchClear" style="display:none;background:none;border:none;font-size:16px;cursor:pointer;color:#aaa;padding:0 4px" onclick="clearKnowledgeSearch()">✕</button>
+      </div>
+    </div>
+    <div class="kw-search-results" id="kwSearchResults">
+      ${getKnowledgeSuggestions()}
+    </div>
+  `;
+  appContainer.appendChild(searchPage);
+  window.scrollTo(0, 0);
+
+  setTimeout(function() {
+    var input = document.getElementById('kwSearchInput');
+    if (input) input.focus();
+  }, 100);
+}
+
+function closeKnowledgeSearch() {
+  kwSearchOpen = false;
+  var searchPage = document.querySelector('.kw-search-page');
+  if (searchPage) searchPage.remove();
+  var main = document.getElementById('knowledgeMain');
+  if (main) main.style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function clearKnowledgeSearch() {
+  var input = document.getElementById('kwSearchInput');
+  if (input) { input.value = ''; input.focus(); }
+  var clearBtn = document.getElementById('kwSearchClear');
+  if (clearBtn) clearBtn.style.display = 'none';
+  var results = document.getElementById('kwSearchResults');
+  if (results) results.innerHTML = getKnowledgeSuggestions();
+}
+
+function performKnowledgeSearch(query) {
+  var clearBtn = document.getElementById('kwSearchClear');
+  var resultsContainer = document.getElementById('kwSearchResults');
+  if (!resultsContainer) return;
+
+  if (clearBtn) clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+
+  if (query.length < 2) {
+    resultsContainer.innerHTML = getKnowledgeSuggestions();
+    return;
+  }
+
+  var q = query.toLowerCase();
+
+  // Tier 1: Direct matches (title, subtitle, tags)
+  var directResults = knowledgeArticles.filter(function(article) {
+    if (article.title.toLowerCase().includes(q)) return true;
+    if (article.subtitle.toLowerCase().includes(q)) return true;
+    if (article.tags && article.tags.some(function(t) { return t.toLowerCase().includes(q); })) return true;
+    return false;
+  });
+
+  // Tier 2: Mentioned in content (contains #hashtag references)
+  var directIds = directResults.map(function(a) { return a.id; });
+  var mentionResults = knowledgeArticles.filter(function(article) {
+    if (directIds.indexOf(article.id) !== -1) return false; // already in direct
+    // Search in article body content
+    if (article.content && article.content.intro && article.content.intro.toLowerCase().includes(q)) return true;
+    if (article.content && article.content.sections) {
+      return article.content.sections.some(function(s) {
+        return s.content.toLowerCase().includes(q);
+      });
+    }
+    return false;
+  });
+
+  if (directResults.length === 0 && mentionResults.length === 0) {
+    resultsContainer.innerHTML = `
+      <div class="kw-search-hint">
+        <p>Keine Ergebnisse für "${query}"</p>
+        <p style="font-size:12px;color:#aaa;margin-top:4px">Versuche einen anderen Suchbegriff</p>
+      </div>
+    `;
+    return;
+  }
+
+  var totalCount = directResults.length + mentionResults.length;
+  var html = '<div class="kw-search-count">' + totalCount + ' Ergebnis' + (totalCount !== 1 ? 'se' : '') + '</div>';
+
+  if (directResults.length > 0) {
+    html += '<div class="kw-article-list">' + directResults.map(function(a) { return renderArticleRowCard(a); }).join('') + '</div>';
+  }
+
+  if (mentionResults.length > 0) {
+    html += '<div class="kw-search-section-title" style="margin-top:20px">Erwähnt in #' + query + '</div>';
+    html += '<div class="kw-article-list">' + mentionResults.map(function(a) { return renderArticleRowCard(a); }).join('') + '</div>';
+  }
+
+  resultsContainer.innerHTML = html;
 }
 
 // ===============================
@@ -10687,6 +10252,13 @@ function removeMatrixItem(idx) {
 // SUPPLEMENT SELECTOR
 // ===============================
 function openSupplementSelector() {
+  if (!currentUser) {
+    showConfirmDialog('Anmeldung erforderlich', 'Melde dich an, um deine persönlichen Supplements zu importieren.', 'Jetzt anmelden', function() {
+      showCustomerAuth();
+      setCustomerAuthMode('login');
+    });
+    return;
+  }
   if (mySupplements.length === 0) {
     showToast('Keine Supplements in "Meine Supplements"');
     return;
@@ -10924,12 +10496,12 @@ function loadSavedAnalysis(idx) {
 }
 
 function deleteSavedAnalysis(idx) {
-  if (!confirm('Diese gespeicherte Analyse löschen?')) return;
-  
-  savedAnalyses.splice(idx, 1);
-  saveSavedAnalyses();
-  renderSavedSearches();
-  showToast('Analyse gelöscht');
+  showConfirmDialog('Analyse löschen', 'Möchtest du diese gespeicherte Analyse wirklich löschen?', 'Löschen', function() {
+    savedAnalyses.splice(idx, 1);
+    saveSavedAnalyses();
+    renderSavedSearches();
+    showToast('Analyse gelöscht');
+  }, true);
 }
 
 function saveCurrentAnalysis() {
@@ -11875,13 +11447,14 @@ function editMedication(idx) {
 }
 
 function deleteMedication(idx) {
-  if (confirm(`${myMedications[idx].name} wirklich entfernen?`)) {
+  var name = myMedications[idx] ? myMedications[idx].name : 'Medikament';
+  showConfirmDialog('Medikament entfernen', name + ' wirklich entfernen?', 'Entfernen', function() {
     myMedications.splice(idx, 1);
     saveMedications();
     renderMedications();
     updateAllScheduledIntakes();
     showToast('Medikament entfernt');
-  }
+  }, true);
 }
 
 // Get medications scheduled for a specific date
@@ -13385,13 +12958,23 @@ function applyPattern() {
   const startDate = new Date(startDateStr);
   const totalDays = weeks * 7;
   
+  const appliedDates = [];
   for (let i = 0; i < totalDays; i++) {
     const currentDate = new Date(startDate);
     currentDate.setDate(currentDate.getDate() + i);
+    const dateKey = formatDate(currentDate);
     const shiftType = pattern[i % pattern.length];
-    shifts[formatDate(currentDate)] = shiftType;
+    shifts[dateKey] = shiftType;
+    appliedDates.push(dateKey);
   }
-  
+
+  // Track which pattern applied which dates
+  if (selectedPattern) {
+    const patternMap = JSON.parse(localStorage.getItem('suppTreePatternDateMap') || '{}');
+    patternMap[selectedPattern] = appliedDates;
+    localStorage.setItem('suppTreePatternDateMap', JSON.stringify(patternMap));
+  }
+
   // Save shifts
   saveShifts(shifts);
 
@@ -13741,17 +13324,41 @@ function selectSavedPattern(patternId) {
 
 // Delete a custom pattern
 function deleteCustomPattern(patternId) {
-  let savedPatterns = [];
-  try {
-    const saved = localStorage.getItem('suppTreeCustomPatterns');
-    if (saved) savedPatterns = JSON.parse(saved);
-  } catch(e) {}
-  
-  savedPatterns = savedPatterns.filter(p => p.id !== patternId);
-  localStorage.setItem('suppTreeCustomPatterns', JSON.stringify(savedPatterns));
-  
-  showToast('🗑️ Vorlage gelöscht');
-  renderSavedCustomPatterns();
+  showConfirmDialog('Vorlage löschen', 'Vorlage und alle zugehörigen Schichten im Kalender löschen?', 'Löschen', function() {
+    // Remove applied shifts from calendar
+    try {
+      const patternMap = JSON.parse(localStorage.getItem('suppTreePatternDateMap') || '{}');
+      const appliedDates = patternMap[patternId];
+      if (appliedDates && appliedDates.length > 0) {
+        appliedDates.forEach(function(dateKey) {
+          delete shifts[dateKey];
+        });
+        saveShifts(shifts);
+      }
+      delete patternMap[patternId];
+      localStorage.setItem('suppTreePatternDateMap', JSON.stringify(patternMap));
+    } catch(e) {}
+
+    // Remove pattern template
+    let savedPatterns = [];
+    try {
+      const saved = localStorage.getItem('suppTreeCustomPatterns');
+      if (saved) savedPatterns = JSON.parse(saved);
+    } catch(e) {}
+
+    savedPatterns = savedPatterns.filter(p => p.id !== patternId);
+    localStorage.setItem('suppTreeCustomPatterns', JSON.stringify(savedPatterns));
+
+    // Update all displays
+    updateCalendarDisplay();
+    updateTodayShiftCard();
+    renderDayPlanner();
+    renderWeekPreview();
+    updateWeekPreviewBadge();
+
+    showToast('🗑️ Vorlage & Schichten gelöscht');
+    renderSavedCustomPatterns();
+  }, true);
 }
 
 // Variable to store custom pattern shifts for applying
@@ -17742,18 +17349,17 @@ function closeTrainingDetail() {
 }
 
 function deleteTrainingPlan(planId) {
-  // Schließe zuerst das Sheet
-  closeTrainingDetail();
-  
-  // Kurze Verzögerung damit UI reagiert
-  setTimeout(() => {
-    let plans = JSON.parse(localStorage.getItem('suppTreeTrainingPlans') || '[]');
-    plans = plans.filter(p => p.id !== planId);
-    saveTrainingPlans(plans);
+  showConfirmDialog('Trainingsplan löschen', 'Möchtest du diesen Trainingsplan wirklich löschen?', 'Löschen', function() {
+    closeTrainingDetail();
+    setTimeout(() => {
+      let plans = JSON.parse(localStorage.getItem('suppTreeTrainingPlans') || '[]');
+      plans = plans.filter(p => p.id !== planId);
+      saveTrainingPlans(plans);
 
-    renderMeinActiveTraining();
-    showToast('✅ Trainingsplan gelöscht');
-  }, 100);
+      renderMeinActiveTraining();
+      showToast('✅ Trainingsplan gelöscht');
+    }, 100);
+  }, true);
 }
 
 function editTrainingPlan(planId) {
@@ -21367,16 +20973,16 @@ function saveNote() {
 }
 
 function deleteNote(noteIndex) {
-  if (!confirm('Notiz wirklich löschen?')) return;
-  
-  const dateStr = formatDate(currentPlannerDate);
-  const notesKey = `suppTree_notes_${dateStr}`;
-  const notes = JSON.parse(localStorage.getItem(notesKey) || '[]');
-  
-  notes.splice(noteIndex, 1);
-  localStorage.setItem(notesKey, JSON.stringify(notes));
-  
-  renderDayPlanner();
+  showConfirmDialog('Notiz löschen', 'Möchtest du diese Notiz wirklich löschen?', 'Löschen', function() {
+    const dateStr = formatDate(currentPlannerDate);
+    const notesKey = `suppTree_notes_${dateStr}`;
+    const notes = JSON.parse(localStorage.getItem(notesKey) || '[]');
+
+    notes.splice(noteIndex, 1);
+    localStorage.setItem(notesKey, JSON.stringify(notes));
+
+    renderDayPlanner();
+  }, true);
 }
 
 function editNote(noteIndex) {
@@ -24056,15 +23662,17 @@ function saveCalendarEntryEdit(entryId) {
 }
 
 function deleteCalendarEntry(entryId) {
-  const entries = JSON.parse(localStorage.getItem('suppTreeCustomEntries') || '[]');
-  const filtered = entries.filter(e => e.id !== entryId);
-  localStorage.setItem('suppTreeCustomEntries', JSON.stringify(filtered));
+  showConfirmDialog('Eintrag löschen', 'Möchtest du diesen Eintrag wirklich löschen?', 'Löschen', function() {
+    const entries = JSON.parse(localStorage.getItem('suppTreeCustomEntries') || '[]');
+    const filtered = entries.filter(e => e.id !== entryId);
+    localStorage.setItem('suppTreeCustomEntries', JSON.stringify(filtered));
 
-  try { renderDayPlanner(); } catch(e) {}
-  try { renderWeekPreview(); } catch(e) {}
+    try { renderDayPlanner(); } catch(e) {}
+    try { renderWeekPreview(); } catch(e) {}
 
-  closeCalendarPlan();
-  showToast('🗑️ Eintrag gelöscht');
+    closeCalendarPlan();
+    showToast('🗑️ Eintrag gelöscht');
+  }, true);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -26623,10 +26231,22 @@ function switchScreen(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   targetScreen.classList.add('active');
   // Scroll-Bar-Reset bei Screen-Wechsel
-  if (screenId !== 'productsScreen' && typeof searchBarLastScreen !== 'undefined') {
-    searchBarLastScreen = '';
+  _mpLastScroll = 0;
+  _kwLastScroll = 0;
+  if (screenId !== 'productsScreen') {
     const _tsa = document.querySelector('.top-search-area');
     if (_tsa) _tsa.classList.remove('scroll-visible');
+  }
+  if (screenId !== 'knowledgeScreen') {
+    const _kwTsa = document.getElementById('kwTopSearchArea');
+    if (_kwTsa) _kwTsa.classList.remove('scroll-visible');
+  }
+  // Cleanup knowledge search page when leaving
+  if (screenId === 'knowledgeScreen') {
+    var _sp = document.querySelector('.kw-search-page');
+    if (_sp) _sp.remove();
+    var _km = document.getElementById('knowledgeMain');
+    if (_km) _km.style.display = 'block';
   }
 
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -28504,15 +28124,15 @@ function formatDateDisplay(dateStr) {
 }
 
 function deleteKur(kurId) {
-  if (!confirm('Kur wirklich löschen?')) return;
-  
-  let kuren = JSON.parse(localStorage.getItem('suppTreeKuren') || '[]');
-  kuren = kuren.filter(k => k.id !== kurId);
-  localStorage.setItem('suppTreeKuren', JSON.stringify(kuren));
-  
-  renderActiveKuren();
-  renderKurHistory();
-  showToast('Kur gelöscht');
+  showConfirmDialog('Kur löschen', 'Möchtest du diese Kur wirklich löschen?', 'Löschen', function() {
+    let kuren = JSON.parse(localStorage.getItem('suppTreeKuren') || '[]');
+    kuren = kuren.filter(k => k.id !== kurId);
+    localStorage.setItem('suppTreeKuren', JSON.stringify(kuren));
+
+    renderActiveKuren();
+    renderKurHistory();
+    showToast('Kur gelöscht');
+  }, true);
 }
 
 function openTrainingLog() {
@@ -30617,19 +30237,21 @@ function resizeImage(dataUrl, maxWidth, maxHeight, callback) {
 }
 
 function removeProfilePhoto() {
-  const avatarEmoji = document.getElementById('profileAvatarEmoji');
-  const avatarImage = document.getElementById('profileAvatarImage');
-  
-  avatarEmoji.textContent = '👤';
-  avatarEmoji.style.display = 'flex';
-  avatarImage.style.display = 'none';
-  avatarImage.src = '';
-  
-  localStorage.removeItem('suppTreeProfilePhoto');
-  document.getElementById('removePhotoBtn').style.display = 'none';
-  document.getElementById('profilePhotoInput').value = '';
-  
-  showToast('Foto entfernt');
+  showConfirmDialog('Foto entfernen', 'Möchtest du dein Profilfoto wirklich entfernen?', 'Entfernen', function() {
+    const avatarEmoji = document.getElementById('profileAvatarEmoji');
+    const avatarImage = document.getElementById('profileAvatarImage');
+
+    avatarEmoji.textContent = '👤';
+    avatarEmoji.style.display = 'flex';
+    avatarImage.style.display = 'none';
+    avatarImage.src = '';
+
+    localStorage.removeItem('suppTreeProfilePhoto');
+    document.getElementById('removePhotoBtn').style.display = 'none';
+    document.getElementById('profilePhotoInput').value = '';
+
+    showToast('Foto entfernt');
+  }, true);
 }
 
 function loadProfilePhoto() {
@@ -38100,11 +37722,13 @@ function applyEntryTemplate(idx) {
 }
 
 function deleteEntryTemplate(idx) {
-  const templates = JSON.parse(localStorage.getItem('suppTreeEntryTemplates') || '[]');
-  templates.splice(idx, 1);
-  localStorage.setItem('suppTreeEntryTemplates', JSON.stringify(templates));
-  renderEntryTemplates();
-  showToast('Vorlage gelöscht');
+  showConfirmDialog('Vorlage löschen', 'Möchtest du diese Vorlage wirklich löschen?', 'Löschen', function() {
+    const templates = JSON.parse(localStorage.getItem('suppTreeEntryTemplates') || '[]');
+    templates.splice(idx, 1);
+    localStorage.setItem('suppTreeEntryTemplates', JSON.stringify(templates));
+    renderEntryTemplates();
+    showToast('Vorlage gelöscht');
+  }, true);
 }
 
 // Icon picker clicks
@@ -40339,54 +39963,57 @@ function taShowAnfrageDetail(id){
 document.addEventListener('DOMContentLoaded', initApp);
 
 // Smart Search Header - Hide on scroll down, show on scroll up
-let lastScrollTop = 0;
+let _mpLastScroll = 0;
+let _kwLastScroll = 0;
 let scrollThreshold = 8;
-let searchBarLastScreen = '';
 (function initSearchBarScroll() {
-  const tsa = document.querySelector('.top-search-area');
-  if (!tsa) return;
-
   window.addEventListener('scroll', () => {
-    const productsScreen = document.getElementById('productsScreen');
-    if (!productsScreen || !productsScreen.classList.contains('active')) {
-      tsa.classList.remove('scroll-visible');
-      return;
-    }
-
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-    // Reset wenn gerade zum productsScreen gewechselt
-    if (searchBarLastScreen !== 'productsScreen') {
-      lastScrollTop = scrollTop;
-      searchBarLastScreen = 'productsScreen';
-      tsa.classList.remove('scroll-visible');
+    // --- Marktplatz (Products) ---
+    const tsa = document.querySelector('.top-search-area');
+    const productsScreen = document.getElementById('productsScreen');
+    if (tsa && productsScreen && productsScreen.classList.contains('active')) {
+      const scrollDiff = scrollTop - _mpLastScroll;
+      const inlineSearch = document.querySelector('.inline-search-area');
+      if (inlineSearch) {
+        const rect = inlineSearch.getBoundingClientRect();
+        if (rect.bottom > 33) {
+          tsa.classList.remove('scroll-visible');
+          _mpLastScroll = scrollTop;
+          return;
+        }
+      }
+      if (scrollDiff < -scrollThreshold) tsa.classList.add('scroll-visible');
+      else if (scrollDiff > scrollThreshold) tsa.classList.remove('scroll-visible');
+      _mpLastScroll = scrollTop;
       return;
     }
+    if (tsa) tsa.classList.remove('scroll-visible');
 
-    const scrollDiff = scrollTop - lastScrollTop;
-
-    // Prüfe ob die statische Suchleiste noch sichtbar ist
-    const inlineSearch = document.querySelector('.inline-search-area');
-    if (inlineSearch) {
-      const rect = inlineSearch.getBoundingClientRect();
-      // Statische Leiste noch im Viewport → fixed verstecken
-      if (rect.bottom > 33) {
-        tsa.classList.remove('scroll-visible');
-        lastScrollTop = scrollTop;
-        return;
+    // --- Wissen (Knowledge) ---
+    const kwTsa = document.getElementById('kwTopSearchArea');
+    const knowledgeScreen = document.getElementById('knowledgeScreen');
+    const kwArticleView = document.getElementById('knowledgeArticleView');
+    const kwArticleOpen = kwArticleView && kwArticleView.style.display === 'block';
+    if (kwTsa && knowledgeScreen && knowledgeScreen.classList.contains('active') && !kwSearchOpen && !kwArticleOpen && !kwFavPageOpen) {
+      const scrollDiff = scrollTop - _kwLastScroll;
+      const kwSearch = document.querySelector('.kw-search');
+      if (kwSearch) {
+        const rect = kwSearch.getBoundingClientRect();
+        if (rect.bottom > 33) {
+          kwTsa.classList.remove('scroll-visible');
+          _kwLastScroll = scrollTop;
+          return;
+        }
       }
+      if (scrollDiff < -scrollThreshold) kwTsa.classList.add('scroll-visible');
+      else if (scrollDiff > scrollThreshold) kwTsa.classList.remove('scroll-visible');
+      _kwLastScroll = scrollTop;
+      return;
     }
+    if (kwTsa) kwTsa.classList.remove('scroll-visible');
 
-    // Hoch scrollen → zeigen
-    if (scrollDiff < -scrollThreshold) {
-      tsa.classList.add('scroll-visible');
-    }
-    // Runter scrollen → verstecken
-    else if (scrollDiff > scrollThreshold) {
-      tsa.classList.remove('scroll-visible');
-    }
-
-    lastScrollTop = scrollTop;
   }, { passive: true });
 })();
 

@@ -21065,9 +21065,7 @@ input.input-error,
 }
 
 #knowledgeScreen .app {
-  height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  /* no separate scroll — uses window scroll like other screens */
 }
 
 /* Hero Header */
@@ -21103,6 +21101,7 @@ input.input-error,
   margin: -18px 16px 0;
   position: relative;
   z-index: 2;
+  pointer-events: auto;
 }
 .kw-search-inner {
   display: flex;
@@ -21131,6 +21130,124 @@ input.input-error,
   color: #aaa;
 }
 
+/* Sticky Search Bar (scroll-up reveal like Marktplatz) */
+.kw-top-search-area {
+  position: fixed;
+  top: 33px;
+  left: 0;
+  right: 0;
+  z-index: 101;
+  padding: 8px 16px 8px;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transform: translateY(calc(-100% - 40px));
+  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), box-shadow 0.28s ease;
+  pointer-events: none;
+}
+.kw-top-search-area.scroll-visible {
+  transform: translateY(0);
+  pointer-events: auto;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+.kw-top-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f1f3f5;
+  padding: 11px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Search Page */
+.kw-search-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+.kw-search-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}
+.kw-search-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f3f5;
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+.kw-search-input-wrap span {
+  font-size: 15px;
+  opacity: 0.5;
+}
+.kw-search-input-wrap input {
+  border: none;
+  background: transparent;
+  flex: 1;
+  font-size: 15px;
+  color: var(--text-dark);
+  outline: none;
+}
+.kw-search-input-wrap input::placeholder {
+  color: #aaa;
+}
+.kw-search-results {
+  padding: 16px;
+}
+.kw-search-hint {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 14px;
+}
+.kw-search-count {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.kw-search-suggestions {
+  padding-top: 4px;
+}
+.kw-search-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.kw-search-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.kw-search-tag {
+  display: inline-block;
+  padding: 7px 14px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.kw-search-tag:active {
+  background: var(--green-accent);
+  color: #fff;
+  border-color: var(--green-accent);
+}
+
 /* Sections */
 .kw-section {
   padding: 0 16px;
@@ -21157,51 +21274,249 @@ input.input-error,
   cursor: pointer;
 }
 
-/* Category Chips — horizontal scroll */
-.kw-categories {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding: 0 16px 4px;
-  margin-top: 20px;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Favorites empty state */
+.kw-fav-empty {
+  text-align: center;
+  padding: 24px 20px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1.5px dashed #e0e0e0;
 }
-.kw-categories::-webkit-scrollbar { display: none; }
+.kw-fav-empty-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+.kw-fav-empty p {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+.kw-fav-empty span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
 
-.kw-cat-chip {
+/* Favorites compact list */
+.kw-fav-list {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+}
+.kw-fav-mini {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  min-width: 76px;
-  padding: 14px 8px 12px;
-  border-radius: 7px;
+  gap: 12px;
+  background: #fff;
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
   cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
+  transition: all 0.15s;
+}
+.kw-fav-mini:active {
+  transform: scale(0.98);
+  background: #f9fafb;
+}
+.kw-fav-mini-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
   flex-shrink: 0;
 }
-.kw-cat-chip:active {
-  transform: scale(0.95);
+.kw-fav-mini-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.kw-cat-icon {
-  width: 44px; height: 44px;
-  border-radius: 7px;
+.kw-fav-mini-icon {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(4px);
+  background: #f3f4f6;
+  font-size: 20px;
 }
-.kw-cat-chip span:last-child {
-  font-size: 11px;
+.kw-fav-mini-info {
+  flex: 1;
+  min-width: 0;
+}
+.kw-fav-mini-title {
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-dark);
-  text-align: center;
-  line-height: 1.2;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kw-fav-mini-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.kw-fav-mini-remove {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+.kw-fav-mini-remove:active {
+  color: #e74c3c;
+}
+.kw-fav-show-all {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  background: rgba(0,166,126,0.06);
+  color: var(--green-accent);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid rgba(0,166,126,0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+.kw-fav-show-all:active {
+  background: rgba(0,166,126,0.12);
+}
+
+/* Favorites full page */
+.kw-fav-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+.kw-fav-page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.kw-fav-page-header h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+.kw-fav-page-list {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Filter Tabs */
+.kw-filter-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 16px 16px 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  position: relative;
+  z-index: 3;
+  justify-content: flex-start;
+}
+.kw-filter-tabs::-webkit-scrollbar { display: none; }
+.kw-ftab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.kw-ftab span { font-size: 14px; }
+.kw-ftab.active {
+  background: var(--green-accent);
+  color: #fff;
+  border-color: var(--green-accent);
+}
+.kw-ftab:active {
+  transform: scale(0.96);
+}
+
+/* Filter Chips */
+.kw-filter-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 16px 4px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  position: relative;
+  z-index: 3;
+  justify-content: flex-start;
+}
+.kw-filter-chips::-webkit-scrollbar { display: none; }
+.kw-fchip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.kw-fchip:active {
+  transform: scale(0.96);
+  background: #e8f5e9;
+  border-color: var(--green-accent);
+}
+.kw-fchip-icon {
+  font-size: 18px;
+}
+.kw-fchip span:last-child {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+/* Filter results page */
+.kw-filter-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+.kw-filter-page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.kw-filter-page-header h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+.kw-filter-page-content {
+  padding: 16px;
 }
 
 /* Featured Card — large hero card */
@@ -21297,12 +21612,44 @@ input.input-error,
   transform: scale(0.97);
 }
 .kw-article-card-top {
-  height: 80px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 38px;
   position: relative;
+  overflow: hidden;
+  border-radius: 7px 7px 0 0;
+}
+.kw-article-card-top img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.kw-card-icon-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.kw-card-fav-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 14px;
+  background: rgba(255,255,255,0.9);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+.kw-row-fav {
+  font-size: 14px;
+  flex-shrink: 0;
 }
 .kw-article-card-body {
   padding: 14px 16px 16px;
@@ -21363,13 +21710,26 @@ input.input-error,
   background: #f9fafb;
 }
 .kw-article-row-icon {
-  width: 52px; height: 52px;
-  border-radius: 7px;
+  width: 56px; height: 56px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 26px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+.kw-article-row-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.kw-row-icon-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .kw-article-row-info {
   flex: 1;
@@ -21502,20 +21862,46 @@ input.input-error,
   gap: 4px;
 }
 .kw-art-bookmark {
-  background: none;
+  background: rgba(255,255,255,0.9);
   border: none;
   font-size: 22px;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+.kw-art-bookmark:active {
+  transform: scale(1.2);
+}
+.kw-art-bookmark.active {
+  background: rgba(255,59,48,0.1);
 }
 
+/* ===== KNOWLEDGE ARTICLE DETAIL — Redesign ===== */
 .kw-art-hero {
   text-align: center;
-  padding: 8px 20px 28px;
+  padding: 32px 20px 28px;
+  background: linear-gradient(180deg, #f0fdf4 0%, #fff 100%);
+  position: relative;
+}
+.kw-art-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 20px; right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green-accent), transparent);
+  opacity: 0.3;
 }
 .kw-art-hero-icon {
   font-size: 56px;
   margin-bottom: 14px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
 }
 .kw-art-hero h1 {
   font-size: 24px;
@@ -21528,67 +21914,165 @@ input.input-error,
 .kw-art-hero-meta {
   display: flex;
   justify-content: center;
-  gap: 14px;
+  gap: 16px;
   font-size: 12px;
   color: var(--text-muted);
 }
+.kw-art-hero-meta span {
+  background: #fff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* Hero with image */
+.kw-art-hero.has-image {
+  padding: 0;
+  background: none;
+  position: relative;
+  overflow: hidden;
+}
+.kw-art-hero.has-image::after { display: none; }
+.kw-art-hero-img {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+.kw-art-hero-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.kw-art-hero-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 100%;
+  background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.6) 100%);
+}
+.kw-art-hero-text {
+  position: relative;
+  padding: 20px 20px 24px;
+  margin-top: -70px;
+  z-index: 2;
+  text-align: center;
+}
+.kw-art-hero-text h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.kw-art-hero.has-image .kw-art-hero-meta span {
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 
 .kw-art-body {
-  padding: 0 20px;
+  padding: 0 16px 20px;
 }
 
+/* Table of Contents */
 .kw-art-toc {
-  background: #f8fafc;
-  border-radius: 7px;
+  background: #fff;
+  border-radius: 12px;
   padding: 18px;
-  margin-bottom: 28px;
-  border: 1px solid rgba(0,0,0,0.04);
+  margin-bottom: 24px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 .kw-art-toc h4 {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--text-dark);
+  color: var(--text-muted);
   margin-bottom: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 .kw-art-toc ul {
   list-style: none;
   padding: 0; margin: 0;
+  counter-reset: toc-counter;
 }
 .kw-art-toc li {
-  padding: 9px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.04);
+  padding: 10px 12px;
+  border-radius: 8px;
   font-size: 13px;
   color: var(--green-accent);
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: padding-left 0.2s;
+  transition: all 0.2s;
+  counter-increment: toc-counter;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2px;
+}
+.kw-art-toc li::before {
+  content: counter(toc-counter);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0,166,126,0.1);
+  color: var(--green-accent);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 .kw-art-toc li:active {
-  padding-left: 6px;
+  background: rgba(0,166,126,0.06);
 }
 .kw-art-toc li:last-child {
   border-bottom: none;
 }
 
+/* Intro */
 .kw-art-intro {
   font-size: 15px;
   line-height: 1.75;
   color: var(--text-dark);
-  margin-bottom: 28px;
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 12px;
+  border-left: 4px solid var(--green-accent);
+  font-style: italic;
 }
 
+/* Sections = Cards */
 .kw-art-section {
-  margin-bottom: 32px;
+  margin-bottom: 16px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 18px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  transition: box-shadow 0.2s;
+}
+.kw-art-section:active {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 .kw-art-section h2 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text-dark);
   margin-bottom: 14px;
-  padding-left: 12px;
-  border-left: 3px solid var(--green-accent);
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--green-accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .kw-art-section h3 {
   font-size: 15px;
@@ -21600,23 +22084,27 @@ input.input-error,
   font-size: 14px;
   line-height: 1.75;
   color: #374151;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .kw-art-section ul {
-  margin: 12px 0;
-  padding-left: 20px;
+  margin: 10px 0;
+  padding-left: 18px;
 }
 .kw-art-section li {
   font-size: 14px;
   line-height: 1.65;
   color: #374151;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  padding-left: 4px;
+}
+.kw-art-section li::marker {
+  color: var(--green-accent);
 }
 
 /* Sources */
 .kw-art-sources {
   background: #f8fafc;
-  border-radius: 7px;
+  border-radius: 12px;
   padding: 18px;
   margin-top: 32px;
   border: 1px solid rgba(0,0,0,0.04);
@@ -21632,27 +22120,42 @@ input.input-error,
 
 /* Info Boxes */
 .info-box {
-  background: #f8fafc;
-  border-radius: 7px;
-  padding: 16px;
-  margin: 16px 0;
-  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 16px 0 4px;
+  position: relative;
+  overflow: hidden;
+}
+.info-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 4px;
 }
 .info-box.warning {
-  background: #fffbeb;
-  border-left: 3px solid #f59e0b;
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 1px solid rgba(245,158,11,0.15);
+}
+.info-box.warning::before {
+  background: #f59e0b;
 }
 .info-box.tip {
-  background: #f0fdf4;
-  border-left: 3px solid #22c55e;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid rgba(34,197,94,0.15);
+}
+.info-box.tip::before {
+  background: #22c55e;
 }
 .info-box.study {
-  background: #eff6ff;
-  border-left: 3px solid #3b82f6;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid rgba(59,130,246,0.15);
+}
+.info-box.study::before {
+  background: #3b82f6;
 }
 .info-box-title {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -21661,7 +22164,8 @@ input.input-error,
 .info-box p {
   font-size: 13px;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
+  color: #374151;
 }
 
 /* Dosage Table */
@@ -21670,8 +22174,9 @@ input.input-error,
   border-collapse: collapse;
   margin: 16px 0;
   font-size: 13px;
-  border-radius: 7px;
+  border-radius: 12px;
   overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.06);
 }
 .dosage-table th,
 .dosage-table td {
@@ -21680,7 +22185,7 @@ input.input-error,
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 .dosage-table th {
-  background: #f1f5f9;
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
   font-weight: 600;
   font-size: 12px;
   color: #64748b;
@@ -21688,36 +22193,157 @@ input.input-error,
 .dosage-table tr:last-child td {
   border-bottom: none;
 }
+.dosage-table tr:nth-child(even) td {
+  background: #f8fafc;
+}
+
+/* Dosierung Box */
+.kw-dos-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.kw-dos-box h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+.kw-dos-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.kw-dos-tab {
+  flex: 1;
+  padding: 8px 6px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  color: var(--text-dark);
+}
+.kw-dos-tab.active {
+  background: var(--green-accent);
+  color: #fff;
+  border-color: var(--green-accent);
+}
+.kw-dos-tab:active {
+  transform: scale(0.97);
+}
+.kw-dos-cards {
+  position: relative;
+}
+.kw-dos-card {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+.kw-dos-card.active {
+  display: flex;
+}
+.kw-dos-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+.kw-dos-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.kw-dos-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green-accent);
+}
+.kw-dos-source {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  padding-top: 2px;
+}
+.kw-dos-source a {
+  color: var(--green-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.kw-dos-hinweis {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #fff7ed;
+  border-radius: 8px;
+  border-left: 3px solid #f59e0b;
+  font-size: 12px;
+  color: #92400e;
+  line-height: 1.4;
+}
+.kw-dos-disclaimer {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e5e7eb;
+  font-size: 10px;
+  color: #aaa;
+  line-height: 1.4;
+}
+.kw-dos-detected {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
 
 /* Sources Section */
 .sources-section {
-  background: #f8fafc;
-  border-radius: 7px;
-  padding: 18px;
-  margin-top: 32px;
-  border: 1px solid rgba(0,0,0,0.04);
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 18px;
+  margin-top: 20px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 .sources-section h4 {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sources-section h4::before {
+  content: '📚';
+  font-size: 14px;
 }
 .source-item {
   font-size: 12px;
-  color: var(--text-muted);
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.04);
+  color: #64748b;
+  padding: 10px 12px;
+  border-radius: 8px;
   line-height: 1.5;
+  margin-bottom: 6px;
+  background: #f8fafc;
+  border: 1px solid rgba(0,0,0,0.03);
 }
 .source-item:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 .source-item a {
   color: var(--green-accent);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
 }
 .source-item .source-type {
   display: inline-block;
@@ -21727,7 +22353,172 @@ input.input-error,
   padding: 2px 8px;
   border-radius: 6px;
   margin-left: 6px;
+  font-weight: 700;
+}
+.sources-glossary {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sources-glossary span {
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+/* Hashtag bar above TOC */
+.kw-art-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.kw-hashtag {
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(0,166,126,0.08);
+  color: var(--green-accent);
   font-weight: 600;
+  font-size: 13px;
+  border-radius: 20px;
+  border: 1px solid rgba(0,166,126,0.2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.kw-hashtag:active {
+  background: var(--green-accent);
+  color: #fff;
+}
+
+/* Hashtag mini popup */
+.kw-hashtag-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  z-index: 999;
+  transition: background 0.25s;
+}
+.kw-hashtag-overlay.visible {
+  background: rgba(0,0,0,0.35);
+}
+.kw-hashtag-popup {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #fff;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -4px 30px rgba(0,0,0,0.15);
+  max-height: 55vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.kw-hashtag-popup.visible {
+  transform: translateY(0);
+}
+.kw-hp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-radius: 18px 18px 0 0;
+}
+.kw-hp-header span {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green-accent);
+}
+.kw-hp-header button {
+  background: #f1f3f5;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  color: #888;
+}
+.kw-hp-list {
+  padding: 8px 0;
+}
+.kw-hp-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.kw-hp-item:active {
+  background: #f5f5f5;
+}
+.kw-hp-thumb {
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.kw-hp-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.kw-hp-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.kw-hp-info {
+  flex: 1;
+  min-width: 0;
+}
+.kw-hp-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kw-hp-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.kw-hp-mention {
+  display: inline-block;
+  background: rgba(0,166,126,0.1);
+  color: var(--green-accent);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+.kw-hp-more {
+  text-align: center;
+  padding: 12px;
+  font-size: 13px;
+  color: var(--green-accent);
+  font-weight: 600;
+  cursor: pointer;
+  border-top: 1px solid #f0f0f0;
+}
+.kw-hp-more:active {
+  background: #f9f9f9;
 }
 
 /* ===== SYMPTOMS / NÄHRSTOFF-ANALYSE SCREEN — Modern Redesign ===== */
@@ -40010,14 +40801,13 @@ input.input-error,
     </div>
 
     <div class="matrix-content">
-      <!-- Ampel-Übersicht: Med-Supplement Wechselwirkungen -->
-      <div class="ampel-uebersicht-section" id="ampelUebersichtSection">
+      <!-- Ampel-Übersicht ausgeblendet für Launch -->
+      <div class="ampel-uebersicht-section" id="ampelUebersichtSection" style="display:none !important">
         <div class="ampel-uebersicht-header" onclick="toggleAmpelUebersicht()">
           <span>🚦 Medikament-Wechselwirkungen</span>
           <span class="ampel-toggle" id="ampelToggle">›</span>
         </div>
         <div id="ampelUebersichtContainer" style="display:none;">
-          <!-- Filled by renderAmpelUebersicht() -->
         </div>
       </div>
 
@@ -40155,9 +40945,10 @@ input.input-error,
           <button class="matrix-import-btn" onclick="openSupplementSelector()">
             <span>📥</span> <span data-i18n="stplus.supplements">Meine Supplements</span>
           </button>
-          <button class="matrix-import-btn meds" onclick="openMedicationSelector()">
+          <!-- Medikamente-Button ausgeblendet für Launch -->
+          <!-- <button class="matrix-import-btn meds" onclick="openMedicationSelector()">
             <span>💊</span> <span data-i18n="meds.title">Medikamente</span>
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -40226,9 +41017,9 @@ input.input-error,
   </div>
 </div>
 
-<!-- Medication Selector Sheet -->
-<div class="overlay" id="medSelectorOverlay" onclick="closeMedicationSelector()"></div>
-<div class="bottom-sheet med-selector-sheet" id="medSelectorSheet">
+<!-- Medication Selector Sheet (ausgeblendet für Launch) -->
+<div class="overlay" id="medSelectorOverlay" onclick="closeMedicationSelector()" style="display:none !important"></div>
+<div class="bottom-sheet med-selector-sheet" id="medSelectorSheet" style="display:none !important">
   <div class="sheet-header">
     <h2 data-i18n="meds.select">Medikamente auswählen</h2>
     <button class="sheet-close" onclick="closeMedicationSelector()">✕</button>
@@ -40257,7 +41048,8 @@ input.input-error,
   <div class="sheet-content">
     <div class="matrix-add-tabs">
       <button class="matrix-tab active" onclick="switchMatrixAddTab('supplements')">💊 Supplements</button>
-      <button class="matrix-tab" onclick="switchMatrixAddTab('medications')">💉 Medikamente</button>
+      <!-- Medikamente-Tab ausgeblendet für Launch -->
+      <!-- <button class="matrix-tab" onclick="switchMatrixAddTab('medications')">💉 Medikamente</button> -->
     </div>
     
     <!-- Supplements Tab -->
@@ -40347,8 +41139,8 @@ input.input-error,
   </div>
 </div>
 
-<!-- Meine Medikamente Screen (accessible from ST+) -->
-<div class="screen" id="medicationsScreen">
+<!-- Meine Medikamente Screen (ausgeblendet für Launch) -->
+<div class="screen" id="medicationsScreen" style="display:none !important">
   <div class="app">
     <div class="sub-header">
       <button class="back-btn" onclick="goBackToST()">←</button>
@@ -40385,9 +41177,9 @@ input.input-error,
   </div>
 </div>
 
-<!-- Add Medication Sheet -->
-<div class="overlay" id="addMedOverlay" onclick="closeAddMedication()"></div>
-<div class="bottom-sheet add-med-sheet" id="addMedSheet">
+<!-- Add Medication Sheet (ausgeblendet für Launch) -->
+<div class="overlay" id="addMedOverlay" onclick="closeAddMedication()" style="display:none !important"></div>
+<div class="bottom-sheet add-med-sheet" id="addMedSheet" style="display:none !important">
   <div class="sheet-header">
     <h2>Medikament hinzufügen</h2>
     <button class="sheet-close" onclick="closeAddMedication()">✕</button>
@@ -40606,11 +41398,18 @@ input.input-error,
 <div class="screen" id="knowledgeScreen">
   <div class="app">
 
+    <!-- Fixed Suchleiste Wissen (nur beim Hochscrollen sichtbar) -->
+    <div class="kw-top-search-area" id="kwTopSearchArea">
+      <div class="kw-top-search-bar" onclick="openKnowledgeSearch()">
+        <span style="color:#aaa;font-size:14px">Supplement suchen...</span>
+      </div>
+    </div>
+
     <div class="knowledge-content" id="knowledgeMain">
       <!-- Hero Header -->
       <div class="kw-hero">
         <button class="back-btn" onclick="goBackToST()" style="position:absolute;top:14px;left:12px;color:#fff;background:rgba(255,255,255,0.15);border:none;width:34px;height:34px;border-radius:7px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
-        <div style="padding-top:6px">
+        <div style="padding-top:36px">
           <div class="kw-hero-title" data-i18n="knowledge.hub">Wissens-Hub</div>
           <div class="kw-hero-sub">Evidenzbasiertes Wissen rund um Supplements</div>
         </div>
@@ -40619,35 +41418,25 @@ input.input-error,
       <!-- Search -->
       <div class="kw-search" onclick="openKnowledgeSearch()">
         <div class="kw-search-inner">
-          <span>🔍</span>
-          <input type="text" placeholder="Themen, Supplements, Studien..." readonly>
+          <input type="text" placeholder="Supplement suchen..." readonly>
         </div>
       </div>
 
-      <!-- Category Chips — horizontal scroll -->
-      <div class="kw-categories" id="knowledgeCategories">
+      <!-- Filter System -->
+      <div class="kw-filter-tabs" id="kwFilterTabs">
+        <!-- Filled by JS -->
+      </div>
+      <div class="kw-filter-chips" id="kwFilterChips">
         <!-- Filled by JS -->
       </div>
 
-      <!-- Featured Article -->
-      <div class="kw-section">
+      <!-- Bookmarked / Favorites — always visible -->
+      <div class="kw-section" id="bookmarkedSection">
         <div class="kw-section-head">
-          <h3>Empfohlen</h3>
+          <h3>Deine Favoriten</h3>
         </div>
-        <div class="kw-featured" onclick="openKnowledgeArticle('vitamin-d-complete')">
-          <div class="kw-featured-inner">
-            <div class="kw-featured-emoji">☀️</div>
-            <div class="kw-featured-text">
-              <div class="kw-featured-badge">Meistgelesen</div>
-              <h4>Vitamin D: Der komplette Guide</h4>
-              <p>Dosierung, Timing, Cofaktoren und aktuelle Forschung</p>
-              <div class="kw-featured-meta">
-                <span>📖 15 min</span>
-                <span>🔬 12 Studien</span>
-                <span>👁️ 4.2k</span>
-              </div>
-            </div>
-          </div>
+        <div id="bookmarkedArticles">
+          <!-- Filled by JS -->
         </div>
       </div>
 
@@ -40658,16 +41447,6 @@ input.input-error,
         </div>
       </div>
       <div class="kw-article-scroll" id="popularArticles">
-        <!-- Filled by JS -->
-      </div>
-
-      <!-- For Shift Workers -->
-      <div class="kw-section">
-        <div class="kw-section-head">
-          <h3>Für Schichtarbeiter</h3>
-        </div>
-      </div>
-      <div class="kw-article-scroll" id="shiftWorkerArticles">
         <!-- Filled by JS -->
       </div>
 
@@ -40702,7 +41481,7 @@ input.input-error,
     <div class="knowledge-article-view" id="knowledgeArticleView" style="display: none;">
       <div class="kw-art-header">
         <button class="kw-art-back" onclick="closeKnowledgeArticle()">← Zurück</button>
-        <button class="kw-art-bookmark" onclick="toggleArticleBookmark()">🔖</button>
+        <button class="kw-art-bookmark" onclick="toggleArticleBookmark()">🤍</button>
       </div>
 
       <div id="articleContent">
@@ -40971,13 +41750,13 @@ input.input-error,
               </div>
             </div>
 
-            <div class="profile-field">
+            <!-- Medikamente-Feld ausgeblendet für Launch -->
+            <!--<div class="profile-field">
               <label>💊 Deine Medikamente</label>
               <div class="profile-meds-linked" id="profileMedicationsDisplay">
-                <!-- Filled by JS from central medications system -->
               </div>
               <p class="profile-field-hint">Medikamente werden automatisch aus deinem Medikamente-Bereich übernommen.</p>
-            </div>
+            </div>-->
 
             <div class="profile-field">
               <label>Bekannte Unverträglichkeiten & Allergien</label>
@@ -41628,8 +42407,8 @@ input.input-error,
       </button>
     </div>
 
-    <!-- Meine Medikamente -->
-    <div class="mein-section-clean">
+    <!-- Meine Medikamente (ausgeblendet für Launch) -->
+    <div class="mein-section-clean" style="display:none !important">
       <div class="mein-section-header">
         <div class="mein-section-title">
           <span class="section-icon">💉</span>
@@ -41764,10 +42543,9 @@ input.input-error,
       
       <div class="mein-matrix-card" onclick="switchScreen('matrixScreen')">
         <div class="matrix-card-content">
-          <p>Prüfe Wechselwirkungen zwischen deinen Supplements und Medikamenten</p>
+          <p>Prüfe Wechselwirkungen zwischen deinen Supplements</p>
           <div class="matrix-card-stats" id="meinMatrixStats">
             <span class="matrix-stat">💊 <span id="meinMatrixSupps">0</span> Supplements</span>
-            <span class="matrix-stat">💉 <span id="meinMatrixMeds">0</span> Medikamente</span>
           </div>
         </div>
         <span class="matrix-card-arrow">→</span>
@@ -43795,11 +44573,11 @@ input.input-error,
       </div>
     </div>
     
-    <!-- Medikamente -->
-    <div class="hp-section">
+    <!-- Medikamente (ausgeblendet für Launch) -->
+    <div class="hp-section" style="display:none !important">
       <h4 class="hp-section-title">💊 Aktuelle Medikamente</h4>
       <p class="hp-hint">Wichtig für Wechselwirkungsprüfung:</p>
-      
+
       <div class="hp-chip-group wrap">
         <button class="hp-med-chip" data-med="bloodthinner" onclick="toggleHPMed(this)">💉 Blutverdünner</button>
         <button class="hp-med-chip" data-med="bloodpressure" onclick="toggleHPMed(this)">❤️ Blutdruckmedikamente</button>
