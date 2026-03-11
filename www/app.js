@@ -3237,10 +3237,14 @@ async function loadKnowledgeFromSupabase() {
       return;
     }
 
-    // Filter: Verbotene/Arzneimittel ausblenden
+    // Filter: Verbotene/Arzneimittel/Novel Food ausblenden
     data = data.filter(function(s) {
       var k = (s.kategorie || '').toLowerCase();
-      return !k.includes('verboten') && !k.includes('nicht empfohlen') && !k.includes('arzneimittel');
+      var n = (s.name || '').toLowerCase();
+      if (k.includes('verboten') || k.includes('nicht empfohlen') || k.includes('arzneimittel') || k.includes('novel food') || k.includes('experimentell') || k.includes('cannabinoid') || k.includes('stimulanz') || k.includes('beruhigungsmittel')) return false;
+      if (n.includes('novel food') || n.includes('nicht verkehrsfähig') || n.includes('nicht empfohlen') || n.includes('btmg') || n.includes('verboten') || n.includes('eingestellt')) return false;
+      if (n.startsWith('⚠') || n.startsWith('⛔') || n.startsWith('🔬')) return false;
+      return true;
     });
 
     // Transform zu knowledgeArticles Format
@@ -3641,7 +3645,9 @@ function openKnowledgeCategory(categoryId) {
   document.getElementById('knowledgeMain').style.display = 'none';
   document.getElementById('knowledgeCategoryView').style.display = 'block';
   document.getElementById('knowledgeArticleView').style.display = 'none';
-  
+  var topSearch = document.getElementById('kwTopSearchArea');
+  if (topSearch) topSearch.style.display = 'none';
+
   // Reset scroll position
   const appContainer = document.querySelector('#knowledgeScreen .app');
   if (appContainer) appContainer.scrollTop = 0;
@@ -3693,6 +3699,8 @@ function renderCategoryArticles() {
 function closeKnowledgeCategory() {
   document.getElementById('knowledgeMain').style.display = 'block';
   document.getElementById('knowledgeCategoryView').style.display = 'none';
+  var topSearch = document.getElementById('kwTopSearchArea');
+  if (topSearch) topSearch.style.display = '';
   currentKnowledgeCategory = null;
 }
 
@@ -3709,6 +3717,8 @@ async function openKnowledgeArticle(articleId) {
   document.getElementById('knowledgeMain').style.display = 'none';
   document.getElementById('knowledgeCategoryView').style.display = 'none';
   document.getElementById('knowledgeArticleView').style.display = 'block';
+  var topSearch = document.getElementById('kwTopSearchArea');
+  if (topSearch) topSearch.style.display = 'none';
 
   // Reset scroll position
   window.scrollTo(0, 0);
@@ -3942,11 +3952,14 @@ function scrollToSection(index) {
 
 function closeKnowledgeArticle() {
   document.getElementById('knowledgeArticleView').style.display = 'none';
-  
+  var topSearch = document.getElementById('kwTopSearchArea');
+
   if (currentKnowledgeCategory) {
     document.getElementById('knowledgeCategoryView').style.display = 'block';
+    if (topSearch) topSearch.style.display = 'none';
   } else {
     document.getElementById('knowledgeMain').style.display = 'block';
+    if (topSearch) topSearch.style.display = '';
   }
 }
 
