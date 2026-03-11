@@ -4128,17 +4128,14 @@ function renderArticleContent(article) {
       <span>${i + 1}.</span>
       ${source.authors} (${source.year}). <em>${source.title}</em>.
       ${source.journal ? source.journal + '.' : ''}
-      ${source.doi ? `<a href="https://doi.org/${source.doi}" target="_blank">DOI*</a>` : ''}
-      ${source.url ? `<a href="${source.url}" target="_blank">Link</a>` : ''}
       <span class="source-type">${source.type === 'study' ? 'Studie**' : source.type === 'meta-analysis' ? 'Meta-Analyse**' : source.type === 'guideline' ? 'Leitlinie***' : 'Quelle'}</span>
     </div>
   `).join('');
 
   // Build glossary footnotes
   var glossaryItems = [];
-  if (hasDoi) glossaryItems.push('<span><strong>*DOI</strong> = Digital Object Identifier – eine eindeutige Kennung, über die du die Originalquelle direkt online findest.</span>');
-  if (hasStudy) glossaryItems.push('<span><strong>**Studie</strong> = Eine wissenschaftliche Untersuchung, die in einer Fachzeitschrift veröffentlicht und von anderen Wissenschaftlern geprüft wurde.</span>');
-  if (hasGuideline) glossaryItems.push('<span><strong>***Leitlinie</strong> = Eine offizielle Empfehlung von anerkannten Fachgesellschaften (z. B. DGE, EFSA, WHO).</span>');
+  if (hasStudy) glossaryItems.push('<span><strong>Studie</strong> = Eine wissenschaftliche Untersuchung, die in einer Fachzeitschrift veröffentlicht und von anderen Wissenschaftlern geprüft wurde.</span>');
+  if (hasGuideline) glossaryItems.push('<span><strong>Leitlinie</strong> = Eine offizielle Empfehlung von anerkannten Fachgesellschaften (z. B. DGE, EFSA, WHO).</span>');
   var glossaryHtml = glossaryItems.length > 0 ? '<div class="sources-glossary">' + glossaryItems.join('') + '</div>' : '';
 
   // Hero image or fallback to icon
@@ -4236,7 +4233,6 @@ function renderDosierungBox(articleId) {
       '<div class="kw-dos-row"><span class="kw-dos-label">Obergrenze</span><span class="kw-dos-value">' + d.obergrenze + (d.obergrenze !== 'keine festgelegt' ? ' ' + dos.einheit : '') + '</span></div>' +
       '<div class="kw-dos-source">' + d.quelle +
         (d.jahr && !d.quelle.includes(d.jahr) ? ' (' + d.jahr + ')' : '') +
-        (d.url ? ' <a href="' + d.url + '" target="_blank">↗</a>' : '') +
       '</div>' +
     '</div>';
   }).join('');
