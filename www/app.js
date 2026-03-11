@@ -4108,9 +4108,10 @@ function renderArticleContent(article) {
       `;
     }
 
+    var isSafety = section.title.includes('Sicherheit') || section.title.includes('Warnhinweise');
     return `
-      <div class="kw-art-section" id="section-${index}">
-        <h2>${section.title}</h2>
+      <div class="kw-art-section${isSafety ? ' kw-art-section--safety' : ''}" id="section-${index}">
+        <h2>${isSafety ? '⚠️ ' : ''}${section.title}</h2>
         ${content}
         ${infoBoxHtml}
       </div>
