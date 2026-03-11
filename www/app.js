@@ -4480,26 +4480,33 @@ function removeFavoriteFromPage(articleId) {
 }
 
 // Build hashtag keyword map from article titles
+// Begriffe die NICHT als Hashtag-Keywords dienen (Präfixe, Abkürzungen, generische Wörter)
+var _kwHashtagBlacklist = new Set([
+  'l','d','dl','r','s','n','alpha','beta','gamma','delta','epsilon','omega',
+  'vitamin','mineral','form','typ','art','bei','und','mit','von','für','aus',
+  'plus','pro','anti','mono','poly','tri','di','bis','co','neo','iso',
+  'extrakt','komplex','pulver','kapseln','tabletten'
+]);
+
 function getHashtagKeywords() {
   var keywords = [];
   knowledgeArticles.forEach(function(article) {
-    // Extract the main supplement name from the title (before the dash)
-    var mainName = article.title.split('–')[0].split('-')[0].split(':')[0].trim();
-    // Also add shorter keyword variants
+    // Vollständigen Titel verwenden, NICHT beim Bindestrich abschneiden
+    var mainName = article.title.split('–')[0].split(':')[0].trim();
     var shortNames = [mainName];
-    // Common supplement keywords from tags
     if (article.tags) {
       article.tags.forEach(function(t) {
-        if (t.length >= 3) shortNames.push(t);
+        if (t.length >= 4) shortNames.push(t);
       });
     }
     shortNames.forEach(function(name) {
-      if (name.length >= 3) {
+      var nameLower = name.toLowerCase();
+      // Mindestens 4 Zeichen, nicht auf der Blacklist, kein reiner Buchstabe/Präfix
+      if (name.length >= 4 && !_kwHashtagBlacklist.has(nameLower) && !/^[a-z]{1,2}$/i.test(name)) {
         keywords.push({ word: name, articleId: article.id, articleTitle: mainName });
       }
     });
   });
-  // Sort by length descending so longer matches take priority
   keywords.sort(function(a, b) { return b.word.length - a.word.length; });
   return keywords;
 }
