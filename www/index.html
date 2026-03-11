@@ -22002,22 +22002,29 @@ input.input-error,
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
-.products-back-banner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--green-light, #E8F5E9);
-  border-bottom: 1px solid rgba(0,166,126,0.2);
-  padding: 10px 16px;
-  cursor: pointer;
+/* Floating Zurück-Button im Marktplatz (kommt vom Wissen-Artikel) */
+.kw-back-float {
+  position: fixed;
+  bottom: 78px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--green-dark, #1a5a3a);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 11px 22px;
   font-size: 14px;
-  font-weight: 600;
-  color: var(--green-dark, #1a5a3a);
-  transition: background 0.15s;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  cursor: pointer;
+  z-index: 500;
+  white-space: nowrap;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
-.products-back-banner:active { background: #d0ead0; }
-.products-back-arrow { font-size: 16px; }
-.products-back-text { flex: 1; }
+.kw-back-float:active {
+  transform: translateX(-50%) scale(0.96);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
 
 /* ===== KNOWLEDGE ARTICLE DETAIL — Redesign ===== */
 .kw-art-hero {
@@ -38113,12 +38120,6 @@ input.input-error,
      =============================== -->
 <div class="screen" id="productsScreen">
   <div class="app">
-    <!-- Zurück-Banner (erscheint nur wenn man vom Wissen-Artikel kommt) -->
-    <div class="products-back-banner" id="productsBackBanner" style="display:none" onclick="returnToKnowledgeArticle()">
-      <span class="products-back-arrow">←</span>
-      <span class="products-back-text" id="productsBackText">Zurück zum Artikel</span>
-    </div>
-
     <!-- Hero Banner Carousel -->
     <div class="hero-banner-carousel" id="heroBannerCarousel">
       <div class="hero-banner-track" id="heroBannerTrack">
@@ -47676,6 +47677,11 @@ body.sheet-open {
     document.head.appendChild(ppScript);
   }
 </script>
+
+<!-- Floating Zurück-Button (erscheint wenn man vom Wissen-Artikel in den Marktplatz kommt) -->
+<button class="kw-back-float" id="productsBackBanner" style="display:none" onclick="returnToKnowledgeArticle()">
+  ← <span id="productsBackText">Zurück zum Artikel</span>
+</button>
 
 </body>
 </html>
