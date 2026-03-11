@@ -3580,10 +3580,13 @@ async function loadKnowledgeFromSupabase() {
       var catKey = _kwMapCategory(s.kategorie);
       var icon = _kwCategoryIcons[s.unterkategorie] || _kwCategoryIcons[s.kategorie] || '📦';
       var sections = _kwBuildSections(s);
-      var allText = [s.wirkung, s.einnahme_hinweis, s.warnhinweise, s.bioverfuegbarkeit_info,
-        s.kombinations_hinweis, s.natuerliche_quellen, s.zielgruppen_schwangerschaft,
-        s.zielgruppen_kinder, s.zielgruppen_senioren].filter(Boolean).join(' ');
-      var readTime = Math.max(3, Math.ceil(allText.length / 900));
+      var allText = [s.wirkung, s.wirkung_kurz, s.einnahme_zeitpunkt, s.einnahme_mit,
+        s.einnahme_ohne, s.einnahme_hinweis, s.max_einzeldosis, s.warnhinweise,
+        s.kontraindikationen, s.nebenwirkungen_ueberdosis, s.ueberdosis_symptome,
+        s.bioverfuegbarkeit_info, s.qualitaetsmerkmale, s.kombinations_hinweis,
+        s.natuerliche_quellen, s.schwangerschaft, s.stillzeit, s.kinder_geeignet,
+        s.senioren_hinweis, s.health_claims_efsa].filter(Boolean).join(' ');
+      var readTime = Math.max(2, Math.ceil(allText.length / 1200));
       // Clean name: remove emojis, trailing notes, and branded parts in parens
       var cleanName = _kwCleanText(s.name || '')
         .replace(/\s*[-–]\s*(NOVEL FOOD|BtMG|NICHT VERKEHRSFÄHIG|Marketing|LEITLINIE|Moderate Evidenz|KEINE|UNZUREICHENDE|GEFÄHRLICH)[^]*/i, '')
@@ -3595,13 +3598,24 @@ async function loadKnowledgeFromSupabase() {
       return {
         id: s.id,
         title: cleanName || s.name,
-        subtitle: _kwCleanText(s.wirkung_kurz || ''),
+        subtitle: (function() {
+          var wk = _kwCleanText(s.wirkung_kurz || '');
+          if (!wk) return '';
+          // Wenn es eine Kommaliste von Keywords ist (kein Verb/Punkt), in Satz umwandeln
+          var isKeywordList = wk.indexOf('.') === -1 && wk.indexOf(' ') !== -1 && wk.split(',').length >= 2;
+          if (isKeywordList) {
+            var parts = wk.split(',').map(function(p){ return p.trim(); }).filter(Boolean);
+            var last = parts.pop();
+            return 'Wichtig für ' + (parts.length > 0 ? parts.join(', ') + ' & ' + last : last);
+          }
+          return wk;
+        })(),
         icon: icon,
         image: _kwLocalImage(s.id),
         category: catKey,
         subcategory: _kwMapSubcategory(s.unterkategorie),
         readTime: readTime,
-        studyCount: 5, // Platzhalter — exakte Zahl wird beim Öffnen geladen
+        studyCount: null, // wird nach Laden aktualisiert
         views: 0,
         featured: false,
         tags: _kwBuildTags(s),
@@ -3618,6 +3632,14 @@ async function loadKnowledgeFromSupabase() {
 
     _kwDataLoaded = true;
     console.log('Supabase: ' + knowledgeArticles.length + ' Supplements geladen');
+
+    // Studienanzahl im Hintergrund nachladen (ein Request für alle)
+    _kwFetch('studien_evidenz', 'select=supplement_id&limit=5000').then(function(rows) {
+      if (!rows) return;
+      var counts = {};
+      rows.forEach(function(r) { counts[r.supplement_id] = (counts[r.supplement_id] || 0) + 1; });
+      knowledgeArticles.forEach(function(a) { a.studyCount = counts[a.id] || 0; });
+    }).catch(function(){});
   } catch(e) {
     console.error('Supabase Knowledge Load Error:', e);
   }
@@ -3945,7 +3967,7 @@ function renderArticleScrollCard(article) {
         <p>${article.subtitle}</p>
         <div class="kw-article-card-meta">
           <span>📖 ${article.readTime} min</span>
-          <span class="kw-studies">🔬 ${article.studyCount}</span>
+          ${article.studyCount ? '<span class="kw-studies">🔬 ' + article.studyCount + '</span>' : ''}
         </div>
       </div>
     </div>
@@ -3968,7 +3990,7 @@ function renderArticleRowCard(article) {
         <p>${article.subtitle}</p>
         <div class="kw-article-row-meta">
           <span>📖 ${article.readTime} min</span>
-          <span class="kw-studies">🔬 ${article.studyCount}</span>
+          ${article.studyCount ? '<span class="kw-studies">🔬 ' + article.studyCount + '</span>' : ''}
         </div>
       </div>
       ${favIndicator}
