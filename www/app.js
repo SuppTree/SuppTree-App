@@ -3602,11 +3602,15 @@ async function loadKnowledgeFromSupabase() {
           var wk = _kwCleanText(s.wirkung_kurz || '');
           if (!wk) return '';
           // Wenn es eine Kommaliste von Keywords ist (kein Verb/Punkt), in Satz umwandeln
-          var isKeywordList = wk.indexOf('.') === -1 && wk.indexOf(' ') !== -1 && wk.split(',').length >= 2;
+          var isKeywordList = wk.indexOf('.') === -1 && wk.split(',').length >= 2;
           if (isKeywordList) {
             var parts = wk.split(',').map(function(p){ return p.trim(); }).filter(Boolean);
             var last = parts.pop();
-            return 'Wichtig für ' + (parts.length > 0 ? parts.join(', ') + ' & ' + last : last);
+            var joined = parts.length > 0 ? parts.join(', ') + ' & ' + last : last;
+            // Präfix variieren basierend auf Supplement-ID
+            var prefixes = ['Gut für', 'Unterstützt', 'Fördert', 'Hilft bei', 'Wichtig für', 'Ideal für', 'Stärkt'];
+            var hash = s.id.split('').reduce(function(acc, c) { return acc + c.charCodeAt(0); }, 0);
+            return prefixes[hash % prefixes.length] + ' ' + joined;
           }
           return wk;
         })(),
