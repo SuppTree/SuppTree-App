@@ -3543,7 +3543,7 @@ async function loadArticleDetails(articleId) {
         title: st.indikation || st.ergebnis_kurz || '',
         journal: st.studie_typ || '',
         year: st.evidenz_level || '',
-        url: st.pmid ? 'https://pubmed.ncbi.nlm.nih.gov/' + st.pmid + '/' : ''
+        pmid: st.pmid || ''
       });
     });
     if (quellen) quellen.forEach(function(q) {
@@ -4128,7 +4128,8 @@ function renderArticleContent(article) {
       <span>${i + 1}.</span>
       ${source.authors} (${source.year}). <em>${source.title}</em>.
       ${source.journal ? source.journal + '.' : ''}
-      <span class="source-type">${source.type === 'study' ? 'Studie**' : source.type === 'meta-analysis' ? 'Meta-Analyse**' : source.type === 'guideline' ? 'Leitlinie***' : 'Quelle'}</span>
+      ${source.pmid ? '<span class="source-pmid">PMID: ' + source.pmid + '</span>' : ''}
+      <span class="source-type">${source.type === 'study' ? 'Studie' : source.type === 'meta-analysis' ? 'Meta-Analyse' : source.type === 'guideline' ? 'Leitlinie' : 'Quelle'}</span>
     </div>
   `).join('');
 
