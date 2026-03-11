@@ -3093,6 +3093,13 @@ var knowledgeArticles = [];
 var _kwDataLoaded = false;
 var _kwArticleCache = {}; // Cache für Detail-Daten (Quellen, Dosierungen etc.)
 
+// Emoji/Sonderzeichen aus Text entfernen
+function _kwCleanText(text) {
+  if (!text) return '';
+  // Remove leading non-alphanumeric/non-letter characters (emojis, stars, etc.)
+  return text.replace(/^[^\w\dÄÖÜäöüßA-Za-z(]+/, '').replace(/\s{2,}/g, ' ').trim();
+}
+
 // Supabase Knowledge Fetch Helper
 async function _kwFetch(table, query) {
   var url = SUPABASE_URL + '/rest/v1/' + table + '?' + query;
@@ -3258,16 +3265,14 @@ async function loadKnowledgeFromSupabase() {
       var sections = _kwBuildSections(s);
       var readTime = Math.max(2, Math.ceil((s.wirkung || '').length / 500));
       // Clean name: remove ALL emojis and trailing notes (legal, evidence, etc.)
-      var cleanName = (s.name || '')
-        .replace(/[⚠️⛔🔬❌❓⭐🏆✅☆★]+/g, '')
+      var cleanName = _kwCleanText(s.name || '')
         .replace(/\s*[-–]\s*(NOVEL FOOD|BtMG|NICHT VERKEHRSFÄHIG|Marketing|LEITLINIE|Moderate Evidenz|KEINE|UNZUREICHENDE|GEFÄHRLICH)[^]*/i, '')
-        .replace(/\s{2,}/g, ' ')
         .trim();
 
       return {
         id: s.id,
         title: cleanName || s.name,
-        subtitle: (s.wirkung_kurz || '').replace(/[⚠️⛔🔬❌❓⭐🏆✅☆★]+/g, '').replace(/\s{2,}/g, ' ').trim(),
+        subtitle: _kwCleanText(s.wirkung_kurz || ''),
         icon: icon,
         image: null,
         category: catKey,
