@@ -3303,6 +3303,12 @@ function _kwBuildSections(s) {
   var name = _kwCleanText(s.name || '');
   var fix = _kwFixUmlauts;
 
+  // 0. Was ist X? — erste Section, aus _kwBuildWasIst
+  var wasIstParas = _kwBuildWasIst(s);
+  if (wasIstParas.length > 0) {
+    sections.push({ title: 'Was ist ' + name + '?', content: wasIstParas.join('\n\n') });
+  }
+
   // 1. Wirkung
   if (s.wirkung) {
     var wRaw = _kwCleanText(s.wirkung || '');
@@ -4318,41 +4324,26 @@ function renderArticleContent(article) {
     hashtagHtml += '</div></div>';
   }
 
-  // "Was ist X?" Tab-Inhalt aus vorberechneten Paragraphen
-  var wasIstParas = (article.wasIst || []).map(function(p) { return '<p>' + p + '</p>'; }).join('');
-  var wasIstTabHtml = '<div class="kw-art-was-ist-tab">' + wasIstParas + '</div>';
-
   container.innerHTML = `
     ${heroContent}
 
     <div class="kw-art-body">
-      <div class="kw-art-tab-bar">
-        <button class="kw-art-tab active" onclick="kwSwitchArtTab(this,'was-ist')">Was ist ${article.title}?</button>
-        <button class="kw-art-tab" onclick="kwSwitchArtTab(this,'details')">Details</button>
+      ${hashtagHtml}
+      <div class="kw-art-toc">
+        <h4>Inhaltsverzeichnis</h4>
+        <ul>${toc}</ul>
       </div>
 
-      <div class="kw-art-tab-panel" id="kw-tab-was-ist">
-        ${wasIstTabHtml}
-      </div>
+      <p class="kw-art-intro">${article.content.intro}</p>
 
-      <div class="kw-art-tab-panel" id="kw-tab-details" style="display:none">
-        ${hashtagHtml}
-        <div class="kw-art-toc">
-          <h4>Inhaltsverzeichnis</h4>
-          <ul>${toc}</ul>
-        </div>
+      ${sections}
 
-        <p class="kw-art-intro">${article.content.intro}</p>
+      ${renderDosierungBox(article.id)}
 
-        ${sections}
-
-        ${renderDosierungBox(article.id)}
-
-        <div class="sources-section">
-          <h4>Quellen & Studien</h4>
-          ${sources}
-          ${glossaryHtml}
-        </div>
+      <div class="sources-section">
+        <h4>Quellen & Studien</h4>
+        ${sources}
+        ${glossaryHtml}
       </div>
     </div>
   `;
@@ -4392,14 +4383,6 @@ function renderDosierungBox(articleId) {
   '</div>';
 }
 
-function kwSwitchArtTab(btn, tabId) {
-  var bar = btn.closest('.kw-art-tab-bar');
-  bar.querySelectorAll('.kw-art-tab').forEach(function(t) { t.classList.remove('active'); });
-  btn.classList.add('active');
-  var body = btn.closest('.kw-art-body');
-  body.querySelectorAll('.kw-art-tab-panel').forEach(function(p) { p.style.display = 'none'; });
-  body.querySelector('#kw-tab-' + tabId).style.display = 'block';
-}
 
 function switchDosCountry(country, articleId) {
   kwSelectedCountry = country;
