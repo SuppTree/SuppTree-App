@@ -4392,16 +4392,16 @@ function renderArticleContent(article) {
     var visibleTags = hashtags.slice(0, maxVisible);
     var hiddenTags = hashtags.slice(maxVisible);
     hashtagHtml = '<div class="kw-art-hashtags-wrap">' +
-      '<p class="kw-hashtags-label">✅ Gut kombinierbar mit — tippe zum Öffnen:</p>' +
+      '<p class="kw-hashtags-label">Gut bei</p>' +
       '<div class="kw-art-hashtags">' +
       visibleTags.map(function(h) {
-        return '<span class="kw-hashtag" onclick="event.stopPropagation();openKnowledgeSearchFor(\'' + h.word.replace(/'/g, "\\'") + '\')">#' + h.word + '</span>';
+        return '<span class="kw-hashtag">#' + h.word + '</span>';
       }).join('');
     if (hiddenTags.length > 0) {
       hashtagHtml += '<span class="kw-hashtag kw-hashtag-more" onclick="event.stopPropagation();this.parentElement.classList.toggle(\'expanded\');this.textContent=this.parentElement.classList.contains(\'expanded\')?\' weniger\':\'+ ' + hiddenTags.length + ' mehr\'">+ ' + hiddenTags.length + ' mehr</span>';
       hashtagHtml += '<div class="kw-hashtags-hidden">' +
         hiddenTags.map(function(h) {
-          return '<span class="kw-hashtag" onclick="event.stopPropagation();openKnowledgeSearchFor(\'' + h.word.replace(/'/g, "\\'") + '\')">#' + h.word + '</span>';
+          return '<span class="kw-hashtag">#' + h.word + '</span>';
         }).join('') + '</div>';
     }
     hashtagHtml += '</div></div>';
@@ -4712,29 +4712,23 @@ function getHashtagKeywords() {
 }
 
 function getArticleHashtags(article) {
-  // Hashtags aus "kombiniert_gut_mit" Feld — echte Supplement-Kombinationen aus DB
+  // Hashtags aus symptome_ziele — wofür das Supplement gut ist (Müdigkeit, Schlaf, Nervensystem...)
   var raw = article._raw;
-  if (!raw || !raw.kombiniert_gut_mit) return [];
+  if (!raw || !raw.symptome_ziele) return [];
 
-  var hashtags = [];
   var seen = {};
-
-  raw.kombiniert_gut_mit.split(',').forEach(function(name) {
-    var n = _kwFixUmlauts(name.trim());
-    // Vitamin-Buchstaben groß, erster Buchstabe groß
-    n = n.replace(/\bvitamin[-\s]+([a-z])(\d*[a-z]?\d*)/gi, function(m, l, rest) { return 'Vitamin ' + l.toUpperCase() + rest; });
-    n = n.charAt(0).toUpperCase() + n.slice(1);
-    if (!n || n.length < 3) return;
-    var nLower = n.toLowerCase();
-    if (seen[nLower]) return;
-    var match = knowledgeArticles.find(function(a) {
-      return a.id !== article.id && a.title.toLowerCase() === nLower;
+  return raw.symptome_ziele.split(',')
+    .map(function(k) { return _kwFixUmlauts(k.trim()); })
+    .filter(function(k) { return k.length > 1 && k.length < 35; })
+    .filter(function(k) {
+      var kl = k.toLowerCase();
+      if (seen[kl]) return false;
+      seen[kl] = true;
+      return true;
+    })
+    .map(function(k) {
+      return { word: k.charAt(0).toUpperCase() + k.slice(1), articleId: null };
     });
-    seen[nLower] = true;
-    hashtags.push({ word: n, articleId: match ? match.id : null });
-  });
-
-  return hashtags;
 }
 
 function openKnowledgeSearchFor(term) {
