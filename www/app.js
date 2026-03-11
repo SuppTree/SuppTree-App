@@ -3197,7 +3197,55 @@ function _kwFixUmlauts(t) {
     'schwaechend': 'schwächend', 'Muskelschwaeche': 'Muskelschwäche',
     'Saeure': 'Säure', 'saeure': 'säure',
     'Aehnlich': 'Ähnlich', 'aehnlich': 'ähnlich',
-    'Schaerfere': 'Schärfere', 'Kaelte': 'Kälte'
+    'Schaerfere': 'Schärfere', 'Kaelte': 'Kälte',
+    // Gesundheits- & Symptom-Keywords (symptome_ziele Feld)
+    'Muedigkeit': 'Müdigkeit', 'muedigkeit': 'Müdigkeit',
+    'Erschoepfung': 'Erschöpfung', 'erschoepfung': 'erschöpfung',
+    'Schlafstoerung': 'Schlafstörung', 'schlafstoerung': 'schlafstörung',
+    'Schlafstoerungen': 'Schlafstörungen', 'schlafstoerungen': 'schlafstörungen',
+    'Stoerung': 'Störung', 'stoerung': 'störung', 'Stoerungen': 'Störungen',
+    'Entzuendung': 'Entzündung', 'entzuendung': 'entzündung',
+    'Entzuendungen': 'Entzündungen', 'entzuendungen': 'entzündungen',
+    'Gedaechtnis': 'Gedächtnis', 'gedaechtnis': 'gedächtnis',
+    'Krampfe': 'Krämpfe', 'kraempfe': 'krämpfe', 'Kraempfe': 'Krämpfe',
+    'Muskelkraempfe': 'Muskelkrämpfe', 'muskelkraempfe': 'muskelkrämpfe',
+    'Knochen': 'Knochen',
+    'Knochenstaerke': 'Knochenstärke', 'knochenstaerke': 'knochenstärke',
+    'Immunstaerkung': 'Immunstärkung', 'immunstaerkung': 'immunstärkung',
+    'Staerkung': 'Stärkung', 'staerkung': 'stärkung',
+    'Staerke': 'Stärke', 'staerke': 'stärke',
+    'Ernaehrung': 'Ernährung', 'ernaehrung': 'ernährung',
+    'Wachstum': 'Wachstum',
+    'Schilddruesengesundheit': 'Schilddrüsengesundheit',
+    'Schilddruese': 'Schilddrüse', 'schilddruese': 'schilddrüse',
+    'Stimmungsaufhellung': 'Stimmungsaufhellung',
+    'Stressbewaeltigung': 'Stressbewältigung', 'stressbewaeltigung': 'stressbewältigung',
+    'Bewaeltigung': 'Bewältigung', 'bewaeltigung': 'bewältigung',
+    'Gelaenkgesundheit': 'Gelenkgesundheit',
+    'Gelenkgesundheit': 'Gelenkgesundheit',
+    'Herzgesundheit': 'Herzgesundheit',
+    'Blutdruckregulierung': 'Blutdruckregulierung',
+    'Blutdrucksenkung': 'Blutdrucksenkung',
+    'Haertegrad': 'Härtegrad', 'haertegrad': 'härtegrad',
+    'Koerper': 'Körper', 'koerper': 'körper',
+    'Erhoehung': 'Erhöhung', 'erhoehung': 'erhöhung',
+    'Foerderung': 'Förderung', 'foerderung': 'förderung',
+    'Unterstuetzung': 'Unterstützung', 'unterstuetzung': 'unterstützung',
+    'Maenner': 'Männer', 'maenner': 'männer',
+    'Frauen': 'Frauen',
+    'Knochendichte': 'Knochendichte',
+    'Zaehne': 'Zähne', 'zaehne': 'zähne',
+    'Haarausfall': 'Haarausfall',
+    'Naegel': 'Nägel', 'naegel': 'nägel',
+    'Hautalterung': 'Hautalterung',
+    'Zellerneuerung': 'Zellerneuerung',
+    'Blutarmut': 'Blutarmut',
+    'Anhaemie': 'Anämie', 'anaemie': 'anämie',
+    'Blutgerinnung': 'Blutgerinnung',
+    'Zellschutz': 'Zellschutz',
+    'Nervensystem': 'Nervensystem',
+    'Sporterholung': 'Sporterholung',
+    'Leistungsfaehigkeit': 'Leistungsfähigkeit', 'leistungsfaehigkeit': 'leistungsfähigkeit'
   };
   var result = t;
   for (var key in replacements) {
@@ -3358,11 +3406,11 @@ function _kwBuildSections(s) {
   // 4. Kombinationen — mit Erklärungen
   var kombi = '';
   if (s.kombiniert_gut_mit) {
-    var gutMit = s.kombiniert_gut_mit.split(',').map(function(k){ var t=k.trim().replace(/-/g,' '); return t.charAt(0).toUpperCase()+t.slice(1); });
+    var gutMit = s.kombiniert_gut_mit.split(',').map(function(k){ return fix(k.trim()); });
     kombi += name + ' wirkt besonders gut in Kombination mit:\n' + gutMit.map(function(k){ return '• ' + k; }).join('\n') + '\n\n';
   }
   if (s.nicht_zusammen_mit) {
-    var nichtMit = s.nicht_zusammen_mit.split(',').map(function(k){ var t=k.trim().replace(/-/g,' '); return t.charAt(0).toUpperCase()+t.slice(1); });
+    var nichtMit = s.nicht_zusammen_mit.split(',').map(function(k){ return fix(k.trim()); });
     kombi += '**Nicht gleichzeitig einnehmen mit:**\n' + nichtMit.map(function(k){ return '• ' + k; }).join('\n');
   }
   if (s.zeitlicher_abstand_h && s.zeitlicher_abstand_h !== 'None' && s.zeitlicher_abstand_h !== '0' && s.zeitlicher_abstand_h !== 0) {
