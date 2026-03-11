@@ -4194,9 +4194,14 @@ async function openKnowledgeArticle(articleId) {
   }
 }
 
+var _kwReturnArticleId = null; // merkt sich welcher Artikel geöffnet war
+
 function openArticleInMarketplace() {
   var article = knowledgeArticles.find(function(a) { return a.id === currentArticleId; });
   if (!article) return;
+
+  // Artikel-ID merken für Rücknavigation
+  _kwReturnArticleId = currentArticleId;
 
   // Basis-Name: alles vor Klammer/Bindestrich
   var searchTerm = article.title.split('(')[0].split('–')[0].trim();
@@ -4212,13 +4217,21 @@ function openArticleInMarketplace() {
   closeKnowledgeArticle();
   switchScreen('productsScreen');
 
-  // Nach Screen-Wechsel: activeSearchQuery setzen + Grid neu rendern
+  // Nach Screen-Wechsel: activeSearchQuery setzen + Grid neu rendern + Banner zeigen
   setTimeout(function() {
     activeSearchQuery = searchTerm;
     var input = document.getElementById('productSearchInput');
     if (input) input.value = searchTerm;
     if (typeof updateActiveFiltersBar === 'function') updateActiveFiltersBar();
     if (typeof renderProductsGridNew === 'function') renderProductsGridNew();
+
+    // Zurück-Banner zeigen
+    var banner = document.getElementById('productsBackBanner');
+    var bannerText = document.getElementById('productsBackText');
+    if (banner) {
+      if (bannerText) bannerText.textContent = '← Zurück zu ' + article.title;
+      banner.style.display = 'flex';
+    }
 
     if (!found) {
       var toast = document.createElement('div');
@@ -4229,6 +4242,17 @@ function openArticleInMarketplace() {
       setTimeout(function() { toast.classList.remove('visible'); setTimeout(function(){ toast.remove(); }, 400); }, 3500);
     }
   }, 250);
+}
+
+function returnToKnowledgeArticle() {
+  var id = _kwReturnArticleId;
+  _kwReturnArticleId = null;
+  // Banner verstecken
+  var banner = document.getElementById('productsBackBanner');
+  if (banner) banner.style.display = 'none';
+  // Zurück zur Wissen-Seite und Artikel öffnen
+  switchScreen('knowledgeScreen');
+  if (id) setTimeout(function() { openKnowledgeArticle(id); }, 100);
 }
 
 function renderArticleContent(article) {
@@ -26730,6 +26754,17 @@ function closeQuizReview() {
 // ===============================
 let _restoreScroll = null;
 function switchScreen(screenId) {
+  // Zurück-Banner verstecken wenn man den Marktplatz normal (nicht via Artikel) betritt
+  if (screenId === 'productsScreen' && !_kwReturnArticleId) {
+    var banner = document.getElementById('productsBackBanner');
+    if (banner) banner.style.display = 'none';
+  }
+  // Banner auch verstecken wenn man den Marktplatz verlässt
+  if (screenId !== 'productsScreen' && !_kwReturnArticleId) {
+    var banner = document.getElementById('productsBackBanner');
+    if (banner) banner.style.display = 'none';
+  }
+
   // Redirect old profileScreen to new menuScreen
   if (screenId === 'profileScreen') {
     screenId = 'menuScreen';

@@ -22002,6 +22002,22 @@ input.input-error,
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+.products-back-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-light, #E8F5E9);
+  border-bottom: 1px solid rgba(0,166,126,0.2);
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green-dark, #1a5a3a);
+  transition: background 0.15s;
+}
+.products-back-banner:active { background: #d0ead0; }
+.products-back-arrow { font-size: 16px; }
+.products-back-text { flex: 1; }
 
 /* ===== KNOWLEDGE ARTICLE DETAIL — Redesign ===== */
 .kw-art-hero {
@@ -38097,6 +38113,12 @@ input.input-error,
      =============================== -->
 <div class="screen" id="productsScreen">
   <div class="app">
+    <!-- Zurück-Banner (erscheint nur wenn man vom Wissen-Artikel kommt) -->
+    <div class="products-back-banner" id="productsBackBanner" style="display:none" onclick="returnToKnowledgeArticle()">
+      <span class="products-back-arrow">←</span>
+      <span class="products-back-text" id="productsBackText">Zurück zum Artikel</span>
+    </div>
+
     <!-- Hero Banner Carousel -->
     <div class="hero-banner-carousel" id="heroBannerCarousel">
       <div class="hero-banner-track" id="heroBannerTrack">
