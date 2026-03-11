@@ -3561,7 +3561,7 @@ async function loadArticleDetails(articleId) {
             url: ''
           }
         },
-        hinweis: raw ? (raw.warnhinweise || '').split('.')[0] : ''
+        hinweis: raw ? _kwFixUmlauts(_kwCleanText(raw.warnhinweise || '').split('.')[0].trim()) : ''
       };
       kwDosierungen[articleId] = dosObj;
     }
@@ -4195,7 +4195,8 @@ function renderDosierungBox(articleId) {
     return '<div class="kw-dos-card' + (c === kwSelectedCountry ? ' active' : '') + '" data-country="' + c + '">' +
       '<div class="kw-dos-row"><span class="kw-dos-label">Empfehlung</span><span class="kw-dos-value">' + d.empfehlung + ' ' + dos.einheit + '</span></div>' +
       '<div class="kw-dos-row"><span class="kw-dos-label">Obergrenze</span><span class="kw-dos-value">' + d.obergrenze + (d.obergrenze !== 'keine festgelegt' ? ' ' + dos.einheit : '') + '</span></div>' +
-      '<div class="kw-dos-source">' + d.quelle + ' (' + d.jahr + ')' +
+      '<div class="kw-dos-source">' + d.quelle +
+        (d.jahr && !d.quelle.includes(d.jahr) ? ' (' + d.jahr + ')' : '') +
         (d.url ? ' <a href="' + d.url + '" target="_blank">↗</a>' : '') +
       '</div>' +
     '</div>';
