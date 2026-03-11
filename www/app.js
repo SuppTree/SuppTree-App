@@ -3589,7 +3589,17 @@ async function loadArticleDetails(articleId) {
             url: ''
           }
         },
-        hinweis: raw ? _kwFixUmlauts(_kwCleanText(raw.warnhinweise || '')).trim() : ''
+        hinweis: raw ? (function() {
+          var w = _kwFixUmlauts(_kwCleanText(raw.warnhinweise || '')).trim();
+          // Klammern mit chemischen Substanznamen entfernen — für Laien unverständlich
+          // z.B. "(besonders bei Magnesiumoxid und Citrat)" → wird entfernt
+          w = w.replace(/\s*\([^)]*(?:oxid|citrat|carbonat|sulfat|chlorid|acetat|gluconat|malat|lactat|orotat|bisglycinat|glycinat|picolinat|aspartat|tartrat|fumarat|succinat|phosphat)[^)]*\)/gi, '');
+          // Doppelte Leerzeichen bereinigen
+          w = w.replace(/\s{2,}/g, ' ').trim();
+          // Satz sauber beenden
+          if (w && !w.match(/[.!?]$/)) w += '.';
+          return w;
+        })() : ''
       };
       kwDosierungen[articleId] = dosObj;
     }
