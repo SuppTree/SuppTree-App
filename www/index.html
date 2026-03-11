@@ -22466,21 +22466,40 @@ input.input-error,
   line-height: 1.5;
 }
 
-/* Was ist X? Definition card */
-.kw-art-what-is {
-  background: linear-gradient(135deg, #e8f5e9 0%, #f0fdf4 100%);
-  border-left: 4px solid var(--green-accent, #00A67E);
-  border-radius: 0 10px 10px 0;
-  padding: 14px 16px;
-  margin-bottom: 16px;
-  font-size: 15px;
-  color: #1a2e20;
-  line-height: 1.6;
+/* Artikel Tab-Leiste (Was ist X? / Details) */
+.kw-art-tab-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--border, #e5e7eb);
 }
-.kw-art-what-is-label {
-  font-weight: 700;
-  color: var(--green-dark, #1a5a3a);
-  margin-right: 6px;
+.kw-art-tab {
+  flex: 1;
+  padding: 11px 8px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  text-align: center;
+}
+.kw-art-tab.active {
+  color: var(--green-accent, #00A67E);
+  border-bottom-color: var(--green-accent, #00A67E);
+}
+/* "Was ist X?" Tab-Inhalt */
+.kw-art-was-ist-tab p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #374151;
+  margin-bottom: 14px;
+}
+.kw-art-was-ist-tab p:last-child {
+  margin-bottom: 0;
 }
 
 /* Hashtag bar above TOC */

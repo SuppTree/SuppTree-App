@@ -3242,6 +3242,61 @@ function _kwFixUmlauts(t) {
   return result;
 }
 
+// Build "Was ist X?" Erklärungstext aus Supabase-Feldern
+function _kwBuildWasIst(s) {
+  var name = _kwCleanText(s.name || '');
+  var fix = _kwFixUmlauts;
+  var paragraphs = [];
+
+  // Paragraph 1: Definition — was für ein Supplement ist es?
+  var kat = ((s.unterkategorie || '') + ' ' + (s.kategorie || '')).toLowerCase();
+  var typ = 'ein Nahrungsergänzungsmittel';
+  if (kat.includes('mineral')) typ = 'ein essenzielles Mineral';
+  else if (kat.includes('vitamin')) typ = 'ein Vitamin';
+  else if (kat.includes('aminosäure') || kat.includes('aminosaeure')) typ = 'eine Aminosäure';
+  else if (kat.includes('fettsäure') || kat.includes('fettsaeure') || kat.includes('omega')) typ = 'eine essentielle Fettsäure';
+  else if (kat.includes('adaptogen')) typ = 'ein pflanzliches Adaptogen';
+  else if (kat.includes('antioxidans')) typ = 'ein Antioxidans';
+  else if (kat.includes('probiotik')) typ = 'ein Probiotikum';
+  else if (kat.includes('coenzym')) typ = 'ein Coenzym';
+  else if (kat.includes('pflanzlich') || kat.includes('extrakt')) typ = 'ein pflanzlicher Wirkstoff';
+  else if (kat.includes('spurenelement')) typ = 'ein Spurenelement';
+
+  var p1 = name + ' ist ' + typ + '.';
+  if (s.wirkung_kurz) p1 += ' ' + fix(s.wirkung_kurz).replace(/\.$/, '') + '.';
+  paragraphs.push(p1);
+
+  // Paragraph 2: Bekannte Namen / Synonyme
+  if (s.auch_bekannt_als) {
+    var aliases = s.auch_bekannt_als.split(',').map(function(a) { return a.trim(); }).filter(function(a) { return a.length > 1; });
+    if (aliases.length > 0) {
+      paragraphs.push(name + ' wird auch bezeichnet als: ' + aliases.join(', ') + '.');
+    }
+  }
+
+  // Paragraph 3: Natürliche Quellen
+  if (s.natuerliche_quellen && s.natuerliche_quellen !== 'None') {
+    var quellen = fix(s.natuerliche_quellen).split(',').map(function(q) { return q.trim(); }).filter(Boolean);
+    if (quellen.length > 0) {
+      paragraphs.push('Natürlich kommt ' + name + ' in folgenden Lebensmitteln vor: ' + quellen.slice(0, 5).join(', ') + (quellen.length > 5 ? ' und weiteren.' : '.'));
+    }
+  }
+
+  // Paragraph 4: Besonderheiten (fettlöslich, vegan, bluttest)
+  var extras = [];
+  if (s.fettloeslich === 'Ja' || s.fettloeslich === true) extras.push(name + ' ist fettlöslich — es wird am besten zusammen mit einer fetthaltigen Mahlzeit aufgenommen.');
+  if (s.vegan_verfuegbar === 'Ja') extras.push('Vegane Produkte sind verfügbar.');
+  if (s.bluttest_empfohlen === 'Ja' && s.welcher_blutwert) extras.push('Ein Bluttest auf ' + fix(s.welcher_blutwert) + ' kann sinnvoll sein, um einen Mangel festzustellen.');
+  if (extras.length > 0) paragraphs.push(extras.join(' '));
+
+  // Paragraph 5: Empfohlene Tagesdosis
+  if (s.rda_erwachsene && s.rda_einheit) {
+    paragraphs.push('Die empfohlene Tagesdosis (RDA) für Erwachsene beträgt ' + s.rda_erwachsene + '\u00a0' + s.rda_einheit + '.');
+  }
+
+  return paragraphs;
+}
+
 // Build article content sections from Supabase fields — schöne Fließtexte
 function _kwBuildSections(s) {
   var sections = [];
@@ -3549,6 +3604,7 @@ async function loadKnowledgeFromSupabase() {
           intro: _kwFixUmlauts(s.wirkung || ''),
           sections: sections
         },
+        wasIst: _kwBuildWasIst(s),
         sources: [], // wird beim Öffnen nachgeladen
         _raw: s // Rohdaten für Detail-View
       };
@@ -4262,29 +4318,41 @@ function renderArticleContent(article) {
     hashtagHtml += '</div></div>';
   }
 
-  var wasIstHtml = article.subtitle ? `<div class="kw-art-what-is"><span class="kw-art-what-is-label">Was ist ${article.title}?</span> ${article.subtitle}</div>` : '';
+  // "Was ist X?" Tab-Inhalt aus vorberechneten Paragraphen
+  var wasIstParas = (article.wasIst || []).map(function(p) { return '<p>' + p + '</p>'; }).join('');
+  var wasIstTabHtml = '<div class="kw-art-was-ist-tab">' + wasIstParas + '</div>';
 
   container.innerHTML = `
     ${heroContent}
 
     <div class="kw-art-body">
-      ${wasIstHtml}
-      ${hashtagHtml}
-      <div class="kw-art-toc">
-        <h4>Inhaltsverzeichnis</h4>
-        <ul>${toc}</ul>
+      <div class="kw-art-tab-bar">
+        <button class="kw-art-tab active" onclick="kwSwitchArtTab(this,'was-ist')">Was ist ${article.title}?</button>
+        <button class="kw-art-tab" onclick="kwSwitchArtTab(this,'details')">Details</button>
       </div>
 
-      <p class="kw-art-intro">${article.content.intro}</p>
+      <div class="kw-art-tab-panel" id="kw-tab-was-ist">
+        ${wasIstTabHtml}
+      </div>
 
-      ${sections}
+      <div class="kw-art-tab-panel" id="kw-tab-details" style="display:none">
+        ${hashtagHtml}
+        <div class="kw-art-toc">
+          <h4>Inhaltsverzeichnis</h4>
+          <ul>${toc}</ul>
+        </div>
 
-      ${renderDosierungBox(article.id)}
+        <p class="kw-art-intro">${article.content.intro}</p>
 
-      <div class="sources-section">
-        <h4>Quellen & Studien</h4>
-        ${sources}
-        ${glossaryHtml}
+        ${sections}
+
+        ${renderDosierungBox(article.id)}
+
+        <div class="sources-section">
+          <h4>Quellen & Studien</h4>
+          ${sources}
+          ${glossaryHtml}
+        </div>
       </div>
     </div>
   `;
@@ -4322,6 +4390,15 @@ function renderDosierungBox(articleId) {
     '<div class="kw-dos-cards">' + cardsHtml + '</div>' +
     '<div class="kw-dos-disclaimer">Stand: März 2025. Alle Angaben ohne Gewähr. Die dargestellten Empfehlungen dienen ausschließlich der Information und ersetzen keine ärztliche Beratung. Für Änderungen der offiziellen Referenzwerte übernehmen wir keine Haftung.</div>' +
   '</div>';
+}
+
+function kwSwitchArtTab(btn, tabId) {
+  var bar = btn.closest('.kw-art-tab-bar');
+  bar.querySelectorAll('.kw-art-tab').forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  var body = btn.closest('.kw-art-body');
+  body.querySelectorAll('.kw-art-tab-panel').forEach(function(p) { p.style.display = 'none'; });
+  body.querySelector('#kw-tab-' + tabId).style.display = 'block';
 }
 
 function switchDosCountry(country, articleId) {
