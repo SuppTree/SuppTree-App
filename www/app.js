@@ -3561,12 +3561,7 @@ async function loadArticleDetails(articleId) {
             url: ''
           }
         },
-        hinweis: raw ? (function() {
-          var w = _kwFixUmlauts(_kwCleanText(raw.warnhinweise || ''));
-          // Ersten vollständigen Satz: split auf ". " (Leerzeichen nach Punkt) statt auf jeden Punkt
-          var parts = w.split(/\.\s+/);
-          return parts[0].trim();
-        })() : ''
+        hinweis: raw ? _kwFixUmlauts(_kwCleanText(raw.warnhinweise || '')).trim() : ''
       };
       kwDosierungen[articleId] = dosObj;
     }
