@@ -21833,6 +21833,84 @@ input.input-error,
   gap: 10px;
 }
 
+/* Dropdown Filter */
+.kw-cat-dropdown-wrap {
+  margin-bottom: 16px;
+}
+.kw-cat-dropdown {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1.5px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  background: white;
+  color: var(--text-dark, #1a1a1a);
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+.kw-cat-dropdown:focus {
+  outline: none;
+  border-color: var(--green-accent);
+  box-shadow: 0 0 0 3px rgba(0,166,126,0.1);
+}
+
+/* Collapsible Groups */
+.kw-cat-group {
+  margin-bottom: 8px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+  border: 1px solid var(--border, #e5e7eb);
+}
+.kw-cat-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: #f8f9fa;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.kw-cat-group-header:active {
+  background: #f0f1f3;
+}
+.kw-cat-group-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark, #1a1a1a);
+}
+.kw-cat-group-count {
+  font-weight: 400;
+  color: #888;
+  font-size: 13px;
+}
+.kw-cat-group-chevron {
+  font-size: 10px;
+  color: #aaa;
+  transition: transform 0.2s;
+}
+.kw-cat-group.collapsed .kw-cat-group-chevron {
+  transform: rotate(-90deg);
+}
+.kw-cat-group-items {
+  display: flex;
+  flex-direction: column;
+}
+.kw-cat-group.collapsed .kw-cat-group-items {
+  display: none;
+}
+.kw-cat-group-items .kw-article-row {
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--border, #e5e7eb);
+}
+
 /* Article View — premium reading experience */
 .knowledge-article-view {
   padding: 0;

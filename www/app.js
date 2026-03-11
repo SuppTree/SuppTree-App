@@ -3153,7 +3153,12 @@ function _kwMapSubcategory(unterkat) {
 // Hilfsfunktion: Stichpunkte in Fließtext mit Aufzählung
 function _kwListify(str) {
   if (!str) return '';
-  return str.split(',').map(function(k) { return '• ' + _kwCleanText(k.trim()).replace(/-/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}); }).join('\n');
+  return str.split(',').map(function(k) {
+    var t = _kwCleanText(k.trim()).replace(/-/g, ' ');
+    // Nur ersten Buchstaben großschreiben
+    if (t.length > 0) t = t.charAt(0).toUpperCase() + t.slice(1);
+    return '• ' + t;
+  }).join('\n');
 }
 
 // Hilfsfunktion: Umlaute in Supabase-Text korrigieren (ae→ä etc.)
@@ -3232,7 +3237,7 @@ function _kwBuildSections(s) {
     einnahme += name + ' wird am besten **' + fix(s.einnahme_zeitpunkt).toLowerCase() + '** eingenommen.';
   }
   if (s.einnahme_mit) {
-    einnahme += (einnahme ? ' ' : '') + 'Für eine optimale Aufnahme sollte ' + name + ' **' + fix(s.einnahme_mit).toLowerCase() + '** eingenommen werden.';
+    einnahme += (einnahme ? ' ' : '') + 'Für eine optimale Aufnahme sollte ' + name + ' **' + fix(s.einnahme_mit) + '** eingenommen werden.';
   }
   if (s.einnahme_ohne) {
     einnahme += '\n\n**Bitte beachten:** ' + fix(s.einnahme_ohne) + '.';
@@ -3251,38 +3256,16 @@ function _kwBuildSections(s) {
     sections.push(einnahmeSection);
   }
 
-  // 3. Dosierung & Bedarf
-  if (s.rda_erwachsene || s.bfr_hoechstmenge || s.optimalbereich) {
-    var dos = '';
-    if (s.rda_erwachsene) {
-      dos += '**Empfohlene Tagesdosis (RDA):** ' + s.rda_erwachsene + ' ' + (s.rda_einheit || '') + '\n\n';
-    }
-    if (s.dge_referenz) {
-      dos += '**DGE-Referenzwert:** ' + s.dge_referenz + '\n\n';
-    }
-    if (s.bfr_hoechstmenge) {
-      dos += '**BfR-Höchstmenge (NEM):** ' + s.bfr_hoechstmenge + ' ' + (s.ul_einheit || '') + '\n\n';
-    }
-    if (s.optimalbereich) {
-      dos += '**Optimaler Blutwert:** ' + fix(s.optimalbereich);
-    }
-    if (dos.trim()) {
-      var dosSection = { title: 'Dosierung & Referenzwerte', content: dos.trim() };
-      if (s.bluttest_empfohlen) {
-        dosSection.infoBox = { type: 'info', title: 'Bluttest', content: fix(s.bluttest_empfohlen) + (s.welcher_blutwert ? ' — Messwert: ' + fix(s.welcher_blutwert) : '') };
-      }
-      sections.push(dosSection);
-    }
-  }
+  // 3. Dosierung wird über renderDosierungBox() als Länderkarten dargestellt (keine Section nötig)
 
   // 4. Kombinationen — mit Erklärungen
   var kombi = '';
   if (s.kombiniert_gut_mit) {
-    var gutMit = s.kombiniert_gut_mit.split(',').map(function(k){ return k.trim().replace(/-/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}); });
+    var gutMit = s.kombiniert_gut_mit.split(',').map(function(k){ var t=k.trim().replace(/-/g,' '); return t.charAt(0).toUpperCase()+t.slice(1); });
     kombi += name + ' wirkt besonders gut in Kombination mit:\n' + gutMit.map(function(k){ return '• ' + k; }).join('\n') + '\n\n';
   }
   if (s.nicht_zusammen_mit) {
-    var nichtMit = s.nicht_zusammen_mit.split(',').map(function(k){ return k.trim().replace(/-/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}); });
+    var nichtMit = s.nicht_zusammen_mit.split(',').map(function(k){ var t=k.trim().replace(/-/g,' '); return t.charAt(0).toUpperCase()+t.slice(1); });
     kombi += '**Nicht gleichzeitig einnehmen mit:**\n' + nichtMit.map(function(k){ return '• ' + k; }).join('\n');
   }
   if (s.zeitlicher_abstand_h && s.zeitlicher_abstand_h !== 'None' && s.zeitlicher_abstand_h !== '0' && s.zeitlicher_abstand_h !== 0) {
@@ -3405,16 +3388,53 @@ async function loadKnowledgeFromSupabase() {
       return true;
     });
 
-    // Duplikate filtern: Form-Varianten entfernen (z.B. Magnesiumcitrat wenn Magnesium existiert)
-    var _formSuffixes = /[-\s]*(citrat|bisglycinat|bisglycinate|glycinat|oxid|sulfat|orotat|malat|lactat|aspartat|ascorbat|hydroxid|fumarat|gluconat|picolinat|acetat|carnosin|chelat|threonat|butyrat|taurat|carbonat|methionin|laxans|abfuehr)/i;
-    var baseIds = {};
-    data.forEach(function(s) { if (!_formSuffixes.test(s.id)) baseIds[s.id] = true; });
+    // Duplikate filtern: Form-Varianten entfernen
+    // Schritt 1: Alle Namen sammeln und nach Länge sortieren (kürzeste zuerst)
+    var allNames = [];
+    data.forEach(function(s) {
+      var n = (s.name || '').toLowerCase().trim();
+      allNames.push({ name: n, id: s.id });
+    });
+    allNames.sort(function(a, b) { return a.name.length - b.name.length; });
+
+    // Schritt 2: Nur echte Base-Namen sammeln (nicht selbst Variante eines kürzeren Namens)
+    var baseNames = {};
+    allNames.forEach(function(item) {
+      var n = item.name;
+      if (!n || n.includes('(')) return;
+      var isVariant = false;
+      var nClean = n.replace(/\s*\(.*?\)/g, '').trim();
+      for (var base in baseNames) {
+        // "calciumcitrat" startet mit "calcium" → ist Variante (Kompositum)
+        if (base.length >= 4 && nClean.startsWith(base) && nClean.length > base.length) { isVariant = true; break; }
+        // "korallencalcium", "dicalciumphosphat" → enthält Base als Kompositum-Teil (ohne Klammer-Inhalt)
+        if (base.length >= 6 && nClean.includes(base) && nClean !== base) { isVariant = true; break; }
+        // "algen-calcium", "sucrosomiales magnesium" → Base als eigenes Wort (Wortgrenze)
+        var wbRegex = new RegExp('(^|[\\s\\-])' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
+        if (base.length >= 5 && wbRegex.test(nClean) && nClean !== base) { isVariant = true; break; }
+      }
+      if (!isVariant) {
+        baseNames[n] = item.id;
+      }
+    });
+
+    // Schritt 3: Filtern — nur Base-Supplements behalten, Varianten entfernen
     data = data.filter(function(s) {
-      // Behalte immer Base-Supplements (magnesium, zink, eisen etc.)
-      if (baseIds[s.id]) return true;
-      // Filtere Form-Varianten nur wenn das Base-Supplement existiert
-      var baseId = s.id.replace(_formSuffixes, '').replace(/-+$/, '');
-      if (baseIds[baseId]) return false;
+      var n = (s.name || '').toLowerCase().trim();
+      var id = s.id;
+      if (baseNames[n] === id) return true;
+      var nClean = n.replace(/\s*\(.*?\)/g, '').trim();
+      for (var base in baseNames) {
+        if (base.length >= 4 && nClean.startsWith(base) && nClean.length > base.length) return false;
+        if (base.length >= 6 && nClean.includes(base) && nClean !== base) return false;
+        var wbRegex = new RegExp('(^|[\\s\\-])' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
+        if (base.length >= 5 && wbRegex.test(nClean) && nClean !== base) return false;
+      }
+      // Klammer-Varianten: "Selen (Graves-Orbitopathie)" wenn "selen" Base ist
+      if (n.includes('(') && !n.includes('(vitamin') && !n.includes('(cobal') && !n.includes('(epa') && !n.includes('(dha')) {
+        var basePart = n.split('(')[0].trim();
+        if (baseNames[basePart]) return false;
+      }
       return true;
     });
 
@@ -3811,10 +3831,10 @@ function renderArticleCard(article) {
 function openKnowledgeCategory(categoryId) {
   currentKnowledgeCategory = categoryId;
   currentKnowledgeSubcategory = 'alle';
-  
+
   const category = knowledgeCategories[categoryId];
   if (!category) return;
-  
+
   document.getElementById('knowledgeMain').style.display = 'none';
   document.getElementById('knowledgeCategoryView').style.display = 'block';
   document.getElementById('knowledgeArticleView').style.display = 'none';
@@ -3822,49 +3842,124 @@ function openKnowledgeCategory(categoryId) {
   // Reset scroll position
   const appContainer = document.querySelector('#knowledgeScreen .app');
   if (appContainer) appContainer.scrollTop = 0;
-  
+
   document.getElementById('categoryTitle').textContent = category.icon + ' ' + category.name;
-  
-  // Render subcategory tabs
-  const tabsContainer = document.getElementById('subcategoryTabs');
-  tabsContainer.innerHTML = category.subcategories.map(sub => `
-    <button class="subcategory-tab ${sub.id === 'alle' ? 'active' : ''}" onclick="filterKnowledgeSubcategory('${sub.id}')">${sub.name}</button>
-  `).join('');
-  
+
+  // Dynamisch Unterkategorien aus den tatsächlichen Artikeln sammeln
+  var articles = knowledgeArticles.filter(function(a) { return a.category === categoryId; });
+  var subCats = {};
+  articles.forEach(function(a) {
+    var rawSub = (a._raw && a._raw.unterkategorie) || '';
+    if (rawSub) {
+      // Clean subcategory name for display
+      var displayName = _kwCleanText(rawSub).replace(/[⚠️⛔🔬❌]/g, '').trim();
+      if (displayName.length > 1) {
+        var key = displayName.toLowerCase().replace(/[\s\/]+/g, '-');
+        if (!subCats[key]) subCats[key] = { name: displayName, count: 0 };
+        subCats[key].count++;
+      }
+    }
+  });
+
+  // Sortiere nach Anzahl (meiste zuerst), dann alphabetisch
+  var subList = Object.keys(subCats).map(function(k) { return { id: k, name: subCats[k].name, count: subCats[k].count }; });
+  subList.sort(function(a, b) { return b.count - a.count || a.name.localeCompare(b.name); });
+
+  // Dropdown rendern
+  var tabsContainer = document.getElementById('subcategoryTabs');
+  if (subList.length > 1) {
+    tabsContainer.innerHTML = '<div class="kw-cat-dropdown-wrap">' +
+      '<select class="kw-cat-dropdown" id="kwCatDropdown" onchange="filterKnowledgeSubcategory(this.value)">' +
+      '<option value="alle">Alle (' + articles.length + ')</option>' +
+      subList.map(function(s) {
+        return '<option value="' + s.id + '">' + s.name + ' (' + s.count + ')</option>';
+      }).join('') +
+      '</select></div>';
+  } else {
+    tabsContainer.innerHTML = '';
+  }
+
+  // Speichere subList für grouping
+  _kwCurrentSubList = subList;
+
   renderCategoryArticles();
 }
 
+var _kwCurrentSubList = [];
+
 function filterKnowledgeSubcategory(subId) {
   currentKnowledgeSubcategory = subId;
-  
-  document.querySelectorAll('.subcategory-tab').forEach(tab => {
-    tab.classList.toggle('active', tab.textContent === knowledgeCategories[currentKnowledgeCategory].subcategories.find(s => s.id === subId)?.name);
-  });
-  
   renderCategoryArticles();
 }
 
 function renderCategoryArticles() {
-  const container = document.getElementById('categoryArticles');
+  var container = document.getElementById('categoryArticles');
   if (!container) return;
 
-  let articles = knowledgeArticles.filter(a => a.category === currentKnowledgeCategory);
+  var articles = knowledgeArticles.filter(function(a) { return a.category === currentKnowledgeCategory; });
 
   if (currentKnowledgeSubcategory !== 'alle') {
-    articles = articles.filter(a => a.subcategory === currentKnowledgeSubcategory);
+    articles = articles.filter(function(a) {
+      var rawSub = (a._raw && a._raw.unterkategorie) || '';
+      var key = rawSub.toLowerCase().replace(/[⚠️⛔🔬❌]/g, '').trim().replace(/[\s\/]+/g, '-');
+      return key === currentKnowledgeSubcategory;
+    });
   }
 
   if (articles.length === 0) {
-    container.innerHTML = `
-      <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-        <span style="font-size: 48px;">📚</span>
-        <p>Noch keine Artikel in dieser Kategorie.</p>
-      </div>
-    `;
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:#999">' +
+      '<span style="font-size:48px">📚</span>' +
+      '<p>Noch keine Artikel in dieser Kategorie.</p></div>';
     return;
   }
 
-  container.innerHTML = articles.map(a => renderArticleRowCard(a)).join('');
+  // Wenn "Alle" ausgewählt: Gruppiert nach Unterkategorie anzeigen
+  if (currentKnowledgeSubcategory === 'alle' && _kwCurrentSubList.length > 1) {
+    var html = '';
+    var grouped = {};
+    var noSub = [];
+    articles.forEach(function(a) {
+      var rawSub = (a._raw && a._raw.unterkategorie) || '';
+      var key = rawSub.toLowerCase().replace(/[⚠️⛔🔬❌]/g, '').trim().replace(/[\s\/]+/g, '-');
+      if (key && _kwCurrentSubList.find(function(s) { return s.id === key; })) {
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(a);
+      } else {
+        noSub.push(a);
+      }
+    });
+    // Reihenfolge wie im Dropdown
+    _kwCurrentSubList.forEach(function(sub) {
+      var grp = grouped[sub.id];
+      if (grp && grp.length > 0) {
+        grp.sort(function(a, b) { return a.title.localeCompare(b.title); });
+        html += '<div class="kw-cat-group">';
+        html += '<div class="kw-cat-group-header" onclick="this.parentElement.classList.toggle(\'collapsed\')">';
+        html += '<span class="kw-cat-group-title">' + sub.name + ' <span class="kw-cat-group-count">(' + grp.length + ')</span></span>';
+        html += '<span class="kw-cat-group-chevron">▼</span>';
+        html += '</div>';
+        html += '<div class="kw-cat-group-items">';
+        html += grp.map(function(a) { return renderArticleRowCard(a); }).join('');
+        html += '</div></div>';
+      }
+    });
+    if (noSub.length > 0) {
+      noSub.sort(function(a, b) { return a.title.localeCompare(b.title); });
+      html += '<div class="kw-cat-group">';
+      html += '<div class="kw-cat-group-header" onclick="this.parentElement.classList.toggle(\'collapsed\')">';
+      html += '<span class="kw-cat-group-title">Sonstige <span class="kw-cat-group-count">(' + noSub.length + ')</span></span>';
+      html += '<span class="kw-cat-group-chevron">▼</span>';
+      html += '</div>';
+      html += '<div class="kw-cat-group-items">';
+      html += noSub.map(function(a) { return renderArticleRowCard(a); }).join('');
+      html += '</div></div>';
+    }
+    container.innerHTML = html;
+  } else {
+    // Gefilterte Ansicht: einfache Liste, alphabetisch
+    articles.sort(function(a, b) { return a.title.localeCompare(b.title); });
+    container.innerHTML = articles.map(function(a) { return renderArticleRowCard(a); }).join('');
+  }
 }
 
 function closeKnowledgeCategory() {
