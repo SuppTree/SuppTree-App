@@ -4116,14 +4116,25 @@ function renderArticleContent(article) {
     </div>`;
   }
 
-  // Build hashtag chips
+  // Build hashtag chips — max 6 sichtbar, Rest im Dropdown
   var hashtags = getArticleHashtags(article);
   var hashtagHtml = '';
+  var maxVisible = 6;
   if (hashtags.length > 0) {
+    var visibleTags = hashtags.slice(0, maxVisible);
+    var hiddenTags = hashtags.slice(maxVisible);
     hashtagHtml = '<div class="kw-art-hashtags">' +
-      hashtags.map(function(h) {
+      visibleTags.map(function(h) {
         return '<span class="kw-hashtag" onclick="event.stopPropagation();openKnowledgeSearchFor(\'' + h.word.replace(/'/g, "\\'") + '\')">#' + h.word + '</span>';
-      }).join('') + '</div>';
+      }).join('');
+    if (hiddenTags.length > 0) {
+      hashtagHtml += '<span class="kw-hashtag kw-hashtag-more" onclick="event.stopPropagation();this.parentElement.classList.toggle(\'expanded\');this.textContent=this.parentElement.classList.contains(\'expanded\')?\' weniger\':\'+ ' + hiddenTags.length + ' mehr\'">+ ' + hiddenTags.length + ' mehr</span>';
+      hashtagHtml += '<div class="kw-hashtags-hidden">' +
+        hiddenTags.map(function(h) {
+          return '<span class="kw-hashtag" onclick="event.stopPropagation();openKnowledgeSearchFor(\'' + h.word.replace(/'/g, "\\'") + '\')">#' + h.word + '</span>';
+        }).join('') + '</div>';
+    }
+    hashtagHtml += '</div>';
   }
 
   container.innerHTML = `
