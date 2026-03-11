@@ -3658,8 +3658,6 @@ function openKnowledgeCategory(categoryId) {
   document.getElementById('knowledgeMain').style.display = 'none';
   document.getElementById('knowledgeCategoryView').style.display = 'block';
   document.getElementById('knowledgeArticleView').style.display = 'none';
-  var topSearch = document.getElementById('kwTopSearchArea');
-  if (topSearch) topSearch.style.display = 'none';
 
   // Reset scroll position
   const appContainer = document.querySelector('#knowledgeScreen .app');
@@ -3712,8 +3710,6 @@ function renderCategoryArticles() {
 function closeKnowledgeCategory() {
   document.getElementById('knowledgeMain').style.display = 'block';
   document.getElementById('knowledgeCategoryView').style.display = 'none';
-  var topSearch = document.getElementById('kwTopSearchArea');
-  if (topSearch) topSearch.style.display = '';
   currentKnowledgeCategory = null;
 }
 
@@ -3730,8 +3726,6 @@ async function openKnowledgeArticle(articleId) {
   document.getElementById('knowledgeMain').style.display = 'none';
   document.getElementById('knowledgeCategoryView').style.display = 'none';
   document.getElementById('knowledgeArticleView').style.display = 'block';
-  var topSearch = document.getElementById('kwTopSearchArea');
-  if (topSearch) topSearch.style.display = 'none';
 
   // Reset scroll position
   window.scrollTo(0, 0);
@@ -3965,14 +3959,11 @@ function scrollToSection(index) {
 
 function closeKnowledgeArticle() {
   document.getElementById('knowledgeArticleView').style.display = 'none';
-  var topSearch = document.getElementById('kwTopSearchArea');
 
   if (currentKnowledgeCategory) {
     document.getElementById('knowledgeCategoryView').style.display = 'block';
-    if (topSearch) topSearch.style.display = 'none';
   } else {
     document.getElementById('knowledgeMain').style.display = 'block';
-    if (topSearch) topSearch.style.display = '';
   }
 }
 

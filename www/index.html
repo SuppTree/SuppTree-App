@@ -41398,14 +41398,13 @@ input.input-error,
 <div class="screen" id="knowledgeScreen">
   <div class="app">
 
-    <!-- Fixed Suchleiste Wissen (nur beim Hochscrollen sichtbar) -->
-    <div class="kw-top-search-area" id="kwTopSearchArea">
-      <div class="kw-top-search-bar" onclick="openKnowledgeSearch()">
-        <span style="color:#aaa;font-size:14px">Supplement suchen...</span>
-      </div>
-    </div>
-
     <div class="knowledge-content" id="knowledgeMain">
+      <!-- Fixed Suchleiste Wissen (nur auf Startseite beim Hochscrollen) -->
+      <div class="kw-top-search-area" id="kwTopSearchArea">
+        <div class="kw-top-search-bar" onclick="openKnowledgeSearch()">
+          <span style="color:#aaa;font-size:14px">Supplement suchen...</span>
+        </div>
+      </div>
       <!-- Hero Header -->
       <div class="kw-hero">
         <button class="back-btn" onclick="goBackToST()" style="position:absolute;top:14px;left:12px;color:#fff;background:rgba(255,255,255,0.15);border:none;width:34px;height:34px;border-radius:7px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
