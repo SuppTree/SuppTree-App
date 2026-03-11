@@ -4057,6 +4057,21 @@ async function openKnowledgeArticle(articleId) {
       article.studyCount = details.studyCount || 0;
     }
 
+    // Wikipedia-Bild laden (falls noch nicht gecacht)
+    if (!article.image && !article._imgTried) {
+      article._imgTried = true;
+      try {
+        var wikiTitle = encodeURIComponent(article.title.split('(')[0].trim());
+        var wikiResp = await fetch('https://de.wikipedia.org/api/rest_v1/page/summary/' + wikiTitle);
+        if (wikiResp.ok) {
+          var wikiData = await wikiResp.json();
+          if (wikiData.thumbnail && wikiData.thumbnail.source) {
+            article.image = wikiData.thumbnail.source.replace(/\/\d+px-/, '/400px-');
+          }
+        }
+      } catch(e) { /* kein Bild verfügbar */ }
+    }
+
     renderArticleContent(article);
     updateBookmarkButton();
   } catch(e) {
