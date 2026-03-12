@@ -4779,8 +4779,9 @@ async function loadKnowledgeFromSupabase() {
     // Varianten OHNE wirkung_kurz: kein Artikel, erscheinen nur in Eltern-Tabelle
     var articlesData = data.filter(function(s) {
       var n = (s.name || '').toLowerCase().trim();
-      if (baseNames[n] === s.id) return true;
-      return !!(s.wirkung_kurz && s.wirkung_kurz.trim());
+      if (baseNames[n] === s.id) return true;      // Identifizierte Base: immer
+      if (!parentMap[s.id]) return true;            // Nicht als Variante erkannt: immer
+      return !!(s.wirkung_kurz && s.wirkung_kurz.trim()); // Variante: nur wenn eigene Beschreibung
     });
 
     // Transform zu knowledgeArticles Format
