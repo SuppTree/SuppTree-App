@@ -4709,69 +4709,68 @@ async function loadKnowledgeFromSupabase() {
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    // FAMILIEN-GRUPPIERUNG: Form-Varianten erkennen und strukturiert darstellen
+    // FAMILIEN-GRUPPIERUNG: bewährtter Original-Algorithmus, erweitert um
+    // formsMap (Formen-Vergleich) und parentMap (Teil-der-Familie-Chip)
     // ═══════════════════════════════════════════════════════════════════════
 
-    // Schritt 1: Alle Namen nach Länge sortieren (kürzeste = Base-Kandidaten zuerst)
-    var _allByLen = [];
+    // ID → rawRow Map für parentTitle-Lookup
     var _rawById = {};
+    data.forEach(function(s) { _rawById[s.id] = s; });
+
+    // Basis-Namen identifizieren (exakt gleiche Logik wie vorher)
+    var _allByLen = [];
     data.forEach(function(s) {
-      _rawById[s.id] = s;
       _allByLen.push({ name: (s.name || '').toLowerCase().trim(), id: s.id });
     });
     _allByLen.sort(function(a, b) { return a.name.length - b.name.length; });
 
-    // Schritt 2: Base-Namen identifizieren (originale Logik, bewährt)
-    var _baseNames = {};
+    var baseNames = {};
     _allByLen.forEach(function(item) {
       var n = item.name;
       if (!n || n.includes('(')) return;
-      var isVar = false;
-      var nc = n.replace(/\s*\(.*?\)/g, '').trim();
-      for (var b in _baseNames) {
-        if (b.length >= 4 && nc.startsWith(b) && nc.length > b.length) { isVar = true; break; }
-        if (b.length >= 6 && nc.includes(b) && nc !== b) { isVar = true; break; }
-        var rx = new RegExp('(^|[\\s\\-])' + b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
-        if (b.length >= 5 && rx.test(nc) && nc !== b) { isVar = true; break; }
+      var isVariant = false;
+      var nClean = n.replace(/\s*\(.*?\)/g, '').trim();
+      for (var base in baseNames) {
+        if (base.length >= 4 && nClean.startsWith(base) && nClean.length > base.length) { isVariant = true; break; }
+        if (base.length >= 6 && nClean.includes(base) && nClean !== base) { isVariant = true; break; }
+        var wbRegex = new RegExp('(^|[\\s\\-])' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
+        if (base.length >= 5 && wbRegex.test(nClean) && nClean !== base) { isVariant = true; break; }
       }
-      if (!isVar) _baseNames[n] = item.id;
-    });
-
-    // Schritt 3: Für jedes Supplement Eltern-Base bestimmen + formsMap aufbauen
-    var _parentMap = {}; // variantId → parentId
-    var _formsMap  = {}; // parentId → [ rawRow, ... ]
-    data.forEach(function(s) {
-      var n = (s.name || '').toLowerCase().trim();
-      var id = s.id;
-      if (_baseNames[n] === id) return; // ist selbst Base
-      var nc = n.replace(/\s*\(.*?\)/g, '').trim();
-      var found = null;
-      for (var b in _baseNames) {
-        if (b.length >= 4 && nc.startsWith(b) && nc.length > b.length) { found = _baseNames[b]; break; }
-        if (b.length >= 6 && nc.includes(b) && nc !== b) { found = _baseNames[b]; break; }
-        var rx = new RegExp('(^|[\\s\\-])' + b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
-        if (b.length >= 5 && rx.test(nc) && nc !== b) { found = _baseNames[b]; break; }
-      }
-      if (!found && n.includes('(') && !n.includes('(vitamin') && !n.includes('(cobal') && !n.includes('(epa') && !n.includes('(dha')) {
-        var bp = n.split('(')[0].trim();
-        if (_baseNames[bp]) found = _baseNames[bp];
-      }
-      if (found) {
-        _parentMap[id] = found;
-        if (!_formsMap[found]) _formsMap[found] = [];
-        _formsMap[found].push(s);
+      if (!isVariant) {
+        baseNames[n] = item.id;
       }
     });
 
-    // Schritt 4: Filtern — gleiche Logik wie vorher, aber Varianten MIT wirkung_kurz dürfen durch
+    // formsMap und parentMap aufbauen (Formen-Vergleich / Familie-Chip)
+    var _formsMap  = {}; // baseId → [ rawRow, ... ]
+    var _parentMap = {}; // variantId → baseId
+
+    // Originaler Filter: GENAU die gleiche Logik wie bisher,
+    // zusätzlich formsMap/parentMap befüllen wenn Variante erkannt
     var articlesData = data.filter(function(s) {
       var n = (s.name || '').toLowerCase().trim();
       var id = s.id;
-      // Identifizierte Base: immer behalten
-      if (_baseNames[n] === id) return true;
-      // Variante erkannt: behalten wenn eigene Beschreibung
-      if (_parentMap[id]) return !!(s.wirkung_kurz && s.wirkung_kurz.trim());
-      // Alles andere (nicht als Variante erkannt): behalten
+      if (baseNames[n] === id) return true;
+      var nClean = n.replace(/\s*\(.*?\)/g, '').trim();
+      var detectedParent = null;
+      for (var base in baseNames) {
+        if (base.length >= 4 && nClean.startsWith(base) && nClean.length > base.length) { detectedParent = baseNames[base]; break; }
+        if (base.length >= 6 && nClean.includes(base) && nClean !== base) { detectedParent = baseNames[base]; break; }
+        var wbRegex = new RegExp('(^|[\\s\\-])' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
+        if (base.length >= 5 && wbRegex.test(nClean) && nClean !== base) { detectedParent = baseNames[base]; break; }
+      }
+      if (!detectedParent && n.includes('(') && !n.includes('(vitamin') && !n.includes('(cobal') && !n.includes('(epa') && !n.includes('(dha')) {
+        var basePart = n.split('(')[0].trim();
+        if (baseNames[basePart]) detectedParent = baseNames[basePart];
+      }
+      if (detectedParent) {
+        // Variante erkannt → in formsMap eintragen
+        _parentMap[id] = detectedParent;
+        if (!_formsMap[detectedParent]) _formsMap[detectedParent] = [];
+        _formsMap[detectedParent].push(s);
+        // Eigener Artikel nur wenn wirkung_kurz vorhanden
+        return !!(s.wirkung_kurz && s.wirkung_kurz.trim());
+      }
       return true;
     });
 
@@ -6136,6 +6135,15 @@ function performKnowledgeSearch(query) {
 
   if (query.length < 2) {
     resultsContainer.innerHTML = getKnowledgeSuggestions();
+    return;
+  }
+
+  // Noch nicht geladen? Nachladen und nochmal versuchen
+  if (!_kwDataLoaded) {
+    resultsContainer.innerHTML = '<div class="kw-search-hint"><p>⏳ Lade Supplement-Daten...</p></div>';
+    loadKnowledgeFromSupabase().then(function() {
+      performKnowledgeSearch(query);
+    });
     return;
   }
 
