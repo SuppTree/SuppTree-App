@@ -4682,29 +4682,66 @@ async function loadKnowledgeFromSupabase() {
       return;
     }
 
-    // Filter: Alles was nicht als NEM zugelassen ist ausblenden
+    // Filter: Alles was nicht als NEM in der EU zugelassen ist ausblenden
     data = data.filter(function(s) {
       var k = (s.kategorie || '').toLowerCase();
       var n = (s.name || '');
       var nl = n.toLowerCase();
+      var warn = (s.warnhinweise || '').toLowerCase();
+      var kontra = (s.kontraindikationen || '').toLowerCase();
+
       // Kategorie-Filter
-      if (k.includes('verboten') || k.includes('nicht empfohlen') || k.includes('arzneimittel') || k.includes('novel food') || k.includes('experimentell') || k.includes('cannabinoid') || k.includes('stimulanz') || k.includes('beruhigungsmittel') || k.includes('hormone') || k.includes('nanomaterial') || k.includes('pflanzliche arzneimittel')) return false;
-      // Name-Filter
-      if (nl.includes('novel food') || nl.includes('nicht verkehrsfähig') || nl.includes('nicht empfohlen') || nl.includes('nicht zugelassen') || nl.includes('nicht supplementierbar') || nl.includes('btmg') || nl.includes('verboten') || nl.includes('eingestellt') || nl.includes('marketing-begriff') || nl.includes('doping') || nl.includes('status unklar') || nl.includes('grauzone') || nl.includes('rx-pflichtig') || nl.includes('pathogen') || nl.includes('keine evidenz') || nl.includes('keine humane evidenz') || nl.includes('kein nem') || nl.includes('gefährlich') || nl.includes('unzureichende evidenz') || nl.includes('kontrovers') || nl.includes('unsicher') || nl.includes('unwirksam') || nl.includes('nischenprodukt') || nl.includes('ohne evidenz')) return false;
+      if (k.includes('verboten') || k.includes('nicht empfohlen') || k.includes('arzneimittel') ||
+          k.includes('novel food') || k.includes('experimentell') || k.includes('cannabinoid') ||
+          k.includes('stimulanz') || k.includes('beruhigungsmittel') || k.includes('hormone') ||
+          k.includes('nanomaterial') || k.includes('pflanzliche arzneimittel') ||
+          k.includes('nicht zugelassen') || k.includes('verschreibungspflichtig') ||
+          k.includes('prohormone') || k.includes('sarm')) return false;
+
+      // Name-Filter (Statusmarker im Namen)
+      if (nl.includes('novel food') || nl.includes('nicht verkehrsfähig') ||
+          nl.includes('nicht empfohlen') || nl.includes('nicht zugelassen') ||
+          nl.includes('nicht supplementierbar') || nl.includes('btmg') ||
+          nl.includes('verboten') || nl.includes('eingestellt') ||
+          nl.includes('marketing-begriff') || nl.includes('doping') ||
+          nl.includes('status unklar') || nl.includes('grauzone') ||
+          nl.includes('rx-pflichtig') || nl.includes('pathogen') ||
+          nl.includes('keine evidenz') || nl.includes('keine humane evidenz') ||
+          nl.includes('kein nem') || nl.includes('gefährlich') ||
+          nl.includes('unzureichende evidenz') || nl.includes('kontrovers') ||
+          nl.includes('unsicher') || nl.includes('unwirksam') ||
+          nl.includes('nischenprodukt') || nl.includes('ohne evidenz') ||
+          nl.includes('sarm') || nl.includes('prohormone') || nl.includes('prohormon') ||
+          nl.includes('nicht in der eu') || nl.includes('eu-weit nicht') ||
+          nl.includes('in der eu verboten') || nl.includes('nicht als nem')) return false;
+
+      // Warnhinweis-Filter: EU-Zulassungsprobleme
+      if (warn.includes('in der eu nicht zugelassen') || warn.includes('nicht in der eu zugelassen') ||
+          warn.includes('nicht in der eu') || warn.includes('eu-weit verboten') ||
+          warn.includes('in deutschland nicht zugelassen') || warn.includes('nicht als nem zugelassen') ||
+          warn.includes('novel food') || warn.includes('btmg') ||
+          warn.includes('verschreibungspflichtig') || warn.includes('in der eu verboten') ||
+          warn.includes('keine nem-zulassung') || warn.includes('kein zugelassenes nem') ||
+          warn.includes('nicht als nahrungsergänzungsmittel zugelassen') ||
+          warn.includes('nicht als lebensmittel zugelassen')) return false;
+
       // Emoji-Filter (überall im Namen)
       if (n.includes('⚠') || n.includes('⛔') || n.includes('❌') || n.includes('🔬')) return false;
-      // Reine Markenprodukte filtern: Name beginnt mit Brand® oder ist nur ein Markenname
-      // z.B. "Nitrosigine®", "Silexan (Lavendelöl) - Lasea®", "Ashwagandha KSM-66®"
-      // NICHT filtern: "Kiefernrindenextrakt (Pycnogenol®)" — hat generischen Namen
+
+      // Reine Markenprodukte filtern
       var nameBeforeParen = n.split('(')[0].trim();
       if (nameBeforeParen.includes('®') || nameBeforeParen.includes('™')) return false;
-      // Krankheitsspezifische Duplikate filtern (z.B. "Vitamin D (Hashimoto)", "Selen (Fertilität)")
+
+      // Krankheitsspezifische Duplikate filtern
       var conditionParenRegex = /\((Hashimoto|Graves|Fertili|Schilddr|Basedow|Morbus|AREDS|Angst|Stress|Laxans|Abfuehr|Autoimmun|Hyperthyr|Depression|Stimmung|PCOS|Komorbid|Weiblich|Männlich)/i;
       if (conditionParenRegex.test(nl)) return false;
-      // "Support"-Kombinationsprodukte (Crohn-Support, Colitis-Support, etc.)
+
+      // "Support"-Kombinationsprodukte
       if (nl.includes('-support') || nl.includes('support (')) return false;
-      // Marketing-Formeln und Komplex-Produkte die keine echten Supplements sind
+
+      // Marketing-Formeln
       if (nl.includes('-formel') || nl.includes('herz-omega') || nl.includes('gehirn-omega') || nl.includes('kinder-omega')) return false;
+
       return true;
     });
 
