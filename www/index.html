@@ -21754,6 +21754,53 @@ input.input-error,
   font-weight: 700;
 }
 
+/* A-Z Letter Index Bar */
+.kw-az-bar {
+  position: fixed;
+  bottom: 70px;
+  right: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  z-index: 80;
+  background: rgba(255,255,255,0.92);
+  border-radius: 12px;
+  padding: 4px 3px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.13);
+  border: 1px solid var(--border);
+}
+.kw-az-bar span {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--green-accent);
+  cursor: pointer;
+  line-height: 1.5;
+  padding: 0 3px;
+  border-radius: 4px;
+  min-width: 16px;
+  text-align: center;
+}
+.kw-az-bar span:active {
+  background: var(--green-accent);
+  color: #fff;
+}
+.kw-az-bar span.kw-az-inactive {
+  color: #ccc;
+  cursor: default;
+}
+/* Letter section header in A-Z list */
+.kw-az-letter-header {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green-dark);
+  background: var(--green-light);
+  padding: 3px 12px;
+  margin: 8px 0 2px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
 .kw-article-card-body {
   padding: 14px 16px 16px;
 }
@@ -41741,14 +41788,18 @@ input.input-error,
         <!-- Filled by JS -->
       </div>
 
-      <!-- Recent Articles — vertical list -->
+      <!-- Recent Articles — A-Z alphabetical list -->
       <div class="kw-section">
         <div class="kw-section-head">
           <h3>Alle Supplements</h3>
         </div>
-        <div class="kw-article-list" id="recentArticles">
-          <!-- Filled by JS -->
+        <div id="recentArticles">
+          <!-- Filled by JS (grouped A-Z with letter headers) -->
         </div>
+      </div>
+      <!-- A-Z Letter Index Bar -->
+      <div class="kw-az-bar" id="kwAzBar">
+        <!-- Filled by JS -->
       </div>
     </div>
 

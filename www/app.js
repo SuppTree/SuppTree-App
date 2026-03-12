@@ -4809,6 +4809,7 @@ async function loadKnowledgeFromSupabase() {
 
       return {
         id: s.id,
+        rawName: (s.name || '').toLowerCase(), // for search fallback
         title: cleanName || s.name,
         subtitle: (function() {
           // symptome_ziele bevorzugen — das sind echte Nutzerziele (Müdigkeit, Schlaf, Stress...)
@@ -5145,16 +5146,50 @@ function renderShiftWorkerArticles() {
 }
 
 function renderRecentArticles() {
-  const container = document.getElementById('recentArticles');
+  var container = document.getElementById('recentArticles');
   if (!container) return;
-  // Alle Supplements alphabetisch — base-Artikel zuerst, dann Varianten
+
+  // Alphabetisch sortiert (nur base-Artikel — Varianten tauchen unter Base auf)
   var sorted = knowledgeArticles.slice().sort(function(a, b) {
-    // Bases (kein parentId) vor Varianten
-    if (!a.parentId && b.parentId) return -1;
-    if (a.parentId && !b.parentId) return 1;
     return a.title.localeCompare(b.title, 'de');
   });
-  container.innerHTML = sorted.map(function(a) { return renderArticleRowCard(a); }).join('');
+
+  // Nach Anfangsbuchstabe gruppieren
+  var groups = {};
+  var letters = [];
+  sorted.forEach(function(a) {
+    var letter = a.title.charAt(0).toUpperCase();
+    // Normalise special chars: Ä→A, Ö→O, Ü→U etc.
+    var sortLetter = letter.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (!groups[sortLetter]) { groups[sortLetter] = []; letters.push(sortLetter); }
+    groups[sortLetter].push(a);
+  });
+  letters.sort();
+
+  // HTML: Buchstaben-Header + Artikel
+  var html = '';
+  letters.forEach(function(letter) {
+    html += '<div class="kw-az-letter-header" id="kw-az-' + letter + '">' + letter + '</div>';
+    html += '<div class="kw-article-list">' + groups[letter].map(function(a) { return renderArticleRowCard(a); }).join('') + '</div>';
+  });
+  container.innerHTML = html;
+
+  // A-Z Bar aufbauen
+  var azBar = document.getElementById('kwAzBar');
+  if (azBar) {
+    var allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    azBar.innerHTML = allLetters.map(function(l) {
+      if (groups[l]) {
+        return '<span onclick="kwJumpToLetter(\'' + l + '\')">' + l + '</span>';
+      }
+      return '<span class="kw-az-inactive">' + l + '</span>';
+    }).join('');
+  }
+}
+
+function kwJumpToLetter(letter) {
+  var el = document.getElementById('kw-az-' + letter);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Horizontal scroll card (Popular, Shift Worker sections)
@@ -5222,6 +5257,7 @@ function openKnowledgeCategory(categoryId) {
   document.getElementById('knowledgeMain').style.display = 'none';
   document.getElementById('knowledgeCategoryView').style.display = 'block';
   document.getElementById('knowledgeArticleView').style.display = 'none';
+  var azBar = document.getElementById('kwAzBar'); if (azBar) azBar.style.display = 'none';
 
   // Reset scroll position
   const appContainer = document.querySelector('#knowledgeScreen .app');
@@ -5350,6 +5386,7 @@ function closeKnowledgeCategory() {
   document.getElementById('knowledgeMain').style.display = 'block';
   document.getElementById('knowledgeCategoryView').style.display = 'none';
   currentKnowledgeCategory = null;
+  var azBar = document.getElementById('kwAzBar'); if (azBar) azBar.style.display = '';
 }
 
 async function openKnowledgeArticle(articleId) {
@@ -5366,6 +5403,7 @@ async function openKnowledgeArticle(articleId) {
     document.getElementById('knowledgeMain').style.display = 'none';
     document.getElementById('knowledgeCategoryView').style.display = 'none';
     document.getElementById('knowledgeArticleView').style.display = 'block';
+    var azBar = document.getElementById('kwAzBar'); if (azBar) azBar.style.display = 'none';
 
     // Reset scroll position
     window.scrollTo(0, 0);
@@ -5727,6 +5765,7 @@ function closeKnowledgeArticle() {
     document.getElementById('knowledgeCategoryView').style.display = 'block';
   } else {
     document.getElementById('knowledgeMain').style.display = 'block';
+    var azBar = document.getElementById('kwAzBar'); if (azBar) azBar.style.display = '';
   }
 }
 
@@ -6070,6 +6109,7 @@ function openKnowledgeSearch() {
   // Hide main content
   var main = document.getElementById('knowledgeMain');
   if (main) main.style.display = 'none';
+  var azBar = document.getElementById('kwAzBar'); if (azBar) azBar.style.display = 'none';
   var catView = document.getElementById('knowledgeCategoryView');
   if (catView) catView.style.display = 'none';
 
@@ -6106,6 +6146,7 @@ function closeKnowledgeSearch() {
   if (searchPage) searchPage.remove();
   var main = document.getElementById('knowledgeMain');
   if (main) main.style.display = 'block';
+  var azBar = document.getElementById('kwAzBar'); if (azBar) azBar.style.display = '';
   window.scrollTo(0, 0);
 }
 
@@ -6141,9 +6182,11 @@ function performKnowledgeSearch(query) {
 
   var q = query.toLowerCase();
 
-  // Tier 1: Direct matches (title, subtitle, tags)
+  // Tier 1: Direct matches (title, rawName, id, subtitle, tags)
   var directResults = knowledgeArticles.filter(function(article) {
     if (article.title.toLowerCase().includes(q)) return true;
+    if (article.rawName && article.rawName.includes(q)) return true;
+    if (article.id && article.id.replace(/-/g, ' ').includes(q)) return true;
     if (article.subtitle.toLowerCase().includes(q)) return true;
     if (article.tags && article.tags.some(function(t) { return t.toLowerCase().includes(q); })) return true;
     return false;
