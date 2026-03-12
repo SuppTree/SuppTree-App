@@ -3479,6 +3479,50 @@ function _kwBuildSections(s) {
   return sections;
 }
 
+// Baut die "Formen im Vergleich" Section für Base-Supplements
+// forms = Array von rohen Supabase-Zeilen der Varianten
+function _kwBuildFormsSection(forms) {
+  var fix = _kwFixUmlauts;
+
+  var cards = forms.map(function(f) {
+    var cleanName = _kwCleanText(f.name || '').replace(/[®™]/g, '').replace(/\s*\([^)]*\)/g, '').trim();
+    // Kurze Formbez.: Badge bevorzugen (z.B. "Bisglycinat"), sonst Vollname
+    var badge = _kwGetFormBadge(f.id);
+    var formLabel = badge || cleanName;
+
+    // Bioverfügbarkeit: nur erster Satz, max 70 Zeichen
+    var bio = '';
+    if (f.bioverfuegbarkeit_info && f.bioverfuegbarkeit_info !== 'None') {
+      bio = fix(f.bioverfuegbarkeit_info).split('.')[0].trim();
+      if (bio.length > 70) bio = bio.substring(0, 70) + '…';
+    }
+    // Besonderheit: erster Satz aus wirkung_kurz, max 90 Zeichen
+    var note = '';
+    if (f.wirkung_kurz) {
+      note = fix(f.wirkung_kurz).split('.')[0].trim();
+      if (note.length > 90) note = note.substring(0, 90) + '…';
+    }
+    // Hat eigenen Artikel wenn wirkung_kurz vorhanden
+    var hasArticle = !!(f.wirkung_kurz && f.wirkung_kurz.trim());
+
+    return '<div class="kw-form-item' + (hasArticle ? ' kw-form-item--link' : '') + '"' +
+      (hasArticle ? ' onclick="openKnowledgeArticle(\'' + f.id + '\')"' : '') + '>' +
+      '<div class="kw-form-item-head">' +
+        '<span class="kw-form-item-name">' + formLabel + '</span>' +
+        (hasArticle ? '<span class="kw-form-item-arrow">→</span>' : '') +
+      '</div>' +
+      (bio ? '<div class="kw-form-item-bio">🔬 ' + bio + '</div>' : '') +
+      (note ? '<div class="kw-form-item-note">' + note + '</div>' : '') +
+    '</div>';
+  }).join('');
+
+  return {
+    title: 'Formen im Vergleich',
+    type: 'forms-table',
+    content: '<div class="kw-forms-cards">' + cards + '</div>'
+  };
+}
+
 // Tags aus den Supabase-Feldern bauen
 function _kwBuildTags(s) {
   var tags = [];
@@ -4664,28 +4708,32 @@ async function loadKnowledgeFromSupabase() {
       return true;
     });
 
-    // Duplikate filtern: Form-Varianten entfernen
-    // Schritt 1: Alle Namen sammeln und nach Länge sortieren (kürzeste zuerst)
-    var allNames = [];
-    data.forEach(function(s) {
-      var n = (s.name || '').toLowerCase().trim();
-      allNames.push({ name: n, id: s.id });
-    });
-    allNames.sort(function(a, b) { return a.name.length - b.name.length; });
+    // ═══════════════════════════════════════════════════════════════════════
+    // FAMILIEN-GRUPPIERUNG: Form-Varianten erkennen und strukturiert darstellen
+    // Varianten MIT eigenem wirkung_kurz → eigener Artikel + parentId
+    // Varianten OHNE wirkung_kurz → nur in Eltern-"Formen im Vergleich" Tabelle
+    // ═══════════════════════════════════════════════════════════════════════
 
-    // Schritt 2: Nur echte Base-Namen sammeln (nicht selbst Variante eines kürzeren Namens)
-    var baseNames = {};
-    allNames.forEach(function(item) {
+    // Schritt 1: ID → raw row Map + allByName nach Namenslänge sortiert (kürzeste zuerst)
+    var rawById = {};
+    var allByName = [];
+    data.forEach(function(s) {
+      rawById[s.id] = s;
+      var n = (s.name || '').toLowerCase().trim();
+      allByName.push({ name: n, id: s.id });
+    });
+    allByName.sort(function(a, b) { return a.name.length - b.name.length; });
+
+    // Schritt 2: Base-Supplements identifizieren (nicht selbst Variante eines kürzeren Namens)
+    var baseNames = {}; // lowercased name → supplement id
+    allByName.forEach(function(item) {
       var n = item.name;
-      if (!n || n.includes('(')) return;
+      if (!n || n.includes('(')) return; // Klammer-Namen überspringen
       var isVariant = false;
       var nClean = n.replace(/\s*\(.*?\)/g, '').trim();
       for (var base in baseNames) {
-        // "calciumcitrat" startet mit "calcium" → ist Variante (Kompositum)
         if (base.length >= 4 && nClean.startsWith(base) && nClean.length > base.length) { isVariant = true; break; }
-        // "korallencalcium", "dicalciumphosphat" → enthält Base als Kompositum-Teil (ohne Klammer-Inhalt)
         if (base.length >= 6 && nClean.includes(base) && nClean !== base) { isVariant = true; break; }
-        // "algen-calcium", "sucrosomiales magnesium" → Base als eigenes Wort (Wortgrenze)
         var wbRegex = new RegExp('(^|[\\s\\-])' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
         if (base.length >= 5 && wbRegex.test(nClean) && nClean !== base) { isVariant = true; break; }
       }
@@ -4694,28 +4742,49 @@ async function loadKnowledgeFromSupabase() {
       }
     });
 
-    // Schritt 3: Filtern — nur Base-Supplements behalten, Varianten entfernen
-    data = data.filter(function(s) {
+    // Schritt 3: Eltern-Zuordnung ermitteln
+    var parentMap = {}; // variantId → parentId
+    var formsMap  = {}; // parentId → [ rawRow, ... ] (alle Varianten dieses Base)
+    data.forEach(function(s) {
       var n = (s.name || '').toLowerCase().trim();
       var id = s.id;
-      if (baseNames[n] === id) return true;
+      if (baseNames[n] === id) return; // ist selbst eine Base → überspringen
       var nClean = n.replace(/\s*\(.*?\)/g, '').trim();
+      var foundParent = null;
       for (var base in baseNames) {
-        if (base.length >= 4 && nClean.startsWith(base) && nClean.length > base.length) return false;
-        if (base.length >= 6 && nClean.includes(base) && nClean !== base) return false;
-        var wbRegex = new RegExp('(^|[\\s\\-])' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
-        if (base.length >= 5 && wbRegex.test(nClean) && nClean !== base) return false;
+        var matched = false;
+        if (base.length >= 4 && nClean.startsWith(base) && nClean.length > base.length) matched = true;
+        else if (base.length >= 6 && nClean.includes(base) && nClean !== base) matched = true;
+        else {
+          var wbRegex = new RegExp('(^|[\\s\\-])' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
+          if (base.length >= 5 && wbRegex.test(nClean) && nClean !== base) matched = true;
+        }
+        if (matched) { foundParent = baseNames[base]; break; }
       }
       // Klammer-Varianten: "Selen (Graves-Orbitopathie)" wenn "selen" Base ist
-      if (n.includes('(') && !n.includes('(vitamin') && !n.includes('(cobal') && !n.includes('(epa') && !n.includes('(dha')) {
+      if (!foundParent && n.includes('(') && !n.includes('(vitamin') && !n.includes('(cobal') && !n.includes('(epa') && !n.includes('(dha')) {
         var basePart = n.split('(')[0].trim();
-        if (baseNames[basePart]) return false;
+        if (baseNames[basePart]) foundParent = baseNames[basePart];
       }
-      return true;
+      if (foundParent) {
+        parentMap[id] = foundParent;
+        if (!formsMap[foundParent]) formsMap[foundParent] = [];
+        formsMap[foundParent].push(s);
+      }
+    });
+
+    // Schritt 4: Artikel-Selektion
+    // Base-Supplements: immer eigener Artikel
+    // Varianten MIT wirkung_kurz: eigener Artikel (mit parentId/parentTitle)
+    // Varianten OHNE wirkung_kurz: kein Artikel, erscheinen nur in Eltern-Tabelle
+    var articlesData = data.filter(function(s) {
+      var n = (s.name || '').toLowerCase().trim();
+      if (baseNames[n] === s.id) return true;
+      return !!(s.wirkung_kurz && s.wirkung_kurz.trim());
     });
 
     // Transform zu knowledgeArticles Format
-    knowledgeArticles = data.map(function(s) {
+    knowledgeArticles = articlesData.map(function(s) {
       var catKey = _kwMapCategory(s.kategorie);
       var icon = _kwCategoryIcons[s.unterkategorie] || _kwCategoryIcons[s.kategorie] || '📦';
       var sections = _kwBuildSections(s);
@@ -4733,6 +4802,19 @@ async function loadKnowledgeFromSupabase() {
         .replace(/[®™]/g, '') // verbleibende ® oder ™ entfernen
         .replace(/\s*[-–]\s*✓.*$/i, '') // "- ✓ PCOS-Evidenz..." entfernen
         .trim();
+
+      // Eltern-Daten für Form-Varianten
+      var myParentId = parentMap[s.id] || null;
+      var myParentTitle = null;
+      if (myParentId && rawById[myParentId]) {
+        myParentTitle = _kwCleanText(rawById[myParentId].name || '').replace(/[®™]/g, '').trim();
+      }
+
+      // "Formen im Vergleich" Section für Base-Supplements mit Varianten
+      var myForms = formsMap[s.id] || [];
+      if (myForms.length > 0) {
+        sections = sections.concat([_kwBuildFormsSection(myForms)]);
+      }
 
       return {
         id: s.id,
@@ -4759,6 +4841,8 @@ async function loadKnowledgeFromSupabase() {
         featured: false,
         tags: _kwBuildTags(s),
         vegan: s.vegan_verfuegbar === 'Ja',
+        parentId: myParentId,
+        parentTitle: myParentTitle,
         content: {
           intro: _kwFixUmlauts(s.wirkung || ''),
           sections: sections
@@ -5410,6 +5494,8 @@ function renderArticleContent(article) {
 
     if (section.type === 'table') {
       content = renderMarkdownTable(section.content || '');
+    } else if (section.type === 'forms-table') {
+      content = section.content || '';
     } else {
       // Split into paragraphs by double newline
       var blocks = (section.content || '').split(/\n\n/);
@@ -5548,10 +5634,20 @@ function renderArticleContent(article) {
     hashtagHtml += '</div></div>';
   }
 
+  // "Teil der X-Familie" Chip für Form-Varianten
+  var parentChipHtml = '';
+  if (article.parentId && article.parentTitle) {
+    parentChipHtml = '<div class="kw-parent-chip" onclick="openKnowledgeArticle(\'' + article.parentId + '\')">' +
+      '<span class="kw-parent-chip-label">Teil der ' + article.parentTitle + '-Familie</span>' +
+      '<span class="kw-parent-chip-arrow">→</span>' +
+    '</div>';
+  }
+
   container.innerHTML = `
     ${heroContent}
 
     <div class="kw-art-body">
+      ${parentChipHtml}
       ${hashtagHtml}
       <div class="kw-art-toc">
         <h4>Inhaltsverzeichnis</h4>
