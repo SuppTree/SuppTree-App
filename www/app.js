@@ -4710,78 +4710,69 @@ async function loadKnowledgeFromSupabase() {
 
     // ═══════════════════════════════════════════════════════════════════════
     // FAMILIEN-GRUPPIERUNG: Form-Varianten erkennen und strukturiert darstellen
-    // Varianten MIT eigenem wirkung_kurz → eigener Artikel + parentId
-    // Varianten OHNE wirkung_kurz → nur in Eltern-"Formen im Vergleich" Tabelle
     // ═══════════════════════════════════════════════════════════════════════
 
-    // Schritt 1: ID → raw row Map + allByName nach Namenslänge sortiert (kürzeste zuerst)
-    var rawById = {};
-    var allByName = [];
+    // Schritt 1: Alle Namen nach Länge sortieren (kürzeste = Base-Kandidaten zuerst)
+    var _allByLen = [];
+    var _rawById = {};
     data.forEach(function(s) {
-      rawById[s.id] = s;
-      var n = (s.name || '').toLowerCase().trim();
-      allByName.push({ name: n, id: s.id });
+      _rawById[s.id] = s;
+      _allByLen.push({ name: (s.name || '').toLowerCase().trim(), id: s.id });
     });
-    allByName.sort(function(a, b) { return a.name.length - b.name.length; });
+    _allByLen.sort(function(a, b) { return a.name.length - b.name.length; });
 
-    // Schritt 2: Base-Supplements identifizieren (nicht selbst Variante eines kürzeren Namens)
-    var baseNames = {}; // lowercased name → supplement id
-    allByName.forEach(function(item) {
+    // Schritt 2: Base-Namen identifizieren (originale Logik, bewährt)
+    var _baseNames = {};
+    _allByLen.forEach(function(item) {
       var n = item.name;
-      if (!n || n.includes('(')) return; // Klammer-Namen überspringen
-      var isVariant = false;
-      var nClean = n.replace(/\s*\(.*?\)/g, '').trim();
-      for (var base in baseNames) {
-        if (base.length >= 4 && nClean.startsWith(base) && nClean.length > base.length) { isVariant = true; break; }
-        if (base.length >= 6 && nClean.includes(base) && nClean !== base) { isVariant = true; break; }
-        var wbRegex = new RegExp('(^|[\\s\\-])' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
-        if (base.length >= 5 && wbRegex.test(nClean) && nClean !== base) { isVariant = true; break; }
+      if (!n || n.includes('(')) return;
+      var isVar = false;
+      var nc = n.replace(/\s*\(.*?\)/g, '').trim();
+      for (var b in _baseNames) {
+        if (b.length >= 4 && nc.startsWith(b) && nc.length > b.length) { isVar = true; break; }
+        if (b.length >= 6 && nc.includes(b) && nc !== b) { isVar = true; break; }
+        var rx = new RegExp('(^|[\\s\\-])' + b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
+        if (b.length >= 5 && rx.test(nc) && nc !== b) { isVar = true; break; }
       }
-      if (!isVariant) {
-        baseNames[n] = item.id;
-      }
+      if (!isVar) _baseNames[n] = item.id;
     });
 
-    // Schritt 3: Eltern-Zuordnung ermitteln
-    var parentMap = {}; // variantId → parentId
-    var formsMap  = {}; // parentId → [ rawRow, ... ] (alle Varianten dieses Base)
+    // Schritt 3: Für jedes Supplement Eltern-Base bestimmen + formsMap aufbauen
+    var _parentMap = {}; // variantId → parentId
+    var _formsMap  = {}; // parentId → [ rawRow, ... ]
     data.forEach(function(s) {
       var n = (s.name || '').toLowerCase().trim();
       var id = s.id;
-      if (baseNames[n] === id) return; // ist selbst eine Base → überspringen
-      var nClean = n.replace(/\s*\(.*?\)/g, '').trim();
-      var foundParent = null;
-      for (var base in baseNames) {
-        var matched = false;
-        if (base.length >= 4 && nClean.startsWith(base) && nClean.length > base.length) matched = true;
-        else if (base.length >= 6 && nClean.includes(base) && nClean !== base) matched = true;
-        else {
-          var wbRegex = new RegExp('(^|[\\s\\-])' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
-          if (base.length >= 5 && wbRegex.test(nClean) && nClean !== base) matched = true;
-        }
-        if (matched) { foundParent = baseNames[base]; break; }
+      if (_baseNames[n] === id) return; // ist selbst Base
+      var nc = n.replace(/\s*\(.*?\)/g, '').trim();
+      var found = null;
+      for (var b in _baseNames) {
+        if (b.length >= 4 && nc.startsWith(b) && nc.length > b.length) { found = _baseNames[b]; break; }
+        if (b.length >= 6 && nc.includes(b) && nc !== b) { found = _baseNames[b]; break; }
+        var rx = new RegExp('(^|[\\s\\-])' + b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[\\s\\-])');
+        if (b.length >= 5 && rx.test(nc) && nc !== b) { found = _baseNames[b]; break; }
       }
-      // Klammer-Varianten: "Selen (Graves-Orbitopathie)" wenn "selen" Base ist
-      if (!foundParent && n.includes('(') && !n.includes('(vitamin') && !n.includes('(cobal') && !n.includes('(epa') && !n.includes('(dha')) {
-        var basePart = n.split('(')[0].trim();
-        if (baseNames[basePart]) foundParent = baseNames[basePart];
+      if (!found && n.includes('(') && !n.includes('(vitamin') && !n.includes('(cobal') && !n.includes('(epa') && !n.includes('(dha')) {
+        var bp = n.split('(')[0].trim();
+        if (_baseNames[bp]) found = _baseNames[bp];
       }
-      if (foundParent) {
-        parentMap[id] = foundParent;
-        if (!formsMap[foundParent]) formsMap[foundParent] = [];
-        formsMap[foundParent].push(s);
+      if (found) {
+        _parentMap[id] = found;
+        if (!_formsMap[found]) _formsMap[found] = [];
+        _formsMap[found].push(s);
       }
     });
 
-    // Schritt 4: Artikel-Selektion
-    // Base-Supplements: immer eigener Artikel
-    // Varianten MIT wirkung_kurz: eigener Artikel (mit parentId/parentTitle)
-    // Varianten OHNE wirkung_kurz: kein Artikel, erscheinen nur in Eltern-Tabelle
+    // Schritt 4: Filtern — gleiche Logik wie vorher, aber Varianten MIT wirkung_kurz dürfen durch
     var articlesData = data.filter(function(s) {
       var n = (s.name || '').toLowerCase().trim();
-      if (baseNames[n] === s.id) return true;      // Identifizierte Base: immer
-      if (!parentMap[s.id]) return true;            // Nicht als Variante erkannt: immer
-      return !!(s.wirkung_kurz && s.wirkung_kurz.trim()); // Variante: nur wenn eigene Beschreibung
+      var id = s.id;
+      // Identifizierte Base: immer behalten
+      if (_baseNames[n] === id) return true;
+      // Variante erkannt: behalten wenn eigene Beschreibung
+      if (_parentMap[id]) return !!(s.wirkung_kurz && s.wirkung_kurz.trim());
+      // Alles andere (nicht als Variante erkannt): behalten
+      return true;
     });
 
     // Transform zu knowledgeArticles Format
@@ -4805,14 +4796,14 @@ async function loadKnowledgeFromSupabase() {
         .trim();
 
       // Eltern-Daten für Form-Varianten
-      var myParentId = parentMap[s.id] || null;
+      var myParentId = _parentMap[s.id] || null;
       var myParentTitle = null;
-      if (myParentId && rawById[myParentId]) {
-        myParentTitle = _kwCleanText(rawById[myParentId].name || '').replace(/[®™]/g, '').trim();
+      if (myParentId && _rawById[myParentId]) {
+        myParentTitle = _kwCleanText(_rawById[myParentId].name || '').replace(/[®™]/g, '').trim();
       }
 
       // "Formen im Vergleich" Section für Base-Supplements mit Varianten
-      var myForms = formsMap[s.id] || [];
+      var myForms = _formsMap[s.id] || [];
       if (myForms.length > 0) {
         sections = sections.concat([_kwBuildFormsSection(myForms)]);
       }
