@@ -4665,7 +4665,7 @@ function _kwGetFormBadge(id) {
 async function loadKnowledgeFromSupabase() {
   if (_kwDataLoaded) return;
   try {
-    // Fetch alle Supplements (overview fields)
+    // Fetch alle Supplements — nur EU-zugelassene (nem_status = 'zugelassen')
     var data = await _kwFetch('supplements_basis',
       'select=id,name,auch_bekannt_als,kategorie,unterkategorie,wirkung,wirkung_kurz,symptome_ziele,' +
       'einnahme_zeitpunkt,einnahme_mit,einnahme_ohne,einnahme_hinweis,max_einzeldosis,' +
@@ -4675,7 +4675,7 @@ async function loadKnowledgeFromSupabase() {
       'bfr_hoechstmenge,dge_referenz,health_claims_efsa,qualitaetsmerkmale,optimalbereich,' +
       'bluttest_empfohlen,welcher_blutwert,schwangerschaft,stillzeit,kinder_geeignet,' +
       'senioren_hinweis,ueberdosis_symptome' +
-      '&limit=2000&order=name.asc'
+      '&nem_status=eq.zugelassen&limit=2000&order=name.asc'
     );
     if (!data || data.length === 0) {
       console.log('Supabase: Keine Supplements gefunden, verwende Fallback');
@@ -4741,40 +4741,6 @@ async function loadKnowledgeFromSupabase() {
 
       // Marketing-Formeln
       if (nl.includes('-formel') || nl.includes('herz-omega') || nl.includes('gehirn-omega') || nl.includes('kinder-omega')) return false;
-
-      // Explizite Blockliste: In der EU als NEM nicht zugelassen / verboten
-      var euBlocklist = [
-        'canthaxanthin',
-        'calciumorotat', 'calcium-orotat', 'calcium orotat',
-        'kaliumorotat', 'kalium-orotat', 'kalium orotat',
-        'magnesiumorotat', 'magnesium-orotat',
-        'orotsäure', 'orotate',
-        'ephedra', 'ephedrin', 'ma huang',
-        'dmaa', '1,3-dimethylamylamin',
-        'dmae', 'deanol',
-        'aristolochia', 'aristolochsäure',
-        'symphytum', 'beinwell',
-        'kava', 'kavakava', 'kava-kava', 'piper methysticum',
-        'yohimbin', 'yohimbine',
-        'synephrin', 'synephrine',
-        'sibutramin', 'sibutramine',
-        'androstenedion', 'androstenedione',
-        'dehydroepiandrosteron (dhea)', 'dhea',
-        'melatonin (hochdosis)', 'prasterone',
-        'strophanthin', 'oleander',
-        'colchicin', 'colchicine',
-        'germanium', 'germaniumdioxid',
-        'chaparral', 'larrea tridentata',
-        'comfrey', 'alkanna',
-        'pennyroyal', 'mentha pulegium',
-        'sassafras',
-        'aconit', 'aconitum',
-        'belladonna', 'atropin',
-        'stechapfel', 'datura',
-        'bilsenkraut', 'hyoscyamus',
-        'goldensiegel', 'hydrastis canadensis',
-      ];
-      if (euBlocklist.some(function(blocked) { return nl === blocked || nl.startsWith(blocked + ' ') || nl.startsWith(blocked + '-') || nl.includes('(' + blocked + ')'); })) return false;
 
       return true;
     });
