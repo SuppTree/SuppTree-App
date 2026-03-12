@@ -5246,8 +5246,12 @@ function _kwRenderLetterPage(letter) {
     }
   }
 
-  // Seite nach ganz oben scrollen
-  window.scrollTo(0, 0);
+  // Zur "Alle Supplements"-Sektion scrollen (nicht zum absoluten Seitenanfang)
+  var section = document.getElementById('recentArticles');
+  if (section) {
+    var top = section.getBoundingClientRect().top + window.scrollY - 8;
+    window.scrollTo({ top: top, behavior: 'auto' });
+  }
 }
 
 function kwSwitchLetter(letter) {
