@@ -5246,8 +5246,11 @@ function _kwRenderLetterPage(letter) {
     }, 50);
   }
 
-  // Nach oben scrollen beim Wechsel
-  window.scrollTo(0, 0);
+  // Zum Anfang der Liste scrollen (nicht zum Hero oben)
+  setTimeout(function() {
+    var c = document.getElementById('recentArticles');
+    if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 30);
 }
 
 function kwSwitchLetter(letter) {
@@ -5462,12 +5465,14 @@ async function openKnowledgeArticle(articleId) {
 
     currentArticleId = articleId;
 
+    // Scroll-Position für Zurück-Navigation merken
+    window._kwScrollBeforeArticle = window.scrollY;
+
     document.getElementById('knowledgeMain').style.display = 'none';
     document.getElementById('knowledgeCategoryView').style.display = 'none';
     document.getElementById('knowledgeArticleView').style.display = 'block';
     var azBar = document.getElementById('kwAzBar'); if (azBar) azBar.style.display = 'none';
 
-    // Reset scroll position
     window.scrollTo(0, 0);
 
     // Lade Detail-Daten aus Supabase (Quellen, Dosierungen)
@@ -5828,6 +5833,9 @@ function closeKnowledgeArticle() {
   } else {
     document.getElementById('knowledgeMain').style.display = 'block';
     var azBar = document.getElementById('kwAzBar'); if (azBar) azBar.style.display = '';
+    // Scroll-Position wiederherstellen
+    var savedY = window._kwScrollBeforeArticle || 0;
+    setTimeout(function() { window.scrollTo(0, savedY); }, 50);
   }
 }
 
