@@ -5246,10 +5246,10 @@ function _kwRenderLetterPage(letter) {
     }
   }
 
-  // Zur "Alle Supplements"-Sektion scrollen (nicht zum absoluten Seitenanfang)
+  // Zum "Alle Supplements"-Header scrollen (parent kw-section)
   var section = document.getElementById('recentArticles');
-  if (section) {
-    var top = section.getBoundingClientRect().top + window.scrollY - 8;
+  if (section && section.parentElement) {
+    var top = section.parentElement.getBoundingClientRect().top + window.scrollY - 8;
     window.scrollTo({ top: top, behavior: 'auto' });
   }
 }
