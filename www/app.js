@@ -5239,13 +5239,14 @@ function _kwRenderLetterPage(letter) {
       return '<span class="kw-az-btn kw-az-inactive">' + l + '</span>';
     }).join('');
 
-    // Aktiven Button in Sicht scrollen
-    setTimeout(function() {
-      var activeBtn = azBar.querySelector('.kw-az-active');
-      if (activeBtn) activeBtn.scrollIntoView({ block: 'nearest', inline: 'center' });
-    }, 50);
+    // Aktiven Button horizontal zentrieren (nur scrollLeft, KEIN scrollIntoView)
+    var activeBtn = azBar.querySelector('.kw-az-active');
+    if (activeBtn) {
+      azBar.scrollLeft = activeBtn.offsetLeft - (azBar.offsetWidth / 2) + (activeBtn.offsetWidth / 2);
+    }
   }
 
+  // Seite nach ganz oben scrollen
   window.scrollTo(0, 0);
 }
 
