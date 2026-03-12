@@ -5246,11 +5246,10 @@ function _kwRenderLetterPage(letter) {
     }
   }
 
-  // Zum "Alle Supplements"-Header scrollen (parent kw-section)
-  var section = document.getElementById('recentArticles');
-  if (section && section.parentElement) {
-    var top = section.parentElement.getBoundingClientRect().top + window.scrollY - 8;
-    window.scrollTo({ top: top, behavior: 'auto' });
+  // Zum "Alle Supplements"-Header scrollen
+  var section = document.getElementById('kwAllSupplementsSection');
+  if (section) {
+    window.scrollTo({ top: section.offsetTop - 8, behavior: 'auto' });
   }
 }
 
