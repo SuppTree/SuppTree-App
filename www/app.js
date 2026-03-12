@@ -5246,10 +5246,12 @@ function _kwRenderLetterPage(letter) {
     }
   }
 
-  // Zum "Alle Supplements"-Header scrollen
+  // Zum "Alle Supplements"-Header scrollen — Sticky-Suchleiste als Offset abziehen
   var section = document.getElementById('kwAllSupplementsSection');
   if (section) {
-    window.scrollTo({ top: section.offsetTop - 8, behavior: 'auto' });
+    var searchBar = document.getElementById('kwTopSearchArea');
+    var offset = searchBar ? searchBar.offsetHeight + 8 : 60;
+    window.scrollTo({ top: section.offsetTop - offset, behavior: 'auto' });
   }
 }
 
