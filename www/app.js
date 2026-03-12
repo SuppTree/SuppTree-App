@@ -5128,14 +5128,14 @@ function renderPopularArticles() {
   const container = document.getElementById('popularArticles');
   if (!container) return;
 
-  // Zeige bekannte Supplements die jeder kennt (alphabetisch gemischt aus verschiedenen Kategorien)
-  var popularIds = ['vitamin-d3', 'magnesium', 'omega-3-epa-dha', 'zinkbisglycinat', 'liposomales-vitamin-c', 'vitamin-b12', 'eisenbisglycinat', 'kreatin-monohydrat', 'ashwagandha', 'curcumin', 'biotin', 'folsaeure'];
-  var popular = popularIds.map(function(id) {
-    return knowledgeArticles.find(function(a) { return a.id === id; });
-  }).filter(Boolean).slice(0, 8);
-
-  // Fallback: erste 8 Artikel wenn keine matches
-  if (popular.length < 4) popular = knowledgeArticles.slice(0, 8);
+  // Beliebte: je 1-2 aus den wichtigsten Kategorien, direkt aus geladenen Daten
+  var popular = [];
+  var catOrder = ['vitamine', 'mineralien', 'pflanzen', 'omega', 'amino', 'sonstiges'];
+  catOrder.forEach(function(cat) {
+    var fromCat = knowledgeArticles.filter(function(a) { return a.category === cat && !a.parentId; });
+    fromCat.slice(0, 2).forEach(function(a) { if (popular.length < 8) popular.push(a); });
+  });
+  if (popular.length < 4) popular = knowledgeArticles.filter(function(a) { return !a.parentId; }).slice(0, 8);
 
   container.innerHTML = popular.map(a => renderArticleScrollCard(a)).join('');
 }
@@ -5147,22 +5147,14 @@ function renderShiftWorkerArticles() {
 function renderRecentArticles() {
   const container = document.getElementById('recentArticles');
   if (!container) return;
-
-  // Zeige Supplements aus verschiedenen Kategorien
-  var categories = ['vitamine', 'mineralien', 'pflanzen', 'omega', 'amino'];
-  var recent = [];
-  categories.forEach(function(cat) {
-    var fromCat = knowledgeArticles.filter(function(a) { return a.category === cat; });
-    if (fromCat.length > 0) recent.push(fromCat[0]);
+  // Alle Supplements alphabetisch — base-Artikel zuerst, dann Varianten
+  var sorted = knowledgeArticles.slice().sort(function(a, b) {
+    // Bases (kein parentId) vor Varianten
+    if (!a.parentId && b.parentId) return -1;
+    if (a.parentId && !b.parentId) return 1;
+    return a.title.localeCompare(b.title, 'de');
   });
-  // Auffüllen auf 8
-  if (recent.length < 8) {
-    knowledgeArticles.forEach(function(a) {
-      if (recent.length >= 8) return;
-      if (!recent.find(function(r) { return r.id === a.id; })) recent.push(a);
-    });
-  }
-  container.innerHTML = recent.slice(0, 8).map(a => renderArticleRowCard(a)).join('');
+  container.innerHTML = sorted.map(function(a) { return renderArticleRowCard(a); }).join('');
 }
 
 // Horizontal scroll card (Popular, Shift Worker sections)
