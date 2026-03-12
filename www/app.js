@@ -5005,6 +5005,7 @@ let bookmarkedArticles = JSON.parse(localStorage.getItem('suppTreeBookmarks') ||
 async function initKnowledgeHub() {
   // Lade Daten aus Supabase (einmalig)
   if (!_kwDataLoaded) {
+    _kwActiveLetter = null; // Reset beim ersten Laden
     await loadKnowledgeFromSupabase();
   }
   renderBookmarkedArticles();
@@ -5182,51 +5183,75 @@ function renderShiftWorkerArticles() {
   // Nicht mehr nötig — war ein statischer Bereich
 }
 
+// Aktiver Buchstabe für A-Z Pagination
+var _kwActiveLetter = null;
+var _kwAzGroups = {};
+var _kwAzLetters = [];
+
 function renderRecentArticles() {
   var container = document.getElementById('recentArticles');
   if (!container) return;
 
-  // Alphabetisch sortiert (nur base-Artikel — Varianten tauchen unter Base auf)
+  // Alphabetisch sortieren
   var sorted = knowledgeArticles.slice().sort(function(a, b) {
     return a.title.localeCompare(b.title, 'de');
   });
 
-  // Nach Anfangsbuchstabe gruppieren
-  var groups = {};
-  var letters = [];
+  // Nach Anfangsbuchstabe gruppieren (Ä→A, Ö→O, Ü→U)
+  _kwAzGroups = {};
+  _kwAzLetters = [];
   sorted.forEach(function(a) {
-    var letter = a.title.charAt(0).toUpperCase();
-    // Normalise special chars: Ä→A, Ö→O, Ü→U etc.
-    var sortLetter = letter.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (!groups[sortLetter]) { groups[sortLetter] = []; letters.push(sortLetter); }
-    groups[sortLetter].push(a);
+    var letter = a.title.charAt(0).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (!_kwAzGroups[letter]) { _kwAzGroups[letter] = []; _kwAzLetters.push(letter); }
+    _kwAzGroups[letter].push(a);
   });
-  letters.sort();
+  _kwAzLetters.sort();
 
-  // HTML: Buchstaben-Header + Artikel
-  var html = '';
-  letters.forEach(function(letter) {
-    html += '<div class="kw-az-letter-header" id="kw-az-' + letter + '">' + letter + '</div>';
-    html += '<div class="kw-article-list">' + groups[letter].map(function(a) { return renderArticleRowCard(a); }).join('') + '</div>';
-  });
-  container.innerHTML = html;
-
-  // A-Z Bar aufbauen
-  var azBar = document.getElementById('kwAzBar');
-  if (azBar) {
-    var allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    azBar.innerHTML = allLetters.map(function(l) {
-      if (groups[l]) {
-        return '<span onclick="kwJumpToLetter(\'' + l + '\')">' + l + '</span>';
-      }
-      return '<span class="kw-az-inactive">' + l + '</span>';
-    }).join('');
+  // Aktiven Buchstaben setzen (ersten verfügbaren wenn noch keiner gesetzt)
+  if (!_kwActiveLetter || !_kwAzGroups[_kwActiveLetter]) {
+    _kwActiveLetter = _kwAzLetters[0] || 'A';
   }
+
+  _kwRenderLetterPage(_kwActiveLetter);
 }
 
-function kwJumpToLetter(letter) {
-  var el = document.getElementById('kw-az-' + letter);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+function _kwRenderLetterPage(letter) {
+  _kwActiveLetter = letter;
+  var container = document.getElementById('recentArticles');
+  if (!container) return;
+
+  var articles = _kwAzGroups[letter] || [];
+
+  // Artikel-Liste für diesen Buchstaben
+  container.innerHTML =
+    '<div class="kw-az-page-header"><span class="kw-az-page-letter">' + letter + '</span>' +
+    '<span class="kw-az-page-count">' + articles.length + ' Supplement' + (articles.length !== 1 ? 's' : '') + '</span></div>' +
+    '<div class="kw-article-list">' + articles.map(function(a) { return renderArticleRowCard(a); }).join('') + '</div>';
+
+  // A-Z Bar aktualisieren
+  var azBar = document.getElementById('kwAzBar');
+  if (azBar) {
+    azBar.innerHTML = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(function(l) {
+      if (_kwAzGroups[l]) {
+        var active = l === letter ? ' kw-az-active' : '';
+        return '<span class="kw-az-btn' + active + '" onclick="kwSwitchLetter(\'' + l + '\')">' + l + '</span>';
+      }
+      return '<span class="kw-az-btn kw-az-inactive">' + l + '</span>';
+    }).join('');
+
+    // Aktiven Button in Sicht scrollen
+    setTimeout(function() {
+      var activeBtn = azBar.querySelector('.kw-az-active');
+      if (activeBtn) activeBtn.scrollIntoView({ block: 'nearest', inline: 'center' });
+    }, 50);
+  }
+
+  // Nach oben scrollen beim Wechsel
+  window.scrollTo(0, 0);
+}
+
+function kwSwitchLetter(letter) {
+  if (_kwAzGroups[letter]) _kwRenderLetterPage(letter);
 }
 
 // Horizontal scroll card (Popular, Shift Worker sections)

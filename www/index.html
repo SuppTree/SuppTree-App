@@ -21754,51 +21754,67 @@ input.input-error,
   font-weight: 700;
 }
 
-/* A-Z Letter Index Bar */
+/* A-Z Buchstaben-Leiste (horizontal, sticky unten) */
 .kw-az-bar {
-  position: fixed;
-  bottom: 70px;
-  right: 6px;
+  position: sticky;
+  bottom: 60px;
+  left: 0;
+  right: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  z-index: 80;
-  background: rgba(255,255,255,0.92);
-  border-radius: 12px;
-  padding: 4px 3px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.13);
-  border: 1px solid var(--border);
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 4px;
+  padding: 8px 12px;
+  background: #fff;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  z-index: 40;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
-.kw-az-bar span {
-  font-size: 10px;
-  font-weight: 600;
+.kw-az-bar::-webkit-scrollbar { display: none; }
+.kw-az-btn {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--green-accent);
   cursor: pointer;
-  line-height: 1.5;
-  padding: 0 3px;
-  border-radius: 4px;
-  min-width: 16px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  min-width: 30px;
   text-align: center;
+  background: var(--green-light);
+  transition: background 0.12s, color 0.12s;
 }
-.kw-az-bar span:active {
+.kw-az-btn:active {
   background: var(--green-accent);
   color: #fff;
 }
-.kw-az-bar span.kw-az-inactive {
+.kw-az-btn.kw-az-active {
+  background: var(--green-accent);
+  color: #fff;
+}
+.kw-az-btn.kw-az-inactive {
   color: #ccc;
+  background: #f5f5f5;
   cursor: default;
 }
-/* Letter section header in A-Z list */
-.kw-az-letter-header {
-  font-size: 11px;
-  font-weight: 700;
+/* Buchstaben-Seiten-Header */
+.kw-az-page-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 4px 2px 10px;
+}
+.kw-az-page-letter {
+  font-size: 32px;
+  font-weight: 800;
   color: var(--green-dark);
-  background: var(--green-light);
-  padding: 3px 12px;
-  margin: 8px 0 2px;
-  border-radius: 6px;
-  letter-spacing: 0.5px;
+  line-height: 1;
+}
+.kw-az-page-count {
+  font-size: 13px;
+  color: #999;
 }
 
 .kw-article-card-body {
