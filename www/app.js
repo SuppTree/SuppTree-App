@@ -5246,11 +5246,7 @@ function _kwRenderLetterPage(letter) {
     }, 50);
   }
 
-  // Zum Anfang der Liste scrollen (nicht zum Hero oben)
-  setTimeout(function() {
-    var c = document.getElementById('recentArticles');
-    if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 30);
+  window.scrollTo(0, 0);
 }
 
 function kwSwitchLetter(letter) {
