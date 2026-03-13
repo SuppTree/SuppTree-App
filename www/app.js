@@ -3096,6 +3096,27 @@ var kwSelectedCountry = 'DE';
 var kwDetectedCountry = 'DE';
 
 // Emoji/Sonderzeichen aus Text entfernen
+function _kwRenderMarkdown(text) {
+  if (!text) return '';
+  var html = text
+    .replace(/^---+$/gm, '<hr>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^[•\-] (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+    .split(/\n\n+/)
+    .map(function(block) {
+      block = block.trim();
+      if (!block) return '';
+      if (block.startsWith('<h') || block.startsWith('<ul') || block.startsWith('<hr')) return block;
+      return '<p>' + block.replace(/\n/g, ' ') + '</p>';
+    })
+    .join('');
+  return html;
+}
+
 function _kwCleanText(text) {
   if (!text) return '';
   // Remove leading non-alphanumeric/non-letter characters (emojis, stars, etc.)
@@ -3351,29 +3372,18 @@ function _kwBuildSections(s) {
   var name = _kwCleanText(s.name || '');
   var fix = _kwFixUmlauts;
 
-  // 0. Was ist X? — erste Section, aus _kwBuildWasIst
-  var wasIstParas = _kwBuildWasIst(s);
-  if (wasIstParas.length > 0) {
-    sections.push({ title: 'Was ist ' + name + '?', content: wasIstParas.join('\n\n') });
-  }
-
-  // 1. Wirkung
-  if (s.wirkung) {
-    var wRaw = _kwCleanText(s.wirkung || '');
-    var wText = fix(wRaw);
-    // Als saubere Aufzählung darstellen
-    var wParts = wText.split(/[,;]/).map(function(p){ return p.trim(); }).filter(function(p){ return p.length > 2; });
-    var intro = '';
-    if (wParts.length > 1) {
-      intro = wParts.map(function(p){ return '• ' + p.charAt(0).toUpperCase() + p.slice(1); }).join('\n');
-    } else {
-      intro = wText;
-    }
-    // EFSA Health Claims
-    if (s.health_claims_efsa) {
-      intro += '\n\n**Wissenschaftlich bestätigt (EFSA):**\n' + fix(s.health_claims_efsa).split(';').map(function(c){ return '• ' + c.trim(); }).join('\n');
-    }
-    sections.push({ title: 'Was macht ' + name + ' im Körper?', content: intro });
+  // 1. EFSA Health Claims — als Bullet-Liste, verkürzt
+  if (s.health_claims_efsa) {
+    var claimsList = fix(s.health_claims_efsa).split(';').map(function(c){ return c.trim(); }).filter(Boolean);
+    var claimsShort = claimsList.map(function(c){
+      var m = c.match(/trägt\s+zu\s+(?:einem?|einer)\s+(.+?)\s+bei\s*$/i);
+      if (m) return m[1].charAt(0).toUpperCase() + m[1].slice(1);
+      var m2 = c.match(/trägt\s+zur?\s+(.+?)\s+bei\s*$/i);
+      if (m2) return m2[1].charAt(0).toUpperCase() + m2[1].slice(1);
+      return c.trim();
+    }).filter(function(c){ return c.length > 2; });
+    var claimsContent = claimsShort.map(function(c){ return '• ' + c.charAt(0).toUpperCase() + c.slice(1); }).join('\n');
+    sections.push({ title: '✅ Bestätigte Wirkungen (EU)', content: claimsContent });
   }
 
   // 2. Einnahme — als lesbarer Leitfaden
@@ -3421,6 +3431,9 @@ function _kwBuildSections(s) {
     kombi += '\n\n' + fix(s.kombinations_hinweis) + '.';
   }
   if (kombi.trim()) {
+    kombi += '\n\n<div class="kw-matrix-hint" onclick="kwOpenMatrix()">' +
+      '<span>🔬</span><div><strong>Wechselwirkungen prüfen</strong><small>Interaktionsmatrix öffnen</small></div>' +
+      '<span class="kw-matrix-hint-arrow">→</span></div>';
     sections.push({ title: 'Kombinationen & Wechselwirkungen', content: kombi.trim() });
   }
 
@@ -4667,7 +4680,7 @@ async function loadKnowledgeFromSupabase() {
   try {
     // Fetch alle Supplements — nur EU-zugelassene (nem_status = 'zugelassen')
     var data = await _kwFetch('supplements_basis',
-      'select=id,name,auch_bekannt_als,kategorie,unterkategorie,wirkung,wirkung_kurz,symptome_ziele,' +
+      'select=id,name,auch_bekannt_als,kategorie,unterkategorie,wirkung,wirkung_kurz,wirkung_kompakt,symptome_ziele,' +
       'einnahme_zeitpunkt,einnahme_mit,einnahme_ohne,einnahme_hinweis,max_einzeldosis,' +
       'kombiniert_gut_mit,nicht_zusammen_mit,zeitlicher_abstand_h,kombinations_hinweis,' +
       'bioverfuegbarkeit_info,beste_form,warnhinweise,kontraindikationen,nebenwirkungen_ueberdosis,' +
@@ -4822,7 +4835,9 @@ async function loadKnowledgeFromSupabase() {
         s.bioverfuegbarkeit_info, s.qualitaetsmerkmale, s.kombinations_hinweis,
         s.natuerliche_quellen, s.schwangerschaft, s.stillzeit, s.kinder_geeignet,
         s.senioren_hinweis, s.health_claims_efsa].filter(Boolean).join(' ');
-      var readTime = Math.max(4, Math.ceil(allText.length / 600));
+      var introText = s.wirkung_kompakt || s.wirkung || '';
+      var wordCount = introText.split(/\s+/).length;
+      var readTime = Math.max(1, Math.ceil(wordCount / 200));
       // Clean name: remove emojis, trailing notes, and branded parts in parens
       var cleanName = _kwCleanText(s.name || '')
         .replace(/\s*[-–]\s*(NOVEL FOOD|BtMG|NICHT VERKEHRSFÄHIG|Marketing|LEITLINIE|Moderate Evidenz|KEINE|UNZUREICHENDE|GEFÄHRLICH)[^]*/i, '')
@@ -4847,7 +4862,15 @@ async function loadKnowledgeFromSupabase() {
       return {
         id: s.id,
         rawName: (s.name || '').toLowerCase(), // for search fallback
-        title: cleanName || s.name,
+        alias: (s.auch_bekannt_als || '').toLowerCase(),
+        title: (function() {
+          var base = cleanName || s.name;
+          if (s.auch_bekannt_als && s.auch_bekannt_als.trim()) {
+            var firstAlias = s.auch_bekannt_als.split(/[,;]/)[0].trim();
+            if (firstAlias) return base + ' (' + firstAlias + ')';
+          }
+          return base;
+        })(),
         subtitle: (function() {
           // symptome_ziele bevorzugen — das sind echte Nutzerziele (Müdigkeit, Schlaf, Stress...)
           if (s.symptome_ziele) {
@@ -4873,7 +4896,7 @@ async function loadKnowledgeFromSupabase() {
         parentId: myParentId,
         parentTitle: myParentTitle,
         content: {
-          intro: _kwFixUmlauts(s.wirkung || ''),
+          intro: _kwFixUmlauts(s.wirkung_kompakt || s.wirkung || ''),
           sections: sections
         },
         wasIst: _kwBuildWasIst(s),
@@ -5472,7 +5495,9 @@ async function openKnowledgeArticle(articleId) {
 
     document.getElementById('knowledgeMain').style.display = 'none';
     document.getElementById('knowledgeCategoryView').style.display = 'none';
-    document.getElementById('knowledgeArticleView').style.display = 'block';
+    var artView = document.getElementById('knowledgeArticleView');
+    artView.style.display = 'block';
+    artView.scrollTop = 0;
     var azBar = document.getElementById('kwAzBar'); if (azBar) azBar.style.display = 'none';
 
     window.scrollTo(0, 0);
@@ -5625,8 +5650,9 @@ function renderArticleContent(article) {
     }
 
     var isSafety = section.title.includes('Sicherheit') || section.title.includes('Warnhinweise');
+    var isEfsa = section.title.includes('Bestätigte Wirkungen');
     return `
-      <div class="kw-art-section${isSafety ? ' kw-art-section--safety' : ''}" id="section-${index}">
+      <div class="kw-art-section${isSafety ? ' kw-art-section--safety' : isEfsa ? ' kw-art-section--efsa' : ''}" id="section-${index}">
         <h2>${isSafety ? '⚠️ ' : ''}${section.title}</h2>
         ${content}
         ${infoBoxHtml}
@@ -5744,11 +5770,15 @@ function renderArticleContent(article) {
         <ul>${toc}</ul>
       </div>
 
-      <p class="kw-art-intro">${article.content.intro}</p>
+      <div class="kw-art-wirkung">${_kwRenderMarkdown(article.content.intro)}</div>
 
       ${sections}
 
       ${renderDosierungBox(article.id)}
+
+      <div class="kw-shop-hint" onclick="openArticleInMarketplace()">
+        🛒 <div><strong>Im Shop verfügbar?</strong><span>Dieses Supplement direkt kaufen →</span></div>
+      </div>
 
       <div class="sources-section">
         <h4>Quellen & Studien</h4>
@@ -5757,6 +5787,21 @@ function renderArticleContent(article) {
       </div>
     </div>
   `;
+}
+
+function kwToggleFullArticle() {
+  var preview = document.getElementById('kwIntroPreview');
+  var full = document.getElementById('kwIntroFull');
+  var btn = document.getElementById('kwReadMoreBtn');
+  if (full.style.display === 'none') {
+    full.style.display = 'block';
+    preview.style.display = 'none';
+    btn.textContent = 'Weniger anzeigen ↑';
+  } else {
+    full.style.display = 'none';
+    preview.style.display = 'block';
+    btn.textContent = 'Vollständig lesen ↓';
+  }
 }
 
 function renderDosierungBox(articleId) {
@@ -6254,14 +6299,21 @@ function performKnowledgeSearch(query) {
 
   var q = query.toLowerCase();
 
-  // Tier 1: Direct matches (title, rawName, id, subtitle, tags)
+  // Tier 1: Direct matches — sorted by relevance (title-start > title-contains > alias/id > subtitle/tags)
   var directResults = knowledgeArticles.filter(function(article) {
     if (article.title.toLowerCase().includes(q)) return true;
     if (article.rawName && article.rawName.includes(q)) return true;
+    if (article.alias && article.alias.includes(q)) return true;
     if (article.id && article.id.replace(/-/g, ' ').includes(q)) return true;
     if (article.subtitle.toLowerCase().includes(q)) return true;
     if (article.tags && article.tags.some(function(t) { return t.toLowerCase().includes(q); })) return true;
     return false;
+  }).sort(function(a, b) {
+    var at = a.title.toLowerCase(), bt = b.title.toLowerCase();
+    var aScore = at.startsWith(q) ? 0 : at.includes(q) ? 1 : 2;
+    var bScore = bt.startsWith(q) ? 0 : bt.includes(q) ? 1 : 2;
+    if (aScore !== bScore) return aScore - bScore;
+    return at.localeCompare(bt);
   });
 
   // Tier 2: Mentioned in content (contains #hashtag references)
@@ -9481,7 +9533,7 @@ function scheduleSupplementsForDate(dateStr) {
     const canSplit = rules.canSplit !== false;
     const splitThreshold = rules.splitThreshold || 3;
     const shouldSplit = canSplit && totalCapsules >= splitThreshold && distributionMode !== 'all-at-once';
-    
+
     if (shouldSplit && distributionMode === 'auto') {
       // Distribute capsules across multiple times
       const distributions = calculateDistribution(totalCapsules, bestSlot, rules, isSleepSupp, isEnergySupp);
@@ -9535,28 +9587,41 @@ function scheduleSupplementsForDate(dateStr) {
   
   // Convert to flat array with EXACT slot times
   const intakes = [];
-  
+
   Object.keys(intakesBySlot).forEach(slot => {
     const slotTime = timeSlots[slot];
     const items = intakesBySlot[slot];
-    
+
+    // Merge same supplement at the same slot (combine capsule counts)
+    const merged = {};
     items.forEach(item => {
+      const key = item.suppId || item.name;
+      if (merged[key]) {
+        merged[key].capsules = (merged[key].capsules || 1) + (item.capsules || 1);
+        merged[key].totalDoses = 1;
+        merged[key].doseIndex = 1;
+      } else {
+        merged[key] = { ...item };
+      }
+    });
+
+    Object.values(merged).forEach(item => {
       intakes.push({
         ...item,
         slot: slot,
-        time: slotTime,
+        time: item.customTime || slotTime,
         taken: false
       });
     });
   });
-  
+
   // Sort by time
   intakes.sort((a, b) => {
     const aMin = timeToMinutes(a.time);
     const bMin = timeToMinutes(b.time);
     return aMin - bMin;
   });
-  
+
   return intakes;
 }
 
@@ -9880,7 +9945,15 @@ function updateSupplementStats() {
     });
   }
   
-  // Update stat cards - target specifically within mysupplementsScreen
+  // Update hero stats
+  const elTotal = document.getElementById('msStatTotal');
+  const elLow   = document.getElementById('msStatLow');
+  const elAbo   = document.getElementById('msStatAbo');
+  if (elTotal) elTotal.textContent = total;
+  if (elLow)   elLow.textContent   = lowStock;
+  if (elAbo)   elAbo.textContent   = autoAboCount;
+
+  // Fallback: old stat cards (if still present)
   const statsContainer = document.querySelector('#mysupplementsScreen .my-supps-stats');
   if (statsContainer) {
     const stats = statsContainer.querySelectorAll('.supp-stat-value');
@@ -9989,32 +10062,41 @@ function renderMySupplements(filter = 'all') {
       timeDisplay = timeLabels[supp.time] || supp.time;
     }
     
+    const statusClass = isCritical ? 'critical' : isLow ? 'warning' : '';
+    const imgId = supp.productId || supp.id;
+    const imgHtml = supp.source === 'shop'
+      ? `<img class="supp-card-img" src="https://picsum.photos/seed/${imgId}/128/128" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <div class="supp-card-img-fallback" style="display:none">${supp.icon || '💊'}</div>`
+      : `<div class="supp-card-img-fallback">${supp.icon || '💊'}</div>`;
+
     return `
       <div class="my-supp-card ${isCritical ? 'critical-stock' : isLow ? 'low-stock' : ''} ${supp.autoAbo ? 'has-abo' : ''}" onclick="openSupplementDetail('${supp.id}')">
-        <div class="supp-card-left">
-          <div class="supp-card-icon">${supp.icon || '💊'}</div>
-          <div class="supp-source-badge ${supp.source || 'external'}">${supp.source === 'shop' ? 'Shop' : 'Extern'}</div>
-        </div>
-        <div class="supp-card-main">
-          <h4>${escapeHtml(supp.name) || 'Unbekannt'}</h4>
-          <p class="supp-brand">${escapeHtml(supp.brand) || 'Unbekannt'}</p>
-          <div class="supp-dosage">
-            <span>💊 ${dosagePerDay}x täglich</span>
-            <span>•</span>
-            <span class="${supp.roburScheduled ? 'robur-scheduled' : ''}">${timeDisplay}</span>
+        <div class="supp-card-body">
+          <div class="supp-card-left">
+            ${imgHtml}
+            <div class="supp-source-badge ${supp.source || 'external'}">${supp.source === 'shop' ? 'Shop' : 'Extern'}</div>
           </div>
-          ${supp.autoAbo ? '<div class="abo-badge">🔄 Auto-Abo aktiv</div>' : ''}
-        </div>
-        <div class="supp-card-right">
-          <div class="supp-stock">
-            <div class="stock-bar ${isCritical ? 'critical' : isLow ? 'warning' : ''}">
-              <div class="stock-fill" style="width: ${Math.min(stockPercent, 100)}%"></div>
+          <div class="supp-card-main">
+            <h4>${escapeHtml(supp.name) || 'Unbekannt'}</h4>
+            <p class="supp-brand">${escapeHtml(supp.brand) || ''}</p>
+            <div class="supp-dosage">
+              <span>💊 ${dosagePerDay}x täglich</span>
+              <span>•</span>
+              <span class="${supp.roburScheduled ? 'robur-scheduled' : ''}">${timeDisplay}</span>
             </div>
-            <span class="stock-text ${isCritical ? 'critical' : isLow ? 'warning' : ''}">${stock} übrig</span>
+            ${supp.autoAbo ? '<div class="abo-badge">🔄 Auto-Abo aktiv</div>' : ''}
           </div>
-          <span class="supp-days-left ${isCritical ? 'critical' : isLow ? 'warning' : ''}">~${daysLeft} Tage</span>
-          ${isCritical ? `<button class="quick-reorder urgent" onclick="event.stopPropagation(); quickReorder('${supp.id}')">Jetzt bestellen!</button>` : 
-            isLow ? `<button class="quick-reorder" onclick="event.stopPropagation(); quickReorder('${supp.id}')">Nachbestellen</button>` : ''}
+          <div class="supp-card-right">
+            <div class="supp-days-badge ${statusClass}">${daysLeft}</div>
+            <div class="supp-days-label">Tage übrig</div>
+            ${isCritical ? `<button class="quick-reorder urgent" onclick="event.stopPropagation(); quickReorder('${supp.id}')">Bestellen!</button>` :
+              isLow ? `<button class="quick-reorder" onclick="event.stopPropagation(); quickReorder('${supp.id}')">Nachbestellen</button>` : ''}
+          </div>
+        </div>
+        <div class="supp-card-footer">
+          <div class="stock-bar ${statusClass}">
+            <div class="stock-fill" style="width:${Math.min(stockPercent, 100)}%"></div>
+          </div>
         </div>
       </div>
     `;
@@ -11622,20 +11704,25 @@ function applyInteractionOverlay(scheduledItems) {
     );
 
     if (hemmend.length) {
-      annotated.hemmendLabels = hemmend.map(h => {
+      const seenH = new Set();
+      annotated.hemmendLabels = hemmend.reduce((acc, h) => {
         const otherWirkstoff = (h.supplement_a && h.supplement_a.id === supp.id) ? h.wirkstoff_b : h.wirkstoff_a;
         const abstandH = h.abstand_h || (h.abstand_minuten ? h.abstand_minuten / 60 : 0);
         const text = abstandH > 0
           ? 'Mind. ' + abstandH + 'h Abstand zu ' + (otherWirkstoff ? otherWirkstoff.name : '?')
           : 'Nicht zusammen mit ' + (otherWirkstoff ? otherWirkstoff.name : '?');
-        return { text, schweregrad: h.schweregrad || h.staerke };
-      });
+        if (!seenH.has(text)) { seenH.add(text); acc.push({ text, schweregrad: h.schweregrad || h.staerke }); }
+        return acc;
+      }, []);
     }
     if (foerdernd.length) {
-      annotated.foerderndLabels = foerdernd.map(f => {
+      const seenF = new Set();
+      annotated.foerderndLabels = foerdernd.reduce((acc, f) => {
         const otherWirkstoff = (f.supplement_a && f.supplement_a.id === supp.id) ? f.wirkstoff_b : f.wirkstoff_a;
-        return { text: 'Zusammen mit ' + (otherWirkstoff ? otherWirkstoff.name : '?') + ' einnehmen', schweregrad: f.schweregrad || f.staerke };
-      });
+        const text = 'Zusammen mit ' + (otherWirkstoff ? otherWirkstoff.name : '?') + ' einnehmen';
+        if (!seenF.has(text)) { seenF.add(text); acc.push({ text, schweregrad: f.schweregrad || f.staerke }); }
+        return acc;
+      }, []);
     }
 
     return annotated;
@@ -21674,20 +21761,20 @@ function renderDayPlanner() {
   // Aufteilen in Vergangenheit (2-24h her) und Aktuell (letzte 2h + nächste 24h)
   const pastItems = allItems.filter(item => item.itemDate >= pastStart && item.itemDate < pastEnd);
   const currentItems = allItems.filter(item => item.itemDate >= currentStart && item.itemDate <= currentEnd);
-  
+
   // Get completion status
   const completedKey = `suppTree_completed_${todayStr}`;
   const completed = JSON.parse(localStorage.getItem(completedKey) || '[]');
-  
+
   let html = '';
-  
+
   // === VERGANGENE EINNAHMEN (aufklappbar) ===
   if (pastItems.length > 0) {
-    const pastDoneCount = pastItems.filter(i => 
-      completed.includes(i.name) || i.done || 
+    const pastDoneCount = pastItems.filter(i =>
+      completed.includes(i.name) || i.done ||
       i.type === 'caffeine-stop' || i.type === 'info-wake' || i.type === 'info-sleep'
     ).length;
-    
+
     html += `
       <div class="timeline-past-section" id="timelinePastSection">
         <div class="timeline-past-header" onclick="togglePastTimeline()">
@@ -21700,17 +21787,16 @@ function renderDayPlanner() {
         </div>
         <div class="timeline-past-content" id="timelinePastContent">
     `;
-    
-    // Gruppiere vergangene Items
+
     const pastGroups = groupItemsByTime(pastItems);
     html += renderTimelineGroups(pastGroups, completed, now, true);
-    
+
     html += `
         </div>
       </div>
     `;
   }
-  
+
   // === AKTUELLE TIMELINE ===
   if (currentItems.length === 0) {
     html += `
@@ -23925,6 +24011,12 @@ function setView(view) {
 // ST+ FEATURE NAVIGATION
 // ===============================
 function openSTFeature(feature) {
+  const authRequired = ['mysupplements', 'planer', 'medications', 'robur'];
+  if (authRequired.includes(feature) && !currentUser) {
+    showCustomerAuth();
+    return;
+  }
+
   const screenMap = {
     'planer': 'calendarScreen',
     'mysupplements': 'mysupplementsScreen',
@@ -23970,8 +24062,22 @@ function openSTFeature(feature) {
   }
 }
 
+function kwOpenMatrix() {
+  // Merke den aktuellen Artikel damit man zurückkommt
+  window._kwMatrixReturnArticleId = currentArticleId;
+  switchScreen('matrixScreen');
+}
+
 function goBackToST() {
-  goBack();
+  // Falls man von einem Artikel zur Matrix gewechselt ist → zurück zum Artikel
+  if (window._kwMatrixReturnArticleId) {
+    var id = window._kwMatrixReturnArticleId;
+    window._kwMatrixReturnArticleId = null;
+    switchScreen('knowledgeScreen');
+    setTimeout(function() { openKnowledgeArticle(id); }, 100);
+  } else {
+    goBack();
+  }
 }
 
 // ===============================
@@ -28092,6 +28198,12 @@ function closeQuizReview() {
 // ===============================
 let _restoreScroll = null;
 function switchScreen(screenId) {
+  const authRequiredScreens = ['calendarScreen', 'mysupplementsScreen', 'medicationsScreen', 'roburScreen'];
+  if (authRequiredScreens.includes(screenId) && !currentUser) {
+    showCustomerAuth();
+    return;
+  }
+
   // Zurück-Banner verstecken wenn man den Marktplatz normal (nicht via Artikel) betritt
   if (screenId === 'productsScreen' && !_kwReturnArticleId) {
     var banner = document.getElementById('productsBackBanner');
@@ -39094,6 +39206,21 @@ async function initApp() {
 }
 
 function setupEventListeners() {
+  // Global fix: reset scroll to top whenever ANY bottom-sheet opens
+  document.querySelectorAll('.bottom-sheet').forEach(sheet => {
+    new MutationObserver(mutations => {
+      mutations.forEach(m => {
+        if (m.attributeName === 'class' && sheet.classList.contains('visible')) {
+          sheet.scrollTop = 0;
+          // Also reset any scrollable children (e.g. filter-sheet-content)
+          sheet.querySelectorAll('[style*="overflow"], .filter-sheet-content, .sheet-scroll-content, .abo-sheet-content').forEach(el => {
+            el.scrollTop = 0;
+          });
+        }
+      });
+    }).observe(sheet, { attributes: true });
+  });
+
   // Robur auto schedule toggle
   const roburToggle = document.getElementById('roburAutoSchedule');
   if (roburToggle) {

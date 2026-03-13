@@ -28,6 +28,17 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (dateEl) {
     dateEl.textContent = today.toLocaleDateString('de-DE', options);
   }
+
+  // Global fix: reset scroll whenever any bottom-sheet/panel opens
+  document.querySelectorAll('.bottom-sheet, [id$="Sheet"], [id$="Modal"]').forEach(sheet => {
+    new MutationObserver(mutations => {
+      mutations.forEach(m => {
+        if (m.attributeName === 'class' && (sheet.classList.contains('visible') || sheet.classList.contains('active'))) {
+          sheet.scrollTop = 0;
+        }
+      });
+    }).observe(sheet, { attributes: true });
+  });
 });
 
 // ===== SCREEN MANAGEMENT =====
