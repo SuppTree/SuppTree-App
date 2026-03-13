@@ -165,20 +165,7 @@ body.dark-mode .overlay.visible {
    HOME SCREEN
    =============================== */
 #homeScreen {
-  background: linear-gradient(180deg, 
-    var(--green-dark) 0%,
-    var(--green-dark) 6%, 
-    #2E5A3C 9%, 
-    #2E5A3C 15%,
-    #3A6B48 21%, 
-    var(--green-medium) 29%, 
-    #5A9A6A 39%, 
-    var(--green-light) 49%, 
-    #C5E1C8 59%, 
-    #DDE9D8 69%, 
-    var(--cream) 79%
-  );
-  background-attachment: fixed;
+  background: #F2F5F3;
 }
 
 .app{
@@ -191,7 +178,7 @@ body.dark-mode .overlay.visible {
    =============================== */
 .hero{
   padding: 0;
-  background: var(--green-dark);
+  background: #F2F5F3;
 }
 
 /* ===============================
@@ -199,7 +186,7 @@ body.dark-mode .overlay.visible {
    =============================== */
 .search-section{
   padding: 12px 16px 16px;
-  background: var(--green-dark);
+  background: #F2F5F3;
 }
 
 .search-box{
@@ -834,7 +821,8 @@ body.dark-mode .overlay.visible {
 
 .home-header-new {
   padding: 18px 18px 20px;
-  color: white;
+  color: var(--text-dark);
+  background: #F2F5F3;
 }
 
 .home-greeting {
@@ -845,7 +833,7 @@ body.dark-mode .overlay.visible {
 
 .greeting-left .greeting-hi {
   font-size: 13px;
-  opacity: 0.85;
+  color: var(--text-muted);
   margin-bottom: 2px;
   display: block;
 }
@@ -862,7 +850,7 @@ body.dark-mode .overlay.visible {
   gap: 8px;
   margin-top: 0;
   font-size: 14px;
-  opacity: 0.85;
+  color: var(--text-muted);
 }
 
 .datetime-date {
@@ -882,7 +870,8 @@ body.dark-mode .overlay.visible {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(255,255,255,0.2);
+  background: white;
+  border: 1px solid var(--border);
   padding: 8px 14px;
   border-radius: 7px;
   cursor: pointer;
@@ -899,7 +888,7 @@ body.dark-mode .overlay.visible {
 
 .home-tagline {
   font-size: 13px;
-  opacity: 0.85;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -1138,8 +1127,9 @@ body.dark-mode .overlay.visible {
   justify-content: space-between;
   align-items: center;
   padding: 14px 16px;
-  background: linear-gradient(135deg, var(--green-accent) 0%, #059669 100%);
-  color: white;
+  background: #d1fae5;
+  border-bottom: 1px solid #a7f3d0;
+  color: var(--text-dark);
 }
 
 .planner-date {
@@ -1149,8 +1139,8 @@ body.dark-mode .overlay.visible {
 
 .planner-add-btn {
   padding: 8px 16px;
-  background: white;
-  color: var(--green-accent);
+  background: var(--green-accent);
+  color: white;
   border: none;
   border-radius: 7px;
   font-size: 13px;
@@ -3796,17 +3786,19 @@ body.dark-mode .overlay.visible {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: linear-gradient(135deg, var(--green-accent) 0%, #059669 100%);
+  background: #d1fae5;
+  border-left: 3px solid var(--green-accent);
   border-radius: 7px;
   padding: 18px;
   cursor: pointer;
-  color: white;
+  color: var(--text-dark);
 }
 
 .robur-home-avatar {
   width: 50px;
   height: 50px;
-  background: rgba(255,255,255,0.2);
+  background: white;
+  border: 1px solid #a7f3d0;
   border-radius: 7px;
   display: flex;
   align-items: center;
@@ -3827,12 +3819,12 @@ body.dark-mode .overlay.visible {
 .robur-home-content p {
   font-size: 13px;
   margin: 0;
-  opacity: 0.9;
+  color: var(--text-muted);
 }
 
 .robur-home-arrow {
   font-size: 20px;
-  opacity: 0.8;
+  color: var(--text-muted);
 }
 
 /* Quick Actions Grid */
@@ -5032,7 +5024,7 @@ body.dark-mode .overlay.visible {
 
 .robur-suggest-btn {
   padding: 12px 20px;
-  background: linear-gradient(135deg, var(--green-accent), #6ee7b7);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -5386,7 +5378,7 @@ body.dark-mode .overlay.visible {
 }
 
 .cat-card.highlight {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: #1e293b;
 }
 
 .cat-card.highlight .cat-card-name {
@@ -6337,7 +6329,7 @@ body.dark-mode .overlay.visible {
   right: 18px;
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, #1e293b, #334155);
+  background: #1e293b;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -7251,11 +7243,11 @@ body.dark-mode .overlay.visible {
 .brand-hero {
   text-align: center;
   padding: 32px 20px;
-  background: linear-gradient(135deg, var(--green-accent), #34d399);
+  background: #d1fae5;
   border-radius: 0 0 7px 7px;
   margin-bottom: 20px;
-  color: white;
-  box-shadow: 0 4px 16px rgba(34,197,94,0.25);
+  color: var(--text-dark);
+  border-bottom: 1px solid #a7f3d0;
 }
 
 .brand-logo-big {
@@ -7263,7 +7255,8 @@ body.dark-mode .overlay.visible {
   margin-bottom: 12px;
   width: 80px;
   height: 80px;
-  background: rgba(255,255,255,0.2);
+  background: white;
+  border: 1px solid #a7f3d0;
   border-radius: 7px;
   display: flex;
   align-items: center;
@@ -7279,7 +7272,7 @@ body.dark-mode .overlay.visible {
 
 .brand-slogan {
   font-size: 14px;
-  opacity: 0.9;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -7609,14 +7602,14 @@ body.dark-mode .overlay.visible {
 }
 
 .subscribe-btn.active-abo {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #10b981;
   border-color: #10b981;
   color: white;
   cursor: pointer;
 }
 
 .subscribe-btn.active-abo:hover {
-  background: linear-gradient(135deg, #059669, #047857);
+  background: #059669;
 }
 
 .subscribe-btn .discount-tag {
@@ -7636,7 +7629,7 @@ body.dark-mode .overlay.visible {
   width: 100%;
   padding: 16px;
   border-radius: 7px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  background: #8b5cf6;
   border: none;
   cursor: pointer;
   display: flex;
@@ -7685,7 +7678,7 @@ body.dark-mode .overlay.visible {
 }
 
 .add-to-supps-btn.added {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: #10b981;
 }
 
 /* Accordion Sections */
@@ -8137,7 +8130,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
   padding: 14px 16px;
   font-size: 15px;
   font-weight: 700;
-  color: white;
+  color: var(--text-dark);
   position: sticky;
   top: 0;
   z-index: 5;
@@ -8145,7 +8138,8 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 
 /* Favoriten Section - Rot/Pink */
 #favSection .cartfav-section-header {
-  background: linear-gradient(135deg, #ef4444, #f87171);
+  background: #fee2e2;
+  border-bottom: 1px solid #fecaca;
 }
 
 #favSection .cartfav-section-content {
@@ -8160,7 +8154,8 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 
 /* Warenkorb Section - Grün */
 #cartSection .cartfav-section-header {
-  background: linear-gradient(135deg, var(--green-accent), #34d399);
+  background: #d1fae5;
+  border-bottom: 1px solid #a7f3d0;
 }
 
 #cartSection .cartfav-section-content {
@@ -8353,7 +8348,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
   width: 100%;
   padding: 12px;
   margin-top: 8px;
-  background: linear-gradient(135deg, var(--green-accent), #34d399);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -9041,7 +9036,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
-  background: linear-gradient(135deg, var(--green-accent), #34d399);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -9170,7 +9165,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 }
 
 .order-delivered-btn {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #10b981;
   color: white;
   border: none;
   padding: 10px 16px;
@@ -9719,7 +9714,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 .abo-start-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, var(--green-accent), #34d399);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -10098,7 +10093,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 .checkout-order-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, var(--green-accent), #34d399);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -10576,7 +10571,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
    =============================== */
 
 .section-badge {
-  background: linear-gradient(135deg, var(--green-accent), #34d399);
+  background: var(--green-accent);
   color: white;
   padding: 4px 10px;
   border-radius: 7px;
@@ -11101,7 +11096,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 .abo-confirm-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, var(--green-accent), #34d399);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -11303,7 +11298,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
    ========================================== */
 
 #healthProfileScreen {
-  background: linear-gradient(180deg, #f0fdf4 0%, #fafafa 30%);
+  background: #F2F5F3;
   overflow-y: auto;
   padding-bottom: 100px;
 }
@@ -11647,7 +11642,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 .hp-save-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, var(--green-accent) 0%, #10b981 100%);
+  background: var(--green-accent);
   border: none;
   border-radius: 7px;
   font-size: 16px;
@@ -11813,7 +11808,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 .profile-save-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, var(--green-accent), #34d399);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -12653,7 +12648,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 }
 
 .planer-tab.pattern {
-  background: linear-gradient(135deg, #374151, #4b5563);
+  background: #374151;
   border-color: transparent;
   color: white;
 }
@@ -12686,7 +12681,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 }
 
 .cal-action-btn.pattern-btn {
-  background: linear-gradient(135deg, #1e293b, #334155);
+  background: #1e293b;
   border-color: transparent;
   color: white;
 }
@@ -14586,12 +14581,12 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 }
 
 .supp-action-btn.scan {
-  background: linear-gradient(145deg, #1e293b, #334155);
+  background: #334155;
   color: white;
 }
 
 .supp-action-btn.add {
-  background: linear-gradient(145deg, #00A67E, #00c49a);
+  background: var(--green-accent);
   color: white;
 }
 
@@ -14669,14 +14664,15 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  background: linear-gradient(135deg, #1a5a3a, #00A67E);
+  background: #d1fae5;
+  border-bottom: 1px solid #a7f3d0;
 }
 
 .abo-management-title {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: white;
+  color: var(--text-dark);
 }
 
 .abo-management-icon {
@@ -14692,12 +14688,13 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 .abo-management-title p {
   font-size: 11px;
   margin: 0;
-  opacity: 0.9;
+  color: var(--text-muted);
 }
 
 .abo-management-count {
-  background: rgba(255,255,255,0.25);
-  color: white;
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text-dark);
   width: 28px;
   height: 28px;
   border-radius: 7px;
@@ -14731,7 +14728,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 
 .abo-management-empty-btn {
   padding: 10px 20px;
-  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+  background: #8b5cf6;
   color: white;
   border: none;
   border-radius: 7px;
@@ -15282,14 +15279,15 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  background: linear-gradient(135deg, #059669, #10b981);
+  background: #d1fae5;
+  border-bottom: 1px solid #a7f3d0;
 }
 
 .auto-replen-title {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: white;
+  color: var(--text-dark);
 }
 
 .auto-replen-title-icon {
@@ -15305,12 +15303,13 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 .auto-replen-title p {
   font-size: 11px;
   margin: 0;
-  opacity: 0.9;
+  color: var(--text-muted);
 }
 
 .auto-replen-badge {
-  background: rgba(255,255,255,0.25);
-  color: white;
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text-dark);
   padding: 4px 10px;
   border-radius: 7px;
   font-size: 11px;
@@ -15665,9 +15664,10 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
   gap: 14px;
   margin: 0 18px 20px;
   padding: 16px;
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  background: #f3e8ff;
+  border-left: 3px solid #8b5cf6;
   border-radius: 7px;
-  color: white;
+  color: var(--text-dark);
 }
 
 .promo-icon {
@@ -16311,7 +16311,7 @@ body.sheet-open .bottom-sheet.visible .sheet-content {
 .save-manual-supp-btn {
   width: 100%;
   padding: 18px;
-  background: linear-gradient(135deg, var(--green-accent) 0%, var(--green-dark) 100%);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -18481,7 +18481,7 @@ input.input-error,
 .save-rhythm-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, var(--green-accent) 0%, #10b981 100%);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -18552,16 +18552,16 @@ input.input-error,
 
 /* Daily Quiz Card */
 .daily-quiz-card {
-  background: linear-gradient(135deg, var(--orange), #f59e0b);
+  background: #fff7ed;
+  border-left: 3px solid var(--orange);
   border-radius: 7px;
   padding: 20px;
   margin-bottom: 16px;
-  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.35);
 }
 
 .daily-quiz-card.completed {
-  background: linear-gradient(135deg, var(--green-accent), var(--green-medium));
-  box-shadow: 0 6px 20px rgba(0, 166, 126, 0.3);
+  background: #d1fae5;
+  border-left-color: var(--green-accent);
 }
 
 .daily-quiz-info {
@@ -18574,7 +18574,8 @@ input.input-error,
 .daily-quiz-icon {
   width: 50px;
   height: 50px;
-  background: rgba(255,255,255,0.2);
+  background: white;
+  border: 1px solid var(--border);
   border-radius: 7px;
   display: flex;
   align-items: center;
@@ -18585,26 +18586,25 @@ input.input-error,
 .daily-quiz-text h3 {
   font-size: 16px;
   font-weight: 600;
-  color: white;
+  color: var(--text-dark);
   margin-bottom: 4px;
 }
 
 .daily-quiz-text p {
   font-size: 13px;
-  color: rgba(255,255,255,0.85);
+  color: var(--text-muted);
 }
 
 .daily-quiz-btn {
   width: 100%;
   padding: 14px 20px;
-  background: white;
-  color: var(--orange);
+  background: var(--orange);
+  color: white;
   border: none;
   border-radius: 7px;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   transition: all 0.2s ease;
 }
 
@@ -18678,7 +18678,7 @@ input.input-error,
 .practice-quiz-btn {
   width: 100%;
   padding: 20px 28px;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: #2563eb;
   color: white;
   border: none;
   border-radius: 7px;
@@ -19458,7 +19458,7 @@ input.input-error,
 }
 
 .retry-btn.retry-wrong {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: #ef4444;
   color: white;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
@@ -19477,7 +19477,7 @@ input.input-error,
 }
 
 .review-retry-section.perfect .retry-btn.retry-all {
-  background: linear-gradient(135deg, var(--trust-blue), #1d4ed8);
+  background: var(--trust-blue);
   color: white;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
@@ -20134,7 +20134,7 @@ input.input-error,
 .analyze-matrix-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  background: #8b5cf6;
   color: white;
   border: none;
   border-radius: 7px;
@@ -21236,19 +21236,15 @@ input.input-error,
 
 /* Hero Header */
 .kw-hero {
-  background: linear-gradient(160deg, #0f766e 0%, #059669 50%, #10b981 100%);
+  background: #F2F5F3;
   padding: 28px 20px 32px;
-  color: #fff;
+  color: var(--text-dark);
   position: relative;
   overflow: hidden;
 }
 .kw-hero::after {
   content: '';
-  position: absolute;
-  top: -40%; right: -20%;
-  width: 220px; height: 220px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 50%;
+  display: none;
 }
 .kw-hero-title {
   font-size: 24px;
@@ -21258,7 +21254,7 @@ input.input-error,
 }
 .kw-hero-sub {
   font-size: 13px;
-  opacity: 0.8;
+  color: var(--text-muted);
   font-weight: 400;
 }
 
@@ -24265,26 +24261,14 @@ input.input-error,
    MEIN SCREEN - SMART DASHBOARD
    =============================== */
 #meinScreen {
-  background: linear-gradient(180deg, 
-    var(--green-dark) 0%,
-    var(--green-dark) 6%, 
-    #2E5A3C 9%, 
-    #2E5A3C 15%,
-    #3A6B48 21%, 
-    var(--green-medium) 29%, 
-    #5A9A6A 39%, 
-    var(--green-light) 49%, 
-    #C5E1C8 59%, 
-    #DDE9D8 69%, 
-    var(--cream) 79%
-  );
-  background-attachment: fixed;
+  background: #F2F5F3;
 }
 
 /* Clean Mein Header */
 .mein-header-clean {
   padding: 18px 18px 20px;
-  color: white;
+  color: var(--text-dark);
+  background: #F2F5F3;
 }
 
 .mein-greeting {
@@ -24293,7 +24277,7 @@ input.input-error,
 
 .greeting-small {
   font-size: 13px;
-  opacity: 0.85;
+  color: var(--text-muted);
   display: block;
   margin-bottom: 2px;
 }
@@ -24305,7 +24289,7 @@ input.input-error,
 }
 
 .mein-today-info {
-  opacity: 0.85;
+  color: var(--text-muted);
   font-size: 14px;
 }
 
@@ -27404,7 +27388,7 @@ input.input-error,
   width: 100%;
   padding: 18px;
   margin-top: 24px;
-  background: linear-gradient(135deg, var(--green-accent), #059669);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -31364,30 +31348,18 @@ input.input-error,
    ========================================= */
 
 #menuScreen {
-  background: linear-gradient(180deg, 
-    var(--green-dark) 0%,
-    var(--green-dark) 6%, 
-    #2E5A3C 9%, 
-    #2E5A3C 15%,
-    #3A6B48 21%, 
-    var(--green-medium) 29%, 
-    #5A9A6A 39%, 
-    var(--green-light) 49%, 
-    #C5E1C8 59%, 
-    #DDE9D8 69%, 
-    var(--cream) 79%
-  );
-  background-attachment: fixed;
+  background: #F2F5F3;
 }
 
 .menu-header {
   padding: 18px 18px 20px;
-  color: white;
+  color: var(--text-dark);
+  background: #F2F5F3;
 }
 
 .menu-header .header-label {
   font-size: 13px;
-  opacity: 0.85;
+  color: var(--text-muted);
   display: block;
   margin-bottom: 2px;
 }
@@ -31400,7 +31372,7 @@ input.input-error,
 
 .menu-header .header-date {
   font-size: 14px;
-  opacity: 0.85;
+  color: var(--text-muted);
   display: block;
 }
 
@@ -31870,17 +31842,18 @@ input.input-error,
   display: flex;
   align-items: center;
   gap: 14px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: #f3e8ff;
+  border-left: 3px solid #8b5cf6;
   border-radius: 7px;
   padding: 18px;
   cursor: pointer;
-  color: white;
+  color: var(--text-dark);
 }
 
 .training-home-icon {
   width: 50px;
   height: 50px;
-  background: rgba(255,255,255,0.2);
+  background: #e9d5ff;
   border-radius: 7px;
   display: flex;
   align-items: center;
@@ -31907,7 +31880,7 @@ input.input-error,
 .training-home-arrow {
   width: 36px;
   height: 36px;
-  background: rgba(255,255,255,0.2);
+  background: #e9d5ff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -32941,7 +32914,7 @@ input.input-error,
 .kur-buy-btn {
   flex: 1;
   padding: 16px;
-  background: linear-gradient(135deg, var(--green-accent) 0%, #059669 100%);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -33302,11 +33275,12 @@ input.input-error,
 }
 
 .sport-reco-robur {
-  background: linear-gradient(135deg, var(--green-accent) 0%, #059669 100%);
+  background: #d1fae5;
+  border-left: 3px solid var(--green-accent);
   border-radius: 7px;
   padding: 16px;
   text-align: center;
-  color: white;
+  color: var(--text-dark);
 }
 
 .sport-reco-robur-icon {
@@ -34740,7 +34714,7 @@ input.input-error,
 .save-profile-btn {
   width: 100%;
   padding: 18px;
-  background: linear-gradient(135deg, var(--green-accent) 0%, var(--green-dark) 100%);
+  background: var(--green-accent);
   color: white;
   border: none;
   border-radius: 7px;
@@ -37219,11 +37193,12 @@ input.input-error,
 }
 
 .training-progress-card {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: #f3e8ff;
+  border-left: 3px solid #8b5cf6;
   border-radius: 7px;
   padding: 18px;
   margin: 0 16px 16px;
-  color: white;
+  color: var(--text-dark);
 }
 
 .training-progress-header {
@@ -37246,14 +37221,14 @@ input.input-error,
 
 .training-progress-bar {
   height: 8px;
-  background: rgba(255,255,255,0.3);
+  background: #e9d5ff;
   border-radius: 4px;
   margin-bottom: 16px;
 }
 
 .training-progress-fill {
   height: 100%;
-  background: white;
+  background: #8b5cf6;
   border-radius: 4px;
   transition: width 0.3s;
 }
@@ -37949,13 +37924,13 @@ input.input-error,
 .ek-prac-svc-price{font-size:13px;font-weight:700;color:var(--green-accent);flex-shrink:0;margin-left:8px}
 .ek-prac-profil-btn{display:block;width:100%;padding:10px;background:var(--green-accent);color:white;border:none;border-radius:var(--radius-xl);font-size:13px;font-weight:600;cursor:pointer;text-align:center}
 .ek-prac-profil-btn:active{opacity:0.85}
-.ek-profil-hero{text-align:center;padding:24px 16px;background:linear-gradient(135deg,var(--green-dark),var(--green-medium));color:white}
-.ek-profil-avatar{width:80px;height:80px;margin:0 auto 12px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:40px;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.3)}
+.ek-profil-hero{text-align:center;padding:24px 16px;background:#d1fae5;color:var(--text-dark);border-bottom:1px solid #a7f3d0}
+.ek-profil-avatar{width:80px;height:80px;margin:0 auto 12px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:40px;background:white;border:3px solid #a7f3d0}
 .ek-profil-name{font-size:20px;font-weight:700}
-.ek-profil-title{font-size:13px;opacity:0.85;margin-top:4px}
-.ek-profil-rating{margin-top:8px;font-size:13px;opacity:0.9}
+.ek-profil-title{font-size:13px;color:var(--text-muted);margin-top:4px}
+.ek-profil-rating{margin-top:8px;font-size:13px;color:var(--text-dark)}
 .ek-profil-badges{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-.ek-profil-badge{padding:4px 10px;border-radius:7px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.15)}
+.ek-profil-badge{padding:4px 10px;border-radius:7px;font-size:10px;font-weight:600;background:white;border:1px solid #a7f3d0}
 .ek-profil-actions{display:flex;gap:8px;padding:12px 16px;background:var(--white);border-bottom:1px solid var(--border)}
 .ek-profil-action{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-xl);cursor:pointer;background:none;font-size:11px;font-weight:600;color:var(--text-dark)}
 .ek-profil-action:active{background:var(--green-light)}
@@ -38066,7 +38041,7 @@ input.input-error,
 .ta-anfragen-section{margin-top:12px}
 
 /* ── Customer Auth Overlay ── */
-#customerAuthOverlay{display:none;position:fixed;inset:0;z-index:999999;background:linear-gradient(180deg,#1a5a3a 0%,#00A67E 40%,#f8f9fa 100%);flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;padding-top:60px;overflow-y:auto}
+#customerAuthOverlay{display:none;position:fixed;inset:0;z-index:999999;background:#F2F5F3;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;padding-top:60px;overflow-y:auto}
 #customerAuthOverlay.visible{display:flex}
 .ca-logo{text-align:center;margin-bottom:28px}
 .ca-logo-icon{font-size:48px;margin-bottom:8px}
@@ -42053,7 +42028,7 @@ input.input-error,
       </div>
       <!-- Hero Header -->
       <div class="kw-hero">
-        <button class="back-btn" onclick="goBackToST()" style="position:absolute;top:14px;left:12px;color:#fff;background:rgba(255,255,255,0.15);border:none;width:34px;height:34px;border-radius:7px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
+        <button class="back-btn" onclick="goBackToST()" style="position:absolute;top:14px;left:12px;color:var(--text-dark);background:white;border:1px solid var(--border);width:34px;height:34px;border-radius:7px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
         <div style="padding-top:36px">
           <div class="kw-hero-title" data-i18n="knowledge.hub">Wissens-Hub</div>
           <div class="kw-hero-sub">Evidenzbasiertes Wissen rund um Supplements</div>
@@ -42149,9 +42124,9 @@ input.input-error,
 
     <div class="symptoms-content">
       <!-- Hero Header -->
-      <div class="kw-hero" style="background:linear-gradient(160deg,#7c3aed 0%,#a855f7 50%,#c084fc 100%)">
-        <button class="back-btn" onclick="goBackToST()" style="position:absolute;top:14px;left:12px;color:#fff;background:rgba(255,255,255,0.15);border:none;width:34px;height:34px;border-radius:7px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
-        <button onclick="showSymptomInfo()" style="position:absolute;top:14px;right:12px;color:#fff;background:rgba(255,255,255,0.15);border:none;width:34px;height:34px;border-radius:7px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">ℹ️</button>
+      <div class="kw-hero" style="background:#f3e8ff;border-bottom:1px solid #e9d5ff;">
+        <button class="back-btn" onclick="goBackToST()" style="position:absolute;top:14px;left:12px;color:var(--text-dark);background:white;border:1px solid var(--border);width:34px;height:34px;border-radius:7px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
+        <button onclick="showSymptomInfo()" style="position:absolute;top:14px;right:12px;color:var(--text-dark);background:white;border:1px solid var(--border);width:34px;height:34px;border-radius:7px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">ℹ️</button>
         <div style="padding-top:6px">
           <div class="kw-hero-title">Nährstoff-Analyse</div>
           <div class="kw-hero-sub">Finde heraus, welche Nährstoffe dir fehlen</div>
@@ -43499,7 +43474,7 @@ input.input-error,
 
       <!-- Partner-Bereich Button (nur für Seller sichtbar) -->
       <div id="partnerSwitchBtn" style="display:none;padding:0 16px 8px">
-        <button onclick="localStorage.removeItem('suppTreePartnerType');localStorage.setItem('suppTreeAppMode','production');window.location.href='../partner/index.html?mode=production'" style="width:100%;padding:14px 20px;background:linear-gradient(135deg,#1a5a3a,#00A67E);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        <button onclick="localStorage.removeItem('suppTreePartnerType');localStorage.setItem('suppTreeAppMode','production');window.location.href='../partner/index.html?mode=production'" style="width:100%;padding:14px 20px;background:var(--green-accent);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
           <span>🏪</span> Zum Partner-Bereich
         </button>
       </div>
