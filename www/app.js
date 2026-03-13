@@ -23497,9 +23497,20 @@ function toggleFilterSection(titleEl) {
 }
 
 function openFilterSheet() {
+  // Lock body first to prevent layout jump eating first click
+  lockBody();
+
   // Copy current filters to temp
   tempFilters = new Set(activeFilters);
-  
+
+  // Erste Sektion standardmäßig aufklappen
+  const firstCollapsible = document.querySelector('#filterSheet .filter-collapsible');
+  if (firstCollapsible && firstCollapsible.style.display === 'none') {
+    firstCollapsible.style.display = 'flex';
+    const arrow = firstCollapsible.previousElementSibling?.querySelector('.filter-section-arrow');
+    if (arrow) arrow.textContent = '−';
+  }
+
   // Update UI to show current filters
   document.querySelectorAll('#filterSheet .filter-option').forEach(opt => {
     const isActive = tempFilters.has(opt.dataset.filter);
@@ -23518,7 +23529,6 @@ function openFilterSheet() {
 
   document.getElementById('filterOverlay').classList.add('active');
   document.getElementById('filterSheet').classList.add('visible');
-  lockBody();
 }
 
 function closeFilterSheet() {
