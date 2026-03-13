@@ -37495,36 +37495,27 @@ function startCheckout() {
     if (!product) return;
     
     const qty = sub.quantity || 1;
-    const originalPrice = parseFloat(product.price) * qty;
-    const discountedPrice = sub.price; // Already discounted price for all quantities
-    const savings = originalPrice - discountedPrice;
-    aboSavings += savings;
-    
-    subtotal += discountedPrice;
+    // Abo-Artikel werden NICHT zum Checkout-Subtotal addiert – Abrechnung erfolgt separat
     itemCount += qty;
     hasAboItems = true;
-    
-    // Quantity text
+
     const qtyText = qty > 1 ? `${qty}× ` : '';
-    const qtyMeta = qty > 1 ? `${qty} Packungen • ` : '';
-    
+    const packInfo = qty > 1 ? `${qty} Packungen · ` : '';
+
     itemsHtml += `
       <div class="checkout-item checkout-item-abo">
         <div class="checkout-item-icon">${product.icon}</div>
         <div class="checkout-item-info">
           <div class="checkout-item-name">${qtyText}${escapeHtml(product.name)}</div>
-          <div class="checkout-item-meta">🔄 Abo • ${qtyMeta}8% Rabatt</div>
+          <div class="checkout-item-meta">🔄 Abo · ${packInfo}separat abgerechnet</div>
         </div>
-        <div class="checkout-item-price">
-          <span style="text-decoration: line-through; color: #9ca3af; font-size: 12px;">€${originalPrice.toFixed(2)}</span>
-          <span style="color: var(--green-accent); font-weight: 600;">€${discountedPrice.toFixed(2)}</span>
-        </div>
+        <div class="checkout-item-price" style="color:var(--text-muted);font-size:12px;font-weight:600;">Abo</div>
       </div>
     `;
   });
   
-  // Store abo savings
-  checkoutState.aboSavings = aboSavings;
+  // Abo-Savings nicht mehr relevant (Abos werden separat abgerechnet)
+  checkoutState.aboSavings = 0;
 
   // Calculate shipping (standard default)
   const shipping = subtotal >= 49 ? 0 : 4.90;
@@ -38036,26 +38027,28 @@ function coRenderSummary() {
   }
 
   // Price breakdown
-  const { subtotal, shipping, aboSavings } = checkoutState;
+  const { subtotal, shipping } = checkoutState;
   const total = Math.max(0, subtotal + shipping);
 
+  // Zwischensumme-Zeile nur anzeigen wenn reguläre Artikel im Warenkorb
+  const subtotalRow = document.getElementById('coSubtotalRow');
   const subEl = document.getElementById('coSubtotal');
+  if (subtotalRow) subtotalRow.style.display = subtotal > 0 ? '' : 'none';
   if (subEl) subEl.textContent = '€' + subtotal.toFixed(2);
 
   const shipCostEl = document.getElementById('coShippingCost');
   if (shipCostEl) shipCostEl.textContent = shipping === 0 ? 'Kostenlos' : '€' + shipping.toFixed(2);
 
   const totalEl = document.getElementById('coTotal');
-  if (totalEl) totalEl.textContent = '€' + total.toFixed(2);
+  if (totalEl) totalEl.textContent = shipping === 0 ? 'Kostenlos' : '€' + total.toFixed(2);
 
+  // MwSt.-Info nur bei regulären Artikeln relevant
+  const mwstEl = document.getElementById('coMwstInfo');
+  if (mwstEl) mwstEl.style.display = subtotal > 0 ? '' : 'none';
+
+  // Abo-Ersparnis-Zeile ausblenden (Abos werden separat abgerechnet)
   const savingsRow = document.getElementById('coAboSavingsRow');
-  const savingsEl = document.getElementById('coAboSavings');
-  if (savingsRow && aboSavings > 0) {
-    savingsRow.style.display = 'flex';
-    if (savingsEl) savingsEl.textContent = '-€' + aboSavings.toFixed(2);
-  } else if (savingsRow) {
-    savingsRow.style.display = 'none';
-  }
+  if (savingsRow) savingsRow.style.display = 'none';
 
   // Abo-Bedingungen anzeigen wenn Abos im Warenkorb
   const aboConditions = document.getElementById('coAboConditions');
