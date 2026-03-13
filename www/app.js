@@ -36818,23 +36818,17 @@ function renderEinkaufCart() {
     const product = products.find(p => p.id === productId);
     if (!product) return;
     
-    const originalPrice = parseFloat(product.price) * (sub.quantity || 1);
-    const aboPrice = sub.price;
-    subtotal += aboPrice;
-    
+    // Abo-Preis zählt NICHT zum Subtotal – wird separat abgerechnet
     const qtyText = sub.quantity > 1 ? `${sub.quantity}× ` : '';
     const intervalText = sub.frequency || 'Monatlich';
-    
+
     html += `
       <div class="einkauf-item einkauf-item-abo">
         <div class="einkauf-item-icon" onclick="openProductDetail('${productId}')">${product.icon}</div>
         <div class="einkauf-item-info" onclick="openProductDetail('${productId}')">
           <div class="einkauf-item-name">${qtyText}${product.name}</div>
-          <div class="einkauf-item-abo-badge">🔄 Abo • ${intervalText} • 8% Rabatt</div>
-          <div class="einkauf-item-prices">
-            <span class="einkauf-item-price-old">€${originalPrice.toFixed(2)}</span>
-            <span class="einkauf-item-price-abo">€${aboPrice.toFixed(2)}</span>
-          </div>
+          <div class="einkauf-item-abo-badge">🔄 Abo • ${intervalText}</div>
+          <div class="einkauf-item-prices" style="color:var(--text-muted);font-size:12px;">separat abgerechnet</div>
         </div>
         <button class="einkauf-remove-btn" onclick="removeAboFromCart('${productId}')">🗑️</button>
       </div>
@@ -36845,20 +36839,21 @@ function renderEinkaufCart() {
   
   const shipping = subtotal >= 49 ? 0 : 4.90;
   const total = subtotal + shipping;
-  
+
   summaryEl.innerHTML = `
+    ${subtotal > 0 ? `
     <div class="einkauf-summary-row">
       <span data-i18n="cart.subtotal">Zwischensumme</span>
       <span>€${subtotal.toFixed(2)}</span>
-    </div>
+    </div>` : ''}
     <div class="einkauf-summary-row">
       <span data-i18n="cart.shipping">Versand</span>
       <span>${shipping === 0 ? 'Kostenlos ✓' : '€' + shipping.toFixed(2)}</span>
     </div>
-    ${subtotal < 49 ? `<div class="einkauf-summary-row shipping-hint">Noch €${(49 - subtotal).toFixed(2)} bis kostenloser Versand</div>` : ''}
+    ${subtotal > 0 && subtotal < 49 ? `<div class="einkauf-summary-row shipping-hint">Noch €${(49 - subtotal).toFixed(2)} bis kostenloser Versand</div>` : ''}
     <div class="einkauf-summary-row total">
       <span data-i18n="cart.total">Warenkorb Gesamt</span>
-      <span>€${total.toFixed(2)}</span>
+      <span>${total === 0 ? 'Kostenlos' : '€' + total.toFixed(2)}</span>
     </div>
   `;
 }
@@ -37274,17 +37269,16 @@ function updateEinkaufCheckoutBar() {
     totalItems += item.qty;
   });
   
-  // Pending Abos
-  subscriptions.forEach((sub, productId) => {
+  // Pending Abos – Preis wird separat abgerechnet, nur zählen
+  subscriptions.forEach((sub) => {
     if (sub.status === 'pending') {
-      subtotal += sub.price;
       totalItems += 1;
     }
   });
   
   const shipping = subtotal >= 49 ? 0 : 4.90;
   const total = subtotal + shipping;
-  
+
   totalEl.textContent = '€' + total.toFixed(2);
   itemsEl.textContent = totalItems + ' Artikel';
   bar.classList.add('visible');
