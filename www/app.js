@@ -30867,17 +30867,125 @@ function updateMenuAboCount() {
 function confirmCancelAbo(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
-  
-  showConfirmDialog(
-    '❌ Abo kündigen',
-    `Möchtest du das Abo für "${product.name}" wirklich kündigen?\n\nDu verlierst den 8% Abo-Rabatt. Eine erneute Aktivierung ist jederzeit möglich.`,
-    'Ja, kündigen',
-    () => {
-      closeAboDetailSheet();
-      cancelAbo(productId);
-    },
-    true
-  );
+
+  // Remove existing dialog if present
+  const existing = document.getElementById('aboCancelDialog');
+  if (existing) existing.remove();
+
+  const dialog = document.createElement('div');
+  dialog.id = 'aboCancelDialog';
+  dialog.style.cssText = `
+    position:fixed;inset:0;z-index:9999;display:flex;align-items:flex-end;
+    background:rgba(0,0,0,0.45);padding:0;
+  `;
+  dialog.innerHTML = `
+    <div style="
+      background:#fff;border-radius:16px 16px 0 0;width:100%;padding:24px 20px 32px;
+      box-shadow:0 -4px 24px rgba(0,0,0,0.12);
+    ">
+      <div style="width:36px;height:4px;background:#e5e7eb;border-radius:2px;margin:0 auto 20px;"></div>
+      <h3 style="font-size:18px;font-weight:700;margin:0 0 4px;color:#111827;">Abo kündigen</h3>
+      <p style="font-size:13px;color:#6b7280;margin:0 0 20px;">${product.name}</p>
+
+      <!-- Frage 1: Noch Vorrat? -->
+      <div style="margin-bottom:16px;">
+        <p style="font-size:14px;font-weight:600;color:#111827;margin:0 0 10px;">Hast du noch Vorrat zuhause?</p>
+        <div style="display:flex;gap:10px;">
+          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:12px;border:1.5px solid #e5e7eb;border-radius:8px;cursor:pointer;transition:all 0.15s;" id="aboCancelYesLabel">
+            <input type="radio" name="aboCancelStock" value="yes" onchange="aboCancelToggleStock()" style="accent-color:#00A67E;">
+            <span style="font-size:14px;font-weight:500;">Ja</span>
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:12px;border:1.5px solid #e5e7eb;border-radius:8px;cursor:pointer;transition:all 0.15s;" id="aboCancelNoLabel">
+            <input type="radio" name="aboCancelStock" value="no" checked onchange="aboCancelToggleStock()" style="accent-color:#00A67E;">
+            <span style="font-size:14px;font-weight:500;">Nein</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Frage 2: Wie viele? (nur wenn Ja) -->
+      <div id="aboCancelStockRow" style="display:none;margin-bottom:16px;">
+        <p style="font-size:14px;font-weight:600;color:#111827;margin:0 0 10px;">Wie viele Stück hast du noch?</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button onclick="aboCancelChangeQty(-1)" style="width:40px;height:40px;border-radius:50%;border:1.5px solid #e5e7eb;background:#f9fafb;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#374151;">−</button>
+          <span id="aboCancelQtyVal" style="font-size:22px;font-weight:700;color:#111827;min-width:40px;text-align:center;">10</span>
+          <button onclick="aboCancelChangeQty(1)" style="width:40px;height:40px;border-radius:50%;border:1.5px solid #e5e7eb;background:#f9fafb;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#374151;">+</button>
+          <span style="font-size:13px;color:#6b7280;">Stück</span>
+        </div>
+      </div>
+
+      <!-- Frage 3: In Meine Supplements? (nur wenn Ja) -->
+      <div id="aboCancelAddRow" style="display:none;margin-bottom:20px;">
+        <p style="font-size:14px;font-weight:600;color:#111827;margin:0 0 6px;">In "Meine Supplements" aufnehmen?</p>
+        <p style="font-size:12px;color:#6b7280;margin:0 0 10px;">Du bekommst dann eine Erinnerung, wenn der Vorrat zur Neige geht.</p>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <div style="position:relative;width:44px;height:24px;">
+            <input type="checkbox" id="aboCancelAddToggle" checked style="opacity:0;width:0;height:0;position:absolute;">
+            <div id="aboCancelAddTrack" onclick="aboCancelToggleAdd()" style="position:absolute;inset:0;background:#00A67E;border-radius:12px;cursor:pointer;transition:background 0.2s;">
+              <div id="aboCancelAddThumb" style="position:absolute;top:2px;left:22px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div>
+            </div>
+          </div>
+          <span id="aboCancelAddLabel" style="font-size:14px;font-weight:500;color:#111827;">Ja, aufnehmen</span>
+        </label>
+      </div>
+
+      <!-- Buttons -->
+      <button onclick="executeCancelAbo('${productId}')" style="
+        width:100%;padding:15px;background:#ef4444;color:#fff;border:none;border-radius:10px;
+        font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;
+      ">Abo kündigen</button>
+      <button onclick="closeAboCancelDialog()" style="
+        width:100%;padding:14px;background:#f3f4f6;color:#374151;border:none;border-radius:10px;
+        font-size:15px;font-weight:600;cursor:pointer;
+      ">Abbrechen</button>
+    </div>
+  `;
+  dialog.addEventListener('click', e => { if (e.target === dialog) closeAboCancelDialog(); });
+  document.body.appendChild(dialog);
+  window._aboCancelQty = 10;
+}
+
+function aboCancelToggleStock() {
+  const hasStock = document.querySelector('input[name="aboCancelStock"]:checked')?.value === 'yes';
+  document.getElementById('aboCancelStockRow').style.display = hasStock ? 'block' : 'none';
+  document.getElementById('aboCancelAddRow').style.display = hasStock ? 'block' : 'none';
+}
+
+function aboCancelChangeQty(delta) {
+  window._aboCancelQty = Math.max(1, (window._aboCancelQty || 10) + delta);
+  const el = document.getElementById('aboCancelQtyVal');
+  if (el) el.textContent = window._aboCancelQty;
+}
+
+function aboCancelToggleAdd() {
+  const cb = document.getElementById('aboCancelAddToggle');
+  cb.checked = !cb.checked;
+  const track = document.getElementById('aboCancelAddTrack');
+  const thumb = document.getElementById('aboCancelAddThumb');
+  const label = document.getElementById('aboCancelAddLabel');
+  if (cb.checked) {
+    track.style.background = '#00A67E';
+    thumb.style.left = '22px';
+    label.textContent = 'Ja, aufnehmen';
+  } else {
+    track.style.background = '#d1d5db';
+    thumb.style.left = '2px';
+    label.textContent = 'Nein, danke';
+  }
+}
+
+function closeAboCancelDialog() {
+  const d = document.getElementById('aboCancelDialog');
+  if (d) d.remove();
+}
+
+function executeCancelAbo(productId) {
+  const hasStock = document.querySelector('input[name="aboCancelStock"]:checked')?.value === 'yes';
+  const qty = window._aboCancelQty || 0;
+  const addToSupps = hasStock && document.getElementById('aboCancelAddToggle')?.checked;
+
+  closeAboCancelDialog();
+  closeAboDetailSheet();
+  cancelAbo(productId, addToSupps && hasStock ? qty : 0);
 }
 
 function markDeliveryReceived(productId) {
@@ -31158,7 +31266,7 @@ function resumeAbo(productId) {
   try { renderEinkaufAbos(); } catch(e) {}
 }
 
-function cancelAbo(productId) {
+function cancelAbo(productId, stockToAdd) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
 
@@ -31168,10 +31276,40 @@ function cancelAbo(productId) {
   autoReplenItems.delete(productId);
   saveAutoReplenItems();
 
-  showToast('❌ Abo gekündigt');
-  renderAboManagement();
+  // If user has remaining stock → add/update in Meine Supplements
+  if (stockToAdd > 0) {
+    if (!mySupplements) mySupplements = [];
+    const existing = mySupplements.find(s => s.id === productId);
+    if (existing) {
+      existing.stock = (existing.stock || 0) + stockToAdd;
+      existing.autoAbo = false;
+    } else {
+      mySupplements.push({
+        id: productId,
+        name: product.name,
+        brand: product.brand || '',
+        icon: '💊',
+        category: product.category || 'vitamine',
+        stock: stockToAdd,
+        dosagePerDay: 1,
+        autoAbo: false,
+        source: 'shop',
+        addedAt: new Date().toISOString()
+      });
+    }
+    saveMySupplements();
+    showToast(`✅ Abo gekündigt · ${stockToAdd} Stück in Meine Supplements übernommen`);
+  } else {
+    showToast('❌ Abo gekündigt');
+  }
+
+  try { renderAboManagement(); } catch(e) {}
   try { renderEinkaufAbos(); } catch(e) {}
   updateNavEinkaufBadge();
+
+  // Navigate to Meine Supplements
+  switchScreen('mysupplementsScreen');
+  setTimeout(() => { try { renderMySupplements(); } catch(e) {} }, 100);
 }
 
 function toggleAutoReplenSupps(productId) {
