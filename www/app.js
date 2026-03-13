@@ -31681,7 +31681,9 @@ function confirmAboToCart() {
     status: 'pending',
     price: aboPrice,
     frequency: frequencyText,
-    remaining: 100
+    remaining: 100,
+    productName: currentAboProduct.name,
+    productIcon: currentAboProduct.icon
   });
   saveSubscriptions();
   
@@ -36814,20 +36816,22 @@ function renderEinkaufCart() {
   // Pending Abos im Warenkorb
   subscriptions.forEach((sub, productId) => {
     if (sub.status !== 'pending') return;
-    
+
     const product = products.find(p => p.id === productId);
-    if (!product) return;
-    
+    // Fallback: Name/Icon aus gespeicherten Sub-Daten wenn Produkt nicht im Array
+    const icon = product?.icon || sub.productIcon || '💊';
+    const name = product?.name || sub.productName || productId;
+
     // Abo-Preis zählt NICHT zum Subtotal – wird separat abgerechnet
     const qtyText = sub.quantity > 1 ? `${sub.quantity}× ` : '';
     const intervalText = sub.frequency || 'Monatlich';
 
     html += `
       <div class="einkauf-item einkauf-item-abo">
-        <div class="einkauf-item-icon" onclick="openProductDetail('${productId}')">${product.icon}</div>
+        <div class="einkauf-item-icon" onclick="openProductDetail('${productId}')">${icon}</div>
         <div class="einkauf-item-info" onclick="openProductDetail('${productId}')">
-          <div class="einkauf-item-name">${qtyText}${product.name}</div>
-          <div class="einkauf-item-abo-badge">🔄 Abo • ${intervalText}</div>
+          <div class="einkauf-item-name">${qtyText}${name}</div>
+          <div class="einkauf-item-abo-badge">🔄 Abo · ${intervalText}</div>
           <div class="einkauf-item-prices" style="color:var(--text-muted);font-size:12px;">separat abgerechnet</div>
         </div>
         <button class="einkauf-remove-btn" onclick="removeAboFromCart('${productId}')">🗑️</button>
@@ -37486,8 +37490,9 @@ function startCheckout() {
     if (sub.status !== 'pending') return;
     
     const product = products.find(p => p.id === productId);
-    if (!product) return;
-    
+    const icon = product?.icon || sub.productIcon || '💊';
+    const name = product?.name || sub.productName || productId;
+
     const qty = sub.quantity || 1;
     // Abo-Artikel werden NICHT zum Checkout-Subtotal addiert – Abrechnung erfolgt separat
     itemCount += qty;
@@ -37498,9 +37503,9 @@ function startCheckout() {
 
     itemsHtml += `
       <div class="checkout-item checkout-item-abo">
-        <div class="checkout-item-icon">${product.icon}</div>
+        <div class="checkout-item-icon">${icon}</div>
         <div class="checkout-item-info">
-          <div class="checkout-item-name">${qtyText}${escapeHtml(product.name)}</div>
+          <div class="checkout-item-name">${qtyText}${escapeHtml(name)}</div>
           <div class="checkout-item-meta">🔄 Abo · ${packInfo}separat abgerechnet</div>
         </div>
         <div class="checkout-item-price" style="color:var(--text-muted);font-size:12px;font-weight:600;">Abo</div>
