@@ -20043,7 +20043,13 @@ function closeAllOverlays() {
   document.querySelectorAll('.sleep-time-sheet').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.abo-detail-sheet').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.co-fullscreen').forEach(s => s.classList.remove('visible'));
-  
+
+  // Dynamisch erstellte Supplement-Info-Sheets entfernen
+  const suppInfoSheet = document.getElementById('suppInfoSheet');
+  if (suppInfoSheet) suppInfoSheet.remove();
+  const suppInfoOverlay = document.getElementById('suppInfoOverlay');
+  if (suppInfoOverlay) suppInfoOverlay.remove();
+
   // Close icon picker if open
   const iconPicker = document.getElementById('entryIconPicker');
   if (iconPicker) iconPicker.classList.remove('show');
