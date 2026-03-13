@@ -36831,11 +36831,14 @@ function renderEinkaufCart() {
     if (sub.status !== 'pending') return;
 
     const product = products.find(p => p.id === productId);
-    // Fallback: Name/Icon aus gespeicherten Sub-Daten wenn Produkt nicht im Array
     const icon = product?.icon || sub.productIcon || '💊';
     const name = product?.name || sub.productName || productId;
 
-    // Abo-Preis zählt NICHT zum Subtotal – wird separat abgerechnet
+    // Erste Abo-Lieferung wird normal bezahlt (mit 8% Rabatt)
+    const originalPrice = (product?.priceNum || parseFloat((product?.price || '0').replace(',', '.'))) * (sub.quantity || 1);
+    const aboPrice = sub.price;
+    subtotal += aboPrice;
+
     const qtyText = sub.quantity > 1 ? `${sub.quantity}× ` : '';
     const intervalText = sub.frequency || 'Monatlich';
 
@@ -36844,8 +36847,11 @@ function renderEinkaufCart() {
         <div class="einkauf-item-icon" onclick="openProductDetail('${productId}')">${icon}</div>
         <div class="einkauf-item-info" onclick="openProductDetail('${productId}')">
           <div class="einkauf-item-name">${qtyText}${name}</div>
-          <div class="einkauf-item-abo-badge">🔄 Abo · ${intervalText}</div>
-          <div class="einkauf-item-prices" style="color:var(--text-muted);font-size:12px;">separat abgerechnet</div>
+          <div class="einkauf-item-abo-badge">🔄 Abo · ${intervalText} · 8% Rabatt</div>
+          <div class="einkauf-item-prices">
+            <span class="einkauf-item-price-old">€${originalPrice.toFixed(2)}</span>
+            <span class="einkauf-item-price-abo">€${aboPrice.toFixed(2)}</span>
+          </div>
         </div>
         <button class="einkauf-remove-btn" onclick="removeAboFromCart('${productId}')">🗑️</button>
       </div>
@@ -36858,19 +36864,18 @@ function renderEinkaufCart() {
   const total = subtotal + shipping;
 
   summaryEl.innerHTML = `
-    ${subtotal > 0 ? `
     <div class="einkauf-summary-row">
       <span data-i18n="cart.subtotal">Zwischensumme</span>
       <span>€${subtotal.toFixed(2)}</span>
-    </div>` : ''}
+    </div>
     <div class="einkauf-summary-row">
       <span data-i18n="cart.shipping">Versand</span>
       <span>${shipping === 0 ? 'Kostenlos ✓' : '€' + shipping.toFixed(2)}</span>
     </div>
-    ${subtotal > 0 && subtotal < 49 ? `<div class="einkauf-summary-row shipping-hint">Noch €${(49 - subtotal).toFixed(2)} bis kostenloser Versand</div>` : ''}
+    ${subtotal < 49 ? `<div class="einkauf-summary-row shipping-hint">Noch €${(49 - subtotal).toFixed(2)} bis kostenloser Versand</div>` : ''}
     <div class="einkauf-summary-row total">
       <span data-i18n="cart.total">Warenkorb Gesamt</span>
-      <span>${total === 0 ? 'Kostenlos' : '€' + total.toFixed(2)}</span>
+      <span>€${total.toFixed(2)}</span>
     </div>
   `;
 }
@@ -37286,9 +37291,10 @@ function updateEinkaufCheckoutBar() {
     totalItems += item.qty;
   });
   
-  // Pending Abos – Preis wird separat abgerechnet, nur zählen
+  // Pending Abos – erste Lieferung wird normal bezahlt (8% Rabatt)
   subscriptions.forEach((sub) => {
     if (sub.status === 'pending') {
+      subtotal += sub.price;
       totalItems += 1;
     }
   });
@@ -37507,7 +37513,12 @@ function startCheckout() {
     const name = product?.name || sub.productName || productId;
 
     const qty = sub.quantity || 1;
-    // Abo-Artikel werden NICHT zum Checkout-Subtotal addiert – Abrechnung erfolgt separat
+    const originalPrice = (product?.priceNum || parseFloat((product?.price || '0').replace(',', '.'))) * qty;
+    const discountedPrice = sub.price;
+    const savings = originalPrice - discountedPrice;
+    aboSavings += savings;
+
+    subtotal += discountedPrice;
     itemCount += qty;
     hasAboItems = true;
 
@@ -37519,15 +37530,17 @@ function startCheckout() {
         <div class="checkout-item-icon">${icon}</div>
         <div class="checkout-item-info">
           <div class="checkout-item-name">${qtyText}${escapeHtml(name)}</div>
-          <div class="checkout-item-meta">🔄 Abo · ${packInfo}separat abgerechnet</div>
+          <div class="checkout-item-meta">🔄 Abo · ${packInfo}8% Rabatt · Folgelieferungen automatisch</div>
         </div>
-        <div class="checkout-item-price" style="color:var(--text-muted);font-size:12px;font-weight:600;">Abo</div>
+        <div class="checkout-item-price">
+          <span style="text-decoration:line-through;color:#9ca3af;font-size:12px;">€${originalPrice.toFixed(2)}</span>
+          <span style="color:var(--green-accent);font-weight:600;">€${discountedPrice.toFixed(2)}</span>
+        </div>
       </div>
     `;
   });
-  
-  // Abo-Savings nicht mehr relevant (Abos werden separat abgerechnet)
-  checkoutState.aboSavings = 0;
+
+  checkoutState.aboSavings = aboSavings;
 
   // Calculate shipping (standard default)
   const shipping = subtotal >= 49 ? 0 : 4.90;
@@ -38039,28 +38052,32 @@ function coRenderSummary() {
   }
 
   // Price breakdown
-  const { subtotal, shipping } = checkoutState;
+  const { subtotal, shipping, aboSavings } = checkoutState;
   const total = Math.max(0, subtotal + shipping);
 
-  // Zwischensumme-Zeile nur anzeigen wenn reguläre Artikel im Warenkorb
   const subtotalRow = document.getElementById('coSubtotalRow');
+  if (subtotalRow) subtotalRow.style.display = '';
   const subEl = document.getElementById('coSubtotal');
-  if (subtotalRow) subtotalRow.style.display = subtotal > 0 ? '' : 'none';
   if (subEl) subEl.textContent = '€' + subtotal.toFixed(2);
 
   const shipCostEl = document.getElementById('coShippingCost');
   if (shipCostEl) shipCostEl.textContent = shipping === 0 ? 'Kostenlos' : '€' + shipping.toFixed(2);
 
   const totalEl = document.getElementById('coTotal');
-  if (totalEl) totalEl.textContent = shipping === 0 ? 'Kostenlos' : '€' + total.toFixed(2);
+  if (totalEl) totalEl.textContent = '€' + total.toFixed(2);
 
-  // MwSt.-Info nur bei regulären Artikeln relevant
   const mwstEl = document.getElementById('coMwstInfo');
-  if (mwstEl) mwstEl.style.display = subtotal > 0 ? '' : 'none';
+  if (mwstEl) mwstEl.style.display = '';
 
-  // Abo-Ersparnis-Zeile ausblenden (Abos werden separat abgerechnet)
+  // Abo-Ersparnis anzeigen wenn Abos im Warenkorb
   const savingsRow = document.getElementById('coAboSavingsRow');
-  if (savingsRow) savingsRow.style.display = 'none';
+  const savingsEl = document.getElementById('coAboSavings');
+  if (savingsRow && aboSavings > 0) {
+    savingsRow.style.display = 'flex';
+    if (savingsEl) savingsEl.textContent = '-€' + aboSavings.toFixed(2);
+  } else if (savingsRow) {
+    savingsRow.style.display = 'none';
+  }
 
   // Abo-Bedingungen anzeigen wenn Abos im Warenkorb
   const aboConditions = document.getElementById('coAboConditions');
