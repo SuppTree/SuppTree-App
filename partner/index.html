@@ -17,19 +17,19 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh}
 .app{min-height:100vh;padding-bottom:90px}
-.header{background:linear-gradient(135deg,var(--green-dark),var(--green-medium));padding:16px 20px 20px;color:white}
+.header{background:#F2F5F3;padding:16px 20px 20px;color:var(--text-dark);border-bottom:1px solid var(--border)}
 .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.header-greeting{font-size:13px;opacity:0.85}
+.header-greeting{font-size:13px;color:var(--text-muted)}
 .header-name{font-size:22px;font-weight:700}
-.header-btn{width:42px;height:42px;background:rgba(255,255,255,0.15);border:none;border-radius:7px;font-size:20px;cursor:pointer;position:relative}
+.header-btn{width:42px;height:42px;background:white;border:1px solid var(--border);border-radius:7px;font-size:20px;cursor:pointer;position:relative}
 .badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#ef4444;color:white;font-size:10px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:rgba(255,255,255,0.15);border-radius:var(--r);padding:12px}
+.stat{background:white;border:1px solid var(--border);border-radius:var(--r);padding:12px}
 .stat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.stat-icon{width:28px;height:28px;background:rgba(255,255,255,0.2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px}
-.stat-trend{font-size:10px;font-weight:600;color:#86efac}
+.stat-icon{width:28px;height:28px;background:#E8F5E9;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.stat-trend{font-size:10px;font-weight:600;color:#16a34a}
 .stat-value{font-size:18px;font-weight:700}
-.stat-label{font-size:10px;opacity:0.7}
+.stat-label{font-size:10px;color:var(--text-muted)}
 .content{padding:16px}
 .section{margin-bottom:20px}
 .section-title{font-size:16px;font-weight:700;margin-bottom:12px}
@@ -80,7 +80,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .anfragen-list{padding:12px}
 .anfrage-card{background:var(--white);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer;border-left:4px solid var(--green-accent)}
 .anfrage-card:active{transform:scale(0.99)}
-.anfrage-card.new{border-left-color:#3b82f6;background:linear-gradient(135deg,#eff6ff,#fff)}
+.anfrage-card.new{border-left-color:#3b82f6;background:#eff6ff}
 .anfrage-card.chat{border-left-color:#f59e0b}
 .anfrage-card.confirmed{border-left-color:#22c55e}
 .anfrage-card.done{border-left-color:#9ca3af;opacity:0.7}
@@ -106,7 +106,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .chat-header-name{font-size:15px;font-weight:600}
 .chat-header-status{font-size:11px;color:var(--text-muted)}
 .chat-header-btn{width:40px;height:40px;background:var(--green-light);border:none;border-radius:50%;font-size:18px;cursor:pointer}
-.chat-anfrage-card{background:linear-gradient(135deg,#f0fdf4,#dcfce7);margin:12px;padding:14px;border-radius:var(--r);border:1px solid #bbf7d0;flex-shrink:0}
+.chat-anfrage-card{background:#f0fdf4;margin:12px;padding:14px;border-radius:var(--r);border-left:3px solid var(--green-accent);border:1px solid #bbf7d0;flex-shrink:0}
 .chat-anfrage-title{font-size:12px;font-weight:600;color:var(--green-accent);margin-bottom:8px}
 .chat-anfrage-text{font-size:13px;line-height:1.5}
 .chat-anfrage-meta{display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text-muted)}
@@ -115,16 +115,16 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .chat-message.incoming{background:var(--white);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
 .chat-message.outgoing{background:var(--green-accent);color:white;align-self:flex-end;border-bottom-right-radius:4px}
 .chat-message-time{font-size:10px;opacity:0.7;margin-top:4px}
-.chat-message.termin-vorschlag{background:linear-gradient(135deg,#fef3c7,#fde68a);color:var(--text);border:2px solid #f59e0b;max-width:90%}
-.chat-message.termin-confirmed{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:var(--text);border:2px solid #22c55e;max-width:90%}
+.chat-message.termin-vorschlag{background:#fef3c7;color:var(--text);border:2px solid #f59e0b;max-width:90%}
+.chat-message.termin-confirmed{background:#dcfce7;color:var(--text);border:2px solid #22c55e;max-width:90%}
 .chat-termin-box{margin-top:8px;padding:10px;background:rgba(255,255,255,0.5);border-radius:8px}
 .chat-termin-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
 .chat-termin-actions{display:flex;gap:8px;margin-top:10px}
 .chat-termin-btn{flex:1;padding:8px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
 .chat-termin-btn.accept{background:#22c55e;color:white}
 .chat-termin-btn.decline{background:#fee2e2;color:#dc2626}
-.chat-termin-bar{background:linear-gradient(135deg,#dcfce7,#bbf7d0);padding:12px 16px;border-top:1px solid #86efac;flex-shrink:0;display:none}
-.chat-termin-bar.pending{background:linear-gradient(135deg,#fef3c7,#fde68a);border-top-color:#fcd34d}
+.chat-termin-bar{background:#dcfce7;padding:12px 16px;border-top:1px solid #86efac;flex-shrink:0;display:none}
+.chat-termin-bar.pending{background:#fef3c7;border-top-color:#fcd34d}
 .chat-input-container{background:var(--white);border-top:1px solid var(--border);padding:12px;flex-shrink:0}
 .chat-input-row{display:flex;gap:8px}
 .chat-input{flex:1;padding:12px 16px;border:1px solid var(--border);border-radius:24px;font-size:14px;outline:none}
@@ -136,7 +136,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 /* PROVIDER PROFILE */
 .provider-card{display:flex;align-items:center;gap:14px;padding:16px;margin:12px;background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);cursor:pointer}
 .provider-card:active{transform:scale(0.99)}
-.provider-avatar{width:56px;height:56px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
+.provider-avatar{width:56px;height:56px;background:#E8F5E9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
 .provider-info{flex:1;min-width:0}
 .provider-name{font-size:15px;font-weight:700}
 .provider-title{font-size:12px;color:var(--text-muted);margin-top:2px}
@@ -301,11 +301,11 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .paket-item input{flex:1}
 .paket-item button{width:32px;height:32px;border:none;background:#fee2e2;color:#dc2626;border-radius:6px;cursor:pointer}
 /* AFFILIATE */
-.aff-hero{background:linear-gradient(135deg,var(--green-accent),#059669);padding:28px 20px;text-align:center;color:white;margin:12px;border-radius:var(--r)}
+.aff-hero{background:#E8F5E9;border-left:4px solid var(--green-accent);padding:28px 20px;text-align:center;color:var(--text-dark);margin:12px;border-radius:var(--r)}
 .aff-hero-amount{font-size:32px;font-weight:800}
-.aff-hero-label{font-size:13px;opacity:0.85;margin-top:4px}
-.aff-hero-sub{font-size:12px;opacity:0.75;margin-top:8px}
-.aff-hero-sub strong{opacity:1;color:white}
+.aff-hero-label{font-size:13px;color:var(--text-muted);margin-top:4px}
+.aff-hero-sub{font-size:12px;color:var(--text-muted);margin-top:8px}
+.aff-hero-sub strong{color:var(--text-dark)}
 .aff-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin:0 12px 12px;border-radius:var(--r);overflow:hidden}
 .aff-stat{background:var(--white);padding:12px 8px;text-align:center}
 .aff-stat-val{font-size:16px;font-weight:700}
@@ -360,7 +360,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .aff-material-name{font-size:13px;font-weight:600}
 .aff-material-desc{font-size:11px;color:var(--text-muted)}
 /* LINK ANALYTICS */
-.la-analytics-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1e40af,#3b82f6);color:white;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
+.la-analytics-btn{width:100%;padding:14px;background:#3b82f6;color:white;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
 .la-analytics-btn:active{transform:scale(0.98);opacity:0.9}
 .la-period{display:flex;gap:6px;padding:8px 12px}
 .la-period-btn{padding:8px 16px;border:1px solid var(--border);background:var(--white);border-radius:20px;font-size:12px;cursor:pointer;color:var(--text-muted)}
@@ -377,8 +377,8 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .la-section-title{font-size:14px;font-weight:700;margin-bottom:14px}
 .la-funnel-row{background:var(--white);border-radius:10px;border:1px solid var(--border);overflow:hidden;margin-bottom:12px}
 .la-funnel-header{padding:11px 14px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;border-bottom:1px solid var(--border)}
-.la-funnel-header.qr{background:linear-gradient(90deg,#f0fdf4,#dcfce7);color:#166534}
-.la-funnel-header.link{background:linear-gradient(90deg,#eff6ff,#dbeafe);color:#1e3a8a}
+.la-funnel-header.qr{background:#f0fdf4;border-left:3px solid var(--green-accent);color:#166534}
+.la-funnel-header.link{background:#eff6ff;border-left:3px solid #3b82f6;color:#1e3a8a}
 .la-funnel-header-rate{margin-left:auto;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
 .la-funnel-header.qr .la-funnel-header-rate{background:#bbf7d0;color:#166534}
 .la-funnel-header.link .la-funnel-header-rate{background:#bfdbfe;color:#1e3a8a}
@@ -424,7 +424,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 /* ORDERS */
 .order-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin:0 12px 8px;border-radius:var(--r);overflow:hidden}
 .order-stat{background:var(--white);padding:14px 8px;text-align:center}
-.order-stat.hl{background:linear-gradient(135deg,#fef2f2,#fff)}
+.order-stat.hl{background:#fef2f2}
 .order-stat-val{font-size:20px;font-weight:700}
 .order-stat.hl .order-stat-val{color:#ef4444}
 .order-stat-lbl{font-size:10px;color:var(--text-muted);margin-top:2px}
@@ -484,13 +484,13 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .fin-period{display:flex;gap:6px;padding:8px 12px}
 .fin-period-btn{padding:8px 16px;border:1px solid var(--border);background:var(--white);border-radius:20px;font-size:12px;cursor:pointer;color:var(--text-muted)}
 .fin-period-btn.active{background:var(--green-accent);color:white;border-color:var(--green-accent)}
-.fin-balance{background:linear-gradient(135deg,#065f46,#047857);padding:24px 20px;margin:8px 12px 12px;border-radius:var(--r);color:white;text-align:center}
-.fin-balance-label{font-size:12px;opacity:0.8}
-.fin-balance-amount{font-size:36px;font-weight:800;margin:8px 0}
-.fin-balance-sub{font-size:12px;opacity:0.75}
-.fin-balance-sub strong{opacity:1;color:white}
-.fin-balance-btn{margin-top:16px;padding:10px 28px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)}
-.fin-balance-btn:active{background:rgba(255,255,255,0.3)}
+.fin-balance{background:#E8F5E9;border-left:4px solid var(--green-accent);padding:24px 20px;margin:8px 12px 12px;border-radius:var(--r);color:var(--text-dark);text-align:center}
+.fin-balance-label{font-size:12px;color:var(--text-muted)}
+.fin-balance-amount{font-size:36px;font-weight:800;margin:8px 0;color:var(--green-dark)}
+.fin-balance-sub{font-size:12px;color:var(--text-muted)}
+.fin-balance-sub strong{color:var(--text-dark)}
+.fin-balance-btn{margin-top:16px;padding:10px 28px;background:white;border:1px solid #e5e7eb;color:var(--text-dark);border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer}
+.fin-balance-btn:active{background:var(--cream)}
 .fin-stats{padding:0 12px;display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .fin-stat{background:var(--white);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
 .fin-stat.highlight{border:2px solid var(--green-accent);background:var(--green-light)}
@@ -563,7 +563,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 /* MEHR */
 .mehr-profile{display:flex;align-items:center;gap:14px;padding:16px;margin:8px 12px;background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);cursor:pointer}
 .mehr-profile:active{transform:scale(0.99)}
-.mehr-profile-avatar{width:52px;height:52px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.mehr-profile-avatar{width:52px;height:52px;background:#E8F5E9;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
 .mehr-profile-info{flex:1;min-width:0}
 .mehr-profile-name{font-size:15px;font-weight:700}
 .mehr-profile-plan{font-size:12px;color:var(--green-accent);margin-top:2px}
@@ -632,7 +632,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .pactions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .paction{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 16px;border-radius:var(--r);border:none;cursor:pointer}
 .paction:active{transform:scale(0.97)}
-.paction.pri{background:linear-gradient(135deg,var(--green-accent),#059669);color:white;box-shadow:0 4px 12px rgba(0,166,126,0.3)}
+.paction.pri{background:var(--green-accent);color:white;box-shadow:0 2px 8px rgba(0,166,126,0.2)}
 .paction.sec{background:var(--white);box-shadow:var(--shadow);border:1px solid var(--border)}
 .paction-icon{font-size:28px}
 .paction-label{font-size:14px;font-weight:600}
@@ -645,7 +645,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .menu-item:active{background:var(--cream)}
 .menu-item.danger{color:#dc2626}
 .detail-content{padding:0 16px 100px;margin-top:-60px}
-.hero{background:linear-gradient(135deg,var(--green-light),#d1fae5);border-radius:12px;padding:40px 20px 20px;text-align:center;margin-bottom:20px}
+.hero{background:#F2F5F3;border-radius:12px;padding:40px 20px 20px;text-align:center;margin-bottom:20px}
 .hero-img{width:120px;height:120px;border-radius:16px;background:white;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
 .hero-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .hero-badge{padding:6px 12px;background:rgba(255,255,255,0.8);border-radius:7px;font-size:11px;font-weight:600;color:var(--green-dark)}
@@ -666,7 +666,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .card-title{font-size:15px;font-weight:700}
 .card-period{font-size:11px;color:var(--text-muted);background:var(--cream);padding:4px 10px;border-radius:7px}
 .card-action{background:var(--green-light);color:var(--green-accent);border:none;padding:6px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer}
-.perf{background:linear-gradient(135deg,var(--white),#f0fdf4)}
+.perf{background:#F2F5F3}
 .perf-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
 .perf-stat{text-align:center}
 .perf-value{font-size:20px;font-weight:700}
@@ -694,8 +694,8 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .disc-empty{text-align:center;padding:20px}
 .disc-icon{font-size:40px;margin-bottom:8px}
 .disc-text{font-size:13px;color:var(--text-muted);margin-bottom:16px}
-.disc-btn{padding:12px 24px;background:linear-gradient(135deg,#f97316,#ea580c);color:white;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer}
-.disc-active{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-radius:var(--r);padding:14px}
+.disc-btn{padding:12px 24px;background:#f97316;color:white;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer}
+.disc-active{background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r);padding:14px}
 .disc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .disc-name{font-size:14px;font-weight:600}
 .disc-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;background:#fed7aa;color:#c2410c}
@@ -952,7 +952,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .quick-stat-value{font-size:16px;font-weight:700}
 .quick-stat-label{font-size:9px;color:var(--text-muted);margin-top:2px}
 /* PROMO/ADS PAGE */
-.promo-hero{background:linear-gradient(135deg,#fef3c7,#fde68a);padding:24px 16px;text-align:center}
+.promo-hero{background:#fef3c7;border-bottom:1px solid #fcd34d;padding:24px 16px;text-align:center}
 .promo-hero-icon{font-size:48px;margin-bottom:8px}
 .promo-hero-title{font-size:20px;font-weight:700;color:#92400e}
 .promo-hero-sub{font-size:12px;color:#a16207;margin-top:4px}
@@ -1063,7 +1063,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .empfehlung-status.angesehen{background:#fef3c7;color:#92400e}
 .empfehlung-status.gekauft{background:#d1fae5;color:#065f46}
 @keyframes attentionPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0.4)}50%{box-shadow:0 0 0 8px rgba(245,158,11,0)}}
-@keyframes tabGradientPulse{0%,100%{background:linear-gradient(135deg,#fef3c7,#fde68a);box-shadow:0 0 0 0 rgba(245,158,11,0.3)}50%{background:linear-gradient(135deg,#fde68a,#f59e0b);box-shadow:0 0 12px 2px rgba(245,158,11,0.25)}}
+@keyframes tabGradientPulse{0%,100%{background:#fef3c7;box-shadow:0 0 0 0 rgba(245,158,11,0.3)}50%{background:#fde68a;box-shadow:0 0 12px 2px rgba(245,158,11,0.25)}}
 .kunde-card-urgent{animation:attentionPulse 2s infinite;border:2px solid #f59e0b !important;border-left:4px solid #f59e0b !important}
 .kunde-tab-pulse{animation:tabGradientPulse 1.5s infinite;color:#92400e !important;font-weight:700 !important;border-radius:20px !important}
 .kunden-prov-tab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 8px;border:none;background:var(--white);border-bottom:2.5px solid transparent;cursor:pointer;transition:all .2s;font-size:12px;font-weight:600;color:var(--text-muted);position:relative}
@@ -1320,7 +1320,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .tp-preview-ex-muscles{font-size:10px;color:var(--text-muted)}
 .tp-preview-ex-params{font-size:11px;color:var(--text-muted);text-align:right;white-space:nowrap}
 /* Startscreen / Vorlagen (Step 0) */
-.tp-start-new{padding:20px;background:linear-gradient(135deg,var(--green-light),#d1fae5);border-radius:var(--r);text-align:center;cursor:pointer;margin-bottom:20px;border:2px solid var(--green-accent)}
+.tp-start-new{padding:20px;background:#E8F5E9;border-radius:var(--r);text-align:center;cursor:pointer;margin-bottom:20px;border:2px solid var(--green-accent)}
 .tp-start-new:active{transform:scale(0.98)}
 .tp-start-new-icon{font-size:36px;margin-bottom:8px}
 .tp-start-new-title{font-size:16px;font-weight:700;color:var(--green-dark)}
@@ -1385,7 +1385,7 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .ep-macro-val{font-size:14px;font-weight:700}
 .ep-macro-label{font-size:9px;color:var(--text-muted);text-transform:uppercase}
 .ep-preview-meal{background:var(--cream);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
-.ep-preview-meal-header{padding:12px 14px;background:linear-gradient(135deg,#fef3c7,#fde68a);font-size:14px;font-weight:700;color:#92400e;display:flex;justify-content:space-between}
+.ep-preview-meal-header{padding:12px 14px;background:#fef3c7;border-left:3px solid #f59e0b;font-size:14px;font-weight:700;color:#92400e;display:flex;justify-content:space-between}
 .ep-preview-meal-kcal{font-size:12px;font-weight:500;color:#b45309}
 .ep-preview-food{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
 .ep-preview-food:last-child{border-bottom:none}
@@ -1468,23 +1468,23 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 @keyframes tpAFlyR{0%,100%{transform:translateX(2px) rotate(30deg)}50%{transform:translateX(2px) rotate(-5deg)}}
 
 /* ── REDESIGN: Shared Components ── */
-.screen-hero{background:linear-gradient(135deg,var(--green-dark),var(--green-medium));padding:20px 16px;margin:-1px -0px 0;color:white}
+.screen-hero{background:#F2F5F3;border-bottom:1px solid var(--border);padding:20px 16px;margin:-1px -0px 0;color:var(--text-dark)}
 .screen-hero .hero-row{display:flex;gap:10px;margin-bottom:14px}
-.screen-hero .hero-stat{flex:1;text-align:center;background:rgba(255,255,255,0.12);border-radius:7px;padding:12px 8px}
+.screen-hero .hero-stat{flex:1;text-align:center;background:white;border:1px solid var(--border);border-radius:7px;padding:12px 8px}
 .screen-hero .hero-stat-val{font-size:22px;font-weight:800}
-.screen-hero .hero-stat-lbl{font-size:10px;opacity:0.75;margin-top:2px}
+.screen-hero .hero-stat-lbl{font-size:10px;color:var(--text-muted);margin-top:2px}
 .screen-hero .hero-stat-icon{font-size:16px;margin-bottom:4px}
-.screen-hero .hero-stat-trend{font-size:10px;color:#86efac;font-weight:600}
-.screen-hero .hero-extra{background:rgba(255,255,255,0.08);border-radius:7px;padding:10px 14px;font-size:12px}
-.screen-hero .hero-extra-label{opacity:0.7;font-size:11px;margin-bottom:6px}
+.screen-hero .hero-stat-trend{font-size:10px;color:#16a34a;font-weight:600}
+.screen-hero .hero-extra{background:white;border:1px solid var(--border);border-radius:7px;padding:10px 14px;font-size:12px}
+.screen-hero .hero-extra-label{color:var(--text-muted);font-size:11px;margin-bottom:6px}
 
-.progress-bar{height:6px;background:rgba(255,255,255,0.15);border-radius:3px;overflow:hidden}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
 .progress-bar-fill{height:100%;border-radius:3px;transition:width 0.5s ease}
 .progress-bar.light{background:var(--border)}
 
 .mini-bar-chart{display:flex;align-items:flex-end;gap:4px;height:40px}
-.mini-bar-chart .bar{flex:1;background:rgba(255,255,255,0.3);border-radius:3px 3px 0 0;min-height:4px;transition:height 0.4s ease}
-.mini-bar-chart .bar.active{background:rgba(255,255,255,0.7)}
+.mini-bar-chart .bar{flex:1;background:#d1fae5;border-radius:3px 3px 0 0;min-height:4px;transition:height 0.4s ease}
+.mini-bar-chart .bar.active{background:var(--green-accent)}
 .mini-bar-chart .bar-label{font-size:9px;text-align:center;opacity:0.6;margin-top:4px}
 
 .modern-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;margin-bottom:10px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;border-left:4px solid transparent}
@@ -1505,19 +1505,19 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .revenue-bar-fill{height:100%;background:var(--green-accent);border-radius:2px}
 
 .funnel-bar{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.funnel-bar-label{font-size:11px;width:70px;opacity:0.8}
-.funnel-bar-track{flex:1;height:8px;background:rgba(255,255,255,0.15);border-radius:4px;overflow:hidden}
-.funnel-bar-fill{height:100%;background:rgba(255,255,255,0.6);border-radius:4px}
+.funnel-bar-label{font-size:11px;width:70px;color:var(--text-muted)}
+.funnel-bar-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.funnel-bar-fill{height:100%;background:var(--green-accent);border-radius:4px}
 .funnel-bar-val{font-size:12px;font-weight:700;width:24px;text-align:right}
 
 /* ===== UNTERLAGEN / DOKUMENT-UPLOAD ===== */
-.doc-hero{background:linear-gradient(135deg,var(--green-dark),#0d7a5f);border-radius:12px;padding:20px;color:white;margin-bottom:16px}
+.doc-hero{background:#E8F5E9;border-left:4px solid var(--green-accent);border-radius:12px;padding:20px;color:var(--text-dark);margin-bottom:16px}
 .doc-hero-title{font-size:18px;font-weight:700;margin-bottom:4px}
-.doc-hero-sub{font-size:12px;opacity:0.8;margin-bottom:12px}
+.doc-hero-sub{font-size:12px;color:var(--text-muted);margin-bottom:12px}
 .doc-hero-progress{display:flex;align-items:center;gap:12px}
-.doc-hero-bar{flex:1;height:8px;background:rgba(255,255,255,0.2);border-radius:20px;overflow:hidden}
+.doc-hero-bar{flex:1;height:8px;background:#c6e6cc;border-radius:20px;overflow:hidden}
 .doc-hero-bar-fill{height:100%;border-radius:20px;transition:width .4s}
-.doc-hero-pct{font-size:20px;font-weight:800}
+.doc-hero-pct{font-size:20px;font-weight:800;color:var(--green-dark)}
 .doc-section-title{font-size:13px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:0.5px;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
 .doc-section-title .req-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:0.5px}
 .doc-section-title .req-badge.pflicht{background:#fee2e2;color:#dc2626}
@@ -1557,12 +1557,12 @@ body{font-family:-apple-system,sans-serif;background:var(--cream);color:var(--te
 .doc-info-banner .info-text{font-size:12px;color:var(--green-dark);line-height:1.5}
 
 /* ── Partner Auth Overlay ── */
-#partnerAuthOverlay{display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#1a5a3a 0%,#00A67E 40%,#f8f9fa 100%);flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 24px 60px;padding-top:60px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#partnerAuthOverlay{display:none;position:fixed;inset:0;z-index:99999;background:#F2F5F3;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 24px 60px;padding-top:60px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #partnerAuthOverlay.visible{display:flex}
 .pa-logo{text-align:center;margin-bottom:28px}
 .pa-logo-icon{font-size:48px;margin-bottom:8px}
-.pa-logo-text{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px}
-.pa-logo-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px}
+.pa-logo-text{font-size:26px;font-weight:800;color:var(--green-dark);letter-spacing:-0.5px}
+.pa-logo-sub{font-size:13px;color:var(--text-muted);margin-top:4px}
 .pa-card{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:0;box-shadow:0 8px 32px rgba(0,0,0,0.15);overflow:visible;flex-shrink:0}
 .pa-tabs{display:flex;border-bottom:2px solid #f0f0f0}
 .pa-tab{flex:1;padding:14px;text-align:center;font-size:14px;font-weight:600;background:none;border:none;cursor:pointer;color:#999;transition:all 0.2s;border-bottom:2px solid transparent;margin-bottom:-2px}
@@ -3150,32 +3150,32 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
     </div>
 
     <!-- Balance Hero -->
-    <div style="background:linear-gradient(135deg,#0f3d2e,var(--green-dark));padding:24px 20px;color:white">
+    <div style="background:#E8F5E9;border-left:4px solid var(--green-accent);padding:24px 20px;color:var(--text-dark)">
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
         <div style="flex:1">
-          <div style="font-size:11px;opacity:0.7;text-transform:uppercase;letter-spacing:0.5px">Verfügbares Guthaben</div>
-          <div style="font-size:34px;font-weight:800;letter-spacing:-1px;margin-top:4px" id="finBalance">€2.847,60</div>
+          <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Verfügbares Guthaben</div>
+          <div style="font-size:34px;font-weight:800;letter-spacing:-1px;margin-top:4px;color:var(--green-dark)" id="finBalance">€2.847,60</div>
         </div>
         <div style="text-align:right">
-          <div style="font-size:10px;opacity:0.6">Nächste Auszahlung</div>
-          <div style="font-size:13px;font-weight:600;opacity:0.9">01. Feb 2025</div>
+          <div style="font-size:10px;color:var(--text-muted)">Nächste Auszahlung</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-dark)">01. Feb 2025</div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
-        <div style="background:rgba(255,255,255,0.1);border-radius:var(--r);padding:10px;text-align:center">
-          <div style="font-size:10px;opacity:0.7">Brutto</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text-muted)">Brutto</div>
           <div style="font-size:15px;font-weight:700" id="finHeroBrutto">€4.832</div>
         </div>
-        <div style="background:rgba(255,255,255,0.1);border-radius:var(--r);padding:10px;text-align:center">
-          <div style="font-size:10px;opacity:0.7">Gebühren</div>
-          <div style="font-size:15px;font-weight:700;color:#fca5a5" id="finHeroFees">-€936</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text-muted)">Gebühren</div>
+          <div style="font-size:15px;font-weight:700;color:#dc2626" id="finHeroFees">-€936</div>
         </div>
-        <div style="background:rgba(255,255,255,0.1);border-radius:var(--r);padding:10px;text-align:center">
-          <div style="font-size:10px;opacity:0.7">Netto</div>
-          <div style="font-size:15px;font-weight:700;color:#86efac" id="finHeroNetto">€3.897</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text-muted)">Netto</div>
+          <div style="font-size:15px;font-weight:700;color:#16a34a" id="finHeroNetto">€3.897</div>
         </div>
       </div>
-      <button onclick="requestFinPayout()" style="width:100%;padding:11px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:var(--r);color:white;font-size:13px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)">💸 Auszahlung anfordern</button>
+      <button onclick="requestFinPayout()" style="width:100%;padding:11px;background:white;border:1px solid #e5e7eb;border-radius:var(--r);color:var(--text-dark);font-size:13px;font-weight:600;cursor:pointer">💸 Auszahlung anfordern</button>
     </div>
 
     <!-- Tab Navigation -->
@@ -3418,12 +3418,12 @@ Sportmedizinische Zusatzqualifikation</textarea></div>
 
     <div class="mehr-section" id="mehrAdminSection" style="display:none">
       <div class="mehr-section-title">Administration</div>
-      <div class="mehr-item" onclick="window.location.href='../admin/index.html'" style="background:linear-gradient(135deg,#E8EAF6,#C5CAE9)"><span class="mehr-item-icon">🛡️</span><span class="mehr-item-label">Admin-Bereich</span><span style="font-size:11px;color:#6b7280">Plattform verwalten</span><span class="mehr-item-arrow">›</span></div>
+      <div class="mehr-item" onclick="window.location.href='../admin/index.html'" style="background:#E8EAF6;border-left:3px solid #7986cb"><span class="mehr-item-icon">🛡️</span><span class="mehr-item-label">Admin-Bereich</span><span style="font-size:11px;color:#6b7280">Plattform verwalten</span><span class="mehr-item-arrow">›</span></div>
     </div>
 
     <div class="mehr-section">
       <div class="mehr-section-title">Wechseln</div>
-      <div class="mehr-item" onclick="window.location.href='../www/index.html'" style="background:linear-gradient(135deg,#E8F5E9,#f0fdf4)"><span class="mehr-item-icon">🛒</span><span class="mehr-item-label">Zum Marktplatz</span><span style="font-size:11px;color:#6b7280">Als Kunde einkaufen</span><span class="mehr-item-arrow">›</span></div>
+      <div class="mehr-item" onclick="window.location.href='../www/index.html'" style="background:#E8F5E9;border-left:3px solid var(--green-accent)"><span class="mehr-item-icon">🛒</span><span class="mehr-item-label">Zum Marktplatz</span><span style="font-size:11px;color:#6b7280">Als Kunde einkaufen</span><span class="mehr-item-arrow">›</span></div>
     </div>
 
     <div style="padding:16px;text-align:center">
@@ -6308,7 +6308,7 @@ function showProductPreview(){
     </div>
 
     <div class="preview-product">
-      <div style="background:linear-gradient(135deg,var(--cream),#e8e0d5);padding:30px;text-align:center;border-radius:var(--r);margin-bottom:16px">
+      <div style="background:#F2F5F3;border:1px solid var(--border);padding:30px;text-align:center;border-radius:var(--r);margin-bottom:16px">
         <div style="width:120px;height:120px;margin:0 auto;background:white;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:60px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1)">${mainImg}</div>
         ${hasImage&&productImages.filter(img=>img!=null).length>1?`
         <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
@@ -7348,7 +7348,7 @@ function renderTermine(){
       ${weekData.map((v,i)=>{
         const h=Math.max(Math.round((v/maxV)*100),6);
         const isToday=i===dayOfWeek;
-        const clr=v===0?'rgba(255,255,255,0.1)':isToday?'#fbbf24':'rgba(255,255,255,0.7)';
+        const clr=v===0?'#e5e7eb':isToday?'#f59e0b':'var(--green-accent)';
         return`<div style="flex:1;height:${h}%;background:${clr};border-radius:3px;min-height:3px"></div>`;
       }).join('')}
     </div>
@@ -7358,25 +7358,25 @@ function renderTermine(){
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <div class="hero-extra-label">Bilanz</div>
       <div style="display:flex;gap:4px">
-        ${['monat','lfdJahr','jahr'].map(p=>`<button onclick="termineStatPeriod='${p}';renderTermine()" style="border:none;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;cursor:pointer;background:${periodFilter===p?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.15)'};color:${periodFilter===p?'#166534':'rgba(255,255,255,0.7)'}">${periodLabels[p]}</button>`).join('')}
+        ${['monat','lfdJahr','jahr'].map(p=>`<button onclick="termineStatPeriod='${p}';renderTermine()" style="border:1px solid #e5e7eb;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;cursor:pointer;background:${periodFilter===p?'var(--green-accent)':'white'};color:${periodFilter===p?'white':'var(--text-muted)'}">${periodLabels[p]}</button>`).join('')}
       </div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <div style="flex:1;min-width:45%;background:rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px">
+      <div style="flex:1;min-width:45%;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:6px 10px">
         <div style="font-size:16px;font-weight:800">${doneC+confirmedC}</div>
-        <div style="font-size:10px;opacity:0.7">Durchgeführt</div>
+        <div style="font-size:10px;color:var(--text-muted)">Durchgeführt</div>
       </div>
-      <div style="flex:1;min-width:45%;background:rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px">
+      <div style="flex:1;min-width:45%;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:6px 10px">
         <div style="font-size:16px;font-weight:800">€${totalUmsatz}</div>
-        <div style="font-size:10px;opacity:0.7">Umsatz</div>
+        <div style="font-size:10px;color:var(--text-muted)">Umsatz</div>
       </div>
-      <div style="flex:1;min-width:45%;background:rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px">
+      <div style="flex:1;min-width:45%;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:6px 10px">
         <div style="font-size:16px;font-weight:800">4.8★</div>
-        <div style="font-size:10px;opacity:0.7">Bewertung</div>
+        <div style="font-size:10px;color:var(--text-muted)">Bewertung</div>
       </div>
-      <div style="flex:1;min-width:45%;background:rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px">
+      <div style="flex:1;min-width:45%;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:6px 10px">
         <div style="font-size:16px;font-weight:800">${declinedC}</div>
-        <div style="font-size:10px;opacity:0.7">Abgesagt</div>
+        <div style="font-size:10px;color:var(--text-muted)">Abgesagt</div>
       </div>
     </div>
   `;
@@ -8383,7 +8383,7 @@ function renderProviderProfile(){
   const modeLabels={praxis:'🏥 Vor Ort',video:'📹 Video',phone:'📞 Telefon',home:'🏠 Hausbesuch'};
   document.getElementById('providerProfileContent').innerHTML=`
     <div style="text-align:center;margin-bottom:20px">
-      <div style="width:80px;height:80px;margin:0 auto 12px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px">${provider.avatar}</div>
+      <div style="width:80px;height:80px;margin:0 auto 12px;background:#E8F5E9;border:1px solid #e5e7eb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px">${provider.avatar}</div>
       <h2 style="font-size:20px;font-weight:700">${esc(provider.name)}</h2>
       <p style="font-size:13px;color:var(--text-muted)">${esc(provider.title)}</p>
       <div style="margin-top:8px;font-size:13px">⭐ ${provider.rating} · ${provider.reviews} Bewertungen</div>
@@ -8696,7 +8696,7 @@ function renderMeinShop(){
   };
   document.getElementById('meinShopContent').innerHTML=`
     <!-- Vorschau-Banner -->
-    <div style="position:relative;border-radius:12px;overflow:hidden;margin-bottom:16px;${imgs.banner?'':`background:linear-gradient(135deg,#059669,#34d399);`}">
+    <div style="position:relative;border-radius:12px;overflow:hidden;margin-bottom:16px;${imgs.banner?'':`background:#E8F5E9;border:2px dashed #86efac;`}">
       ${imgs.banner?`<img src="${imgs.banner}" style="width:100%;height:140px;object-fit:cover;display:block">`:`<div style="height:140px"></div>`}
       <div style="position:absolute;inset:0;${imgs.banner?'background:rgba(0,0,0,0.35);':''}display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;text-align:center;padding:16px">
         ${imgs.logo?`<img src="${imgs.logo}" style="width:56px;height:56px;border-radius:14px;object-fit:cover;margin-bottom:8px;border:2px solid rgba(255,255,255,0.5)">`:`<div style="font-size:40px;margin-bottom:8px">${bp.logo}</div>`}
@@ -8712,7 +8712,7 @@ function renderMeinShop(){
       <div style="display:flex;align-items:center;gap:14px">
         ${imgs.logo
           ?`<div style="position:relative"><img src="${imgs.logo}" style="width:56px;height:56px;border-radius:14px;object-fit:cover"><button onclick="removeShopImage('logo')" style="position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:#ef4444;color:white;border:none;font-size:10px;cursor:pointer">✕</button></div>`
-          :`<div style="width:56px;height:56px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px">${bp.logo}</div>`}
+          :`<div style="width:56px;height:56px;background:#E8F5E9;border:1px solid #e5e7eb;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px">${bp.logo}</div>`}
         <button onclick="uploadShopImage('logo')" class="set-btn" style="font-size:12px">📸 ${imgs.logo?'Ändern':'Foto hochladen'}</button>
       </div>
     </div>
@@ -8816,7 +8816,7 @@ function renderMeinShop(){
     <!-- PROVISIONSMODELL -->
     <div class="set-section">
       <div class="set-title">Provisionsmodell</div>
-      <div style="background:linear-gradient(135deg,var(--green-light),#d1fae5);padding:14px;border-radius:var(--r)">
+      <div style="background:#E8F5E9;border-left:3px solid var(--green-accent);padding:14px;border-radius:var(--r)">
         <div style="font-size:14px;font-weight:700;margin-bottom:2px">🌿 SuppTree Partner</div>
         <div style="font-size:12px;color:var(--text-muted)">Kein Abo — Provision pro Verkauf · individuell verhandelbar</div>
       </div>
@@ -8915,10 +8915,10 @@ function previewBrandProfile(){
     </div>
     <div style="flex:1;overflow-y:auto;background:#fff">
       <!-- Hero -->
-      <div style="position:relative;${imgs.banner?'':`background:linear-gradient(135deg,#059669,#34d399);`}">
+      <div style="position:relative;${imgs.banner?'':`background:#E8F5E9;`}">
         ${imgs.banner?`<img src="${imgs.banner}" style="width:100%;height:180px;object-fit:cover;display:block">`:`<div style="height:180px"></div>`}
         <div style="position:absolute;inset:0;${imgs.banner?'background:rgba(0,0,0,0.35);':''}display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;text-align:center;padding:20px">
-          ${imgs.logo?`<img src="${imgs.logo}" style="width:72px;height:72px;border-radius:16px;object-fit:cover;margin-bottom:10px;border:3px solid rgba(255,255,255,0.5)">`:`<div style="width:72px;height:72px;margin:0 auto 10px;background:rgba(255,255,255,0.2);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:36px">${bp.logo}</div>`}
+          ${imgs.logo?`<img src="${imgs.logo}" style="width:72px;height:72px;border-radius:16px;object-fit:cover;margin-bottom:10px;border:3px solid rgba(255,255,255,0.5)">`:`<div style="width:72px;height:72px;margin:0 auto 10px;background:#E8F5E9;border:2px solid #e5e7eb;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:36px">${bp.logo}</div>`}
           <h1 style="font-size:22px;font-weight:800;margin:0;text-shadow:0 1px 3px rgba(0,0,0,0.3)">${bp.name}</h1>
           <p style="font-size:14px;opacity:0.9;margin:6px 0 0;text-shadow:0 1px 2px rgba(0,0,0,0.3)">${bp.slogan}</p>
         </div>
@@ -8968,7 +8968,7 @@ function previewBrandProfile(){
         <div style="display:flex;flex-wrap:wrap;gap:8px">${bp.specialties.map(s=>`<span style="background:#fff;border:1px solid #bbf7d0;color:#15803d;padding:6px 12px;border-radius:7px;font-size:12px;font-weight:600">🔬 ${s}</span>`).join('')}</div>
       </div>`:''}
       <!-- Zertifizierungen -->
-      ${bp.certifications.length?`<div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 12px">${bp.certifications.map(c=>`<span style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #fcd34d;color:#92400e;padding:8px 14px;border-radius:7px;font-size:13px;font-weight:700">🏆 ${c}</span>`).join('')}</div>`:''}
+      ${bp.certifications.length?`<div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 12px">${bp.certifications.map(c=>`<span style="background:#fef3c7;border:1px solid #fcd34d;color:#92400e;padding:8px 14px;border-radius:7px;font-size:13px;font-weight:700">🏆 ${c}</span>`).join('')}</div>`:''}
       <!-- Kontakt -->
       ${(bp.contact.email||bp.contact.phone||bp.contact.website)?`<div style="background:#f0fdf4;border:1px solid #dcfce7;margin:0 16px 12px;padding:16px;border-radius:7px">
         <h3 style="font-size:16px;font-weight:700;color:#166534;margin:0 0 8px">Kontakt</h3>
@@ -9688,10 +9688,10 @@ function viewPartnerDoc(docId) {
 // ===== SUPPORT FUNCTIONS =====
 function renderSupport(){
   document.getElementById('supportContent').innerHTML=`
-    <div style="background:linear-gradient(135deg,var(--green-dark),var(--green-accent));padding:24px 16px;color:white;text-align:center">
+    <div style="background:#E8F5E9;border-left:4px solid var(--green-accent);padding:24px 16px;color:var(--text-dark);text-align:center">
       <div style="font-size:40px;margin-bottom:8px">💬</div>
       <div style="font-size:18px;font-weight:700">Wie können wir helfen?</div>
-      <div style="font-size:13px;opacity:0.85;margin-top:4px">Unser Support-Team ist Mo–Fr von 9–18 Uhr für dich da</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px">Unser Support-Team ist Mo–Fr von 9–18 Uhr für dich da</div>
     </div>
 
     <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
@@ -9877,10 +9877,10 @@ function filterFAQ(){
 // ===== FEEDBACK =====
 function renderFeedback(){
   document.getElementById('feedbackContent').innerHTML=`
-    <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:24px 16px;color:white;text-align:center">
+    <div style="background:#ede9fe;border-left:4px solid #7c3aed;padding:24px 16px;color:var(--text-dark);text-align:center">
       <div style="font-size:40px;margin-bottom:8px">💡</div>
       <div style="font-size:18px;font-weight:700">Dein Feedback zählt!</div>
-      <div style="font-size:13px;opacity:0.85;margin-top:4px">Hilf uns, SuppTree noch besser zu machen</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px">Hilf uns, SuppTree noch besser zu machen</div>
     </div>
 
     <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
@@ -10018,7 +10018,7 @@ function renderKunden(){
   document.getElementById('kundenProvTrend').textContent=totalProvision>0?'↑ '+provRate:'';
   // Hero gradient + 3rd stat per tab
   const heroEl=document.getElementById('kundenHero');
-  if(heroEl) heroEl.style.background=kundenProvTab==='qr'?'linear-gradient(135deg,#166534 0%,#15803d 50%,#22c55e 100%)':'linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 50%,#3b82f6 100%)';
+  if(heroEl){heroEl.style.background='#F2F5F3';heroEl.style.borderBottom='1px solid #e5e7eb';heroEl.style.color='var(--text-dark)'||'#1a1a1a';}
   document.getElementById('kundenHeroExtra').textContent=kundenProvTab==='qr'?'4.8★':aktiveProv+'';
   document.getElementById('kundenHeroExtraLbl').textContent=kundenProvTab==='qr'?'Rating':'Aktiv';
 
@@ -10029,17 +10029,17 @@ function renderKunden(){
     const funnelMax=Math.max(totalKunden,1);
     document.getElementById('kundenFunnel').innerHTML=`
       <div class="hero-extra-label">Empfehlungs-Funnel</div>
-      <div class="funnel-bar" style="margin-top:8px"><span style="width:60px;font-size:11px">Verknüpft</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round((totalKunden/funnelMax)*100)}%;background:rgba(255,255,255,0.7);border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${totalKunden}</span></div>
-      <div class="funnel-bar"><span style="width:60px;font-size:11px">Gekauft</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round((aktiveProv/funnelMax)*100)}%;background:#86efac;border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${aktiveProv}</span></div>
-      <div class="funnel-bar"><span style="width:60px;font-size:11px">Warten</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round(((wartenEmpf+wartendKaufC)/funnelMax)*100)}%;background:#fbbf24;border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${wartenEmpf+wartendKaufC}</span></div>
+      <div class="funnel-bar" style="margin-top:8px"><span style="width:60px;font-size:11px;color:var(--text-muted)">Verknüpft</span><div style="flex:1;height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round((totalKunden/funnelMax)*100)}%;background:var(--green-accent);border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${totalKunden}</span></div>
+      <div class="funnel-bar"><span style="width:60px;font-size:11px;color:var(--text-muted)">Gekauft</span><div style="flex:1;height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round((aktiveProv/funnelMax)*100)}%;background:#16a34a;border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${aktiveProv}</span></div>
+      <div class="funnel-bar"><span style="width:60px;font-size:11px;color:var(--text-muted)">Warten</span><div style="flex:1;height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round(((wartenEmpf+wartendKaufC)/funnelMax)*100)}%;background:#f59e0b;border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${wartenEmpf+wartendKaufC}</span></div>
     `;
   }else{
     // Link: Einfacher Überblick
     const wartendKaufC=tabAll.filter(k=>{const p=getProvisionInfo(k);return p.phase==='cookie';}).length;
     document.getElementById('kundenFunnel').innerHTML=`
       <div class="hero-extra-label">Übersicht</div>
-      <div class="funnel-bar" style="margin-top:8px"><span style="width:60px;font-size:11px">Aktiv</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round((aktiveProv/Math.max(totalKunden,1))*100)}%;background:#86efac;border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${aktiveProv}</span></div>
-      <div class="funnel-bar"><span style="width:60px;font-size:11px">Wartend</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round((wartendKaufC/Math.max(totalKunden,1))*100)}%;background:#fbbf24;border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${wartendKaufC}</span></div>
+      <div class="funnel-bar" style="margin-top:8px"><span style="width:60px;font-size:11px;color:var(--text-muted)">Aktiv</span><div style="flex:1;height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round((aktiveProv/Math.max(totalKunden,1))*100)}%;background:#16a34a;border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${aktiveProv}</span></div>
+      <div class="funnel-bar"><span style="width:60px;font-size:11px;color:var(--text-muted)">Wartend</span><div style="flex:1;height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.round((wartendKaufC/Math.max(totalKunden,1))*100)}%;background:#f59e0b;border-radius:4px"></div></div><span style="font-size:12px;font-weight:700;width:24px;text-align:right">${wartendKaufC}</span></div>
     `;
   }
 
@@ -11879,7 +11879,7 @@ function renderLAMonthlyTable(){
               <span style="color:#00A67E">${m.qrConv}</span><span style="color:var(--text-muted)"> / </span><span style="color:#3b82f6">${m.linkConv}</span>
             </div>
             <div style="padding:6px 8px;text-align:center;font-weight:600">€${m.totalComm.toFixed(0)}</div>
-            <div style="padding:6px 8px"><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="height:100%;width:${barW}%;background:linear-gradient(90deg,#00A67E,#3b82f6);border-radius:4px"></div></div></div>
+            <div style="padding:6px 8px"><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="height:100%;width:${barW}%;background:#00A67E;border-radius:4px"></div></div></div>
           </div>`;
         }).join('')}
       </div>
@@ -12147,15 +12147,15 @@ function renderWidget_welcome(cfg={}){
       +'<span style="font-size:14px;color:'+(s.done?'#16a34a':'var(--green-accent)')+'">'+( s.done?'':'›')+'</span>'
     +'</div>';
   }).join('');
-  return '<div style="background:linear-gradient(135deg,#166534 0%,#15803d 50%,#22c55e 100%);border-radius:14px;padding:20px;margin-bottom:14px;color:white">'
+  return '<div style="background:#E8F5E9;border-left:4px solid var(--green-accent);border-radius:14px;padding:20px;margin-bottom:14px;color:#1a1a1a">'
     +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">'
-      +'<div style="font-size:11px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Willkommen bei SuppTree</div>'
-      +'<div onclick="dismissWelcome()" style="cursor:pointer;opacity:0.6;font-size:18px;line-height:1;padding:2px 6px" title="Ausblenden">&times;</div>'
+      +'<div style="font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Willkommen bei SuppTree</div>'
+      +'<div onclick="dismissWelcome()" style="cursor:pointer;color:#6b7280;font-size:18px;line-height:1;padding:2px 6px" title="Ausblenden">&times;</div>'
     +'</div>'
-    +'<div style="font-size:18px;font-weight:800;margin-bottom:2px">Hallo, '+provider.name.split(' ')[0]+'! 👋</div>'
-    +'<div style="font-size:12px;opacity:0.85;margin-bottom:14px">Richte dein '+w.typeLabel+'-Konto ein — in wenigen Schritten bist du startklar.</div>'
-    +'<div style="background:rgba(255,255,255,0.2);border-radius:8px;height:6px;margin-bottom:6px;overflow:hidden"><div style="height:100%;background:#fff;border-radius:8px;width:'+pct+'%;transition:width .5s"></div></div>'
-    +'<div style="font-size:11px;opacity:0.75;margin-bottom:14px">'+w.completedCount+' von '+w.steps.length+' erledigt</div>'
+    +'<div style="font-size:18px;font-weight:800;margin-bottom:2px;color:#1a5a3a">Hallo, '+provider.name.split(' ')[0]+'! 👋</div>'
+    +'<div style="font-size:12px;color:#6b7280;margin-bottom:14px">Richte dein '+w.typeLabel+'-Konto ein — in wenigen Schritten bist du startklar.</div>'
+    +'<div style="background:#c6e6cc;border-radius:8px;height:6px;margin-bottom:6px;overflow:hidden"><div style="height:100%;background:var(--green-accent);border-radius:8px;width:'+pct+'%;transition:width .5s"></div></div>'
+    +'<div style="font-size:11px;color:#6b7280;margin-bottom:14px">'+w.completedCount+' von '+w.steps.length+' erledigt</div>'
   +'</div>'
   +'<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">'+stepsHtml+'</div>'
   +(allDone?'<div style="text-align:center;padding:14px;background:#f0fdf4;border-radius:10px;border:1.5px solid #86efac;margin-bottom:14px"><div style="font-size:20px;margin-bottom:6px">🎉</div><div style="font-size:14px;font-weight:700;color:#16a34a;margin-bottom:4px">Alles eingerichtet!</div><div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Dein Konto ist startklar. Du kannst diesen Bereich jetzt ausblenden.</div><button onclick="dismissWelcome()" style="background:var(--green-accent);color:white;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Verstanden, ausblenden</button></div>':'');
@@ -12163,23 +12163,21 @@ function renderWidget_welcome(cfg={}){
 
 // ── Widget Render Functions (each returns HTML string) ──
 function renderWidget_umsatzHero(cfg={}){
-  const colorMap={green:'linear-gradient(135deg,#166534,#15803d,#22c55e)',blue:'linear-gradient(135deg,#1e3a5f,#2563eb,#3b82f6)',purple:'linear-gradient(135deg,#4a1d96,#7c3aed,#a78bfa)',dark:'linear-gradient(135deg,#1f2937,#374151,#4b5563)'};
-  const bg=colorMap[cfg.colorScheme]||colorMap.green;
   const showTrend=cfg.showTrend!==false;
   const showSubCards=cfg.showSubCards!==false;
   var subCardsHtml='';
   if(showSubCards){
     var cards=[];
-    if(hasFeature('produkte')) cards.push('<div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashOrders">89</div><div style="font-size:10px;opacity:0.7">Bestellungen</div></div>');
-    if(hasFeature('termine')) cards.push('<div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashTermine">24</div><div style="font-size:10px;opacity:0.7">Termine</div></div>');
-    if(hasFeature('services')) cards.push('<div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashServices">4</div><div style="font-size:10px;opacity:0.7">Services</div></div>');
-    cards.push('<div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashKunden">6</div><div style="font-size:10px;opacity:0.7">Kunden</div></div>');
+    if(hasFeature('produkte')) cards.push('<div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashOrders">89</div><div style="font-size:10px;color:#6b7280">Bestellungen</div></div>');
+    if(hasFeature('termine')) cards.push('<div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashTermine">24</div><div style="font-size:10px;color:#6b7280">Termine</div></div>');
+    if(hasFeature('services')) cards.push('<div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashServices">4</div><div style="font-size:10px;color:#6b7280">Services</div></div>');
+    cards.push('<div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800" id="dashKunden">6</div><div style="font-size:10px;color:#6b7280">Kunden</div></div>');
     subCardsHtml='<div style="display:flex;gap:12px">'+cards.join('')+'</div>';
   }
-  return`<div onclick="showScreen('finanzen')" style="cursor:pointer;background:${bg};border-radius:12px;padding:18px;margin-bottom:14px;color:white">
+  return`<div onclick="showScreen('finanzen')" style="cursor:pointer;background:#E8F5E9;border-left:4px solid var(--green-accent);border-radius:12px;padding:18px;margin-bottom:14px;color:#1a1a1a">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:${showSubCards?'14px':'0'}">
-      <div><div style="font-size:11px;opacity:0.7;font-weight:600">Umsatz diesen Monat</div><div style="font-size:28px;font-weight:800;margin-top:2px" id="dashUmsatz">€3.847</div></div>
-      ${showTrend?'<div style="background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700" id="dashTrend">↑ 18%</div>':''}
+      <div><div style="font-size:11px;color:#6b7280;font-weight:600">Umsatz diesen Monat</div><div style="font-size:28px;font-weight:800;margin-top:2px;color:#1a5a3a" id="dashUmsatz">€3.847</div></div>
+      ${showTrend?'<div style="background:white;border:1px solid #e5e7eb;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;color:#16a34a" id="dashTrend">↑ 18%</div>':''}
     </div>
     ${subCardsHtml}
   </div>`;
@@ -12236,7 +12234,7 @@ function renderWidget_markenprofil(cfg={}){
   const showMissing=cfg.showMissingAlert!==false;
   return`<div id="dashBrandCard" onclick="showScreen('meinShop')" data-show-highlights="${showHL?1:0}" data-show-certs="${showCerts?1:0}" style="background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:12px;margin-bottom:14px;cursor:pointer">
     <div style="display:flex;align-items:center;gap:10px">
-      <div id="dashBrandLogo" style="width:40px;height:40px;background:linear-gradient(135deg,#059669,#34d399);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0"></div>
+      <div id="dashBrandLogo" style="width:40px;height:40px;background:#E8F5E9;border:1px solid #e5e7eb;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0"></div>
       <div style="flex:1;min-width:0"><div id="dashBrandName" style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div><div id="dashBrandSlogan" style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div></div>
       <span style="font-size:11px;color:var(--green-accent);font-weight:600;flex-shrink:0">→</span>
     </div>
@@ -12266,10 +12264,10 @@ function renderWidget_affiliateUebersicht(cfg={}){
   const monthComm=demoClickData.filter(c=>c.converted&&new Date(c.date)>=now30).reduce((s,c)=>s+(c.commission||0),0);
   return`<div class="section">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="section-title" style="margin:0">Affiliate-Programm</div><div style="font-size:12px;color:var(--green-accent);cursor:pointer" onclick="showScreen('affiliate')">Mehr &rarr;</div></div>
-    ${showHero?`<div style="background:linear-gradient(135deg,#1a5a3a,#2d7a4a);border-radius:var(--r);padding:16px;color:white;margin-bottom:12px">
-      <div style="font-size:12px;opacity:0.85">Gesamtverdienst</div>
-      <div style="font-size:28px;font-weight:700">&euro;${totalCommission.toFixed(2)}</div>
-      <div style="font-size:11px;opacity:0.7;margin-top:2px">Diesen Monat: &euro;${monthComm.toFixed(2)}</div>
+    ${showHero?`<div style="background:#E8F5E9;border-left:4px solid var(--green-accent);border-radius:var(--r);padding:16px;color:#1a1a1a;margin-bottom:12px">
+      <div style="font-size:12px;color:#6b7280">Gesamtverdienst</div>
+      <div style="font-size:28px;font-weight:700;color:#1a5a3a">&euro;${totalCommission.toFixed(2)}</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px">Diesen Monat: &euro;${monthComm.toFixed(2)}</div>
     </div>`:''}
     ${showKpis?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
       <div style="background:var(--white);border-radius:var(--r);padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-size:10px;color:var(--text-muted)">Klicks</div><div style="font-size:18px;font-weight:700">${totalClicks.toLocaleString('de-DE')}</div></div>
@@ -12345,10 +12343,10 @@ function renderWidget_finanzenUebersicht(cfg={}){
   const prodRev=73,svcRev=20,affRev=4,otherRev=3;
   return`<div class="section">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="section-title" style="margin:0">Finanzen</div><div style="font-size:12px;color:var(--green-accent);cursor:pointer" onclick="showScreen('finanzen')">Mehr &rarr;</div></div>
-    ${showHero?`<div style="background:linear-gradient(135deg,#1a5a3a,#2d7a4a);border-radius:var(--r);padding:16px;color:white;margin-bottom:12px">
-      <div style="font-size:12px;opacity:0.85">Verf&uuml;gbares Guthaben</div>
-      <div style="font-size:28px;font-weight:700">&euro;${balanceAmt.toLocaleString('de-DE',{minimumFractionDigits:2})}</div>
-      <div style="font-size:11px;opacity:0.7;margin-top:2px">N&auml;chste Auszahlung: ${nextDate}</div>
+    ${showHero?`<div style="background:#E8F5E9;border-left:4px solid var(--green-accent);border-radius:var(--r);padding:16px;color:#1a1a1a;margin-bottom:12px">
+      <div style="font-size:12px;color:#6b7280">Verf&uuml;gbares Guthaben</div>
+      <div style="font-size:28px;font-weight:700;color:#1a5a3a">&euro;${balanceAmt.toLocaleString('de-DE',{minimumFractionDigits:2})}</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px">N&auml;chste Auszahlung: ${nextDate}</div>
     </div>`:''}
     ${showQuellen?buildFinanzQuellen(prodRev,svcRev,affRev):''}
   </div>`;
@@ -12578,14 +12576,12 @@ function getWidgetPreview(id,cfg){
   const c=cfg||{};
   switch(id){
     case 'umsatzHero':{
-      const colors={green:'linear-gradient(135deg,#166534,#15803d,#22c55e)',blue:'linear-gradient(135deg,#1e3a5f,#2563eb,#3b82f6)',purple:'linear-gradient(135deg,#4a1d96,#7c3aed,#a78bfa)',dark:'linear-gradient(135deg,#1f2937,#374151,#4b5563)'};
-      const bg=colors[c.colorScheme]||colors.green;
-      return`<div style="background:${bg};border-radius:10px;padding:14px;color:white">
+      return`<div style="background:#E8F5E9;border-left:4px solid #00A67E;border-radius:10px;padding:14px;color:#1a1a1a">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:${c.showSubCards!==false?'10px':'0'}">
-          <div><div style="font-size:9px;opacity:0.7;font-weight:600">Umsatz diesen Monat</div><div style="font-size:22px;font-weight:800;margin-top:2px">€3.847</div></div>
-          ${c.showTrend!==false?'<div style="background:rgba(255,255,255,0.2);padding:3px 8px;border-radius:10px;font-size:9px;font-weight:700">↑ 18%</div>':''}
+          <div><div style="font-size:9px;color:#6b7280;font-weight:600">Umsatz diesen Monat</div><div style="font-size:22px;font-weight:800;margin-top:2px;color:#1a5a3a">€3.847</div></div>
+          ${c.showTrend!==false?'<div style="background:white;border:1px solid #e5e7eb;padding:3px 8px;border-radius:10px;font-size:9px;font-weight:700;color:#16a34a">↑ 18%</div>':''}
         </div>
-        ${c.showSubCards!==false?'<div style="display:flex;gap:8px"><div style="flex:1;background:rgba(255,255,255,0.12);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:800">89</div><div style="font-size:8px;opacity:0.7">Bestellungen</div></div><div style="flex:1;background:rgba(255,255,255,0.12);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:800">24</div><div style="font-size:8px;opacity:0.7">Termine</div></div><div style="flex:1;background:rgba(255,255,255,0.12);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:800">6</div><div style="font-size:8px;opacity:0.7">Kunden</div></div></div>':''}
+        ${c.showSubCards!==false?'<div style="display:flex;gap:8px"><div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:800">89</div><div style="font-size:8px;color:#6b7280">Bestellungen</div></div><div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:800">24</div><div style="font-size:8px;color:#6b7280">Termine</div></div><div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:800">6</div><div style="font-size:8px;color:#6b7280">Kunden</div></div></div>':''}
       </div>`;
     }
     case 'handlung':
@@ -12625,7 +12621,7 @@ function getWidgetPreview(id,cfg){
     }
     case 'markenprofil':
       return`<div style="background:#fff;border-radius:8px;padding:10px">
-        <div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;background:linear-gradient(135deg,#059669,#34d399);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">🏢</div><div style="flex:1"><div style="font-size:12px;font-weight:700">NaturVital GmbH</div><div style="font-size:9px;color:#888">Natürliche Nahrungsergänzung</div></div></div>
+        <div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;background:#E8F5E9;border:1px solid #e5e7eb;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">🏢</div><div style="flex:1"><div style="font-size:12px;font-weight:700">NaturVital GmbH</div><div style="font-size:9px;color:#888">Natürliche Nahrungsergänzung</div></div></div>
         ${c.showHighlights!==false||c.showCerts!==false?'<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:6px">'+(c.showHighlights!==false?'<span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:5px;font-size:9px">Bio-Qualität</span><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:5px;font-size:9px">Laborgeprüft</span>':'')+(c.showCerts!==false?'<span style="background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:5px;font-size:9px">🏆 GMP</span>':'')+'</div>':''}
         ${c.showMissingAlert!==false?'<div style="background:#fef3c7;border-radius:4px;padding:4px 8px;font-size:9px;color:#92400e;margin-top:6px">⚠️ Noch ausfüllen: Beschreibung, Geschichte</div>':''}
       </div>`;
@@ -12644,7 +12640,7 @@ function getWidgetPreview(id,cfg){
     case 'affiliateUebersicht':
       return`<div>
         <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:11px;font-weight:700">Affiliate-Programm</span><span style="font-size:9px;color:#00A67E">Mehr →</span></div>
-        ${c.showHero!==false?'<div style="background:linear-gradient(135deg,#1a5a3a,#2d7a4a);border-radius:6px;padding:12px;color:white;margin-bottom:8px"><div style="font-size:10px;opacity:0.85">Gesamtverdienst</div><div style="font-size:22px;font-weight:700">€847.50</div><div style="font-size:9px;opacity:0.7">Diesen Monat: €124.30</div></div>':''}
+        ${c.showHero!==false?'<div style="background:#E8F5E9;border-left:4px solid #00A67E;border-radius:6px;padding:12px;color:#1a1a1a;margin-bottom:8px"><div style="font-size:10px;color:#6b7280">Gesamtverdienst</div><div style="font-size:22px;font-weight:700;color:#1a5a3a">€847.50</div><div style="font-size:9px;color:#6b7280">Diesen Monat: €124.30</div></div>':''}
         ${c.showKpis!==false?'<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px"><div style="background:#fff;border-radius:6px;padding:6px;text-align:center;border:1px solid #e5e7eb"><div style="font-size:8px;color:#888">Klicks</div><div style="font-size:14px;font-weight:700">342</div></div><div style="background:#fff;border-radius:6px;padding:6px;text-align:center;border:1px solid #e5e7eb"><div style="font-size:8px;color:#888">Conversions</div><div style="font-size:14px;font-weight:700">28</div></div><div style="background:#fff;border-radius:6px;padding:6px;text-align:center;border:1px solid #e5e7eb"><div style="font-size:8px;color:#888">Conv.-Rate</div><div style="font-size:14px;font-weight:700">8.2%</div></div><div style="background:#fff;border-radius:6px;padding:6px;text-align:center;border:1px solid #e5e7eb"><div style="font-size:8px;color:#888">Ø Bestellw.</div><div style="font-size:14px;font-weight:700">€67.40</div></div></div>':''}
       </div>`;
     case 'produkteTop':{
@@ -12660,7 +12656,7 @@ function getWidgetPreview(id,cfg){
       </div>`;
     case 'finanzenUebersicht':
       return`<div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:11px;font-weight:700">Finanzen</span><span style="font-size:9px;color:#00A67E">Mehr →</span></div>
-        ${c.showHero!==false?'<div style="background:linear-gradient(135deg,#1a5a3a,#2d7a4a);border-radius:6px;padding:12px;color:white;margin-bottom:8px"><div style="font-size:10px;opacity:0.85">Verfügbares Guthaben</div><div style="font-size:22px;font-weight:700">€1.247,50</div><div style="font-size:9px;opacity:0.7">Nächste Auszahlung: 01.03.2026</div></div>':''}
+        ${c.showHero!==false?'<div style="background:#E8F5E9;border-left:4px solid #00A67E;border-radius:6px;padding:12px;color:#1a1a1a;margin-bottom:8px"><div style="font-size:10px;color:#6b7280">Verfügbares Guthaben</div><div style="font-size:22px;font-weight:700;color:#1a5a3a">€1.247,50</div><div style="font-size:9px;color:#6b7280">Nächste Auszahlung: 01.03.2026</div></div>':''}
         ${c.showQuellen!==false?'<div style="font-size:10px;font-weight:600;margin-bottom:4px">Umsatz nach Quelle</div><div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;align-items:center;gap:4px"><div style="width:48px;font-size:9px;color:#888">Produkte</div><div style="flex:1;background:#e5e7eb;border-radius:2px;height:6px"><div style="background:#00A67E;height:100%;border-radius:2px;width:73%"></div></div><div style="font-size:9px;font-weight:600;width:24px;text-align:right">73%</div></div><div style="display:flex;align-items:center;gap:4px"><div style="width:48px;font-size:9px;color:#888">Services</div><div style="flex:1;background:#e5e7eb;border-radius:2px;height:6px"><div style="background:#3b82f6;height:100%;border-radius:2px;width:20%"></div></div><div style="font-size:9px;font-weight:600;width:24px;text-align:right">20%</div></div><div style="display:flex;align-items:center;gap:4px"><div style="width:48px;font-size:9px;color:#888">Affiliate</div><div style="flex:1;background:#e5e7eb;border-radius:2px;height:6px"><div style="background:#8b5cf6;height:100%;border-radius:2px;width:4%"></div></div><div style="font-size:9px;font-weight:600;width:24px;text-align:right">4%</div></div></div>':''}
       </div>`;
     case 'kundenUebersicht':
@@ -13059,26 +13055,26 @@ function renderStatistiken(){
 
   el.innerHTML=`
     <!-- HERO -->
-    <div style="background:linear-gradient(135deg,#166534,#15803d,#22c55e);border-radius:12px;padding:18px;margin-bottom:14px;color:white">
+    <div style="background:#E8F5E9;border-left:4px solid #00A67E;border-radius:12px;padding:18px;margin-bottom:14px;color:#1a1a1a">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
         <div>
-          <div style="font-size:11px;opacity:0.7;font-weight:600">Gesamtumsatz · ${periodLabel}</div>
-          <div style="font-size:28px;font-weight:800;margin-top:2px">${fmtEur(scaled)}</div>
+          <div style="font-size:11px;color:#6b7280;font-weight:600">Gesamtumsatz · ${periodLabel}</div>
+          <div style="font-size:28px;font-weight:800;margin-top:2px;color:#1a5a3a">${fmtEur(scaled)}</div>
         </div>
-        <div style="background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700">↑ ${trendPct}% vs. Vorz.</div>
+        <div style="background:white;border:1px solid #e5e7eb;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;color:#16a34a">↑ ${trendPct}% vs. Vorz.</div>
       </div>
       <div style="display:flex;gap:8px">
-        <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center">
+        <div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;text-align:center">
           <div style="font-size:15px;font-weight:800">${fmtEur(Math.round(prodRev*mult))}</div>
-          <div style="font-size:10px;opacity:0.7">Produkte</div>
+          <div style="font-size:10px;color:#6b7280">Produkte</div>
         </div>
-        <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center">
+        <div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;text-align:center">
           <div style="font-size:15px;font-weight:800">${fmtEur(Math.round(svcRev*mult))}</div>
-          <div style="font-size:10px;opacity:0.7">Services</div>
+          <div style="font-size:10px;color:#6b7280">Services</div>
         </div>
-        <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;text-align:center">
+        <div style="flex:1;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;text-align:center">
           <div style="font-size:15px;font-weight:800">${fmtEur(Math.round(affRev*mult))}</div>
-          <div style="font-size:10px;opacity:0.7">Affiliate</div>
+          <div style="font-size:10px;color:#6b7280">Affiliate</div>
         </div>
       </div>
     </div>
@@ -14971,7 +14967,7 @@ function renderEpStep0(c) {
       const itemCount = (st.meals||[]).reduce((s,m)=>s+(m.items||[]).length,0);
       html += `<div class="tp-draft-card" onclick="epLoadDraft('${d.id}')">
         <div class="tp-draft-card-top">
-          <div class="tp-draft-card-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">🥗</div>
+          <div class="tp-draft-card-icon" style="background:#fef3c7">🥗</div>
           <div class="tp-draft-card-info">
             <div class="tp-draft-card-name">${st.planName||'Unbenannt'}</div>
             <div class="tp-draft-card-date">${new Date(d.savedAt).toLocaleDateString('de-DE')}</div>
@@ -15518,7 +15514,7 @@ function epRenderRecipeBrowser() {
     const myId = tpGetBeraterId();
 
     // Button: Eigenes Rezept erstellen
-    html += `<div onclick="openCreateRecipeForm()" style="display:flex;align-items:center;gap:10px;padding:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px dashed #86efac;border-radius:12px;margin-bottom:12px;cursor:pointer">
+    html += `<div onclick="openCreateRecipeForm()" style="display:flex;align-items:center;gap:10px;padding:12px;background:#f0fdf4;border:1.5px dashed #86efac;border-radius:12px;margin-bottom:12px;cursor:pointer">
       <div style="width:36px;height:36px;border-radius:50%;background:#22c55e;color:white;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">+</div>
       <div>
         <div style="font-size:13px;font-weight:600;color:#166534">Eigenes Rezept erstellen & teilen</div>
@@ -16169,7 +16165,7 @@ function renderOnboardingStep() {
       '</div>';
 
     container.innerHTML =
-      (specLabel ? '<div style="text-align:center;margin-bottom:8px"><span style="background:rgba(255,255,255,0.2);color:#fff;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600">'+specLabel+'</span></div>' : '') +
+      (specLabel ? '<div style="text-align:center;margin-bottom:8px"><span style="background:white;border:1px solid #e5e7eb;color:var(--green-dark);padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600">'+specLabel+'</span></div>' : '') +
       '<div style="background:#fff;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px">' +
         countryField +
         '<div>' +
@@ -16370,19 +16366,19 @@ async function finishOnboarding(backendType) {
 </style>
 
 <!-- ═══ ONBOARDING OVERLAY ═══ -->
-<div id="onboardingOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#1a5a3a 0%,#00A67E 40%,#f8f9fa 100%);flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;padding-top:60px;overflow-y:auto">
+<div id="onboardingOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#F2F5F3;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;padding-top:60px;overflow-y:auto">
   <div style="text-align:center;margin-bottom:20px;position:relative;width:100%;max-width:400px">
-    <button id="obBackBtn" onclick="obBack()" style="display:none;position:absolute;top:-30px;left:0;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer">←</button>
+    <button id="obBackBtn" onclick="obBack()" style="display:none;position:absolute;top:-30px;left:0;background:white;border:1px solid #e5e7eb;color:var(--text-dark);font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer">←</button>
     <div style="font-size:48px;margin-bottom:10px">🌿</div>
-    <div id="obTitle" style="font-size:24px;font-weight:800;color:#fff">Willkommen bei SuppTree</div>
-    <div id="obSubtitle" style="font-size:14px;color:rgba(255,255,255,0.8);margin-top:6px">Was beschreibt dich am besten?</div>
+    <div id="obTitle" style="font-size:24px;font-weight:800;color:var(--green-dark)">Willkommen bei SuppTree</div>
+    <div id="obSubtitle" style="font-size:14px;color:var(--text-muted);margin-top:6px">Was beschreibt dich am besten?</div>
     <div id="obProgressBar" style="display:none;gap:6px;margin-top:16px;width:100%;max-width:200px;margin-left:auto;margin-right:auto"></div>
   </div>
 
   <div id="obContent" style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px"></div>
 
-  <button id="obConfirmBtn" disabled onclick="confirmOnboardingType()" style="margin-top:24px;width:100%;max-width:400px;padding:16px;background:linear-gradient(135deg,#1a5a3a,#00A67E);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;opacity:0.5;transition:opacity .2s;font-family:inherit">Weiter</button>
-  <div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,0.6);text-align:center">Du kannst das später in den Einstellungen ändern.</div>
+  <button id="obConfirmBtn" disabled onclick="confirmOnboardingType()" style="margin-top:24px;width:100%;max-width:400px;padding:16px;background:var(--green-accent);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;opacity:0.5;transition:opacity .2s;font-family:inherit">Weiter</button>
+  <div style="margin-top:12px;font-size:11px;color:var(--text-muted);text-align:center">Du kannst das später in den Einstellungen ändern.</div>
 </div>
 
 </body>
