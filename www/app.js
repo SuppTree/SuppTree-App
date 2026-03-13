@@ -28288,8 +28288,13 @@ function switchScreen(screenId) {
     screenHistory.push(screenId);
   }
   
-  // Immer nach oben scrollen bei Screen-Wechsel
+  // Immer nach oben scrollen bei Screen-Wechsel (rAF damit Layout fertig ist)
   window.scrollTo(0, 0);
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  });
   try { updateRoburOnScreenChange(); } catch(e) { }
   try { updateFloatingButtonsVisibility(screenId); } catch(e) { }
   
@@ -28636,6 +28641,7 @@ function openProductDetail(productId) {
   }
   
   switchScreen('productDetailScreen');
+  requestAnimationFrame(() => { window.scrollTo(0, 0); document.body.scrollTop = 0; });
   updateHeaderCartBadges();
   updateSubscribeButtonState();
 }
@@ -29722,6 +29728,7 @@ function openKurDetail(templateId) {
   
   // Switch to screen
   switchScreen('kurDetailScreen');
+  requestAnimationFrame(() => { window.scrollTo(0, 0); document.body.scrollTop = 0; });
   updateHeaderCartBadges();
 }
 
